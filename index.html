@@ -306,6 +306,15 @@ function showPage(page, keepFilter) {
   const cases = tcFor(page);
   const activeFilter = keepFilter || "All";
   pTitle.textContent = page.label;
+  pTitle.contentEditable = editMode ? "true" : "false";
+  pTitle.classList.toggle("ed", editMode);
+  pTitle.onblur = editMode ? () => {
+    const label = pTitle.innerText.trim();
+    if (!label || label === page.label) return;
+    (EDITS.pageOverrides[page.id] = EDITS.pageOverrides[page.id] || {}).label = label;
+    saveEdits(); buildGraph();
+    showPage(allPages().find(p => p.id === page.id), currentFilter());
+  } : null;
   pBody.innerHTML = `
     <div id="editbar">
       <button class="btn" id="edit-toggle">${editMode ? "Done editing" : "Edit"}</button>
@@ -319,7 +328,7 @@ function showPage(page, keepFilter) {
     <h3>Test cases (${cases.length})</h3>
     <div class="filters">${["All", "Sanity", "Regression"].map(t => `<button data-f="${t}" class="${t === activeFilter ? "active" : ""}">${t}</button>`).join("")}</div>
     <div id="tc-table">${renderTable(cases, activeFilter, editMode)}</div>
-    ${editMode ? '<div class="note">Click any dashed field (route, description, Steps, Expected) to edit; changes save automatically to this browser.</div>' : ""}`;
+    ${editMode ? '<div class="note">Click any dashed field (page name, route, description, Steps, Expected) to edit; changes save automatically to this browser.</div>' : ""}`;
 
   pBody.querySelectorAll(".filters button").forEach(btn => btn.addEventListener("click", () => {
     pBody.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
