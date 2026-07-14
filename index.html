@@ -349,8 +349,8 @@ function pathTo(page) {
   const byId = Object.fromEntries(allPages().map(p => [p.id, p]));
   const steps = [];
   let cur = page;
-  while (cur && cur.via) { steps.unshift(cur.via); cur = byId[cur.parent]; }
-  steps.unshift("Open the app → Login page");
+  while (cur && cur.via) { steps.unshift({ text: cur.via, pageId: cur.id }); cur = byId[cur.parent]; }
+  steps.unshift({ text: "Open the app → Login page", pageId: null });
   return steps;
 }
 
@@ -396,12 +396,12 @@ function showPage(page, keepFilter) {
     <div class="route ed" data-pfield="route" ${editMode ? 'contenteditable="true"' : ""}>${fmt(page.route)}</div>
     <p class="ed" data-pfield="desc" ${editMode ? 'contenteditable="true"' : ""}>${fmt(page.desc)}</p>
     <h3>How to reach</h3>
-    <ol class="path">${pathTo(page).map(s => `<li>${fmt(s)}</li>`).join("")}</ol>
+    <ol class="path">${pathTo(page).map(s => `<li${editMode && s.pageId ? ` class="ed" data-via-page="${s.pageId}" contenteditable="true"` : ""}>${fmt(s.text)}</li>`).join("")}</ol>
     ${altRoutesHtml(page)}
     <h3>Test cases (${cases.length})</h3>
     <div class="filters">${["All", "Sanity", "Regression"].map(t => `<button data-f="${t}" class="${t === activeFilter ? "active" : ""}">${t}</button>`).join("")}</div>
     <div id="tc-table">${renderTable(cases, activeFilter, editMode)}</div>
-    ${editMode ? '<div class="note">Click any dashed field (page name, route, description, Steps, Expected) to edit; changes save automatically to this browser.</div>' : ""}`;
+    ${editMode ? '<div class="note">Click any dashed field (page name, route, description, How to reach steps, Steps, Expected) to edit; changes save automatically to this browser.</div>' : ""}`;
 
   pBody.querySelectorAll(".filters button").forEach(btn => btn.addEventListener("click", () => {
     pBody.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
@@ -451,6 +451,14 @@ function wirePageFieldEdits(page) {
   pBody.querySelectorAll(".ed[data-pfield][contenteditable]").forEach(el => el.addEventListener("blur", () => {
     (EDITS.pageOverrides[page.id] = EDITS.pageOverrides[page.id] || {})[el.dataset.pfield] = el.innerText;
     saveEdits();
+  }));
+  pBody.querySelectorAll("li[data-via-page][contenteditable]").forEach(el => el.addEventListener("blur", () => {
+    const id = el.dataset.viaPage;
+    const via = el.innerText.trim();
+    if (!via) return;
+    (EDITS.pageOverrides[id] = EDITS.pageOverrides[id] || {}).via = via;
+    saveEdits();
+    if (cy) { const e = cy.edges(`[target = "${id}"]`).not(".extra"); if (e.length) e.data("via", via); }
   }));
 }
 
