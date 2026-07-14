@@ -3,6 +3,9 @@
   "pageOverrides": {
     "login": {
       "label": "Login Page"
+    },
+    "suborg": {
+      "label": "Langing Page (w/h repo)"
     }
   },
   "caseOverrides": {},
