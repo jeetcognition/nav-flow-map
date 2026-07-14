@@ -1,6 +1,10 @@
 {
   "addedPages": [],
-  "pageOverrides": {},
+  "pageOverrides": {
+    "logomenu": {
+      "via": "Top-left corner → click dropdown arrow"
+    }
+  },
   "caseOverrides": {},
   "addedCases": {},
   "addedLinks": [
