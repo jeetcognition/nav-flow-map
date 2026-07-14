@@ -146,8 +146,8 @@ const BASE_PAGES = [
 
   { id: "logomenu", label: "Top Left Menu (Under logo)", group: "suborg", route: "(dropdown)", desc: "Top-left corner: click the logo image / jeet-test-org. Dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.", parent: "landing", via: "Top-left corner → click logo image / jeet-test-org", prefixes: ["SUB-IM"] },
 
-  { id: "prefs", label: "Preferences (personal)", group: "personal", route: "/settings/preferences", desc: "Profile picture, name, theme, language, notifications, git author/email.", parent: "logomenu", via: "Logo/avatar menu → Preferences", prefixes: ["PREF"] },
-  { id: "pconn", label: "Connections (personal)", group: "personal", route: "/settings/connections", desc: "Personal integrations: GitHub / GitLab / Slack / Linear; MCPs tab.", parent: "logomenu", via: "Logo/avatar menu → Connections", prefixes: ["PCON"] },
+  { id: "prefs", label: "Preferences (personal)", group: "personal", route: "/settings/preferences", desc: "Profile picture, name, theme, language, notifications, git author/email.", parent: "ent", via: "Settings → Preferences", prefixes: ["PREF"] },
+  { id: "pconn", label: "Connections (personal)", group: "personal", route: "/settings/connections", desc: "Personal integrations: GitHub / GitLab / Slack / Linear; MCPs tab.", parent: "ent", via: "Settings → Connections", prefixes: ["PCON"] },
 
   { id: "ent", label: "Settings", group: "enterprise", route: "/org/cog-enterprise-qa/settings", desc: "Enterprise settings root; left-nav with all enterprise tabs below.", parent: "logomenu", via: "Logo menu → Enterprise settings", prefixes: [] },
 
