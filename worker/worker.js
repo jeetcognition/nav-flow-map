@@ -27,7 +27,7 @@ Do the following:
    - Pages: fold each entry of "addedPages" into the BASE_PAGES array in index.html as a normal page object, and apply "pageOverrides" (label/route/desc/via edits) directly to the corresponding BASE_PAGES entries.
    - Case edits: apply "caseOverrides" that target existing case ids directly to those cases in testcases.js AND in their qa-testing/testcases/*.md row.
 
-3. CLEAN UP: after promoting, remove the promoted entries from navmap-edits.json, leaving it as {"addedPages": [], "pageOverrides": {}, "caseOverrides": {}, "addedCases": {}} (pretty-printed, 2-space indent).
+3. CLEAN UP: after promoting, empty the promoted keys in navmap-edits.json ("addedPages": [], "pageOverrides": {}, "caseOverrides": {}, "addedCases": {}) but keep "addedLinks" and "removedLinks" untouched — extra graph links are rendered from this file, not from index.html. Keep it pretty-printed with 2-space indentation.
 
 4. VERIFY: node --check testcases.js, and check every new case ID matches a prefix in BASE_PAGES so it renders on its node. Do not change any other content, and never renumber or edit unrelated existing cases.
 
