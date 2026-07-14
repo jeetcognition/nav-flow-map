@@ -33,7 +33,7 @@ async function handleRewrite(env, headers) {
     if (!hasDrafts)
       return new Response(JSON.stringify({ error: "no drafts found — add draft test cases and Save to repo first" }), { status: 400, headers });
   }
-  const res = await fetch("https://api.devin.ai/v1/sessions", {
+  const res = await fetch("https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.DEVIN_API_KEY}`,
