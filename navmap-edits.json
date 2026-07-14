@@ -14,7 +14,8 @@
   "pageOverrides": {
     "login": {
       "label": "Login Page",
-      "desc": "Email one-time-password auth; code arrives by email."
+      "desc": "\n",
+      "route": "open https://cog-enterprise-qa.beta.devinenterprise.com/login"
     },
     "suborg": {
       "label": "Langing Repo Page"
