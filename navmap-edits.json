@@ -18,5 +18,13 @@
     }
   },
   "caseOverrides": {},
-  "addedCases": {}
+  "addedCases": {},
+  "addedLinks": [
+    {
+      "source": "landing",
+      "target": "ent",
+      "via": "Navigate directly to Settings from the landing search page"
+    }
+  ],
+  "removedLinks": []
 }

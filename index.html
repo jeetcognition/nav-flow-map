@@ -69,6 +69,7 @@
   <input id="search" type="text" placeholder="Search pages / routes…" />
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
+  <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
   <button id="save-repo" class="btn" title="Commit navmap-edits.json to the GitHub repo so edits are permanent for everyone">Save to repo</button>
   <button id="export" class="btn">Export edits</button>
   <button id="reset-edits" class="btn">Reset edits</button>
@@ -123,6 +124,15 @@
   <div class="actions"><button class="btn" id="nd-cancel">Cancel</button><button class="btn" id="nd-save" style="background:#4c7dff;border-color:#4c7dff">Add page</button></div>
 </dialog>
 
+<dialog id="link-dialog">
+  <h2>Add a link between pages</h2>
+  <label>From page</label><select id="ld-source"></select>
+  <label>To page</label><select id="ld-target"></select>
+  <label>How to navigate (from → to)</label><input id="ld-via" placeholder="e.g. Top-right gear icon → Settings" />
+  <div class="note">Use this when a page is reachable more than one way. The extra link is drawn as a dashed arrow and listed under "Also reachable via" on the target page.</div>
+  <div class="actions"><button class="btn" id="ld-cancel">Cancel</button><button class="btn" id="ld-save" style="background:#4c7dff;border-color:#4c7dff">Add link</button></div>
+</dialog>
+
 <script>
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#c98bff", personal: "#5dd3a0", enterprise: "#4c7dff" };
 const GROUP_NAMES = { entry: "Entry", suborg: "Sub-org (jeet-test-org)", personal: "Personal", enterprise: "Enterprise settings" };
@@ -165,7 +175,7 @@ const BASE_PAGES = [
 
 // ---- persistence of user edits ----
 const STORE_KEY = "navmap-edits-v1";
-function emptyEdits() { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} }; }
+function emptyEdits() { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {}, addedLinks: [], removedLinks: [] }; }
 function loadEdits() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY)) || emptyEdits(); }
   catch (e) { return emptyEdits(); }
@@ -181,8 +191,16 @@ function mergedEdits() {
     for (const [k, v] of Object.entries(src.pageOverrides)) m.pageOverrides[k] = { ...(m.pageOverrides[k] || {}), ...v };
     for (const [k, v] of Object.entries(src.caseOverrides)) m.caseOverrides[k] = { ...(m.caseOverrides[k] || {}), ...v };
     for (const [k, v] of Object.entries(src.addedCases)) m.addedCases[k] = (m.addedCases[k] || []).concat(v);
+    for (const l of src.addedLinks || []) if (!m.addedLinks.some(x => x.source === l.source && x.target === l.target)) m.addedLinks.push(l);
+    for (const r of src.removedLinks || []) if (!m.removedLinks.some(x => x.source === r.source && x.target === r.target)) m.removedLinks.push(r);
   }
+  m.addedLinks = m.addedLinks.filter(l => !m.removedLinks.some(r => r.source === l.source && r.target === l.target));
   return m;
+}
+
+function extraLinks() {
+  const ids = new Set(allPages().map(p => p.id));
+  return mergedEdits().addedLinks.filter(l => ids.has(l.source) && ids.has(l.target));
 }
 
 function allPages() {
@@ -217,6 +235,7 @@ function buildGraph() {
   const elements = [
     ...pages.map(p => ({ data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group } })),
     ...pages.filter(p => p.parent).map(p => ({ data: { id: "edge-" + p.id, source: p.parent, target: p.id } })),
+    ...extraLinks().map(l => ({ data: { id: "xedge-" + l.source + "-" + l.target, source: l.source, target: l.target }, classes: "extra" })),
   ];
   if (cy) cy.destroy();
   cy = cytoscape({
@@ -252,13 +271,15 @@ function buildGraph() {
           "target-arrow-color": "#3a4256",
           "width": 1.5,
       }},
+      { selector: "edge.extra", style: { "line-style": "dashed", "line-color": "#8a6bff", "target-arrow-color": "#8a6bff" } },
       { selector: "edge.hushed", style: { "opacity": 0.1 } },
       { selector: "edge.highlight", style: { "line-color": "#9fd0ff", "target-arrow-color": "#9fd0ff", "width": 2.5 } },
     ],
-    layout: { name: "breadthfirst", directed: true, roots: ["login"], spacingFactor: 1.1, padding: 20, avoidOverlap: true },
+    layout: { name: "preset" },
     wheelSensitivity: 0.2,
     autoungrabify: true,
   });
+  cy.elements().not(".extra").layout({ name: "breadthfirst", directed: true, roots: ["login"], spacingFactor: 1.1, padding: 20, avoidOverlap: true }).run();
   cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
   cy.on("tap", evt => {
     if (evt.target === cy) {
@@ -325,6 +346,7 @@ function showPage(page, keepFilter) {
     <p class="ed" data-pfield="desc" ${editMode ? 'contenteditable="true"' : ""}>${fmt(page.desc)}</p>
     <h3>How to reach</h3>
     <ol class="path">${pathTo(page).map(s => `<li>${fmt(s)}</li>`).join("")}</ol>
+    ${altRoutesHtml(page)}
     <h3>Test cases (${cases.length})</h3>
     <div class="filters">${["All", "Sanity", "Regression"].map(t => `<button data-f="${t}" class="${t === activeFilter ? "active" : ""}">${t}</button>`).join("")}</div>
     <div id="tc-table">${renderTable(cases, activeFilter, editMode)}</div>
@@ -349,6 +371,21 @@ function showPage(page, keepFilter) {
   });
   wireCellEdits(page);
   wirePageFieldEdits(page);
+  pBody.querySelectorAll("button[data-unlink]").forEach(btn => btn.addEventListener("click", () => {
+    const [source, target] = btn.dataset.unlink.split("|");
+    EDITS.addedLinks = EDITS.addedLinks.filter(l => !(l.source === source && l.target === target));
+    if (BASELINE.addedLinks.some(l => l.source === source && l.target === target)) EDITS.removedLinks.push({ source, target });
+    saveEdits(); buildGraph();
+    showPage(allPages().find(p => p.id === page.id), currentFilter());
+  }));
+}
+
+function altRoutesHtml(page) {
+  const byId = Object.fromEntries(allPages().map(p => [p.id, p]));
+  const incoming = extraLinks().filter(l => l.target === page.id);
+  if (!incoming.length) return "";
+  return `<h3>Also reachable via</h3><ol class="path">` +
+    incoming.map(l => `<li>From <b>${fmt((byId[l.source] || {}).label || l.source)}</b>: ${fmt(l.via || "Navigate directly")}${editMode ? ` <button class="btn" data-unlink="${l.source}|${page.id}" style="padding:0 6px;font-size:10px">remove</button>` : ""}</li>`).join("") + `</ol>`;
 }
 function currentFilter() { const b = pBody.querySelector(".filters button.active"); return b ? b.dataset.f : "All"; }
 
@@ -407,6 +444,32 @@ document.getElementById("nd-save").addEventListener("click", () => {
   ["nd-label", "nd-route", "nd-via", "nd-desc", "nd-drafts"].forEach(i => document.getElementById(i).value = "");
   buildGraph();
   showPage(allPages().find(p => p.id === id));
+});
+
+// ---- add link dialog ----
+const ldlg = document.getElementById("link-dialog");
+document.getElementById("add-link").addEventListener("click", () => {
+  const opts = allPages().map(p => `<option value="${p.id}">${p.label}</option>`).join("");
+  document.getElementById("ld-source").innerHTML = opts;
+  document.getElementById("ld-target").innerHTML = opts;
+  ldlg.showModal();
+});
+document.getElementById("ld-cancel").addEventListener("click", () => ldlg.close());
+document.getElementById("ld-save").addEventListener("click", () => {
+  const source = document.getElementById("ld-source").value;
+  const target = document.getElementById("ld-target").value;
+  if (source === target) { alert("Source and target must be different pages"); return; }
+  const pages = allPages();
+  if (pages.some(p => p.id === target && p.parent === source)) { alert("That link already exists as the page's main parent link"); return; }
+  if (extraLinks().some(l => l.source === source && l.target === target)) { alert("That link already exists"); return; }
+  const via = document.getElementById("ld-via").value.trim();
+  EDITS.removedLinks = EDITS.removedLinks.filter(r => !(r.source === source && r.target === target));
+  EDITS.addedLinks.push({ source, target, via: via || "Navigate directly" });
+  saveEdits();
+  ldlg.close();
+  document.getElementById("ld-via").value = "";
+  buildGraph();
+  showPage(pages.find(p => p.id === target));
 });
 
 // ---- save to repo (permanent, via Cloudflare Worker proxy — no token needed) ----
