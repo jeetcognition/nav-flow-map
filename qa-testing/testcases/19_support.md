@@ -1,0 +1,12 @@
+# 19 — Support
+
+User-added page. Page: `/org/cog-enterprise-qa/settings/support`. Reach: left sidebar → bottom-right (?) help control → Support.
+
+| ID | Type | Pri | How to reach | Steps | Expected |
+|---|---|---|---|---|---|
+| SUP-SAN01 | Sanity | P2 | Left sidebar → bottom-right (?) help → Support | 1. From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner. 2. Click Support to open /org/cog-enterprise-qa/settings/support. 3. Click the support-chat launcher on the Support page. | Support chat widget opens and is ready to accept a message; no console errors. |
+| SUP-SAN02 | Sanity | P3 | Left sidebar → bottom-right (?) help → Support | 1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the Documentation card/heading on the page. | The "Documentation" card heading is rendered and visible on the Support page. |
+| SUP-SAN03 | Sanity | P3 | Left sidebar → bottom-right (?) help → Support | 1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Read the description text under the Documentation card. | The text "Find answers to common questions and comprehensive guides" is visible under the Documentation card. |
+| SUP-REG01 | Regression | P2 | Left sidebar → bottom-right (?) help → Support | 1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Confirm the Documentation button is visible and enabled. 3. Click the Documentation button. | The Documentation button is clickable and navigates to the Documentation page; the target route loads without error. |
+| SUP-SAN04 | Sanity | P3 | Left sidebar → bottom-right (?) help → Support | 1. Reload the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the Documentation section title after the page loads. | The "Documentation" title is present and visible on the Support page after load. |
+| SUP-SAN05 | Sanity | P3 | Left sidebar → bottom-right (?) help → Support | 1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Verify the Documentation description text is presented to the user. | The user can see the text "Find answers to common questions and comprehensive guides" on the Support page. |
