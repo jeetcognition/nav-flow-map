@@ -5,10 +5,16 @@
       "label": "Login Page"
     },
     "suborg": {
-      "label": "Langing Page (w/h repo)"
+      "label": "Langing Repo Page"
     },
     "logomenu": {
       "label": "Top Left Menu (Under logo)"
+    },
+    "landing": {
+      "label": "Landing Search Page"
+    },
+    "ent": {
+      "label": "Settings"
     }
   },
   "caseOverrides": {},
