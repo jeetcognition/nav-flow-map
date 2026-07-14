@@ -18,7 +18,26 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
   - Extra links persist like other edits: browser localStorage immediately, and permanently for everyone via `Save to repo` (`addedLinks` / `removedLinks` in `navmap-edits.json`).
 - Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Reset edits` clears unsaved local edits.
 - **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` posts your current edits to a Cloudflare Worker (`worker/`, deployed at `navmap-save.jeet-navmap.workers.dev`) which commits the file using a server-side GitHub token — no token needed in the browser. The Worker only accepts requests from the Pages origin and validates the JSON shape.
-- **Rewrite drafts with AI**: the `Rewrite drafts with AI` button saves your edits, then calls the Worker's `/rewrite` endpoint, which uses a server-side Devin API key to start a Devin session. That session rewrites each draft in `navmap-edits.json` into a structured test case (suite, priority, steps, expected — stored as `caseOverrides` keyed `<pageId>-draft-<index>`) and commits the result to `main`; reload the site once it finishes.
+- **Rewrite drafts with AI**: the `Rewrite drafts with AI` button saves your edits, then calls the Worker's `/rewrite` endpoint, which uses a server-side Devin API key to start a Devin session. That session rewrites each draft in `navmap-edits.json` into a structured test case and **promotes everything into the source files** (see "How edits flow" below), committing directly to `main`; reload the site once it finishes (~1–2 min).
+
+## How edits flow
+
+```
+browser edits ─▶ localStorage ──Save to repo─▶ navmap-edits.json ──Rewrite drafts with AI─▶ source files
+              (this browser only)      (permanent, merged on load)       (canonical: *.md + testcases.js + index.html)
+```
+
+1. **Edit in the browser** — add pages, draft test cases, links, or edit fields. Everything is stored in your browser's localStorage immediately (survives reloads, but only on your machine).
+2. **Save to repo** — commits those edits into `navmap-edits.json` via the Cloudflare Worker. Now they're permanent and visible to everyone: on every load the site merges this file over the base data (`addedPages`, `pageOverrides`, `addedCases`, `caseOverrides`, `addedLinks`/`removedLinks`).
+3. **Rewrite drafts with AI** — starts a Devin session that:
+   - rewrites each rough draft into a full structured case (suite, priority, numbered steps, expected result);
+   - assigns stable IDs with a per-page prefix (inventing one and adding it to the page's `prefixes` in `index.html` if needed, e.g. `SUP-*` for the Support Page);
+   - appends the cases to the matching `qa-testing/testcases/*.md` table (creating a new file for new pages) and to `testcases.js`;
+   - folds added pages and page-field edits directly into `BASE_PAGES` in `index.html`, and applies edits to existing cases in both `testcases.js` and their markdown row;
+   - empties the promoted keys of `navmap-edits.json` and commits everything to `main`.
+4. **Custom links stay in `navmap-edits.json`** — extra navigation arrows added with `+ Add link` (`addedLinks`/`removedLinks`) are rendered from this file and are never promoted into `index.html`; the AI promotion preserves them.
+
+So `navmap-edits.json` is the fast permanent layer, and the markdown files + `testcases.js` + `index.html` are the canonical sources the AI pass maintains.
 
 ## Run locally
 ```bash
@@ -29,4 +48,4 @@ No build step. Cytoscape.js loads from the unpkg CDN (internet required on first
 
 ## Data sources
 - `qa-testing/nav_graph.md` — route topology.
-- `qa-testing/testcases/*.md` — 220 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages.
+- `qa-testing/testcases/*.md` — 220 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; later files (e.g. `18_login.md`, `19_support.md`) hold cases added afterwards or promoted from website edits.
