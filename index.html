@@ -135,7 +135,7 @@ const GROUP_NAMES = { entry: "Entry", suborg: "Sub-org (jeet-test-org)", persona
 const BASE_PAGES = [
   { id: "login", label: "Login Page", group: "entry", route: "open https://cog-enterprise-qa.beta.devinenterprise.com/login", desc: "\n", parent: null, via: null, prefixes: ["LOGIN"] },
   { id: "auth", label: "Auth (Email + OTP)", group: "entry", route: "hosted auth page → OTP verify", desc: "Authentication between the Login page and the Landing search page: enter work email, receive a one-time code, verify it.", parent: "login", via: "Enter work email → Continue", prefixes: ["AUTH"] },
-  { id: "landing", label: "Landing Search Page", group: "entry", route: "/org/cog-enterprise-qa/org-selector", desc: "\"Choose an organization to continue\". Type jeet-test-org in the search bar.", parent: "auth", via: "Submit the valid OTP code", prefixes: [] },
+  { id: "landing", label: "Landing Search Page", group: "entry", route: "/org/cog-enterprise-qa/org-selector", desc: "\"Choose an organization to continue\". Type jeet-test-org in the search bar.", parent: "auth", via: "Submit the valid OTP code", prefixes: ["ORGSEL"] },
   { id: "suborg", label: "Langing Repo Page", group: "suborg", route: "/org/jeet-devin-qa/", desc: "Sub-org workspace home with the new-session composer. Display-name routes 404 — the slug is jeet-devin-qa.", parent: "landing", via: "Type jeet-test-org in the search bar → click jeet-test-org", prefixes: ["SUB", "SUB-NS"] },
 
   { id: "composer", label: "New session (Composer)", group: "suborg", route: "/org/jeet-devin-qa/ (composer)", desc: "Prompt box, Agent/Ask mode, repo & context selectors; sessions list and session tools.", parent: "suborg", via: "Use the composer on the home page", prefixes: ["COMP", "SESS", "STOOL"] },
