@@ -12,16 +12,26 @@ function cors(origin) {
   };
 }
 
-const REWRITE_PROMPT = `You are rewriting draft QA test cases for the nav-flow-map site.
-In the repo jeetcognition/nav-flow-map, the file navmap-edits.json contains user-added draft test cases under "addedCases" (a map of pageId -> array of rough one-liner drafts). The site renders the draft at index i of page P with the key "P-draft-i", and "caseOverrides" entries keyed by that string override its displayed fields.
+const REWRITE_PROMPT = `You are rewriting and promoting website edits for the nav-flow-map site into its source files.
+In the repo jeetcognition/nav-flow-map, the file navmap-edits.json holds edits made on the website: "addedPages" (new graph pages), "pageOverrides" (edited page fields), "addedCases" (map of pageId -> array of rough one-liner draft test cases), and "caseOverrides" (edited/rewritten case fields, keyed by case id or "<pageId>-draft-<index>").
 
-For EVERY draft that does not already have a rewritten override, add an entry to "caseOverrides" under the key "<pageId>-draft-<index>" with exactly these fields:
-- "suite": "Sanity" or "Regression" (pick whichever fits the draft),
-- "pri": "P1", "P2" or "P3",
-- "steps": concrete numbered steps written in the same style as the existing cases in testcases.js and qa-testing/testcases/*.md (study a few for tone and navigation paths; page metadata is in index.html BASE_PAGES),
-- "expected": a clear, specific expected result.
+Do the following:
 
-Keep the original draft text in "addedCases" unchanged, and do not modify any other file or any other key in navmap-edits.json. Commit the updated navmap-edits.json directly to the main branch (do NOT open a PR). Keep the JSON pretty-printed with 2-space indentation.`;
+1. REWRITE each draft in "addedCases" into a full structured test case (use any existing "<pageId>-draft-<index>" entry in "caseOverrides" if one exists):
+   - suite: Sanity or Regression; pri: P1/P2/P3;
+   - steps: concrete numbered steps in the same style as the existing cases in qa-testing/testcases/*.md (study a few for tone and navigation paths; page metadata is in index.html BASE_PAGES);
+   - expected: a clear, specific expected result.
+
+2. PROMOTE everything out of navmap-edits.json into the real sources:
+   - Test cases: assign each rewritten case a stable ID with a prefix for its page (reuse the page's existing prefix from BASE_PAGES in index.html; if the page has none, invent a short uppercase prefix, add it to that page's "prefixes" array, and number cases <PREFIX>-SAN01/-REG01 style). Append each case as a table row in the matching qa-testing/testcases/*.md file (create a new numbered .md file for pages without one, following the existing file format), and append the same case object to the TESTCASES array in testcases.js (fields: id, type, pri, reach, steps, expected — match existing objects exactly).
+   - Pages: fold each entry of "addedPages" into the BASE_PAGES array in index.html as a normal page object, and apply "pageOverrides" (label/route/desc/via edits) directly to the corresponding BASE_PAGES entries.
+   - Case edits: apply "caseOverrides" that target existing case ids directly to those cases in testcases.js AND in their qa-testing/testcases/*.md row.
+
+3. CLEAN UP: after promoting, remove the promoted entries from navmap-edits.json, leaving it as {"addedPages": [], "pageOverrides": {}, "caseOverrides": {}, "addedCases": {}} (pretty-printed, 2-space indent).
+
+4. VERIFY: node --check testcases.js, and check every new case ID matches a prefix in BASE_PAGES so it renders on its node. Do not change any other content, and never renumber or edit unrelated existing cases.
+
+Commit all changed files (testcases.js, index.html, qa-testing/testcases/*.md, navmap-edits.json) directly to the main branch — do NOT open a PR.`;
 
 async function handleRewrite(env, headers) {
   const cur = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${FILE}`, {
@@ -29,9 +39,14 @@ async function handleRewrite(env, headers) {
   });
   if (cur.ok) {
     const edits = await cur.json().catch(() => null);
-    const hasDrafts = edits && edits.addedCases && Object.values(edits.addedCases).some((a) => a && a.length);
-    if (!hasDrafts)
-      return new Response(JSON.stringify({ error: "no drafts found — add draft test cases and Save to repo first" }), { status: 400, headers });
+    const hasWork =
+      edits &&
+      ((edits.addedCases && Object.values(edits.addedCases).some((a) => a && a.length)) ||
+        (edits.addedPages && edits.addedPages.length) ||
+        (edits.pageOverrides && Object.keys(edits.pageOverrides).length) ||
+        (edits.caseOverrides && Object.keys(edits.caseOverrides).length));
+    if (!hasWork)
+      return new Response(JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }), { status: 400, headers });
   }
   const res = await fetch("https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions", {
     method: "POST",
@@ -39,7 +54,7 @@ async function handleRewrite(env, headers) {
       Authorization: `Bearer ${env.DEVIN_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ prompt: REWRITE_PROMPT, title: "Rewrite navmap draft test cases" }),
+    body: JSON.stringify({ prompt: REWRITE_PROMPT, title: "Rewrite & promote navmap edits to source files" }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok)
