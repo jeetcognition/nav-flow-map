@@ -17,10 +17,13 @@
   .save-repo { margin-left: auto; }
   #main { flex: 1; display: flex; min-height: 0; position: relative; }
   #cy { flex: 1; min-width: 0; }
-  #panel { width: 460px; background: #161a23; border-left: 1px solid #262c3a; padding: 16px; overflow-y: auto; transition: width .2s; position: relative; }
-  #main.panel-collapsed #panel { display: none; }
-  #main.panel-full #cy { display: none; }
-  #main.panel-full #panel { width: 100%; }
+  #panel { width: 460px; background: #161a23; border-left: 1px solid #262c3a; padding: 16px; overflow-y: auto; position: relative; flex-shrink: 0; }
+  #resizer { width: 5px; cursor: col-resize; background: #262c3a; flex-shrink: 0; transition: background .15s; }
+  #resizer:hover, #resizer.dragging { background: #4c7dff; }
+  #main.panel-collapsed #panel, #main.panel-collapsed #resizer { display: none; }
+  #main.panel-full #cy, #main.panel-full #resizer { display: none; }
+  #main.panel-full #panel { width: 100% !important; }
+  body.resizing { user-select: none; cursor: col-resize; }
   #panel-toggle { position: absolute; top: 8px; right: 8px; z-index: 5; display: flex; gap: 4px; }
   #panel-toggle button, .btn { background: #1e2433; border: 1px solid #2c3446; color: #e6e8ee; padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; }
   #panel-toggle button:hover, .btn:hover { border-color: #4c7dff; }
@@ -72,6 +75,7 @@
 </header>
 <div id="main">
   <div id="cy"></div>
+  <div id="resizer" title="Drag to resize the panel"></div>
   <div id="panel-toggle">
     <button id="pt-collapse" title="Full-screen graph (hide panel)">⤢ Graph</button>
     <button id="pt-expand" title="Full-screen panel">⤢ Panel</button>
@@ -457,6 +461,39 @@ function setView(mode) {
 document.getElementById("pt-collapse").addEventListener("click", () => setView("panel-collapsed"));
 document.getElementById("pt-expand").addEventListener("click", () => setView("panel-full"));
 document.getElementById("pt-normal").addEventListener("click", () => setView(null));
+
+// ---- draggable panel resizer ----
+const panelEl = document.getElementById("panel");
+const resizer = document.getElementById("resizer");
+const savedW = parseInt(localStorage.getItem("navmap-panel-width"), 10);
+if (savedW) panelEl.style.width = Math.min(Math.max(savedW, 260), window.innerWidth - 200) + "px";
+resizer.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+  resizer.setPointerCapture(e.pointerId);
+  resizer.classList.add("dragging");
+  document.body.classList.add("resizing");
+  const startX = e.clientX, startW = panelEl.offsetWidth;
+  const onMove = (ev) => {
+    const w = Math.min(Math.max(startW + (startX - ev.clientX), 260), window.innerWidth - 200);
+    panelEl.style.width = w + "px";
+    if (cy) cy.resize();
+  };
+  const onUp = (ev) => {
+    resizer.removeEventListener("pointermove", onMove);
+    resizer.removeEventListener("pointerup", onUp);
+    resizer.classList.remove("dragging");
+    document.body.classList.remove("resizing");
+    localStorage.setItem("navmap-panel-width", panelEl.offsetWidth);
+    if (cy) { cy.resize(); cy.fit(undefined, 20); }
+  };
+  resizer.addEventListener("pointermove", onMove);
+  resizer.addEventListener("pointerup", onUp);
+});
+resizer.addEventListener("dblclick", () => {
+  panelEl.style.width = "460px";
+  localStorage.setItem("navmap-panel-width", 460);
+  if (cy) { cy.resize(); cy.fit(undefined, 20); }
+});
 
 // ---- add node dialog ----
 const dlg = document.getElementById("node-dialog");
