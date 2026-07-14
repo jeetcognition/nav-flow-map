@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enterprise Web App — Navigation Flow Map</title>
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="testcases.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f1117; color: #e6e8ee; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  header { padding: 10px 20px; background: #161a23; border-bottom: 1px solid #262c3a; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  header h1 { font-size: 15px; font-weight: 600; }
+  header .sub { font-size: 12px; color: #8b93a7; }
+  #search { background: #0f1117; border: 1px solid #2c3446; color: #e6e8ee; padding: 6px 10px; border-radius: 6px; font-size: 13px; width: 200px; }
+  #search:focus { outline: none; border-color: #4c7dff; }
+  .legend { display: flex; gap: 12px; font-size: 12px; margin-left: auto; flex-wrap: wrap; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  #main { flex: 1; display: flex; min-height: 0; position: relative; }
+  #cy { flex: 1; min-width: 0; }
+  #panel { width: 460px; background: #161a23; border-left: 1px solid #262c3a; padding: 16px; overflow-y: auto; transition: width .2s; position: relative; }
+  #main.panel-collapsed #panel { display: none; }
+  #main.panel-full #cy { display: none; }
+  #main.panel-full #panel { width: 100%; }
+  #panel-toggle { position: absolute; top: 8px; right: 8px; z-index: 5; display: flex; gap: 4px; }
+  #panel-toggle button, .btn { background: #1e2433; border: 1px solid #2c3446; color: #e6e8ee; padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  #panel-toggle button:hover, .btn:hover { border-color: #4c7dff; }
+  #panel h2 { font-size: 15px; margin-bottom: 6px; padding-right: 90px; }
+  #panel .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; color: #0f1117; font-weight: 600; }
+  #panel .route { font-family: ui-monospace, monospace; font-size: 12px; background: #0f1117; border: 1px solid #2c3446; padding: 6px 8px; border-radius: 6px; word-break: break-all; margin-bottom: 10px; color: #9fd0ff; }
+  #panel p { font-size: 13px; color: #b8bfd0; line-height: 1.5; margin-bottom: 10px; }
+  #panel h3 { font-size: 11px; color: #8b93a7; text-transform: uppercase; letter-spacing: .05em; margin: 12px 0 6px; }
+  ol.path { margin: 0 0 6px 18px; font-size: 12.5px; color: #cfd5e2; }
+  ol.path li { margin-bottom: 3px; }
+  .filters { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .filters button { background: #1e2433; border: 1px solid #2c3446; color: #b8bfd0; padding: 3px 10px; border-radius: 12px; font-size: 11px; cursor: pointer; }
+  .filters button.active { background: #4c7dff; border-color: #4c7dff; color: #fff; }
+  table.tc { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  table.tc th, table.tc td { border: 1px solid #262c3a; padding: 5px 6px; text-align: left; vertical-align: top; }
+  table.tc th { background: #1e2433; color: #8b93a7; font-size: 10.5px; text-transform: uppercase; }
+  table.tc td.id { font-family: ui-monospace, monospace; white-space: nowrap; color: #9fd0ff; }
+  .tt { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 600; color: #0f1117; }
+  .tt.Sanity { background: #5dd3a0; } .tt.Regression { background: #ff8a6b; } .tt.Draft { background: #f2c744; }
+  .empty { font-size: 12px; color: #6b7285; }
+  table.tc code { font-family: ui-monospace, monospace; font-size: 10.5px; color: #9fd0ff; background: #0f1117; padding: 0 3px; border-radius: 3px; }
+  .hint { font-size: 12px; color: #6b7285; margin-top: 12px; line-height: 1.5; }
+  footer { padding: 5px 20px; background: #161a23; border-top: 1px solid #262c3a; font-size: 11px; color: #6b7285; }
+  [contenteditable="true"] { outline: 1px dashed #4c7dff; background: #10182b; }
+  #editbar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  dialog { background: #161a23; color: #e6e8ee; border: 1px solid #2c3446; border-radius: 10px; padding: 18px; width: 460px; max-width: 92vw; }
+  dialog::backdrop { background: rgba(0,0,0,.6); }
+  dialog h2 { font-size: 15px; margin-bottom: 12px; }
+  dialog label { display: block; font-size: 11px; color: #8b93a7; text-transform: uppercase; margin: 8px 0 3px; }
+  dialog input, dialog select, dialog textarea { width: 100%; background: #0f1117; border: 1px solid #2c3446; color: #e6e8ee; padding: 6px 8px; border-radius: 6px; font-size: 13px; font-family: inherit; }
+  dialog textarea { min-height: 70px; resize: vertical; }
+  dialog .row { display: flex; gap: 10px; }
+  dialog .row > div { flex: 1; }
+  dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+  .note { font-size: 11px; color: #6b7285; margin-top: 4px; line-height: 1.4; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Enterprise Web App — Navigation Flow Map</h1>
+    <div class="sub">Top-to-bottom flow: Login → landing → jeet-test-org → logo menu → settings &middot; click a page to see its test cases</div>
+  </div>
+  <input id="search" type="text" placeholder="Search pages / routes…" />
+  <button id="fit" class="btn">Fit view</button>
+  <button id="add-node" class="btn">+ Add page</button>
+  <button id="export" class="btn">Export edits</button>
+  <button id="reset-edits" class="btn">Reset edits</button>
+  <div class="legend">
+    <span><i class="dot" style="background:#f2c744"></i>Entry</span>
+    <span><i class="dot" style="background:#c98bff"></i>Sub-org (jeet-test-org)</span>
+    <span><i class="dot" style="background:#5dd3a0"></i>Personal</span>
+    <span><i class="dot" style="background:#4c7dff"></i>Enterprise settings</span>
+  </div>
+</header>
+<div id="main">
+  <div id="cy"></div>
+  <div id="panel-toggle">
+    <button id="pt-collapse" title="Full-screen graph (hide panel)">⤢ Graph</button>
+    <button id="pt-expand" title="Full-screen panel">⤢ Panel</button>
+    <button id="pt-normal" title="Split view">⿻ Split</button>
+  </div>
+  <aside id="panel">
+    <h2 id="p-title">Select a page</h2>
+    <div id="p-body">
+      <p>The flow reads top to bottom. Click any page node to see how to reach it and the test cases linked to it (Sanity / Regression).</p>
+      <div class="hint">
+        Main flow:<br/>
+        1. Log in (OTP)<br/>
+        2. Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b><br/>
+        3. Top-left corner → click the logo / <b>jeet-test-org ▾</b><br/>
+        4. <b>Enterprise settings</b> → pick a tab<br/><br/>
+        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage) — use <b>Export edits</b> to download them as JSON.
+      </div>
+    </div>
+  </aside>
+</div>
+<footer>Sources: qa-testing/nav_graph.md &middot; qa-testing/testcases/*.md &middot; Suites: Sanity (SM/SN) &amp; Regression (RG)</footer>
+
+<dialog id="node-dialog">
+  <h2>Add a page node</h2>
+  <label>Page name</label><input id="nd-label" placeholder="e.g. Billing" />
+  <label>Parent page</label><select id="nd-parent"></select>
+  <div class="row">
+    <div><label>Group</label><select id="nd-group">
+      <option value="enterprise">Enterprise settings</option>
+      <option value="suborg">Sub-org (jeet-test-org)</option>
+      <option value="personal">Personal</option>
+      <option value="entry">Entry</option>
+    </select></div>
+    <div><label>Route</label><input id="nd-route" placeholder="/org/.../billing" /></div>
+  </div>
+  <label>How to navigate from parent</label><input id="nd-via" placeholder="e.g. Left nav → Billing" />
+  <label>Description</label><textarea id="nd-desc"></textarea>
+  <label>Draft test cases (one per line)</label><textarea id="nd-drafts" placeholder="verify invoice list loads&#10;CRUD on payment method"></textarea>
+  <div class="note">Drafts are stored as type "Draft" — rough one-liners are fine; an AI model can later rewrite them into proper structured test cases.</div>
+  <div class="actions"><button class="btn" id="nd-cancel">Cancel</button><button class="btn" id="nd-save" style="background:#4c7dff;border-color:#4c7dff">Add page</button></div>
+</dialog>
+
+<script>
+const GROUP_COLORS = { entry: "#f2c744", suborg: "#c98bff", personal: "#5dd3a0", enterprise: "#4c7dff" };
+const GROUP_NAMES = { entry: "Entry", suborg: "Sub-org (jeet-test-org)", personal: "Personal", enterprise: "Enterprise settings" };
+
+// tree: id, label, group, route, desc, parent, via (how to navigate from parent), prefixes (testcase ID prefixes)
+const BASE_PAGES = [
+  { id: "login", label: "Login (OTP)", group: "entry", route: "/login", desc: "Email one-time-password auth; code arrives by email.", parent: null, via: null, prefixes: [] },
+  { id: "landing", label: "Landing / Org search", group: "entry", route: "/org/cog-enterprise-qa/org-selector", desc: "\"Choose an organization to continue\". Type jeet-test-org in the search bar.", parent: "login", via: "Enter email → submit OTP code", prefixes: [] },
+  { id: "suborg", label: "jeet-test-org home", group: "suborg", route: "/org/jeet-devin-qa/", desc: "Sub-org workspace home with the new-session composer. Display-name routes 404 — the slug is jeet-devin-qa.", parent: "landing", via: "Type jeet-test-org in the search bar → click jeet-test-org", prefixes: ["SUB", "SUB-NS"] },
+
+  { id: "composer", label: "New session (Composer)", group: "suborg", route: "/org/jeet-devin-qa/ (composer)", desc: "Prompt box, Agent/Ask mode, repo & context selectors; sessions list and session tools.", parent: "suborg", via: "Use the composer on the home page", prefixes: ["COMP", "SESS", "STOOL"] },
+  { id: "automations", label: "Automations", group: "suborg", route: "/org/jeet-devin-qa/automations", desc: "Automations list; create at /automations/create. Includes legacy Schedules.", parent: "suborg", via: "Left nav → Automations", prefixes: ["AUTO", "SCHED", "SUB-AU"] },
+  { id: "security", label: "Security (Code scan)", group: "suborg", route: "/org/jeet-devin-qa/code-scan", desc: "Scans / Profiles tabs; guardrails and security misc.", parent: "suborg", via: "Left nav → Security", prefixes: ["SCAN", "GUARD", "SECM"] },
+  { id: "wiki", label: "Wiki", group: "suborg", route: "/org/jeet-devin-qa/wiki", desc: "Repo wiki at /wiki/<owner>/<repo>?branch=<b>.", parent: "suborg", via: "Left nav → Wiki", prefixes: ["SUB-WK", "DWIKI"] },
+  { id: "review", label: "Review", group: "suborg", route: "/review", desc: "Devin Review; NOT org-scoped. PR view /review/<owner>/<repo>/pull/N.", parent: "suborg", via: "Left nav → Review", prefixes: ["SUB-RV"] },
+
+  { id: "logomenu", label: "Logo menu (top-left, jeet-test-org ▾)", group: "suborg", route: "(dropdown)", desc: "Top-left corner: click the logo image / jeet-test-org. Dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.", parent: "suborg", via: "Top-left corner → click logo image / jeet-test-org", prefixes: ["SUB-IM"] },
+
+  { id: "prefs", label: "Preferences (personal)", group: "personal", route: "/settings/preferences", desc: "Profile picture, name, theme, language, notifications, git author/email.", parent: "logomenu", via: "Logo/avatar menu → Preferences", prefixes: ["PREF"] },
+  { id: "pconn", label: "Connections (personal)", group: "personal", route: "/settings/connections", desc: "Personal integrations: GitHub / GitLab / Slack / Linear; MCPs tab.", parent: "logomenu", via: "Logo/avatar menu → Connections", prefixes: ["PCON"] },
+
+  { id: "ent", label: "Enterprise Settings", group: "enterprise", route: "/org/cog-enterprise-qa/settings", desc: "Enterprise settings root; left-nav with all enterprise tabs below.", parent: "logomenu", via: "Logo menu → Enterprise settings", prefixes: [] },
+
+  { id: "e-general", label: "General & SSO", group: "enterprise", route: "…/settings/general", desc: "Org settings, Require SSO toggle, domain verification.", parent: "ent", via: "Left nav → General", prefixes: ["GEN"] },
+  { id: "e-conn", label: "Connections", group: "enterprise", route: "…/settings/connections?tab=integrations", desc: "GitHub/GitLab configure, repos, disconnect, register app; MCPs tab.", parent: "ent", via: "Left nav → Connections", prefixes: ["ECON", "ECON-MCP"] },
+  { id: "e-devin", label: "Devin", group: "enterprise", route: "…/settings (Devin tab)", desc: "Devin product configuration.", parent: "ent", via: "Left nav → Devin", prefixes: ["DEVIN"] },
+  { id: "e-review", label: "Review", group: "enterprise", route: "…/settings (Review tab)", desc: "Devin Review enterprise configuration.", parent: "ent", via: "Left nav → Review", prefixes: ["REV", "REVUI"] },
+  { id: "e-knowledge", label: "Knowledge", group: "enterprise", route: "…/settings (Knowledge tab)", desc: "Org knowledge notes.", parent: "ent", via: "Left nav → Knowledge", prefixes: ["KNOW"] },
+  { id: "e-env", label: "Environment", group: "enterprise", route: "…/settings (Environment tab)", desc: "Environment blueprints / snapshots.", parent: "ent", via: "Left nav → Environment", prefixes: ["ENV"] },
+  { id: "e-playbooks", label: "Playbooks", group: "enterprise", route: "…/settings (Playbooks tab)", desc: "Org playbooks.", parent: "ent", via: "Left nav → Playbooks", prefixes: ["PLAY"] },
+  { id: "e-repos", label: "Repositories", group: "enterprise", route: "/settings/repositories", desc: "Repository permissions; DeepWiki.", parent: "ent", via: "Left nav → Repositories", prefixes: ["REPO"] },
+  { id: "e-membership", label: "Membership", group: "enterprise", route: "/settings/membership", desc: "Invite members; IdP sync; enterprise scope.", parent: "ent", via: "Left nav → Membership", prefixes: ["MEMB", "IDP"] },
+  { id: "e-roles", label: "Roles", group: "enterprise", route: "…/settings (Roles tab)", desc: "Role management.", parent: "ent", via: "Left nav → Roles", prefixes: ["ROLE"] },
+  { id: "e-orgs", label: "Organizations", group: "enterprise", route: "…/settings/organizations", desc: "Sub-org list: create, search, drill into per-org settings.", parent: "ent", via: "Left nav → Organizations", prefixes: ["ORG"] },
+  { id: "e-analytics", label: "Analytics", group: "enterprise", route: "…/settings (Analytics tab)", desc: "Usage analytics.", parent: "ent", via: "Left nav → Analytics", prefixes: ["ANAL"] },
+  { id: "e-infra", label: "Infra & Misc", group: "enterprise", route: "…/settings (API, VPC, Outposts…)", desc: "Devin API, VPC, outpost pools, rollouts, skills, tags.", parent: "ent", via: "Left nav → misc admin tabs", prefixes: ["API", "INFRA", "OUT", "ROLL", "SKILL", "TAG", "VPC"] },
+
+  { id: "s-settings", label: "Sub-org Settings", group: "suborg", route: "/org/jeet-devin-qa/settings", desc: "Per-sub-org settings: General, Connections, Products, Resources, Administration.", parent: "e-orgs", via: "Organizations → click jeet-test-org", prefixes: ["SUB-OS"] },
+];
+
+// ---- persistence of user edits ----
+const STORE_KEY = "navmap-edits-v1";
+function loadEdits() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} }; }
+  catch (e) { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} }; }
+}
+let EDITS = loadEdits();
+function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(EDITS)); }
+
+function allPages() {
+  return BASE_PAGES.concat(EDITS.addedPages).map(p => ({ ...p, ...(EDITS.pageOverrides[p.id] || {}) }));
+}
+
+// ---- suites: Smoke merged into Sanity (SM-n / SN-n), E2E merged into Regression (RG-n) ----
+const KIND_MAP = { Smoke: ["Sanity", "SM"], Sanity: ["Sanity", "SN"], Regression: ["Regression", "RG"], E2E: ["Regression", "RG"], Draft: ["Draft", "DR"] };
+
+function tcFor(page) {
+  const raw = TESTCASES.filter(tc => (page.prefixes || []).some(p => new RegExp("^" + p + "-(SMK|SAN|REG|E2E)\\d").test(tc.id)));
+  const counters = {};
+  const cases = raw.map(tc => {
+    const [suite, kind] = KIND_MAP[tc.type] || ["Regression", "RG"];
+    counters[kind] = (counters[kind] || 0) + 1;
+    const c = { key: tc.id, id: kind + "-" + counters[kind], orig: tc.id, suite, pri: tc.pri, steps: tc.steps, expected: tc.expected };
+    return { ...c, ...(EDITS.caseOverrides[c.key] || {}) };
+  });
+  (EDITS.addedCases[page.id] || []).forEach((d, i) => {
+    const c = { key: page.id + "-draft-" + i, id: "DR-" + (i + 1), orig: "(draft)", suite: "Draft", pri: "—", steps: d, expected: "Draft — to be rewritten by AI into a structured test case." };
+    cases.push({ ...c, ...(EDITS.caseOverrides[c.key] || {}) });
+  });
+  return cases;
+}
+
+// ---- graph ----
+let cy;
+function buildGraph() {
+  const pages = allPages();
+  const elements = [
+    ...pages.map(p => ({ data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group } })),
+    ...pages.filter(p => p.parent).map(p => ({ data: { id: "edge-" + p.id, source: p.parent, target: p.id } })),
+  ];
+  if (cy) cy.destroy();
+  cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements,
+    style: [
+      { selector: "node", style: {
+          "shape": "round-rectangle",
+          "background-color": ele => GROUP_COLORS[ele.data("group")],
+          "label": "data(label)",
+          "color": "#0f1117",
+          "font-size": "10px",
+          "font-weight": 600,
+          "text-valign": "center",
+          "text-halign": "center",
+          "text-wrap": "wrap",
+          "text-max-width": "120px",
+          "width": "130px",
+          "height": ele => 26 + 10 * Math.floor(ele.data("label").length / 22),
+          "padding": "6px",
+          "border-width": 1,
+          "border-color": "#0f1117",
+      }},
+      { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
+      { selector: "node.highlight", style: { "border-color": "#ffffff", "border-width": 3 } },
+      { selector: "edge", style: {
+          "curve-style": "taxi",
+          "taxi-direction": "downward",
+          "taxi-turn": 18,
+          "target-arrow-shape": "triangle",
+          "arrow-scale": 0.8,
+          "line-color": "#3a4256",
+          "target-arrow-color": "#3a4256",
+          "width": 1.5,
+      }},
+      { selector: "edge.hushed", style: { "opacity": 0.1 } },
+      { selector: "edge.highlight", style: { "line-color": "#9fd0ff", "target-arrow-color": "#9fd0ff", "width": 2.5 } },
+    ],
+    layout: { name: "breadthfirst", directed: true, roots: ["login"], spacingFactor: 1.1, padding: 20, avoidOverlap: true },
+    wheelSensitivity: 0.2,
+    autoungrabify: true,
+  });
+  cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
+  cy.on("tap", evt => {
+    if (evt.target === cy) {
+      cy.elements().removeClass("highlight hushed");
+      pTitle.textContent = "Select a page";
+      pBody.innerHTML = `<p>Click any page node to see how to reach it and its linked test cases.</p>`;
+    }
+  });
+  cy.fit(undefined, 20);
+}
+
+const pTitle = document.getElementById("p-title");
+const pBody = document.getElementById("p-body");
+
+function pathTo(page) {
+  const byId = Object.fromEntries(allPages().map(p => [p.id, p]));
+  const steps = [];
+  let cur = page;
+  while (cur && cur.via) { steps.unshift(cur.via); cur = byId[cur.parent]; }
+  steps.unshift("Open the app → Login page");
+  return steps;
+}
+
+function fmt(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+function renderTable(cases, filter, editable) {
+  const list = filter === "All" ? cases : cases.filter(c => c.suite === filter);
+  if (!list.length) return '<div class="empty">No ' + (filter === "All" ? "" : filter + " ") + 'test cases linked to this page.</div>';
+  return `<table class="tc"><tr><th>ID</th><th>Suite</th><th>Pri</th><th>Steps</th><th>Expected</th></tr>` +
+    list.map(c => `<tr data-key="${c.key}"><td class="id" title="${fmt(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${c.suite}">${c.suite}</span></td><td>${fmt(c.pri)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table>`;
+}
+
+let editMode = false;
+function showPage(page, keepFilter) {
+  cy.elements().removeClass("highlight hushed").addClass("hushed");
+  const node = cy.getElementById(page.id);
+  node.removeClass("hushed").addClass("highlight");
+  node.connectedEdges().removeClass("hushed").addClass("highlight");
+  node.neighborhood("node").removeClass("hushed");
+
+  const cases = tcFor(page);
+  const activeFilter = keepFilter || "All";
+  pTitle.textContent = page.label;
+  pBody.innerHTML = `
+    <div id="editbar">
+      <button class="btn" id="edit-toggle">${editMode ? "Done editing" : "Edit"}</button>
+      <button class="btn" id="add-draft">+ Draft test case</button>
+    </div>
+    <span class="badge" style="background:${GROUP_COLORS[page.group]}">${GROUP_NAMES[page.group]}</span>
+    <div class="route ed" data-pfield="route" ${editMode ? 'contenteditable="true"' : ""}>${fmt(page.route)}</div>
+    <p class="ed" data-pfield="desc" ${editMode ? 'contenteditable="true"' : ""}>${fmt(page.desc)}</p>
+    <h3>How to reach</h3>
+    <ol class="path">${pathTo(page).map(s => `<li>${fmt(s)}</li>`).join("")}</ol>
+    <h3>Test cases (${cases.length})</h3>
+    <div class="filters">${["All", "Sanity", "Regression"].map(t => `<button data-f="${t}" class="${t === activeFilter ? "active" : ""}">${t}</button>`).join("")}</div>
+    <div id="tc-table">${renderTable(cases, activeFilter, editMode)}</div>
+    ${editMode ? '<div class="note">Click any dashed field (route, description, Steps, Expected) to edit; changes save automatically to this browser.</div>' : ""}`;
+
+  pBody.querySelectorAll(".filters button").forEach(btn => btn.addEventListener("click", () => {
+    pBody.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tc-table").innerHTML = renderTable(cases, btn.dataset.f, editMode);
+    wireCellEdits(page);
+  }));
+  document.getElementById("edit-toggle").addEventListener("click", () => {
+    editMode = !editMode;
+    showPage(allPages().find(p => p.id === page.id), currentFilter());
+  });
+  document.getElementById("add-draft").addEventListener("click", () => {
+    const text = prompt("Draft test case (rough one-liner — an AI model can rewrite it properly later):");
+    if (!text) return;
+    (EDITS.addedCases[page.id] = EDITS.addedCases[page.id] || []).push(text);
+    saveEdits(); buildGraph();
+    showPage(allPages().find(p => p.id === page.id), currentFilter());
+  });
+  wireCellEdits(page);
+  wirePageFieldEdits(page);
+}
+function currentFilter() { const b = pBody.querySelector(".filters button.active"); return b ? b.dataset.f : "All"; }
+
+function wireCellEdits(page) {
+  pBody.querySelectorAll("td.ed[contenteditable]").forEach(td => td.addEventListener("blur", () => {
+    const key = td.closest("tr").dataset.key;
+    (EDITS.caseOverrides[key] = EDITS.caseOverrides[key] || {})[td.dataset.field] = td.innerText;
+    saveEdits();
+  }));
+}
+function wirePageFieldEdits(page) {
+  pBody.querySelectorAll(".ed[data-pfield][contenteditable]").forEach(el => el.addEventListener("blur", () => {
+    (EDITS.pageOverrides[page.id] = EDITS.pageOverrides[page.id] || {})[el.dataset.pfield] = el.innerText;
+    saveEdits();
+  }));
+}
+
+// ---- panel expand/collapse ----
+const main = document.getElementById("main");
+function setView(mode) {
+  main.classList.remove("panel-collapsed", "panel-full");
+  if (mode) main.classList.add(mode);
+  requestAnimationFrame(() => { if (cy) { cy.resize(); cy.fit(undefined, 20); } });
+}
+document.getElementById("pt-collapse").addEventListener("click", () => setView("panel-collapsed"));
+document.getElementById("pt-expand").addEventListener("click", () => setView("panel-full"));
+document.getElementById("pt-normal").addEventListener("click", () => setView(null));
+
+// ---- add node dialog ----
+const dlg = document.getElementById("node-dialog");
+document.getElementById("add-node").addEventListener("click", () => {
+  const sel = document.getElementById("nd-parent");
+  sel.innerHTML = allPages().map(p => `<option value="${p.id}">${p.label}</option>`).join("");
+  sel.value = "ent";
+  dlg.showModal();
+});
+document.getElementById("nd-cancel").addEventListener("click", () => dlg.close());
+document.getElementById("nd-save").addEventListener("click", () => {
+  const label = document.getElementById("nd-label").value.trim();
+  if (!label) { alert("Page name is required"); return; }
+  const id = "user-" + label.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString(36);
+  const page = {
+    id, label,
+    group: document.getElementById("nd-group").value,
+    route: document.getElementById("nd-route").value.trim() || "(route TBD)",
+    desc: document.getElementById("nd-desc").value.trim() || "User-added page.",
+    parent: document.getElementById("nd-parent").value,
+    via: document.getElementById("nd-via").value.trim() || "Navigate from parent",
+    prefixes: [],
+  };
+  EDITS.addedPages.push(page);
+  const drafts = document.getElementById("nd-drafts").value.split("\n").map(s => s.trim()).filter(Boolean);
+  if (drafts.length) EDITS.addedCases[id] = drafts;
+  saveEdits();
+  dlg.close();
+  ["nd-label", "nd-route", "nd-via", "nd-desc", "nd-drafts"].forEach(i => document.getElementById(i).value = "");
+  buildGraph();
+  showPage(allPages().find(p => p.id === id));
+});
+
+// ---- export / reset ----
+document.getElementById("export").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(EDITS, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "navmap-edits.json";
+  a.click();
+});
+document.getElementById("reset-edits").addEventListener("click", () => {
+  if (!confirm("Discard all local edits (added pages, drafts, text changes)?")) return;
+  EDITS = { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} };
+  saveEdits(); buildGraph();
+  pTitle.textContent = "Select a page";
+  pBody.innerHTML = `<p>Click any page node to see how to reach it and its linked test cases.</p>`;
+});
+
+// ---- search / fit ----
+document.getElementById("fit").addEventListener("click", () => cy.animate({ fit: { padding: 20 }, duration: 300 }));
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  cy.elements().removeClass("highlight hushed");
+  if (!q) return;
+  const matches = allPages().filter(p => p.label.toLowerCase().includes(q) || p.route.toLowerCase().includes(q));
+  if (matches.length) {
+    cy.elements().addClass("hushed");
+    matches.forEach(p => cy.getElementById(p.id).removeClass("hushed").addClass("highlight"));
+    if (matches.length === 1) showPage(matches[0]);
+  }
+});
+
+buildGraph();
+</script>
+</body>
+</html>
