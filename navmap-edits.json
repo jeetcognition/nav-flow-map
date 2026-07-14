@@ -28,7 +28,44 @@
       "label": "Settings"
     }
   },
-  "caseOverrides": {},
+  "caseOverrides": {
+    "user-support-page-mrkjukp2-draft-0": {
+      "suite": "Sanity",
+      "pri": "P2",
+      "steps": "1. From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner. 2. Click **Support** to open `/org/cog-enterprise-qa/settings/support`. 3. Click the support-chat launcher on the Support page.",
+      "expected": "Support chat widget opens and is ready to accept a message; no console errors."
+    },
+    "user-support-page-mrkjukp2-draft-1": {
+      "suite": "Sanity",
+      "pri": "P3",
+      "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the **Documentation** card/heading on the page.",
+      "expected": "The \"Documentation\" card heading is rendered and visible on the Support page."
+    },
+    "user-support-page-mrkjukp2-draft-2": {
+      "suite": "Sanity",
+      "pri": "P3",
+      "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Read the description text under the **Documentation** card.",
+      "expected": "The text \"Find answers to common questions and comprehensive guides\" is visible under the Documentation card."
+    },
+    "user-support-page-mrkjukp2-draft-3": {
+      "suite": "Regression",
+      "pri": "P2",
+      "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Confirm the **Documentation** button is visible and enabled. 3. Click the **Documentation** button.",
+      "expected": "The Documentation button is clickable and navigates to the Documentation page; the target route loads without error."
+    },
+    "user-support-page-mrkjukp2-draft-4": {
+      "suite": "Sanity",
+      "pri": "P3",
+      "steps": "1. Reload the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the **Documentation** section title after the page loads.",
+      "expected": "The \"Documentation\" title is present and visible on the Support page after load."
+    },
+    "user-support-page-mrkjukp2-draft-5": {
+      "suite": "Sanity",
+      "pri": "P3",
+      "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Verify the Documentation description text is presented to the user.",
+      "expected": "The user can see the text \"Find answers to common questions and comprehensive guides\" on the Support page."
+    }
+  },
   "addedCases": {
     "user-support-page-mrkjukp2": [
       "1. verify support chat is opening.",
