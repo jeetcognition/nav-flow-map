@@ -1,16 +1,5 @@
 {
-  "addedPages": [
-    {
-      "id": "user-my-analytics-mrl5ps0u",
-      "label": "My Analytics",
-      "group": "personal",
-      "route": "/settings/my-analytics",
-      "desc": "User-added page.",
-      "parent": "ent",
-      "via": "Click on My analytics (on sidebar)",
-      "prefixes": []
-    }
-  ],
+  "addedPages": [],
   "pageOverrides": {},
   "caseOverrides": {},
   "addedCases": {},
