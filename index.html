@@ -271,15 +271,17 @@ function buildGraph() {
           "target-arrow-color": "#3a4256",
           "width": 1.5,
       }},
-      { selector: "edge.extra", style: { "line-style": "dashed", "line-color": "#8a6bff", "target-arrow-color": "#8a6bff" } },
+      { selector: "edge.extra", style: { "line-style": "dashed", "line-color": "#8a6bff", "target-arrow-color": "#8a6bff", "opacity": 0.25 } },
       { selector: "edge.hushed", style: { "opacity": 0.1 } },
       { selector: "edge.highlight", style: { "line-color": "#9fd0ff", "target-arrow-color": "#9fd0ff", "width": 2.5 } },
+      { selector: "edge.extra.highlight", style: { "opacity": 1, "line-color": "#8a6bff", "target-arrow-color": "#8a6bff", "width": 2.5 } },
     ],
     layout: { name: "preset" },
     wheelSensitivity: 0.2,
     autoungrabify: true,
   });
   cy.elements().not(".extra").layout({ name: "breadthfirst", directed: true, roots: ["login"], spacingFactor: 1.1, padding: 20, avoidOverlap: true }).run();
+  routeExtraEdges();
   cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
   cy.on("tap", evt => {
     if (evt.target === cy) {
@@ -289,6 +291,38 @@ function buildGraph() {
     }
   });
   cy.fit(undefined, 20);
+}
+
+// Route extra links through a gutter beside the tree so they never cross nodes:
+// out of the source sideways, down the gutter, then into the target from the side.
+function routeExtraEdges() {
+  const treeNodes = cy.nodes();
+  if (!treeNodes.length) return;
+  const bb = treeNodes.boundingBox();
+  cy.edges(".extra").forEach(edge => {
+    const s = edge.source().position();
+    const t = edge.target().position();
+    const mid = (bb.x1 + bb.x2) / 2;
+    const side = ((s.x + t.x) / 2 <= mid) ? -1 : 1;
+    const gx = side < 0 ? bb.x1 - 70 : bb.x2 + 70;
+    const waypoints = [{ x: gx, y: s.y }, { x: gx, y: t.y }];
+    const dx = t.x - s.x, dy = t.y - s.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const weights = [], dists = [];
+    for (const p of waypoints) {
+      const px = p.x - s.x, py = p.y - s.y;
+      weights.push((px * dx + py * dy) / (len * len));
+      dists.push((py * dx - px * dy) / len);
+    }
+    edge.style({
+      "curve-style": "segments",
+      "segment-weights": weights,
+      "segment-distances": dists,
+      "edge-distances": "node-position",
+      "source-endpoint": (side < 0 ? "-50% 0" : "50% 0"),
+      "target-endpoint": (side < 0 ? "-50% 0" : "50% 0"),
+    });
+  });
 }
 
 const pTitle = document.getElementById("p-title");
