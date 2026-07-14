@@ -34,6 +34,42 @@
     }
   },
   "caseOverrides": {
+    "login-draft-0": {
+      "suite": "Sanity",
+      "pri": "P1",
+      "steps": "Open the tenant Login page.",
+      "expected": "The Devin logo, Welcome heading, tenant description, work email field, and Continue button are visible and readable."
+    },
+    "login-draft-1": {
+      "suite": "Sanity",
+      "pri": "P1",
+      "steps": "Inspect the available login methods on the Login page.",
+      "expected": "The work email field and at least the GitHub and Google login buttons are visible with the correct icons and labels."
+    },
+    "login-draft-2": {
+      "suite": "Sanity",
+      "pri": "P2",
+      "steps": "Inspect the account registration prompt on the Login page.",
+      "expected": "\"Don't have an account? Sign up\" is visible and readable."
+    },
+    "login-draft-3": {
+      "suite": "Regression",
+      "pri": "P1",
+      "steps": "Click the Sign up link on the Login page.",
+      "expected": "The URL contains /signup/, and \"Already have an account? Log in\" is visible and readable."
+    },
+    "login-draft-4": {
+      "suite": "Regression",
+      "pri": "P1",
+      "steps": "Submit each invalid email value separately: abc, a@, and spaces only.",
+      "expected": "Each invalid email is rejected with clear validation, and the user remains on the Login page."
+    },
+    "login-draft-5": {
+      "suite": "Regression",
+      "pri": "P0",
+      "steps": "Load the Login page and inspect the URL, visible UI, and browser console before and after submitting an invalid email.",
+      "expected": "No credentials, OTPs, sensitive tokens, or internal error details appear in the URL, UI, or browser console."
+    },
     "user-support-page-mrkjukp2-draft-0": {
       "suite": "Sanity",
       "pri": "P2",
@@ -72,6 +108,14 @@
     }
   },
   "addedCases": {
+    "login": [
+      "Verify the primary Login page content is visible.",
+      "Verify the email, GitHub, and Google login methods are visible.",
+      "Verify the Sign up prompt is visible.",
+      "Verify Sign up navigation and the Log in prompt.",
+      "Verify invalid email formats are rejected.",
+      "Verify sensitive authentication data and internal errors are not exposed."
+    ],
     "user-support-page-mrkjukp2": [
       "1. verify support chat is opening.",
       "2. Verify \"Documentation",
