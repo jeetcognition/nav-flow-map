@@ -12,12 +12,49 @@ function cors(origin) {
   };
 }
 
+const REWRITE_PROMPT = `You are rewriting draft QA test cases for the nav-flow-map site.
+In the repo jeetcognition/nav-flow-map, the file navmap-edits.json contains user-added draft test cases under "addedCases" (a map of pageId -> array of rough one-liner drafts). The site renders the draft at index i of page P with the key "P-draft-i", and "caseOverrides" entries keyed by that string override its displayed fields.
+
+For EVERY draft that does not already have a rewritten override, add an entry to "caseOverrides" under the key "<pageId>-draft-<index>" with exactly these fields:
+- "suite": "Sanity" or "Regression" (pick whichever fits the draft),
+- "pri": "P1", "P2" or "P3",
+- "steps": concrete numbered steps written in the same style as the existing cases in testcases.js and qa-testing/testcases/*.md (study a few for tone and navigation paths; page metadata is in index.html BASE_PAGES),
+- "expected": a clear, specific expected result.
+
+Keep the original draft text in "addedCases" unchanged, and do not modify any other file or any other key in navmap-edits.json. Commit the updated navmap-edits.json directly to the main branch (do NOT open a PR). Keep the JSON pretty-printed with 2-space indentation.`;
+
+async function handleRewrite(env, headers) {
+  const cur = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${FILE}`, {
+    headers: { "User-Agent": "navmap-save-worker" },
+  });
+  if (cur.ok) {
+    const edits = await cur.json().catch(() => null);
+    const hasDrafts = edits && edits.addedCases && Object.values(edits.addedCases).some((a) => a && a.length);
+    if (!hasDrafts)
+      return new Response(JSON.stringify({ error: "no drafts found — add draft test cases and Save to repo first" }), { status: 400, headers });
+  }
+  const res = await fetch("https://api.devin.ai/v1/sessions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.DEVIN_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ prompt: REWRITE_PROMPT, title: "Rewrite navmap draft test cases" }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok)
+    return new Response(JSON.stringify({ error: "Devin API " + res.status, detail: JSON.stringify(data).slice(0, 300) }), { status: 502, headers });
+  return new Response(JSON.stringify({ ok: true, session_id: data.session_id, url: data.url }), { headers });
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     const headers = { ...cors(origin), "Content-Type": "application/json" };
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
     if (request.method !== "POST") return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
+
+    if (new URL(request.url).pathname === "/rewrite") return handleRewrite(env, headers);
 
     let edits;
     try {

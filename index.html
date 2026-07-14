@@ -67,6 +67,7 @@
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
   <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
+  <button id="rewrite-ai" class="btn" title="Save drafts to the repo, then start a Devin session that rewrites them into structured test cases">Rewrite drafts with AI</button>
   <button id="reset-edits" class="btn">Reset edits</button>
   <button id="save-repo" class="btn save-repo" title="Commit navmap-edits.json to the GitHub repo so edits are permanent for everyone">Save to repo</button>
 </header>
@@ -87,7 +88,7 @@
         2. Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b><br/>
         3. Top-left corner → click the logo / <b>jeet-test-org ▾</b><br/>
         4. <b>Enterprise settings</b> → pick a tab<br/><br/>
-        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage); <b>Save to repo</b> commits them to GitHub so they're permanent for everyone.
+        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage); <b>Save to repo</b> commits them to GitHub so they're permanent for everyone; <b>Rewrite drafts with AI</b> starts a Devin session that turns saved drafts into structured test cases.
       </div>
     </div>
   </aside>
@@ -534,6 +535,35 @@ document.getElementById("save-repo").addEventListener("click", async () => {
     alert("Save failed: " + err.message);
   } finally {
     btn.disabled = false; btn.textContent = "Save to repo";
+  }
+});
+
+// ---- rewrite drafts with AI (saves first, then triggers a Devin session via the Worker) ----
+document.getElementById("rewrite-ai").addEventListener("click", async () => {
+  const M = mergedEdits();
+  if (!Object.values(M.addedCases).some(a => a && a.length)) {
+    alert("No draft test cases yet — add drafts via '+ Add page' or '+ Draft test case' first.");
+    return;
+  }
+  const btn = document.getElementById("rewrite-ai");
+  btn.disabled = true; btn.textContent = "Starting…";
+  try {
+    const save = await fetch(SAVE_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(M),
+    });
+    if (!save.ok) throw new Error("save failed: " + (await save.text()).slice(0, 200));
+    BASELINE = M; EDITS = emptyEdits(); saveEdits();
+    const res = await fetch(SAVE_ENDPOINT + "/rewrite", { method: "POST" });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
+    alert("AI rewrite started — a Devin session is rewriting the drafts and will commit the results to the repo (usually a few minutes; reload the site afterwards)." + (data.url ? "\n\nSession: " + data.url : ""));
+    if (data.url) window.open(data.url, "_blank");
+  } catch (err) {
+    alert("Rewrite failed: " + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Rewrite drafts with AI";
   }
 });
 

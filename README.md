@@ -18,6 +18,7 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
   - Extra links persist like other edits: browser localStorage immediately, and permanently for everyone via `Save to repo` (`addedLinks` / `removedLinks` in `navmap-edits.json`).
 - Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Reset edits` clears unsaved local edits.
 - **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` posts your current edits to a Cloudflare Worker (`worker/`, deployed at `navmap-save.jeet-navmap.workers.dev`) which commits the file using a server-side GitHub token — no token needed in the browser. The Worker only accepts requests from the Pages origin and validates the JSON shape.
+- **Rewrite drafts with AI**: the `Rewrite drafts with AI` button saves your edits, then calls the Worker's `/rewrite` endpoint, which uses a server-side Devin API key to start a Devin session. That session rewrites each draft in `navmap-edits.json` into a structured test case (suite, priority, steps, expected — stored as `caseOverrides` keyed `<pageId>-draft-<index>`) and commits the result to `main`; reload the site once it finishes.
 
 ## Run locally
 ```bash
