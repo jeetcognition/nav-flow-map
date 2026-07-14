@@ -166,9 +166,10 @@ const BASE_PAGES = [
   { id: "e-analytics", label: "Analytics", group: "enterprise", route: "…/settings (Analytics tab)", desc: "Usage analytics.", parent: "ent", via: "Left nav → Analytics", prefixes: ["ANAL"] },
   { id: "e-infra", label: "Infra & Misc", group: "enterprise", route: "…/settings (API, VPC, Outposts…)", desc: "Devin API, VPC, outpost pools, rollouts, skills, tags.", parent: "ent", via: "Left nav → misc admin tabs", prefixes: ["API", "INFRA", "OUT", "ROLL", "SKILL", "TAG", "VPC"] },
 
-  { id: "s-settings", label: "Sub-org Settings", group: "suborg", route: "/org/jeet-devin-qa/settings", desc: "Per-sub-org settings: General, Connections, Products, Resources, Administration.", parent: "e-orgs", via: "Organizations → click jeet-test-org", prefixes: ["SUB-OS"] },
+  { id: "s-settings", label: "Sub-orgs and Settings", group: "suborg", route: "/org/jeet-devin-qa/settings", desc: "Per-sub-org settings: General, Connections, Products, Resources, Administration.", parent: "e-orgs", via: "Organizations → click jeet-test-org", prefixes: ["SUB-OS"] },
 
   { id: "user-support-page-mrkjukp2", label: "Support Page", group: "personal", route: "/org/cog-enterprise-qa/settings/support", desc: "\n", parent: "landing", via: "Left Side bar: Bottom Right corner (?) > Click on Support", prefixes: ["SUP"] },
+  { id: "user-create-organisation-mrl0fx5d", label: "Create Organisation", group: "enterprise", route: "/org/cog-enterprise-qa/settings/organizations/create", desc: "User-added page.", parent: "e-orgs", via: "Click on \"Create Organisation\"", prefixes: [] },
 ];
 
 // ---- persistence of user edits ----

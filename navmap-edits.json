@@ -1,21 +1,6 @@
 {
-  "addedPages": [
-    {
-      "id": "user-create-organisation-mrl0fx5d",
-      "label": "Create Organisation",
-      "group": "enterprise",
-      "route": "/org/cog-enterprise-qa/settings/organizations/create",
-      "desc": "User-added page.",
-      "parent": "e-orgs",
-      "via": "Click on \"Create Organisation\"",
-      "prefixes": []
-    }
-  ],
-  "pageOverrides": {
-    "s-settings": {
-      "label": "Sub-orgs and Settings"
-    }
-  },
+  "addedPages": [],
+  "pageOverrides": {},
   "caseOverrides": {},
   "addedCases": {},
   "addedLinks": [
