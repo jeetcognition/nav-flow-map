@@ -1,5 +1,16 @@
 {
-  "addedPages": [],
+  "addedPages": [
+    {
+      "id": "user-support-page-mrkjukp2",
+      "label": "Support Page",
+      "group": "enterprise",
+      "route": "/org/cog-enterprise-qa/settings/support",
+      "desc": "User-added page.",
+      "parent": "landing",
+      "via": "Left Side bar: Bottom Right corner (?) > Click on Support",
+      "prefixes": []
+    }
+  ],
   "pageOverrides": {
     "login": {
       "label": "Login Page"
@@ -18,7 +29,16 @@
     }
   },
   "caseOverrides": {},
-  "addedCases": {},
+  "addedCases": {
+    "user-support-page-mrkjukp2": [
+      "1. verify support chat is opening.",
+      "2. Verify \"Documentation",
+      "Find answers to common questions and comprehensive guides\" text is visible.",
+      "3. Documentation button which will navigate to Documentation page is visible and clickable and navigates to that page on clicking.",
+      "4. Verify \"Documentation",
+      "Find answers to common questions and comprehensive guides\" is visible to user"
+    ]
+  },
   "addedLinks": [
     {
       "source": "landing",
