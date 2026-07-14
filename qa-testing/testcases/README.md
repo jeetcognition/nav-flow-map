@@ -54,6 +54,7 @@ Do NOT, without explicit approval + immediate revert: delete/modify real session
 | `15_enterprise_infra_misc.md` | Enterprise Sessions, Rollout, Outpost Pools, VPC, Infrastructure, Devin API/Service users |
 | `16_suborg.md` | Sub-org: New session, Automations, Security, Review, Wiki, Invite, org panel |
 | `17_automations_schedules.md` | Automations (triggers), Scheduled sessions |
+| `18_login.md` | Tenant login and hosted authentication page |
 
 ## Known bugs folded in as regression checks
 BUG-001 (dup org "kush-5"), BUG-002 (dup service-user name), BUG-003 (apk_+org-id exposed in Guardrails logs — P0 security), BUG-004 ("1 members" grammar), BUG-005 (idp "provider." text), BUG-006 (automation network-policy accepts javascript:/`<script>`/http:// unvalidated), BUG-011 (no Sessions list in sub-org sidebar), BUG-013 (Env Upkeep 404), BUG-014 (Devin Ultra/Fast toggle 400, no persist), BUG-015 (Review "Go to pull request" button never enables).

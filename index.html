@@ -130,7 +130,7 @@ const GROUP_NAMES = { entry: "Entry", suborg: "Sub-org (jeet-test-org)", persona
 
 // tree: id, label, group, route, desc, parent, via (how to navigate from parent), prefixes (testcase ID prefixes)
 const BASE_PAGES = [
-  { id: "login", label: "Login (OTP)", group: "entry", route: "/login", desc: "Email one-time-password auth; code arrives by email.", parent: null, via: null, prefixes: [] },
+  { id: "login", label: "Login (OTP)", group: "entry", route: "/login", desc: "Email one-time-password auth; code arrives by email.", parent: null, via: null, prefixes: ["LOGIN"] },
   { id: "landing", label: "Landing / Org search", group: "entry", route: "/org/cog-enterprise-qa/org-selector", desc: "\"Choose an organization to continue\". Type jeet-test-org in the search bar.", parent: "login", via: "Enter email → submit OTP code", prefixes: [] },
   { id: "suborg", label: "jeet-test-org home", group: "suborg", route: "/org/jeet-devin-qa/", desc: "Sub-org workspace home with the new-session composer. Display-name routes 404 — the slug is jeet-devin-qa.", parent: "landing", via: "Type jeet-test-org in the search bar → click jeet-test-org", prefixes: ["SUB", "SUB-NS"] },
 
