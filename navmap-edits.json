@@ -6,6 +6,9 @@
     },
     "suborg": {
       "label": "Langing Page (w/h repo)"
+    },
+    "logomenu": {
+      "label": "Top Left Menu (Under logo)"
     }
   },
   "caseOverrides": {},
