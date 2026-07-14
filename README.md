@@ -29,4 +29,4 @@ No build step. Cytoscape.js loads from the unpkg CDN (internet required on first
 
 ## Data sources
 - `qa-testing/nav_graph.md` — route topology.
-- `qa-testing/testcases/*.md` — 232 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; file 18 is imported from its Docs: Enterprise Getting Started sub-page.
+- `qa-testing/testcases/*.md` — 220 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages.

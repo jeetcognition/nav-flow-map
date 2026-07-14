@@ -125,8 +125,8 @@
 </dialog>
 
 <script>
-const GROUP_COLORS = { entry: "#f2c744", suborg: "#c98bff", personal: "#5dd3a0", enterprise: "#4c7dff", docs: "#ff8b5d" };
-const GROUP_NAMES = { entry: "Entry", suborg: "Sub-org (jeet-test-org)", personal: "Personal", enterprise: "Enterprise settings", docs: "Docs" };
+const GROUP_COLORS = { entry: "#f2c744", suborg: "#c98bff", personal: "#5dd3a0", enterprise: "#4c7dff" };
+const GROUP_NAMES = { entry: "Entry", suborg: "Sub-org (jeet-test-org)", personal: "Personal", enterprise: "Enterprise settings" };
 
 // tree: id, label, group, route, desc, parent, via (how to navigate from parent), prefixes (testcase ID prefixes)
 const BASE_PAGES = [
@@ -162,8 +162,6 @@ const BASE_PAGES = [
   { id: "e-infra", label: "Infra & Misc", group: "enterprise", route: "…/settings (API, VPC, Outposts…)", desc: "Devin API, VPC, outpost pools, rollouts, skills, tags.", parent: "ent", via: "Left nav → misc admin tabs", prefixes: ["API", "INFRA", "OUT", "ROLL", "SKILL", "TAG", "VPC"] },
 
   { id: "s-settings", label: "Sub-org Settings", group: "suborg", route: "/org/jeet-devin-qa/settings", desc: "Per-sub-org settings: General, Connections, Products, Resources, Administration.", parent: "e-orgs", via: "Organizations → click jeet-test-org", prefixes: ["SUB-OS"] },
-
-  { id: "d-getstarted", label: "Docs: Enterprise Getting Started", group: "docs", route: "docs.devin.ai/enterprise/getting-started/get-started", desc: "Public docs — enterprise onboarding guide.", parent: null, via: null, prefixes: ["DGS"] },
 ];
 
 // ---- persistence of user edits ----
@@ -273,7 +271,7 @@ function buildGraph() {
     wheelSensitivity: 0.2,
     autoungrabify: true,
   });
-  cy.elements().not(".extra").layout({ name: "breadthfirst", directed: true, roots: ["login", "d-getstarted"], spacingFactor: 1.1, padding: 20, avoidOverlap: true }).run();
+  cy.elements().not(".extra").layout({ name: "breadthfirst", directed: true, roots: ["login"], spacingFactor: 1.1, padding: 20, avoidOverlap: true }).run();
   routeExtraEdges();
   cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
   cy.on("tap", evt => {
