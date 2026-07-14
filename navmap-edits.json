@@ -44,6 +44,11 @@
       "source": "landing",
       "target": "ent",
       "via": "Navigate directly to Settings from the landing search page"
+    },
+    {
+      "source": "suborg",
+      "target": "user-support-page-mrkjukp2",
+      "via": "Navigate directly"
     }
   ],
   "removedLinks": []
