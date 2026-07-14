@@ -105,8 +105,8 @@
   <div class="row">
     <div><label>Group</label><select id="nd-group">
       <option value="enterprise">Enterprise settings (Green)</option>
-      <option value="suborg">Workspace (Pink)</option>
-      <option value="personal">User settings (Blue)</option>
+      <option value="suborg">Workspace (Blue)</option>
+      <option value="personal">User settings (Pink)</option>
       <option value="entry">Auth & Entry (Yellow)</option>
     </select></div>
     <div><label>Route</label><input id="nd-route" placeholder="/org/.../billing" /></div>
@@ -128,8 +128,8 @@
 </dialog>
 
 <script>
-const GROUP_COLORS = { entry: "#f2c744", suborg: "#ff7eb6", personal: "#4c7dff", enterprise: "#5dd3a0" };
-const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Pink)", personal: "User settings (Blue)", enterprise: "Enterprise settings (Green)" };
+const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
+const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
 
 // tree: id, label, group, route, desc, parent, via (how to navigate from parent), prefixes (testcase ID prefixes)
 const BASE_PAGES = [
