@@ -26,6 +26,8 @@
   #panel-toggle { position: absolute; top: 8px; right: 8px; z-index: 5; display: flex; gap: 4px; }
   #panel-toggle button, .btn { background: #1e2433; border: 1px solid #2c3446; color: #e6e8ee; padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; }
   #panel-toggle button:hover, .btn:hover { border-color: #4c7dff; }
+  .btn.save-repo { background: #d93025; border-color: #d93025; color: #fff; font-weight: 700; padding: 7px 14px; box-shadow: 0 0 8px rgba(217, 48, 37, 0.55); }
+  .btn.save-repo:hover { background: #f04438; border-color: #f04438; }
   #panel h2 { font-size: 15px; margin-bottom: 6px; padding-right: 90px; }
   #panel .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; color: #0f1117; font-weight: 600; }
   #panel .route { font-family: ui-monospace, monospace; font-size: 12px; background: #0f1117; border: 1px solid #2c3446; padding: 6px 8px; border-radius: 6px; word-break: break-all; margin-bottom: 10px; color: #9fd0ff; }
@@ -70,7 +72,6 @@
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
   <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
-  <button id="save-repo" class="btn" title="Commit navmap-edits.json to the GitHub repo so edits are permanent for everyone">Save to repo</button>
   <button id="export" class="btn">Export edits</button>
   <button id="reset-edits" class="btn">Reset edits</button>
   <div class="legend">
@@ -79,6 +80,7 @@
     <span><i class="dot" style="background:#5dd3a0"></i>Personal</span>
     <span><i class="dot" style="background:#4c7dff"></i>Enterprise settings</span>
   </div>
+  <button id="save-repo" class="btn save-repo" title="Commit navmap-edits.json to the GitHub repo so edits are permanent for everyone">Save to repo</button>
 </header>
 <div id="main">
   <div id="cy"></div>
