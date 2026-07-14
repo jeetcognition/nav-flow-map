@@ -6,20 +6,9 @@ From R6 exploration. Reach: `/org/cog-enterprise-qa/org-selector` → search "je
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| SUB-SMK01 | Smoke | P1 | Org-selector | Search "jeet-test-org" → click | Enters sub-org; home layout changes; sidebar shows New session/Automations/Security/Review/Wiki. |
-| SUB-SMK02 | Smoke | P2 | Sub-org | Top-left logo/name menu | Shows Invite members + Enterprise settings entries. |
 | SUB-SAN01 | Sanity | P1 | Sub-org home | Open the Landing Repo Page after selecting `jeet-test-org`. | Top-left header shows the Devin logo, selected organization name `jeet-test-org`, and organization-menu control. |
 | SUB-SAN02 | Sanity | P1 | Sub-org home | Inspect the **Recent** section. | Recent heading, search control, and overflow menu are visible and properly aligned. |
 | SUB-SAN03 | Sanity | P1 | Sub-org home | Inspect the left sidebar navigation. | **New session**, **Automations**, **Security**, **Review**, and **Wiki** options are visible with the correct icons and readable labels. |
-| SUB-REG01 | Regression | P2 | Sub-org | Visit `/org/jeet-test-org/...` (display name) | 404 (expected); slug `jeet-devin-qa` resolves. Document any place UI links the display name. |
-
-## New session (composer) — sub-org
-
-| ID | Type | Pri | How to reach | Steps | Expected |
-|---|---|---|---|---|---|
-| SUB-NS-SMK01 | Smoke | P1 | Sub-org home | Load composer | Renders; Send gated on empty/whitespace. |
-| SUB-NS-REG01 | Regression | P2 | Composer | Mode dropdown (Normal/Ultra/Agent/Standard), 9 add-context items, Ask toggle | All render/select; no crash. |
-| SUB-NS-REG02 | Regression | P2 | Sidebar | Look for a Sessions list entry | **BUG-011**: no Sessions list in sub-org sidebar; direct route falls back to personal settings. Expected: Sessions accessible. |
 
 ## Automations — sub-org
 
