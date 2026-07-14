@@ -145,7 +145,7 @@ const BASE_PAGES = [
   { id: "wiki", label: "Wiki", group: "suborg", route: "/org/jeet-devin-qa/wiki", desc: "Repo wiki at /wiki/<owner>/<repo>?branch=<b>.", parent: "suborg", via: "Left nav → Wiki", prefixes: ["SUB-WK", "DWIKI"] },
   { id: "review", label: "Review", group: "suborg", route: "/review", desc: "Devin Review; NOT org-scoped. PR view /review/<owner>/<repo>/pull/N.", parent: "suborg", via: "Left nav → Review", prefixes: ["SUB-RV"] },
 
-  { id: "logomenu", label: "Top Left Menu", group: "suborg", route: "(dropdown)", desc: "Top-left corner: click the logo image / jeet-test-org. Dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.", parent: "landing", via: "Top-left corner → click logo image / jeet-test-org", prefixes: ["SUB-IM"] },
+  { id: "logomenu", label: "Top Left Menu", group: "suborg", route: "(dropdown)", desc: "Top-left corner: click the logo image / jeet-test-org. Dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.", parent: "landing", via: "Top-left corner → click dropdown arrow", prefixes: ["SUB-IM"] },
 
   { id: "prefs", label: "Preferences (personal)", group: "personal", route: "/settings/preferences", desc: "Profile picture, name, theme, language, notifications, git author/email.", parent: "ent", via: "Settings → Preferences", prefixes: ["PREF"] },
   { id: "pconn", label: "Connections (personal)", group: "personal", route: "/settings/connections", desc: "Personal integrations: GitHub / GitLab / Slack / Linear; MCPs tab.", parent: "ent", via: "Settings → Connections", prefixes: ["PCON"] },
