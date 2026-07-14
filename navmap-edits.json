@@ -1,6 +1,21 @@
 {
-  "addedPages": [],
-  "pageOverrides": {},
+  "addedPages": [
+    {
+      "id": "user-create-organisation-mrl0fx5d",
+      "label": "Create Organisation",
+      "group": "enterprise",
+      "route": "/org/cog-enterprise-qa/settings/organizations/create",
+      "desc": "User-added page.",
+      "parent": "e-orgs",
+      "via": "Click on \"Create Organisation\"",
+      "prefixes": []
+    }
+  ],
+  "pageOverrides": {
+    "s-settings": {
+      "label": "Sub-orgs and Settings"
+    }
+  },
   "caseOverrides": {},
   "addedCases": {},
   "addedLinks": [
@@ -13,6 +28,11 @@
       "source": "suborg",
       "target": "user-support-page-mrkjukp2",
       "via": "Navigate directly"
+    },
+    {
+      "source": "logomenu",
+      "target": "e-membership",
+      "via": "Under top left side bar drop down > click on Invite members"
     }
   ],
   "removedLinks": []
