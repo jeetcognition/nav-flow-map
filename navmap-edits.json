@@ -1,6 +1,10 @@
 {
   "addedPages": [],
-  "pageOverrides": {},
+  "pageOverrides": {
+    "login": {
+      "label": "Login Page"
+    }
+  },
   "caseOverrides": {},
   "addedCases": {}
 }
