@@ -2,9 +2,5 @@
   "addedPages": [],
   "pageOverrides": {},
   "caseOverrides": {},
-  "addedCases": {
-    "e-general": [
-      "worker e2e test draft"
-    ]
-  }
+  "addedCases": {}
 }
