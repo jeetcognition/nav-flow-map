@@ -42,11 +42,9 @@ See `14_...` SCAN-*. Sub-org: Start-scan gating + Auto-Scan schedules + Profiles
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| SUB-IM-SMK01 | Smoke | P2 | Logo menu → Invite members | Open dialog | Renders email input (placeholder "Ex."). |
-| SUB-IM-REG01 | Regression | P2 | Invite dialog | Empty email (Add disabled), invalid email (rejected on Add), valid | Gated/validated; no invite on invalid. (Don't send real invite → N/E.) |
 | SUB-IM-SAN01 | Sanity | P1 | Top-left organization menu | Open the organization dropdown. | Enterprise name/member count, **Enterprise settings**, **Invite members**, organization list, **Switch account**, and **Log out** are visible and readable. |
 | SUB-IM-SAN02 | Sanity | P1 | Top-left organization menu | Inspect the organization list and current selection. | **All organizations** is clearly selected with a checkmark; organization names and add/search controls are visible without overlap or truncation. |
-| SUB-IM-REG02 | Regression | P1 | Top-left organization menu | Select another organization from the list. | The selected organization opens and its name/context replaces the previous organization throughout the page. |
+| SUB-IM-REG01 | Regression | P1 | Top-left organization menu | Select another organization from the list. | The selected organization opens and its name/context replaces the previous organization throughout the page. |
 | SUB-IM-REG03 | Regression | P1 | Top-left organization menu | Click the `+` control beside **Organizations**. | User is navigated to the **Create organization** page. |
 | SUB-IM-REG04 | Regression | P1 | Top-left organization menu | Click **Enterprise settings** and **Invite members**. | Each action opens the correct enterprise page or dialog without losing the current organization context. |
 | SUB-IM-REG05 | Regression | P1 | Top-left organization menu | Click **Switch account**. | Account-selection flow opens safely and protected organization data is not exposed. |
