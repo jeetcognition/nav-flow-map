@@ -38,11 +38,18 @@ See `14_...` SCAN-*. Sub-org: Start-scan gating + Auto-Scan schedules + Profiles
 | SUB-WK-SMK01 | Smoke | P2 | Sidebar → Wiki | Load | Wiki renders; search present. |
 | SUB-WK-REG01 | Regression | P2 | Wiki | Search XSS/emoji; open repo wiki | XSS-safe; repo wiki TOC renders. |
 
-## Invite members & Org panel — sub-org
+## Top Left Menu & Org panel — sub-org
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| SUB-IM-SMK01 | Smoke | P2 | Logo menu → Invite members | Open dialog | Renders email input (placeholder "Ex."). |
-| SUB-IM-REG01 | Regression | P2 | Invite dialog | Empty email (Add disabled), invalid email (rejected on Add), valid | Gated/validated; no invite on invalid. (Don't send real invite → N/E.) |
+| SUB-IM-SAN01 | Sanity | P1 | Top-left organization menu | Open the organization dropdown. | Enterprise name/member count, **Enterprise settings**, **Invite members**, organization list, **Switch account**, and **Log out** are visible and readable. |
+| SUB-IM-SAN02 | Sanity | P1 | Top-left organization menu | Inspect the organization list and current selection. | **All organizations** is clearly selected with a checkmark; organization names and add/search controls are visible without overlap or truncation. |
+| SUB-IM-REG01 | Regression | P1 | Top-left organization menu | Select another organization from the list. | The selected organization opens and its name/context replaces the previous organization throughout the page. |
+| SUB-IM-REG03 | Regression | P1 | Top-left organization menu | Click the `+` control beside **Organizations**. | User is navigated to the **Create organization** page. |
+| SUB-IM-REG04 | Regression | P1 | Top-left organization menu | Click **Enterprise settings** and **Invite members**. | Each action opens the correct enterprise page or dialog without losing the current organization context. |
+| SUB-IM-REG05 | Regression | P1 | Top-left organization menu | Click **Switch account**. | Account-selection flow opens safely and protected organization data is not exposed. |
+| SUB-IM-REG06 | Regression | P0 | Top-left organization menu | Click **Log out**, then use browser Back. | The user is signed out and protected organization content cannot be reopened from browser history. |
+| SUB-IM-REG07 | Regression | P1 | Top-left organization menu | Open and close the dropdown using its trigger, outside click, and Escape. | The menu opens/closes reliably, remains inside the viewport, and restores focus to its trigger. |
+| SUB-IM-REG08 | Regression | P0 | Top-left organization menu | Inspect the dropdown UI, URL, and console while switching organizations/accounts. | No credentials, tokens, private organization data, or internal errors are exposed. |
 | SUB-OS-SMK01 | Smoke | P2 | Logo → Enterprise settings → Organizations → jeet-test-org | Open right panel | Org panel + all 15 org-settings sub-pages render error-free. |
 | SUB-OS-REG01 | Regression | P3 | Org panel | Membership link | **BL-041**: silently redirects to Enterprise Membership. Analytics heading says "Usage" (BL-042). |
