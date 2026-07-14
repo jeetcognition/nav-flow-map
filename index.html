@@ -136,8 +136,8 @@ const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)"
 const BASE_PAGES = [
   { id: "login", label: "Login Page", group: "entry", route: "open https://cog-enterprise-qa.beta.devinenterprise.com/login", desc: "\n", parent: null, via: null, prefixes: ["LOGIN"] },
   { id: "auth", label: "Auth (Email + OTP)", group: "entry", route: "hosted auth page → OTP verify", desc: "Authentication between the Login page and the Landing search page: enter work email, receive a one-time code, verify it.", parent: "login", via: "Enter work email → Continue", prefixes: ["AUTH"] },
-  { id: "landing", label: "Landing Search Page", group: "entry", route: "/org/cog-enterprise-qa/org-selector", desc: "\"Choose an organization to continue\". Type jeet-test-org in the search bar.", parent: "auth", via: "Submit the valid OTP code", prefixes: ["ORGSEL"] },
-  { id: "suborg", label: "Langing Repo Page", group: "suborg", route: "/org/jeet-devin-qa/", desc: "Sub-org workspace home with the new-session composer. Display-name routes 404 — the slug is jeet-devin-qa.", parent: "landing", via: "Type jeet-test-org in the search bar → click jeet-test-org", prefixes: ["SUB", "SUB-NS"] },
+  { id: "landing", label: "Landing Search Page", group: "entry", route: "/org/cog-enterprise-qa/org-selector", desc: "The page we land after submitting correct OTP.", parent: "auth", via: "Submit the valid OTP code", prefixes: ["ORGSEL"] },
+  { id: "suborg", label: "Langing Repo Page", group: "suborg", route: "/org/jeet-devin-qa/", desc: "Sub-org workspace home.", parent: "landing", via: "Type jeet-test-org in the search bar → click jeet-test-org", prefixes: ["SUB", "SUB-NS"] },
 
   { id: "composer", label: "New session (Composer)", group: "suborg", route: "/org/jeet-devin-qa/ (composer)", desc: "Prompt box, Agent/Ask mode, repo & context selectors; sessions list and session tools.", parent: "suborg", via: "Use the composer on the home page", prefixes: ["COMP", "SESS", "STOOL"] },
   { id: "automations", label: "Automations", group: "suborg", route: "/org/jeet-devin-qa/automations", desc: "Automations list; create at /automations/create. Includes legacy Schedules.", parent: "suborg", via: "Left nav → Automations", prefixes: ["AUTO", "SCHED", "SUB-AU"] },
@@ -145,7 +145,7 @@ const BASE_PAGES = [
   { id: "wiki", label: "Wiki", group: "suborg", route: "/org/jeet-devin-qa/wiki", desc: "Repo wiki at /wiki/<owner>/<repo>?branch=<b>.", parent: "suborg", via: "Left nav → Wiki", prefixes: ["SUB-WK", "DWIKI"] },
   { id: "review", label: "Review", group: "suborg", route: "/review", desc: "Devin Review; NOT org-scoped. PR view /review/<owner>/<repo>/pull/N.", parent: "suborg", via: "Left nav → Review", prefixes: ["SUB-RV"] },
 
-  { id: "logomenu", label: "Top Left Menu (Under logo)", group: "suborg", route: "(dropdown)", desc: "Top-left corner: click the logo image / jeet-test-org. Dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.", parent: "landing", via: "Top-left corner → click logo image / jeet-test-org", prefixes: ["SUB-IM"] },
+  { id: "logomenu", label: "Top Left Menu", group: "suborg", route: "(dropdown)", desc: "Top-left corner: click the logo image / jeet-test-org. Dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.", parent: "landing", via: "Top-left corner → click logo image / jeet-test-org", prefixes: ["SUB-IM"] },
 
   { id: "prefs", label: "Preferences (personal)", group: "personal", route: "/settings/preferences", desc: "Profile picture, name, theme, language, notifications, git author/email.", parent: "ent", via: "Settings → Preferences", prefixes: ["PREF"] },
   { id: "pconn", label: "Connections (personal)", group: "personal", route: "/settings/connections", desc: "Personal integrations: GitHub / GitLab / Slack / Linear; MCPs tab.", parent: "ent", via: "Settings → Connections", prefixes: ["PCON"] },

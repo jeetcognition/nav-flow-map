@@ -1,16 +1,6 @@
 {
   "addedPages": [],
-  "pageOverrides": {
-    "landing": {
-      "desc": "The page we land after submitting correct OTP."
-    },
-    "suborg": {
-      "desc": "Sub-org workspace home."
-    },
-    "logomenu": {
-      "label": "Top Left Menu"
-    }
-  },
+  "pageOverrides": {},
   "caseOverrides": {},
   "addedCases": {},
   "addedLinks": [
