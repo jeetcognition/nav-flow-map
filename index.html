@@ -409,36 +409,22 @@ document.getElementById("nd-save").addEventListener("click", () => {
   showPage(allPages().find(p => p.id === id));
 });
 
-// ---- save to repo (permanent) ----
-const REPO = "jeetcognition/nav-flow-map";
-const TOKEN_KEY = "navmap-gh-token";
+// ---- save to repo (permanent, via Cloudflare Worker proxy — no token needed) ----
+const SAVE_ENDPOINT = "https://navmap-save.jeet-navmap.workers.dev";
 document.getElementById("save-repo").addEventListener("click", async () => {
-  let token = localStorage.getItem(TOKEN_KEY);
-  if (!token) {
-    token = prompt("Paste a GitHub token with write access to " + REPO + " (a fine-grained PAT with Contents: Read & write). It is stored only in this browser's localStorage.");
-    if (!token) return;
-    token = token.trim();
-    localStorage.setItem(TOKEN_KEY, token);
-  }
   const btn = document.getElementById("save-repo");
   btn.disabled = true; btn.textContent = "Saving…";
   try {
-    const url = "https://api.github.com/repos/" + REPO + "/contents/navmap-edits.json";
-    const headers = { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" };
-    let sha;
-    const cur = await fetch(url, { headers });
-    if (cur.ok) sha = (await cur.json()).sha;
-    const body = { message: "Update navmap edits from the website", content: btoa(unescape(encodeURIComponent(JSON.stringify(mergedEdits(), null, 2)))) };
-    if (sha) body.sha = sha;
-    const res = await fetch(url, { method: "PUT", headers, body: JSON.stringify(body) });
-    if (!res.ok) {
-      if (res.status === 401 || res.status === 403) localStorage.removeItem(TOKEN_KEY);
-      throw new Error("GitHub API error " + res.status + ": " + (await res.text()).slice(0, 200));
-    }
+    const res = await fetch(SAVE_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(mergedEdits()),
+    });
+    if (!res.ok) throw new Error((await res.text()).slice(0, 200));
     BASELINE = mergedEdits();
     EDITS = emptyEdits();
     saveEdits();
-    alert("Saved — edits are committed to " + REPO + " and will load for everyone (GitHub Pages may take a minute to update).");
+    alert("Saved — edits are committed to the repo and will load for everyone (GitHub Pages may take a minute to update).");
   } catch (err) {
     alert("Save failed: " + err.message);
   } finally {

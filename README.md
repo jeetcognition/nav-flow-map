@@ -10,7 +10,7 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 - Panel view toggles: full-screen graph, full-screen panel, or split.
 - `+ Add page`: add your own nodes with draft test cases (type `Draft`, intended for a later AI rewrite pass).
 - Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Export edits` downloads them as JSON; `Reset edits` clears unsaved local edits.
-- **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` commits your current edits to that file via the GitHub API — it asks once for a GitHub token (fine-grained PAT with `Contents: Read & write` on this repo), stored only in your browser's localStorage.
+- **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` posts your current edits to a Cloudflare Worker (`worker/`, deployed at `navmap-save.jeet-navmap.workers.dev`) which commits the file using a server-side GitHub token — no token needed in the browser. The Worker only accepts requests from the Pages origin and validates the JSON shape.
 
 ## Run locally
 ```bash
