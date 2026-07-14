@@ -1,6 +1,13 @@
 {
   "addedPages": [],
-  "pageOverrides": {},
+  "pageOverrides": {
+    "landing": {
+      "desc": "The page we land after submitting correct OTP."
+    },
+    "suborg": {
+      "desc": "Sub-org workspace home."
+    }
+  },
   "caseOverrides": {},
   "addedCases": {},
   "addedLinks": [
@@ -18,6 +25,11 @@
       "source": "logomenu",
       "target": "e-membership",
       "via": "Under top left side bar drop down > click on Invite members"
+    },
+    {
+      "source": "logomenu",
+      "target": "user-create-organisation-mrl0fx5d",
+      "via": "Click on \"+\" next to Organisation"
     }
   ],
   "removedLinks": []
