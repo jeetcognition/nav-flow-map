@@ -16,7 +16,7 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
   - Duplicate and self links are rejected (including links that already exist as the page's main parent edge).
   - In Edit mode, a `remove` button next to each "Also reachable via" entry deletes the link.
   - Extra links persist like other edits: browser localStorage immediately, and permanently for everyone via `Save to repo` (`addedLinks` / `removedLinks` in `navmap-edits.json`).
-- Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Export edits` downloads them as JSON; `Reset edits` clears unsaved local edits.
+- Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Reset edits` clears unsaved local edits.
 - **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` posts your current edits to a Cloudflare Worker (`worker/`, deployed at `navmap-save.jeet-navmap.workers.dev`) which commits the file using a server-side GitHub token — no token needed in the browser. The Worker only accepts requests from the Pages origin and validates the JSON shape.
 
 ## Run locally

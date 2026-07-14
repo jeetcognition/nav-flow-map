@@ -14,9 +14,7 @@
   header .sub { font-size: 12px; color: #8b93a7; }
   #search { background: #0f1117; border: 1px solid #2c3446; color: #e6e8ee; padding: 6px 10px; border-radius: 6px; font-size: 13px; width: 200px; }
   #search:focus { outline: none; border-color: #4c7dff; }
-  .legend { display: flex; gap: 12px; font-size: 12px; margin-left: auto; flex-wrap: wrap; }
-  .legend span { display: flex; align-items: center; gap: 5px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .save-repo { margin-left: auto; }
   #main { flex: 1; display: flex; min-height: 0; position: relative; }
   #cy { flex: 1; min-width: 0; }
   #panel { width: 460px; background: #161a23; border-left: 1px solid #262c3a; padding: 16px; overflow-y: auto; transition: width .2s; position: relative; }
@@ -64,22 +62,12 @@
 </head>
 <body>
 <header>
-  <div>
-    <h1>Enterprise Web App — Navigation Flow Map</h1>
-    <div class="sub">Top-to-bottom flow: Login → landing → jeet-test-org → logo menu → settings &middot; click a page to see its test cases</div>
-  </div>
+  <h1>Enterprise Web App</h1>
   <input id="search" type="text" placeholder="Search pages / routes…" />
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
   <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
-  <button id="export" class="btn">Export edits</button>
   <button id="reset-edits" class="btn">Reset edits</button>
-  <div class="legend">
-    <span><i class="dot" style="background:#f2c744"></i>Entry</span>
-    <span><i class="dot" style="background:#c98bff"></i>Sub-org (jeet-test-org)</span>
-    <span><i class="dot" style="background:#5dd3a0"></i>Personal</span>
-    <span><i class="dot" style="background:#4c7dff"></i>Enterprise settings</span>
-  </div>
   <button id="save-repo" class="btn save-repo" title="Commit navmap-edits.json to the GitHub repo so edits are permanent for everyone">Save to repo</button>
 </header>
 <div id="main">
@@ -99,7 +87,7 @@
         2. Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b><br/>
         3. Top-left corner → click the logo / <b>jeet-test-org ▾</b><br/>
         4. <b>Enterprise settings</b> → pick a tab<br/><br/>
-        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage); <b>Save to repo</b> commits them to GitHub so they're permanent for everyone; <b>Export edits</b> downloads them as JSON.
+        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage); <b>Save to repo</b> commits them to GitHub so they're permanent for everyone.
       </div>
     </div>
   </aside>
@@ -531,14 +519,7 @@ document.getElementById("save-repo").addEventListener("click", async () => {
   }
 });
 
-// ---- export / reset ----
-document.getElementById("export").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(mergedEdits(), null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "navmap-edits.json";
-  a.click();
-});
+// ---- reset ----
 document.getElementById("reset-edits").addEventListener("click", () => {
   if (!confirm("Discard all local (unsaved) edits? Edits already saved to the repo are kept.")) return;
   EDITS = emptyEdits();
