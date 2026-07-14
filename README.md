@@ -9,7 +9,8 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 - Click any page to see its route, description, numbered "How to reach" path, and a filterable test case table (Sanity / Regression; ex-Smoke shown as `SM-n`, ex-Sanity `SN-n`, ex-Regression/E2E `RG-n`, original IDs as tooltips).
 - Panel view toggles: full-screen graph, full-screen panel, or split.
 - `+ Add page`: add your own nodes with draft test cases (type `Draft`, intended for a later AI rewrite pass).
-- Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Export edits` downloads them as JSON; `Reset edits` clears them.
+- Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Export edits` downloads them as JSON; `Reset edits` clears unsaved local edits.
+- **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` commits your current edits to that file via the GitHub API — it asks once for a GitHub token (fine-grained PAT with `Contents: Read & write` on this repo), stored only in your browser's localStorage.
 
 ## Run locally
 ```bash

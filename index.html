@@ -69,6 +69,7 @@
   <input id="search" type="text" placeholder="Search pages / routes…" />
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
+  <button id="save-repo" class="btn" title="Commit navmap-edits.json to the GitHub repo so edits are permanent for everyone">Save to repo</button>
   <button id="export" class="btn">Export edits</button>
   <button id="reset-edits" class="btn">Reset edits</button>
   <div class="legend">
@@ -95,7 +96,7 @@
         2. Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b><br/>
         3. Top-left corner → click the logo / <b>jeet-test-org ▾</b><br/>
         4. <b>Enterprise settings</b> → pick a tab<br/><br/>
-        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage) — use <b>Export edits</b> to download them as JSON.
+        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage); <b>Save to repo</b> commits them to GitHub so they're permanent for everyone; <b>Export edits</b> downloads them as JSON.
       </div>
     </div>
   </aside>
@@ -164,32 +165,47 @@ const BASE_PAGES = [
 
 // ---- persistence of user edits ----
 const STORE_KEY = "navmap-edits-v1";
+function emptyEdits() { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} }; }
 function loadEdits() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} }; }
-  catch (e) { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} }; }
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || emptyEdits(); }
+  catch (e) { return emptyEdits(); }
 }
 let EDITS = loadEdits();
+let BASELINE = emptyEdits(); // committed navmap-edits.json from the repo
 function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(EDITS)); }
 
+function mergedEdits() {
+  const m = emptyEdits();
+  m.addedPages = BASELINE.addedPages.concat(EDITS.addedPages.filter(p => !BASELINE.addedPages.some(b => b.id === p.id)));
+  for (const src of [BASELINE, EDITS]) {
+    for (const [k, v] of Object.entries(src.pageOverrides)) m.pageOverrides[k] = { ...(m.pageOverrides[k] || {}), ...v };
+    for (const [k, v] of Object.entries(src.caseOverrides)) m.caseOverrides[k] = { ...(m.caseOverrides[k] || {}), ...v };
+    for (const [k, v] of Object.entries(src.addedCases)) m.addedCases[k] = (m.addedCases[k] || []).concat(v);
+  }
+  return m;
+}
+
 function allPages() {
-  return BASE_PAGES.concat(EDITS.addedPages).map(p => ({ ...p, ...(EDITS.pageOverrides[p.id] || {}) }));
+  const M = mergedEdits();
+  return BASE_PAGES.concat(M.addedPages).map(p => ({ ...p, ...(M.pageOverrides[p.id] || {}) }));
 }
 
 // ---- suites: Smoke merged into Sanity (SM-n / SN-n), E2E merged into Regression (RG-n) ----
 const KIND_MAP = { Smoke: ["Sanity", "SM"], Sanity: ["Sanity", "SN"], Regression: ["Regression", "RG"], E2E: ["Regression", "RG"], Draft: ["Draft", "DR"] };
 
 function tcFor(page) {
+  const M = mergedEdits();
   const raw = TESTCASES.filter(tc => (page.prefixes || []).some(p => new RegExp("^" + p + "-(SMK|SAN|REG|E2E)\\d").test(tc.id)));
   const counters = {};
   const cases = raw.map(tc => {
     const [suite, kind] = KIND_MAP[tc.type] || ["Regression", "RG"];
     counters[kind] = (counters[kind] || 0) + 1;
     const c = { key: tc.id, id: kind + "-" + counters[kind], orig: tc.id, suite, pri: tc.pri, steps: tc.steps, expected: tc.expected };
-    return { ...c, ...(EDITS.caseOverrides[c.key] || {}) };
+    return { ...c, ...(M.caseOverrides[c.key] || {}) };
   });
-  (EDITS.addedCases[page.id] || []).forEach((d, i) => {
+  (M.addedCases[page.id] || []).forEach((d, i) => {
     const c = { key: page.id + "-draft-" + i, id: "DR-" + (i + 1), orig: "(draft)", suite: "Draft", pri: "—", steps: d, expected: "Draft — to be rewritten by AI into a structured test case." };
-    cases.push({ ...c, ...(EDITS.caseOverrides[c.key] || {}) });
+    cases.push({ ...c, ...(M.caseOverrides[c.key] || {}) });
   });
   return cases;
 }
@@ -384,17 +400,54 @@ document.getElementById("nd-save").addEventListener("click", () => {
   showPage(allPages().find(p => p.id === id));
 });
 
+// ---- save to repo (permanent) ----
+const REPO = "jeetcognition/nav-flow-map";
+const TOKEN_KEY = "navmap-gh-token";
+document.getElementById("save-repo").addEventListener("click", async () => {
+  let token = localStorage.getItem(TOKEN_KEY);
+  if (!token) {
+    token = prompt("Paste a GitHub token with write access to " + REPO + " (a fine-grained PAT with Contents: Read & write). It is stored only in this browser's localStorage.");
+    if (!token) return;
+    token = token.trim();
+    localStorage.setItem(TOKEN_KEY, token);
+  }
+  const btn = document.getElementById("save-repo");
+  btn.disabled = true; btn.textContent = "Saving…";
+  try {
+    const url = "https://api.github.com/repos/" + REPO + "/contents/navmap-edits.json";
+    const headers = { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" };
+    let sha;
+    const cur = await fetch(url, { headers });
+    if (cur.ok) sha = (await cur.json()).sha;
+    const body = { message: "Update navmap edits from the website", content: btoa(unescape(encodeURIComponent(JSON.stringify(mergedEdits(), null, 2)))) };
+    if (sha) body.sha = sha;
+    const res = await fetch(url, { method: "PUT", headers, body: JSON.stringify(body) });
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) localStorage.removeItem(TOKEN_KEY);
+      throw new Error("GitHub API error " + res.status + ": " + (await res.text()).slice(0, 200));
+    }
+    BASELINE = mergedEdits();
+    EDITS = emptyEdits();
+    saveEdits();
+    alert("Saved — edits are committed to " + REPO + " and will load for everyone (GitHub Pages may take a minute to update).");
+  } catch (err) {
+    alert("Save failed: " + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Save to repo";
+  }
+});
+
 // ---- export / reset ----
 document.getElementById("export").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(EDITS, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(mergedEdits(), null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "navmap-edits.json";
   a.click();
 });
 document.getElementById("reset-edits").addEventListener("click", () => {
-  if (!confirm("Discard all local edits (added pages, drafts, text changes)?")) return;
-  EDITS = { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {} };
+  if (!confirm("Discard all local (unsaved) edits? Edits already saved to the repo are kept.")) return;
+  EDITS = emptyEdits();
   saveEdits(); buildGraph();
   pTitle.textContent = "Select a page";
   pBody.innerHTML = `<p>Click any page node to see how to reach it and its linked test cases.</p>`;
@@ -414,7 +467,14 @@ document.getElementById("search").addEventListener("input", e => {
   }
 });
 
-buildGraph();
+// ---- startup: load committed edits, then render ----
+fetch("navmap-edits.json", { cache: "no-store" })
+  .then(r => (r.ok ? r.json() : null))
+  .catch(() => null)
+  .then(data => {
+    if (data) BASELINE = { ...emptyEdits(), ...data };
+    buildGraph();
+  });
 </script>
 </body>
 </html>
