@@ -33,21 +33,17 @@ Do the following:
 
 Commit all changed files (testcases.js, index.html, qa-testing/testcases/*.md, navmap-edits.json) directly to the main branch — do NOT open a PR.`;
 
-async function handleRewrite(env, headers) {
-  const cur = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${FILE}`, {
-    headers: { "User-Agent": "navmap-save-worker" },
-  });
-  if (cur.ok) {
-    const edits = await cur.json().catch(() => null);
-    const hasWork =
-      edits &&
-      ((edits.addedCases && Object.values(edits.addedCases).some((a) => a && a.length)) ||
-        (edits.addedPages && edits.addedPages.length) ||
-        (edits.pageOverrides && Object.keys(edits.pageOverrides).length) ||
-        (edits.caseOverrides && Object.keys(edits.caseOverrides).length));
-    if (!hasWork)
-      return new Response(JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }), { status: 400, headers });
-  }
+function hasPromotable(edits) {
+  return !!(
+    edits &&
+    ((edits.addedCases && Object.values(edits.addedCases).some((a) => a && a.length)) ||
+      (edits.addedPages && edits.addedPages.length) ||
+      (edits.pageOverrides && Object.keys(edits.pageOverrides).length) ||
+      (edits.caseOverrides && Object.keys(edits.caseOverrides).length))
+  );
+}
+
+async function startRewriteSession(env) {
   const res = await fetch("https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions", {
     method: "POST",
     headers: {
@@ -57,9 +53,22 @@ async function handleRewrite(env, headers) {
     body: JSON.stringify({ prompt: REWRITE_PROMPT, title: "Rewrite & promote navmap edits to source files" }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok)
-    return new Response(JSON.stringify({ error: "Devin API " + res.status, detail: JSON.stringify(data).slice(0, 300) }), { status: 502, headers });
-  return new Response(JSON.stringify({ ok: true, session_id: data.session_id, url: data.url }), { headers });
+  if (!res.ok) return { error: "Devin API " + res.status };
+  return { session_id: data.session_id, url: data.url };
+}
+
+async function handleRewrite(env, headers) {
+  const cur = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${FILE}`, {
+    headers: { "User-Agent": "navmap-save-worker" },
+  });
+  if (cur.ok) {
+    const edits = await cur.json().catch(() => null);
+    if (!hasPromotable(edits))
+      return new Response(JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }), { status: 400, headers });
+  }
+  const result = await startRewriteSession(env);
+  if (result.error) return new Response(JSON.stringify(result), { status: 502, headers });
+  return new Response(JSON.stringify({ ok: true, ...result }), { headers });
 }
 
 export default {
@@ -104,6 +113,8 @@ export default {
       const detail = (await res.text()).slice(0, 300);
       return new Response(JSON.stringify({ error: "GitHub API " + res.status, detail }), { status: 502, headers });
     }
-    return new Response(JSON.stringify({ ok: true }), { headers });
+    const out = { ok: true };
+    if (hasPromotable(edits)) out.rewrite = await startRewriteSession(env);
+    return new Response(JSON.stringify(out), { headers });
   },
 };

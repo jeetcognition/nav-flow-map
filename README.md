@@ -18,18 +18,18 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
   - Extra links persist like other edits: browser localStorage immediately, and permanently for everyone via `Save to repo` (`addedLinks` / `removedLinks` in `navmap-edits.json`).
 - Inline editing of routes, descriptions, and test case Steps/Expected; edits persist in browser localStorage. `Reset edits` clears unsaved local edits.
 - **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` posts your current edits to a Cloudflare Worker (`worker/`, deployed at `navmap-save.jeet-navmap.workers.dev`) which commits the file using a server-side GitHub token — no token needed in the browser. The Worker only accepts requests from the Pages origin and validates the JSON shape.
-- **Rewrite drafts with AI**: the `Rewrite drafts with AI` button saves your edits, then calls the Worker's `/rewrite` endpoint, which uses a server-side Devin API key to start a Devin session. That session rewrites each draft in `navmap-edits.json` into a structured test case and **promotes everything into the source files** (see "How edits flow" below), committing directly to `main`; reload the site once it finishes (~1–2 min).
+- **Automatic AI promotion**: when a save contains anything promotable (drafts, added pages, or field edits), the Worker automatically starts a Devin session (server-side Devin API key) that rewrites the drafts and **promotes everything into the source files** (see "How edits flow" below), committing directly to `main`; reload the site once it finishes (~1–2 min). Saves that only change links don't trigger a session.
 
 ## How edits flow
 
 ```
-browser edits ─▶ localStorage ──Save to repo─▶ navmap-edits.json ──Rewrite drafts with AI─▶ source files
+browser edits ─▶ localStorage ──Save to repo─▶ navmap-edits.json ──auto AI promotion─▶ source files
               (this browser only)      (permanent, merged on load)       (canonical: *.md + testcases.js + index.html)
 ```
 
 1. **Edit in the browser** — add pages, draft test cases, links, or edit fields. Everything is stored in your browser's localStorage immediately (survives reloads, but only on your machine).
 2. **Save to repo** — commits those edits into `navmap-edits.json` via the Cloudflare Worker. Now they're permanent and visible to everyone: on every load the site merges this file over the base data (`addedPages`, `pageOverrides`, `addedCases`, `caseOverrides`, `addedLinks`/`removedLinks`).
-3. **Rewrite drafts with AI** — starts a Devin session that:
+3. **Automatic AI promotion** — if the save contained drafts, new pages, or field edits, the Worker starts a Devin session that:
    - rewrites each rough draft into a full structured case (suite, priority, numbered steps, expected result);
    - assigns stable IDs with a per-page prefix (inventing one and adding it to the page's `prefixes` in `index.html` if needed, e.g. `SUP-*` for the Support Page);
    - appends the cases to the matching `qa-testing/testcases/*.md` table (creating a new file for new pages) and to `testcases.js`;
