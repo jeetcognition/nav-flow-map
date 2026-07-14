@@ -150,7 +150,7 @@ const BASE_PAGES = [
   { id: "prefs", label: "Preferences (personal)", group: "personal", route: "/settings/preferences", desc: "Profile picture, name, theme, language, notifications, git author/email.", parent: "ent", via: "Settings → Preferences", prefixes: ["PREF"] },
   { id: "pconn", label: "Connections (personal)", group: "personal", route: "/settings/connections", desc: "Personal integrations: GitHub / GitLab / Slack / Linear; MCPs tab.", parent: "ent", via: "Settings → Connections", prefixes: ["PCON"] },
 
-  { id: "ent", label: "Settings", group: "enterprise", route: "/org/cog-enterprise-qa/settings", desc: "Enterprise settings root; left-nav with all enterprise tabs below.", parent: "logomenu", via: "Logo menu → Enterprise settings", prefixes: [] },
+  { id: "ent", label: "Settings", group: "enterprise", route: "/org/cog-enterprise-qa/settings", desc: "Enterprise settings root; left-nav with all enterprise tabs below.", parent: "logomenu", via: "Logo menu → Enterprise settings", prefixes: ["ENTSET"] },
 
   { id: "e-general", label: "General & SSO", group: "enterprise", route: "…/settings/general", desc: "Org settings, Require SSO toggle, domain verification.", parent: "ent", via: "Left nav → General", prefixes: ["GEN"] },
   { id: "e-conn", label: "Connections", group: "enterprise", route: "…/settings/connections?tab=integrations", desc: "GitHub/GitLab configure, repos, disconnect, register app; MCPs tab.", parent: "ent", via: "Left nav → Connections", prefixes: ["ECON", "ECON-MCP"] },
