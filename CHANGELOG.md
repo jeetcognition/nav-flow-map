@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-15 — Graph toolbar polish (borders, corners, cramped hiding)
+- **What:** Removed the outlined container around + Add page / + Add link (buttons keep their own pill outlines). When the search lives on the panel side, the tools pin to the graph's left corner and Fit view/Panel/Split to the right corner (space-between) instead of sticking together. When the graph area is too narrow to fit both capsules, the whole top bar hides.
+- **Why:** The double border looked heavy in dark mode; without the search the two groups clumped together; and shrinking the graph via the resizer made the capsules overflow on top of the panel.
+
 ## 2026-07-15 — Adaptive search placement + panel-side suggestions
 - **What:** The search pill now lives on whichever side is wider: on the graph when the graph area is bigger (unchanged behavior — node highlight/dim, auto-open on a single match), and centered at the top of the detail panel when the panel is wider (or in full-panel mode). On the panel side, typing opens a dropdown of matching page suggestions (name + route); clicking one opens that page and highlights/centers its node in the graph. Placement re-evaluates on panel resize, view-mode change, sidebar collapse and window resize.
 - **Why:** When the panel dominates the layout the graph-side search was cramped and highlight-only feedback wasn't visible; on the panel side, clickable page recommendations are more useful.
