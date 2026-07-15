@@ -26,6 +26,26 @@ Record of what changed and **why**. Newest first. Keep this updated for every fe
 - **What:** Custom layout: parents centered over their own children, computed from the real parent fields on every load.
 - **Why:** Cytoscape's breadthfirst layout centered rows globally, so Membership's and Organizations' children visually merged into one blob; the new layout keeps every subtree under its own parent and self-corrects after AI promotions.
 
+## 2026-07-14 — Centered dialogs
+- **What:** Add page / Add link dialogs open centered on screen (restored `margin: auto` on `dialog`).
+- **Why:** The global `* { margin: 0 }` CSS reset wiped the browser's default dialog centering, so dialogs opened pinned to the top-left corner.
+
+## 2026-07-14 — Smarter extra-link routing
+- **What:** Extra links draw as a plain straight dashed line when no node blocks the direct path; only blocked links detour through a gutter, choosing the side with the shortest horizontal detour.
+- **Why:** A link between adjacent nodes (e.g. Langing Repo Page → Support Page) detoured all the way through the left gutter and back, because the gutter side was picked by the source/target midpoint vs the tree center instead of actual distance.
+
+## 2026-07-14 — Simplified header, prominent Save button
+- **What:** Header title shortened to "Enterprise Web App", legend row and "Export edits" button removed, "Save to repo" moved to the top-right corner with a bold red style.
+- **Why:** Declutter the toolbar and make the save action impossible to miss so people don't forget to commit their edits.
+
+## 2026-07-14 — Gutter routing & highlight-on-select for extra links
+- **What:** Extra links route through a gutter outside the tree's bounding box (exit source sideways → down the empty side → into target from the side), render faint by default, and light up fully when their source or target node is selected.
+- **Why:** Straight dashed links cut across nodes and cluttered the graph; a curved-bezier attempt still overlapped nodes and was reverted in favor of gutter routing plus decluttering.
+
+## 2026-07-14 — "+ Add link" between existing pages
+- **What:** New "+ Add link" dialog connects two existing pages with an extra navigation link (dashed purple arrow) with a "how to navigate" description; the target page lists it under "Also reachable via" (removable in Edit mode). Persists via `addedLinks`/`removedLinks` in local edits and `navmap-edits.json`. Landing Search Page → Settings shipped as the first committed link.
+- **Why:** Some pages are reachable more than one way, but the tree model only allowed a single parent path; extra links record alternate routes without changing the primary tree.
+
 ## 2026-07-14 — "How to reach" steps editable
 - **What:** In Edit mode each step of the reach path is editable; edits save to the page that owns that step (ancestor edits propagate).
 - **Why:** Reach paths drift as the app under test changes; they needed to be correctable in place.
