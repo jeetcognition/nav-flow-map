@@ -311,7 +311,7 @@ dialog .actions button:last-child { background: var(--accent) !important; border
         <section class="empty-section">
           <h3>Toolbar</h3>
           <div class="tip-list">
-            <div class="tip-row"><span class="tip-term">Settings groups</span><span class="tip-copy">click Personal, Enterprise, or Sub-org settings to expand that lane; opening another lane collapses the previous one</span></div>
+            <div class="tip-row"><span class="tip-term">Large branches</span><span class="tip-copy">nodes with more than four child pages show a disclosure arrow; click the node to expand or collapse its branch</span></div>
             <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
             <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
             <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
@@ -378,16 +378,14 @@ dialog .actions button:last-child { background: var(--accent) !important; border
 <script>
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
 const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
-const SETTINGS_GROUP_STORE_KEY = "navmap-settings-group-v1";
-const SETTINGS_GROUPS = [
-  { id: "settings-group-personal", label: "Personal settings", group: "personal" },
-  { id: "settings-group-enterprise", label: "Enterprise settings", group: "enterprise" },
-  { id: "settings-group-suborg", label: "Sub-org settings", group: "suborg" },
-];
+const FANOUT_STORE_KEY = "navmap-expanded-fanout-v1";
+const COLLAPSIBLE_CHILD_LIMIT = 4;
 const MOON_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
 const SUN_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path fill="currentColor" d="M11 1h2v4h-2zM11 19h2v4h-2zM1 11h4v2H1zM19 11h4v2h-4zM4.22 2.81l1.41-1.42 2.83 2.83-1.42 1.41zM15.54 19.78l1.42-1.41 2.82 2.82-1.41 1.42zM2.81 19.78l2.83-2.82 1.41 1.41-2.82 2.83zM19.78 4.22l-2.82 2.82-1.42-1.41 2.83-2.83z"/></svg>';
 const RESET_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 11a8 8 0 1 1 2.34 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 5v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-let expandedSettingsGroup = localStorage.getItem(SETTINGS_GROUP_STORE_KEY) || null;
+let expandedFanoutNodes;
+try { expandedFanoutNodes = new Set(JSON.parse(localStorage.getItem(FANOUT_STORE_KEY)) || []); }
+catch (e) { expandedFanoutNodes = new Set(); }
 
 function applyTheme(theme) {
   const next = theme === "dark" ? "dark" : "light";
@@ -580,25 +578,47 @@ function tcFor(page) {
 
 // ---- graph ----
 let cy;
-function settingsGroupForPage(pageId, pages = allPages()) {
-  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
-  let branch = byId[pageId];
-  while (branch && branch.parent && branch.parent !== "ent") branch = byId[branch.parent];
-  if (!branch || branch.parent !== "ent") return null;
-  return SETTINGS_GROUPS.find(g => g.group === branch.group) || null;
+function graphHierarchy(pages = allPages()) {
+  const children = {};
+  pages.forEach(p => {
+    if (p.parent) (children[p.parent] = children[p.parent] || []).push(p.id);
+  });
+  return {
+    children,
+    collapsible: new Set(Object.keys(children).filter(id => children[id].length > COLLAPSIBLE_CHILD_LIMIT)),
+  };
 }
 
-function setExpandedSettingsGroup(groupId) {
-  expandedSettingsGroup = expandedSettingsGroup === groupId ? null : groupId;
-  if (expandedSettingsGroup) localStorage.setItem(SETTINGS_GROUP_STORE_KEY, expandedSettingsGroup);
-  else localStorage.removeItem(SETTINGS_GROUP_STORE_KEY);
+function collapsedAncestorForPage(pageId, pages = allPages(), hierarchy = graphHierarchy(pages)) {
+  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
+  let page = byId[pageId];
+  while (page && page.parent) {
+    if (hierarchy.collapsible.has(page.parent) && !expandedFanoutNodes.has(page.parent)) return page.parent;
+    page = byId[page.parent];
+  }
+  return null;
+}
+
+function toggleFanoutNode(nodeId) {
+  if (expandedFanoutNodes.has(nodeId)) expandedFanoutNodes.delete(nodeId);
+  else expandedFanoutNodes.add(nodeId);
+  localStorage.setItem(FANOUT_STORE_KEY, JSON.stringify([...expandedFanoutNodes]));
 }
 
 function revealPageNode(pageId) {
-  const group = settingsGroupForPage(pageId);
-  if (group && expandedSettingsGroup !== group.id) {
-    expandedSettingsGroup = group.id;
-    localStorage.setItem(SETTINGS_GROUP_STORE_KEY, group.id);
+  const pages = allPages();
+  const hierarchy = graphHierarchy(pages);
+  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
+  let page = byId[pageId], changed = false;
+  while (page && page.parent) {
+    if (hierarchy.collapsible.has(page.parent) && !expandedFanoutNodes.has(page.parent)) {
+      expandedFanoutNodes.add(page.parent);
+      changed = true;
+    }
+    page = byId[page.parent];
+  }
+  if (changed) {
+    localStorage.setItem(FANOUT_STORE_KEY, JSON.stringify([...expandedFanoutNodes]));
     buildGraph();
   }
   return cy ? cy.getElementById(pageId) : null;
@@ -606,21 +626,10 @@ function revealPageNode(pageId) {
 
 function buildGraph() {
   const pages = allPages();
-  const directSettingsChildren = Object.fromEntries(SETTINGS_GROUPS.map(g => [
-    g.id,
-    pages.filter(p => p.parent === "ent" && p.group === g.group),
-  ]));
-  const activeGroups = SETTINGS_GROUPS.filter(g => directSettingsChildren[g.id].length);
-  const visiblePages = pages.filter(p => {
-    const group = settingsGroupForPage(p.id, pages);
-    return !group || group.id === expandedSettingsGroup;
-  });
+  const hierarchy = graphHierarchy(pages);
+  const visiblePages = pages.filter(p => !collapsedAncestorForPage(p.id, pages, hierarchy));
   const visibleIds = new Set(visiblePages.map(p => p.id));
-  const endpointFor = id => {
-    if (visibleIds.has(id)) return id;
-    const group = settingsGroupForPage(id, pages);
-    return group && activeGroups.some(g => g.id === group.id) ? group.id : null;
-  };
+  const endpointFor = id => visibleIds.has(id) ? id : collapsedAncestorForPage(id, pages, hierarchy);
   const edgeColor = getComputedStyle(document.documentElement).getPropertyValue("--edge").trim();
   const extraEdgeKeys = new Set();
   const extraEdges = extraLinks().flatMap(l => {
@@ -632,29 +641,28 @@ function buildGraph() {
   });
   const elements = [
     ...visiblePages.map(p => {
-      const nb = bugsFor(p).filter(b => b.status !== "Fixed").length;
-      return { data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group }, classes: nb ? "buggy" : "" };
-    }),
-    ...activeGroups.map(g => ({
-      data: {
-        id: g.id,
-        label: (expandedSettingsGroup === g.id ? "▾ " : "▸ ") + g.label + " (" + directSettingsChildren[g.id].length + ")",
-        group: g.group,
-      },
-      classes: [
-        "settings-group",
-        expandedSettingsGroup === g.id ? "expanded" : "collapsed",
-        pages.some(p => settingsGroupForPage(p.id, pages)?.id === g.id && bugsFor(p).some(b => b.status !== "Fixed")) ? "buggy" : "",
-      ].filter(Boolean).join(" "),
-    })),
-    ...activeGroups.map(g => ({ data: { id: "edge-" + g.id, source: "ent", target: g.id }, classes: "group-edge" })),
-    ...visiblePages.filter(p => p.parent && (visibleIds.has(p.parent) || p.parent === "ent")).map(p => {
-      const group = p.parent === "ent" ? settingsGroupForPage(p.id, pages) : null;
+      const testCount = tcFor(p).length;
+      const childCount = (hierarchy.children[p.id] || []).length;
+      const collapsible = hierarchy.collapsible.has(p.id);
+      const expanded = collapsible && expandedFanoutNodes.has(p.id);
+      const label = collapsible
+        ? (expanded ? "▾ " : "▸ ") + p.label + "\n" + childCount + " pages" + (testCount ? " · " + testCount + " tests" : "")
+        : p.label + (testCount ? " (" + testCount + ")" : "");
+      const hasActiveBug = pages.some(candidate =>
+        endpointFor(candidate.id) === p.id && bugsFor(candidate).some(b => b.status !== "Fixed")
+      );
       return {
-        data: { id: "edge-" + p.id, source: group ? group.id : p.parent, target: p.id },
-        classes: group ? "group-member" : "",
+        data: { id: p.id, label, group: p.group },
+        classes: [
+          collapsible ? "fanout-node" : "",
+          collapsible ? (expanded ? "expanded" : "collapsed") : "",
+          hasActiveBug ? "buggy" : "",
+        ].filter(Boolean).join(" "),
       };
     }),
+    ...visiblePages.filter(p => p.parent && visibleIds.has(p.parent)).map(p => ({
+      data: { id: "edge-" + p.id, source: p.parent, target: p.id },
+    })),
     ...extraEdges,
   ];
   if (cy) cy.destroy();
@@ -679,16 +687,13 @@ function buildGraph() {
           "border-width": 1,
           "border-color": "rgba(13,15,22,.35)",
       }},
-      { selector: "node.settings-group", style: {
+      { selector: "node.fanout-node", style: {
           "width": "150px",
-          "height": "34px",
-          "font-size": "11px",
           "border-width": 2,
           "border-style": "dashed",
           "border-color": ele => GROUP_COLORS[ele.data("group")],
-          "background-opacity": 0.28,
       }},
-      { selector: "node.settings-group.expanded", style: { "border-style": "solid", "background-opacity": 0.5 } },
+      { selector: "node.fanout-node.expanded", style: { "border-style": "solid" } },
       { selector: "node.buggy", style: { "border-color": "#ff4d4f", "border-width": 2 } },
       { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
       { selector: "node.highlight", style: { "border-color": "#ffffff", "border-width": 3 } },
@@ -702,8 +707,6 @@ function buildGraph() {
           "target-arrow-color": edgeColor,
           "width": 1.5,
       }},
-      { selector: "edge.group-edge", style: { "width": 2 } },
-      { selector: "edge.group-member", style: { "line-style": "dashed", "opacity": 0.75 } },
       { selector: "edge.extra", style: { "line-style": "dashed", "line-color": "#8a6bff", "target-arrow-color": "#8a6bff", "opacity": 0.25 } },
       { selector: "edge.hushed", style: { "opacity": 0.1 } },
       { selector: "edge.highlight", style: { "line-color": "#9fd0ff", "target-arrow-color": "#9fd0ff", "width": 2.5 } },
@@ -716,12 +719,13 @@ function buildGraph() {
   layoutTree();
   routeExtraEdges();
   cy.on("tap", "node", evt => {
-    if (evt.target.hasClass("settings-group")) {
-      setExpandedSettingsGroup(evt.target.id());
+    const p = allPages().find(x => x.id === evt.target.id());
+    if (evt.target.hasClass("fanout-node")) {
+      toggleFanoutNode(evt.target.id());
       buildGraph();
+      if (p) showPage(p);
       return;
     }
-    const p = allPages().find(x => x.id === evt.target.id());
     if (p) showPage(p);
   });
   cy.on("tap", evt => {
@@ -756,7 +760,7 @@ function layoutTree() {
     if (!kids.length) return { id, width: nodeWidth, height: nodeHeight, nodeX: nodeWidth / 2, nodeY: nodeHeight / 2, children: [] };
 
     const childBlocks = kids.map(k => makeBlock(k, gridColumns));
-    const useGrid = node.hasClass("settings-group") || (kids.length > 4 && childBlocks.every(block => !(children[block.id] || []).length));
+    const useGrid = node.hasClass("fanout-node");
     const rows = [];
     if (useGrid) {
       const columns = Math.min(gridColumns, childBlocks.length);
@@ -899,7 +903,7 @@ function emptyPanelHtml() {
     <section class="empty-section">
       <h3>Toolbar</h3>
       <div class="tip-list">
-        <div class="tip-row"><span class="tip-term">Settings groups</span><span class="tip-copy">click Personal, Enterprise, or Sub-org settings to expand that lane; opening another lane collapses the previous one</span></div>
+        <div class="tip-row"><span class="tip-term">Large branches</span><span class="tip-copy">nodes with more than four child pages show a disclosure arrow; click the node to expand or collapse its branch</span></div>
         <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
         <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
         <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
@@ -1326,8 +1330,8 @@ function refreshSearchResults() {
     cy.elements().addClass("hushed");
     matches.forEach(p => {
       const node = cy.getElementById(p.id);
-      const group = settingsGroupForPage(p.id);
-      const visibleNode = node.length ? node : group ? cy.getElementById(group.id) : node;
+      const ancestor = collapsedAncestorForPage(p.id);
+      const visibleNode = node.length ? node : ancestor ? cy.getElementById(ancestor) : node;
       visibleNode.removeClass("hushed").addClass("highlight");
     });
   }
