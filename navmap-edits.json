@@ -1,5 +1,26 @@
 {
-  "addedPages": [],
+  "addedPages": [
+    {
+      "id": "user-roles-mrlw4bf3",
+      "label": "Roles",
+      "group": "enterprise",
+      "route": "org/cog-enterprise-qa/settings/membership?tab=roles",
+      "desc": "User-added page.",
+      "parent": "e-membership",
+      "via": "Click on Roles Tab in Membership page.",
+      "prefixes": []
+    },
+    {
+      "id": "user-groups-mrlw5j7x",
+      "label": "Groups",
+      "group": "enterprise",
+      "route": "/org/cog-enterprise-qa/settings/membership?tab=groups",
+      "desc": "User-added page.",
+      "parent": "e-membership",
+      "via": "Click on Groups tab",
+      "prefixes": []
+    }
+  ],
   "pageOverrides": {},
   "caseOverrides": {},
   "addedCases": {},
