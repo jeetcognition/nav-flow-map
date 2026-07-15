@@ -282,7 +282,7 @@ function buildGraph() {
     wheelSensitivity: 0.2,
     autoungrabify: true,
   });
-  cy.elements().not(".extra").layout({ name: "breadthfirst", directed: true, roots: ["login"], spacingFactor: 1.1, padding: 20, avoidOverlap: true }).run();
+  layoutTree();
   routeExtraEdges();
   cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
   cy.on("tap", evt => {
@@ -293,6 +293,34 @@ function buildGraph() {
     }
   });
   cy.fit(undefined, 20);
+}
+
+// Tidy-tree layout: leaves get sequential x slots, parents are centered over
+// their children, so every subtree sits directly under its own parent and
+// sibling subtrees never visually merge — stays correct as pages are added.
+function layoutTree() {
+  const pages = allPages();
+  const ids = new Set(pages.map(p => p.id));
+  const children = {};
+  const roots = [];
+  pages.forEach(p => {
+    if (p.parent && ids.has(p.parent)) (children[p.parent] = children[p.parent] || []).push(p.id);
+    else roots.push(p.id);
+  });
+  const XGAP = 155, YGAP = 105;
+  let nextX = 0;
+  function place(id, depth) {
+    const kids = children[id] || [];
+    let x;
+    if (!kids.length) { x = nextX; nextX += XGAP; }
+    else {
+      const xs = kids.map(k => place(k, depth + 1));
+      x = (Math.min(...xs) + Math.max(...xs)) / 2;
+    }
+    cy.getElementById(id).position({ x, y: depth * YGAP });
+    return x;
+  }
+  roots.forEach(r => { place(r, 0); nextX += XGAP; });
 }
 
 // Route extra links through a gutter beside the tree so they never cross nodes:
