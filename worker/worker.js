@@ -31,6 +31,8 @@ Do the following:
 
 4. VERIFY: node --check testcases.js, and check every new case ID matches a prefix in BASE_PAGES so it renders on its node. Do not change any other content, and never renumber or edit unrelated existing cases.
 
+5. LAYOUT (only when new pages were added): insert each promoted page into BASE_PAGES next to its siblings (right after the other children of the same parent) with the correct "parent" id, so the site's automatic tidy-tree layout keeps the graph balanced. Then open the site locally (python3 -m http.server + a headless browser) and confirm the new nodes render under their parent without overlapping neighbouring subtrees; if the layoutTree() function in index.html needs a spacing tweak to stay compact and readable, make it.
+
 Commit all changed files (testcases.js, index.html, qa-testing/testcases/*.md, navmap-edits.json) directly to the main branch — do NOT open a PR.`;
 
 function hasPromotable(edits) {
