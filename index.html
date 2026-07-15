@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Enterprise Web App — Navigation Flow Map</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f1117'/%3E%3Cpath d='M32 14v10M20 40V30a6 6 0 0 1 6-6h12a6 6 0 0 1 6 6v10' stroke='%232c3446' stroke-width='3' fill='none'/%3E%3Ccircle cx='32' cy='12' r='7' fill='%23f2c744'/%3E%3Ccircle cx='20' cy='46' r='7' fill='%234c7dff'/%3E%3Ccircle cx='44' cy='46' r='7' fill='%235dd3a0'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,9 +28,11 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
+@supports (height: 100dvh) { html, body { height: 100dvh; } }
 body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; overflow: hidden; }
 #main { flex: 1; display: flex; min-height: 0; position: relative; }
 #sidebar { width: 220px; flex: 0 0 220px; padding: 18px 12px 14px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+#sidebar-scrim { display: none; }
 .brand { display: flex; align-items: center; justify-content: space-between; gap: 9px; padding: 2px 8px 16px; font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
 #sidebar-toggle, #sidebar-expand { width: 28px; height: 28px; padding: 0; display: grid; place-items: center; border-radius: 8px; color: var(--text-dim); }
 #sidebar-toggle svg, #sidebar-expand svg { width: 16px; height: 16px; }
@@ -135,6 +137,7 @@ table.tc a { color: var(--accent); text-decoration: none; } table.tc a:hover { t
 .bug-row { cursor: pointer; } .bug-row:hover td { background: var(--accent-tint); }
 .empty, .hint, .note { font-size: 12px; color: var(--text-faint); line-height: 1.5; }
 table.tc code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px; color: var(--accent); background: var(--bg); padding: 0 3px; border-radius: 3px; }
+.table-scroll { max-width: 100%; overflow-x: auto; border-radius: 8px; -webkit-overflow-scrolling: touch; }
 [contenteditable="true"] { outline: 1px dashed var(--accent); background: var(--accent-tint); }
 #editbar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
 dialog { margin: auto; background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 460px; max-width: 92vw; box-shadow: 0 16px 50px rgba(0,0,0,.2); animation: dialog-in .15s ease-out; }
@@ -149,6 +152,96 @@ dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top
 dialog .actions button:last-child { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff; }
 .note { font-size: 11px; margin-top: 4px; }
 ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+@media (max-width: 820px) {
+  #main { flex-direction: column; }
+  #sidebar {
+    position: absolute; inset: 0 auto 0 0; z-index: 50;
+    width: min(82vw, 300px); flex: none;
+    padding: calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
+    overflow-y: auto; overscroll-behavior: contain;
+    box-shadow: 12px 0 30px rgba(15, 23, 42, .2);
+  }
+  #main:not(.sidebar-collapsed) #sidebar-scrim {
+    display: block; position: absolute; inset: 0; z-index: 49;
+    background: rgba(15, 23, 42, .34); border: 0;
+  }
+  #sidebar-expand {
+    top: calc(10px + env(safe-area-inset-top)); left: 10px;
+    width: 36px; height: 36px; z-index: 40;
+  }
+  .sidebar-nav .btn { min-height: 44px; }
+  #graph-area { width: 100%; flex: 1 1 48%; min-height: 0; }
+  #panel {
+    width: 100% !important; flex: 1 1 52%; min-height: 0;
+    padding: 14px max(14px, env(safe-area-inset-right)) calc(64px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    border-top: 1px solid var(--border); border-left: 0;
+    overscroll-behavior: contain;
+  }
+  #resizer { display: none !important; }
+  #main.panel-collapsed #graph-area, #main.panel-full #panel { flex: 1 1 100%; }
+  #graph-topbar {
+    top: calc(10px + env(safe-area-inset-top)); left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right));
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px;
+    visibility: visible !important;
+  }
+  #graph-tools { grid-column: 1; min-width: 0; gap: 4px; padding-left: 42px; }
+  #graph-tools .btn, #panel-toggle button { min-height: 34px; padding: 5px 7px; font-size: 10px; }
+  #panel-toggle { grid-column: 2; }
+  #graph-search {
+    grid-column: 1 / -1; grid-row: 2; width: 100%; max-width: none;
+    min-height: 40px; margin: 0; background: var(--bg-elev);
+  }
+  #panel-topbar {
+    position: sticky; top: -14px; z-index: 10;
+    margin: -4px -2px 12px; padding: 4px 2px 8px;
+    background: var(--bg-elev);
+  }
+  #panel-search-slot #graph-search { min-height: 40px; }
+  #search-suggest { left: 0; transform: none; width: 100%; max-height: min(320px, 45vh); }
+  #search, dialog input, dialog select, dialog textarea { font-size: 16px; }
+  #panel h2 { font-size: 17px; }
+  #editbar .btn, .filters button { min-height: 36px; }
+  .tip-row { flex-direction: column; gap: 3px; }
+  .tip-term { white-space: normal; }
+  .table-scroll table.tc { min-width: 640px; }
+  dialog {
+    width: calc(100vw - 20px); max-width: none;
+    max-height: calc(100vh - 20px); max-height: calc(100dvh - 20px);
+    padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+  }
+  dialog .row { flex-direction: column; gap: 0; }
+  dialog .actions {
+    position: sticky; bottom: calc(-16px - env(safe-area-inset-bottom));
+    margin: 16px -16px calc(-16px - env(safe-area-inset-bottom));
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--bg-elev); border-top: 1px solid var(--border);
+  }
+  dialog .actions .btn { min-height: 42px; }
+  #theme-toggle {
+    right: max(10px, env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 30;
+  }
+}
+
+@media (max-width: 420px) {
+  #graph-tools .btn, #panel-toggle button { padding-inline: 6px; font-size: 9.5px; }
+  #panel { padding-inline: 12px; }
+  #panel-view-toggle button { padding-inline: 8px; }
+  dialog .actions { display: grid; grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 820px) and (min-width: 600px) and (orientation: landscape) {
+  #main { flex-direction: row; }
+  #graph-area { width: auto; height: 100%; flex: 1 1 56%; }
+  #panel {
+    width: 44% !important; height: 100%; flex: 0 0 44%;
+    border-top: 0; border-left: 1px solid var(--border);
+  }
+  #main.panel-collapsed #graph-area { flex: 1 1 100%; }
+  #main.panel-full #panel { width: 100% !important; flex: 1 1 100%; }
+}
 </style>
 </head>
 <body>
@@ -169,6 +262,7 @@ dialog .actions button:last-child { background: var(--accent) !important; border
       <button id="reset-edits" class="btn" title="Reset edits" aria-label="Reset edits" disabled></button>
     </div>
   </aside>
+  <button id="sidebar-scrim" type="button" aria-label="Close sidebar"></button>
   <section id="graph-area">
     <div id="cy"></div>
     <div id="graph-topbar">
@@ -427,8 +521,8 @@ function bugsSectionHtml(page) {
   const bugs = bugsFor(page);
   if (!bugs.length) return "";
   return `<h3>Bugs (${bugs.length})</h3>
-    <table class="tc"><thead><tr><th>Bug</th><th>Sev</th><th>Status</th><th>Title</th><th>Cases</th><th>Links</th></tr></thead>
-    <tbody>${bugRowsHtml(bugs, false)}</tbody></table>`;
+    <div class="table-scroll"><table class="tc"><thead><tr><th>Bug</th><th>Sev</th><th>Status</th><th>Title</th><th>Cases</th><th>Links</th></tr></thead>
+    <tbody>${bugRowsHtml(bugs, false)}</tbody></table></div>`;
 }
 
 function showAllBugs() {
@@ -444,7 +538,7 @@ function showAllBugs() {
   const render = sev => {
     const list = bugs.filter(b => sev === "All" || b.severity === sev);
     document.getElementById("bug-table").innerHTML =
-      `<table class="tc"><thead><tr><th>Bug</th><th>Sev</th><th>Status</th><th>Page</th><th>Title</th><th>Cases</th><th>Links</th></tr></thead><tbody>${bugRowsHtml(list, true)}</tbody></table>`;
+      `<div class="table-scroll"><table class="tc"><thead><tr><th>Bug</th><th>Sev</th><th>Status</th><th>Page</th><th>Title</th><th>Cases</th><th>Links</th></tr></thead><tbody>${bugRowsHtml(list, true)}</tbody></table></div>`;
     pBody.querySelectorAll(".bug-row").forEach(tr => tr.addEventListener("click", e => {
       if (e.target.tagName === "A") return;
       const p = allPages().find(x => x.id === tr.dataset.bugpage);
@@ -684,8 +778,8 @@ function fmt(s) {
 function renderTable(cases, filter, editable) {
   const list = filter === "All" ? cases : cases.filter(c => c.suite === filter);
   if (!list.length) return '<div class="empty">No ' + (filter === "All" ? "" : filter + " ") + 'test cases linked to this page.</div>';
-  return `<table class="tc"><tr><th>ID</th><th>Suite</th><th>Pri</th><th>Steps</th><th>Expected</th></tr>` +
-    list.map(c => `<tr data-key="${c.key}"><td class="id" title="${fmt(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${c.suite}">${c.suite}</span></td><td>${fmt(c.pri)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table>`;
+  return `<div class="table-scroll"><table class="tc"><tr><th>ID</th><th>Suite</th><th>Pri</th><th>Steps</th><th>Expected</th></tr>` +
+    list.map(c => `<tr data-key="${c.key}"><td class="id" title="${fmt(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${c.suite}">${c.suite}</span></td><td>${fmt(c.pri)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table></div>`;
 }
 
 let editMode = false;
@@ -794,9 +888,10 @@ function wirePageFieldEdits(page) {
 const main = document.getElementById("main");
 const sidebarToggle = document.getElementById("sidebar-toggle");
 const sidebarExpand = document.getElementById("sidebar-expand");
-function setSidebarCollapsed(collapsed) {
+const mobileLayout = window.matchMedia("(max-width: 820px)");
+function setSidebarCollapsed(collapsed, persist = true) {
   main.classList.toggle("sidebar-collapsed", collapsed);
-  localStorage.setItem("navmap-sidebar", collapsed ? "collapsed" : "expanded");
+  if (persist) localStorage.setItem("navmap-sidebar", collapsed ? "collapsed" : "expanded");
   const label = collapsed ? "Expand sidebar" : "Collapse sidebar";
   sidebarToggle.setAttribute("aria-label", label);
   sidebarToggle.title = label;
@@ -804,9 +899,13 @@ function setSidebarCollapsed(collapsed) {
   sidebarExpand.title = label;
   requestAnimationFrame(() => { placeSearch(); if (cy) { cy.resize(); cy.fit(undefined, 20); } });
 }
-setSidebarCollapsed(localStorage.getItem("navmap-sidebar") === "collapsed");
+setSidebarCollapsed(mobileLayout.matches || localStorage.getItem("navmap-sidebar") === "collapsed", false);
 sidebarToggle.addEventListener("click", () => setSidebarCollapsed(true));
 sidebarExpand.addEventListener("click", () => setSidebarCollapsed(false));
+document.getElementById("sidebar-scrim").addEventListener("click", () => setSidebarCollapsed(true));
+mobileLayout.addEventListener("change", e => {
+  setSidebarCollapsed(e.matches || localStorage.getItem("navmap-sidebar") === "collapsed", false);
+});
 
 function updateViewToggle(mode) {
   const graphActiveId = mode === "panel-full" ? "pt-expand" : mode === null ? "pt-normal" : null;
@@ -857,7 +956,7 @@ function updateTopbarVisibility() {
   const topbar = document.getElementById("graph-topbar");
   const needed = document.getElementById("graph-tools").offsetWidth +
     document.getElementById("panel-toggle").offsetWidth + 8;
-  topbar.classList.toggle("cramped", graphAreaEl.clientWidth - 24 < needed);
+  topbar.classList.toggle("cramped", !mobileLayout.matches && graphAreaEl.clientWidth - 24 < needed);
 }
 window.addEventListener("resize", placeSearch);
 
@@ -1021,7 +1120,10 @@ document.getElementById("bd-save").addEventListener("click", () => {
   buildGraph();
   showPage(allPages().find(p => p.id === bug.pageId));
 });
-document.getElementById("all-bugs").addEventListener("click", showAllBugs);
+document.getElementById("all-bugs").addEventListener("click", () => {
+  showAllBugs();
+  if (mobileLayout.matches) setSidebarCollapsed(true);
+});
 
 // ---- reset ----
 document.getElementById("reset-edits").addEventListener("click", () => {
