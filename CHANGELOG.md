@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-15 — Graph search bar + collapsible sidebar
+- **What:** Moved the page search out of the sidebar into a floating, centered pill at the top of the graph (magnifier icon + a ✕ clear button that appears only when there's text). Added a collapse/expand toggle next to the "Enterprise" brand: it hides the sidebar so the graph reclaims the space (with a `cy.resize()`/`cy.fit()` reflow), shows a small floating expand button while collapsed, and remembers the state in `localStorage["navmap-sidebar"]`.
+- **Why:** The user wanted the search where the graph is (more discoverable, more canvas room in the sidebar) and a way to collapse the sidebar for a wider graph view.
+
 ## 2026-07-15 — UI redesign (Primer/Linear-style shell, light/dark themes)
 - **What:** Reworked the interface into a three-column app shell — left sidebar (brand "Enterprise", search, Bugs, and a bottom row with the red-when-active "Save to repo" plus a circular-arrow reset icon), center graph, right detail panel. Added Inter/JetBrains Mono fonts, hairline borders, rounded 8px cards, blue accent, a dot-grid canvas, and restyled panel/tables/chips/dialogs. Introduced a light/dark theme system (CSS variables, persisted in `navmap-theme`) with a floating sun/moon toggle in the bottom-right; graph edge colours follow the theme. Moved "+ Add page"/"+ Add link" into a floating toolbar at the graph's top-left, gave the graph a Fit view / Panel / Split segmented control (top-right) and the panel a matching Graph / Split control, and redesigned the empty "Select a page" state into a welcome view (numbered main-flow steps + a toolbar tips card).
 - **Why:** The previous dark-only toolbar UI felt dated; the user wanted a cleaner, smoother interface (inspired by qa-checklist-omega.vercel.app) with clearer view controls and a light/dark option, while keeping all existing behaviour, data, and persistence unchanged.
