@@ -7,6 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f1117'/%3E%3Cpath d='M32 14v10M20 40V30a6 6 0 0 1 6-6h12a6 6 0 0 1 6 6v10' stroke='%232c3446' stroke-width='3' fill='none'/%3E%3Ccircle cx='32' cy='12' r='7' fill='%23f2c744'/%3E%3Ccircle cx='20' cy='46' r='7' fill='%234c7dff'/%3E%3Ccircle cx='44' cy='46' r='7' fill='%235dd3a0'/%3E%3C/svg%3E" />
 <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
 <script src="testcases.js"></script>
+<script src="bugs.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f1117; color: #e6e8ee; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -50,6 +51,11 @@
   table.tc td.id { font-family: ui-monospace, monospace; white-space: nowrap; color: #9fd0ff; }
   .tt { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 600; color: #0f1117; }
   .tt.Sanity { background: #5dd3a0; } .tt.Regression { background: #ff8a6b; } .tt.Draft { background: #f2c744; }
+  .sev { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 700; color: #0f1117; }
+  .sev.S1 { background: #ff4d4f; color: #fff; } .sev.S2 { background: #ff8a6b; } .sev.S3 { background: #f2c744; } .sev.S4 { background: #8b93a7; }
+  .bstatus { font-size: 10.5px; font-weight: 600; } .bstatus.Open { color: #ff8a6b; } .bstatus.Fixed { color: #5dd3a0; }
+  table.tc a { color: #9fd0ff; text-decoration: none; } table.tc a:hover { text-decoration: underline; }
+  .bug-row { cursor: pointer; } .bug-row:hover td { background: #1a2130; }
   .empty { font-size: 12px; color: #6b7285; }
   table.tc code { font-family: ui-monospace, monospace; font-size: 10.5px; color: #9fd0ff; background: #0f1117; padding: 0 3px; border-radius: 3px; }
   .hint { font-size: 12px; color: #6b7285; margin-top: 12px; line-height: 1.5; }
@@ -75,6 +81,7 @@
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
   <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
+  <button id="all-bugs" class="btn" style="border-color:#ff4d4f" title="All known bugs across every page — pages with active bugs have this same red border on their node">Bugs</button>
   <button id="reset-edits" class="btn" title="No unsaved edits" disabled>Reset edits</button>
   <button id="save-repo" class="btn save-repo" data-tip="Commit edits to the GitHub repo; if there's anything to promote (drafts, new pages, field edits), an AI session automatically rewrites and promotes it into the source files" title="No unsaved edits" disabled>Save to repo</button>
 </header>
@@ -132,6 +139,28 @@
   <div class="actions"><button class="btn" id="ld-cancel">Cancel</button><button class="btn" id="ld-save" style="background:#4c7dff;border-color:#4c7dff">Add link</button></div>
 </dialog>
 
+<dialog id="bug-dialog">
+  <h2>Report a bug on <span id="bd-page"></span></h2>
+  <label>Title</label><input id="bd-title" placeholder="Short description of the bug" />
+  <div class="row">
+    <div><label>Severity</label><select id="bd-sev">
+      <option value="S2">S2 — major</option>
+      <option value="S3" selected>S3 — minor</option>
+      <option value="S4">S4 — trivial</option>
+      <option value="S1">S1 — critical</option>
+    </select></div>
+    <div><label>Status</label><select id="bd-status">
+      <option>Open</option><option>Fixed</option><option>Won't fix</option>
+    </select></div>
+  </div>
+  <label>Linked test case IDs (comma-separated, optional)</label><input id="bd-cases" placeholder="e.g. MEMB-REG02, GEN-SAN01" />
+  <label>Linear link (optional)</label><input id="bd-linear" placeholder="https://linear.app/..." />
+  <label>JAM link (optional)</label><input id="bd-jam" placeholder="https://jam.dev/c/..." />
+  <label>Notes / repro (optional)</label><textarea id="bd-notes"></textarea>
+  <div class="note">Saved as a draft bug (BUG-DRAFT-…); on promotion the AI session assigns the next BUG-ID and validates the linked case IDs.</div>
+  <div class="actions"><button class="btn" id="bd-cancel">Cancel</button><button class="btn" id="bd-save" style="background:#4c7dff;border-color:#4c7dff">Report bug</button></div>
+</dialog>
+
 <script>
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
 const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
@@ -180,7 +209,7 @@ const BASE_PAGES = [
 
 // ---- persistence of user edits ----
 const STORE_KEY = "navmap-edits-v1";
-function emptyEdits() { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {}, addedLinks: [], removedLinks: [] }; }
+function emptyEdits() { return { addedPages: [], pageOverrides: {}, caseOverrides: {}, addedCases: {}, addedLinks: [], removedLinks: [], addedBugs: [] }; }
 function loadEdits() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY)) || emptyEdits(); }
   catch (e) { return emptyEdits(); }
@@ -190,7 +219,7 @@ let BASELINE = emptyEdits(); // committed navmap-edits.json from the repo
 function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(EDITS)); updateEditButtons(); }
 
 function hasLocalEdits() {
-  return EDITS.addedPages.length > 0 || EDITS.addedLinks.length > 0 || EDITS.removedLinks.length > 0 ||
+  return EDITS.addedPages.length > 0 || EDITS.addedLinks.length > 0 || EDITS.removedLinks.length > 0 || (EDITS.addedBugs || []).length > 0 ||
     Object.keys(EDITS.pageOverrides).length > 0 || Object.keys(EDITS.caseOverrides).length > 0 || Object.keys(EDITS.addedCases).length > 0;
 }
 function updateEditButtons() {
@@ -214,6 +243,7 @@ function mergedEdits() {
     for (const r of src.removedLinks || []) if (!m.removedLinks.some(x => x.source === r.source && x.target === r.target)) m.removedLinks.push(r);
   }
   m.addedLinks = m.addedLinks.filter(l => !m.removedLinks.some(r => r.source === l.source && r.target === l.target));
+  for (const src of [BASELINE, EDITS]) for (const b of src.addedBugs || []) if (!m.addedBugs.some(x => x.id === b.id)) m.addedBugs.push(b);
   return m;
 }
 
@@ -229,6 +259,65 @@ function allPages() {
 
 // ---- suites: Smoke merged into Sanity (SM-n / SN-n), E2E merged into Regression (RG-n) ----
 const KIND_MAP = { Smoke: ["Sanity", "SM"], Sanity: ["Sanity", "SN"], Regression: ["Regression", "RG"], E2E: ["Regression", "RG"], Draft: ["Draft", "DR"] };
+
+// ---- bugs ----
+function allBugs() { return (typeof BUGS !== "undefined" ? BUGS : []).concat(mergedEdits().addedBugs || []); }
+function bugsFor(page) { return allBugs().filter(b => b.pageId === page.id); }
+
+function bugLinksHtml(b) {
+  const out = [];
+  for (const [k, v] of Object.entries(b.links || {})) if (v) out.push(`<a href="${v}" target="_blank" rel="noopener">${k[0].toUpperCase() + k.slice(1)}</a>`);
+  return out.join(" · ") || "—";
+}
+
+function bugRowsHtml(bugs, withPage) {
+  const byId = Object.fromEntries(allPages().map(p => [p.id, p]));
+  return bugs.map(b => `<tr class="bug-row" data-bugpage="${b.pageId}" title="${(b.notes || "").replace(/"/g, "&quot;")}">
+    <td class="id">${b.id}</td>
+    <td><span class="sev ${b.severity}">${b.severity}</span></td>
+    <td><span class="bstatus ${b.status.replace(/[^A-Za-z]/g, "")}">${b.status}</span></td>
+    ${withPage ? `<td>${(byId[b.pageId] || {}).label || b.pageId}</td>` : ""}
+    <td>${fmt(b.title)}</td>
+    <td class="id">${(b.caseIds || []).join("<br>") || "—"}</td>
+    <td>${bugLinksHtml(b)}</td>
+  </tr>`).join("");
+}
+
+function bugsSectionHtml(page) {
+  const bugs = bugsFor(page);
+  if (!bugs.length) return "";
+  return `<h3>Bugs (${bugs.length})</h3>
+    <table class="tc"><thead><tr><th>Bug</th><th>Sev</th><th>Status</th><th>Title</th><th>Cases</th><th>Links</th></tr></thead>
+    <tbody>${bugRowsHtml(bugs, false)}</tbody></table>`;
+}
+
+function showAllBugs() {
+  cy.elements().removeClass("highlight hushed");
+  const bugs = allBugs();
+  pTitle.textContent = "All bugs (" + bugs.length + ")";
+  pTitle.contentEditable = "false"; pTitle.classList.remove("ed"); pTitle.onblur = null;
+  const sevs = ["All", "S1", "S2", "S3", "S4"];
+  pBody.innerHTML = `
+    <div class="filters">${sevs.map(s => `<button data-sev="${s}" class="${s === "All" ? "active" : ""}">${s}</button>`).join("")}</div>
+    <div id="bug-table"></div>
+    <div class="note">Click a row to jump to that page's node. Hover a row for repro notes.</div>`;
+  const render = sev => {
+    const list = bugs.filter(b => sev === "All" || b.severity === sev);
+    document.getElementById("bug-table").innerHTML =
+      `<table class="tc"><thead><tr><th>Bug</th><th>Sev</th><th>Status</th><th>Page</th><th>Title</th><th>Cases</th><th>Links</th></tr></thead><tbody>${bugRowsHtml(list, true)}</tbody></table>`;
+    pBody.querySelectorAll(".bug-row").forEach(tr => tr.addEventListener("click", e => {
+      if (e.target.tagName === "A") return;
+      const p = allPages().find(x => x.id === tr.dataset.bugpage);
+      if (p) { showPage(p); cy.center(cy.getElementById(p.id)); }
+    }));
+  };
+  render("All");
+  pBody.querySelectorAll(".filters button").forEach(btn => btn.addEventListener("click", () => {
+    pBody.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.sev);
+  }));
+}
 
 function tcFor(page) {
   const M = mergedEdits();
@@ -252,7 +341,10 @@ let cy;
 function buildGraph() {
   const pages = allPages();
   const elements = [
-    ...pages.map(p => ({ data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group } })),
+    ...pages.map(p => {
+      const nb = bugsFor(p).filter(b => b.status !== "Fixed").length;
+      return { data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group }, classes: nb ? "buggy" : "" };
+    }),
     ...pages.filter(p => p.parent).map(p => ({ data: { id: "edge-" + p.id, source: p.parent, target: p.id } })),
     ...extraLinks().map(l => ({ data: { id: "xedge-" + l.source + "-" + l.target, source: l.source, target: l.target }, classes: "extra" })),
   ];
@@ -278,6 +370,7 @@ function buildGraph() {
           "border-width": 1,
           "border-color": "#0f1117",
       }},
+      { selector: "node.buggy", style: { "border-color": "#ff4d4f", "border-width": 2 } },
       { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
       { selector: "node.highlight", style: { "border-color": "#ffffff", "border-width": 3 } },
       { selector: "edge", style: {
@@ -454,6 +547,7 @@ function showPage(page, keepFilter) {
     <div id="editbar">
       <button class="btn" id="edit-toggle">${editMode ? "Done editing" : "Edit"}</button>
       <button class="btn" id="add-draft">+ Draft test case</button>
+      <button class="btn" id="report-bug">+ Report bug</button>
     </div>
     <span class="badge" style="background:${GROUP_COLORS[page.group]}">${GROUP_NAMES[page.group]}</span>
     <div class="route ed" data-pfield="route" ${editMode ? 'contenteditable="true"' : ""}>${fmt(page.route)}</div>
@@ -464,6 +558,7 @@ function showPage(page, keepFilter) {
     <h3>Test cases (${cases.length})</h3>
     <div class="filters">${["All", "Sanity", "Regression"].map(t => `<button data-f="${t}" class="${t === activeFilter ? "active" : ""}">${t}</button>`).join("")}</div>
     <div id="tc-table">${renderTable(cases, activeFilter, editMode)}</div>
+    ${bugsSectionHtml(page)}
     ${editMode ? '<div class="note">Click any dashed field (page name, route, description, How to reach steps, Steps, Expected) to edit; changes save automatically to this browser.</div>' : ""}`;
 
   pBody.querySelectorAll(".filters button").forEach(btn => btn.addEventListener("click", () => {
@@ -475,6 +570,11 @@ function showPage(page, keepFilter) {
   document.getElementById("edit-toggle").addEventListener("click", () => {
     editMode = !editMode;
     showPage(allPages().find(p => p.id === page.id), currentFilter());
+  });
+  document.getElementById("report-bug").addEventListener("click", () => {
+    document.getElementById("bd-page").textContent = page.label;
+    bdlg.dataset.pageId = page.id;
+    bdlg.showModal();
   });
   document.getElementById("add-draft").addEventListener("click", () => {
     const text = prompt("Draft test case (rough one-liner — an AI model can rewrite it properly later):");
@@ -665,6 +765,35 @@ document.getElementById("save-repo").addEventListener("click", async () => {
       btn.textContent = "Save to repo"; updateEditButtons();
   }
 });
+
+// ---- bug dialog + all-bugs view ----
+const bdlg = document.getElementById("bug-dialog");
+document.getElementById("bd-cancel").addEventListener("click", () => bdlg.close());
+document.getElementById("bd-save").addEventListener("click", () => {
+  const title = document.getElementById("bd-title").value.trim();
+  if (!title) { alert("Bug title is required"); return; }
+  const urlOk = v => !v || /^https?:\/\//.test(v);
+  const linear = document.getElementById("bd-linear").value.trim();
+  const jam = document.getElementById("bd-jam").value.trim();
+  if (!urlOk(linear) || !urlOk(jam)) { alert("Links must start with http:// or https://"); return; }
+  const bug = {
+    id: "BUG-DRAFT-" + Date.now().toString(36),
+    title,
+    severity: document.getElementById("bd-sev").value,
+    status: document.getElementById("bd-status").value,
+    pageId: bdlg.dataset.pageId,
+    caseIds: document.getElementById("bd-cases").value.split(",").map(s => s.trim()).filter(Boolean),
+    links: { ...(linear && { linear }), ...(jam && { jam }) },
+    notes: document.getElementById("bd-notes").value.trim(),
+  };
+  (EDITS.addedBugs = EDITS.addedBugs || []).push(bug);
+  saveEdits();
+  bdlg.close();
+  ["bd-title", "bd-cases", "bd-linear", "bd-jam", "bd-notes"].forEach(i => document.getElementById(i).value = "");
+  buildGraph();
+  showPage(allPages().find(p => p.id === bug.pageId));
+});
+document.getElementById("all-bugs").addEventListener("click", showAllBugs);
 
 // ---- reset ----
 document.getElementById("reset-edits").addEventListener("click", () => {
