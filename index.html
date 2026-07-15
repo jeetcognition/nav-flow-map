@@ -311,7 +311,7 @@ dialog .actions button:last-child { background: var(--accent) !important; border
         <section class="empty-section">
           <h3>Toolbar</h3>
           <div class="tip-list">
-            <div class="tip-row"><span class="tip-term">Large branches</span><span class="tip-copy">nodes with more than four child pages show a disclosure arrow; click the node to expand or collapse its branch</span></div>
+            <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">every node with children starts collapsed; click the node to reveal or hide the next level</span></div>
             <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
             <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
             <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
@@ -378,14 +378,13 @@ dialog .actions button:last-child { background: var(--accent) !important; border
 <script>
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
 const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
-const FANOUT_STORE_KEY = "navmap-expanded-fanout-v1";
-const COLLAPSIBLE_CHILD_LIMIT = 4;
+const BRANCH_STORE_KEY = "navmap-expanded-branches-v1";
 const MOON_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
 const SUN_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path fill="currentColor" d="M11 1h2v4h-2zM11 19h2v4h-2zM1 11h4v2H1zM19 11h4v2h-4zM4.22 2.81l1.41-1.42 2.83 2.83-1.42 1.41zM15.54 19.78l1.42-1.41 2.82 2.82-1.41 1.42zM2.81 19.78l2.83-2.82 1.41 1.41-2.82 2.83zM19.78 4.22l-2.82 2.82-1.42-1.41 2.83-2.83z"/></svg>';
 const RESET_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 11a8 8 0 1 1 2.34 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 5v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-let expandedFanoutNodes;
-try { expandedFanoutNodes = new Set(JSON.parse(localStorage.getItem(FANOUT_STORE_KEY)) || []); }
-catch (e) { expandedFanoutNodes = new Set(); }
+let expandedBranchNodes;
+try { expandedBranchNodes = new Set(JSON.parse(localStorage.getItem(BRANCH_STORE_KEY)) || []); }
+catch (e) { expandedBranchNodes = new Set(); }
 
 function applyTheme(theme) {
   const next = theme === "dark" ? "dark" : "light";
@@ -585,24 +584,24 @@ function graphHierarchy(pages = allPages()) {
   });
   return {
     children,
-    collapsible: new Set(Object.keys(children).filter(id => children[id].length > COLLAPSIBLE_CHILD_LIMIT)),
+    collapsible: new Set(Object.keys(children)),
   };
 }
 
 function collapsedAncestorForPage(pageId, pages = allPages(), hierarchy = graphHierarchy(pages)) {
   const byId = Object.fromEntries(pages.map(p => [p.id, p]));
-  let page = byId[pageId];
+  let page = byId[pageId], collapsedAncestor = null;
   while (page && page.parent) {
-    if (hierarchy.collapsible.has(page.parent) && !expandedFanoutNodes.has(page.parent)) return page.parent;
+    if (hierarchy.collapsible.has(page.parent) && !expandedBranchNodes.has(page.parent)) collapsedAncestor = page.parent;
     page = byId[page.parent];
   }
-  return null;
+  return collapsedAncestor;
 }
 
-function toggleFanoutNode(nodeId) {
-  if (expandedFanoutNodes.has(nodeId)) expandedFanoutNodes.delete(nodeId);
-  else expandedFanoutNodes.add(nodeId);
-  localStorage.setItem(FANOUT_STORE_KEY, JSON.stringify([...expandedFanoutNodes]));
+function toggleBranchNode(nodeId) {
+  if (expandedBranchNodes.has(nodeId)) expandedBranchNodes.delete(nodeId);
+  else expandedBranchNodes.add(nodeId);
+  localStorage.setItem(BRANCH_STORE_KEY, JSON.stringify([...expandedBranchNodes]));
 }
 
 function revealPageNode(pageId) {
@@ -611,14 +610,14 @@ function revealPageNode(pageId) {
   const byId = Object.fromEntries(pages.map(p => [p.id, p]));
   let page = byId[pageId], changed = false;
   while (page && page.parent) {
-    if (hierarchy.collapsible.has(page.parent) && !expandedFanoutNodes.has(page.parent)) {
-      expandedFanoutNodes.add(page.parent);
+    if (hierarchy.collapsible.has(page.parent) && !expandedBranchNodes.has(page.parent)) {
+      expandedBranchNodes.add(page.parent);
       changed = true;
     }
     page = byId[page.parent];
   }
   if (changed) {
-    localStorage.setItem(FANOUT_STORE_KEY, JSON.stringify([...expandedFanoutNodes]));
+    localStorage.setItem(BRANCH_STORE_KEY, JSON.stringify([...expandedBranchNodes]));
     buildGraph();
   }
   return cy ? cy.getElementById(pageId) : null;
@@ -644,9 +643,9 @@ function buildGraph() {
       const testCount = tcFor(p).length;
       const childCount = (hierarchy.children[p.id] || []).length;
       const collapsible = hierarchy.collapsible.has(p.id);
-      const expanded = collapsible && expandedFanoutNodes.has(p.id);
+      const expanded = collapsible && expandedBranchNodes.has(p.id);
       const label = collapsible
-        ? (expanded ? "▾ " : "▸ ") + p.label + "\n" + childCount + " pages" + (testCount ? " · " + testCount + " tests" : "")
+        ? (expanded ? "▾ " : "▸ ") + p.label + "\n" + childCount + (childCount === 1 ? " child" : " children") + (testCount ? " · " + testCount + " tests" : "")
         : p.label + (testCount ? " (" + testCount + ")" : "");
       const hasActiveBug = pages.some(candidate =>
         endpointFor(candidate.id) === p.id && bugsFor(candidate).some(b => b.status !== "Fixed")
@@ -654,7 +653,7 @@ function buildGraph() {
       return {
         data: { id: p.id, label, group: p.group },
         classes: [
-          collapsible ? "fanout-node" : "",
+          collapsible ? "branch-node" : "",
           collapsible ? (expanded ? "expanded" : "collapsed") : "",
           hasActiveBug ? "buggy" : "",
         ].filter(Boolean).join(" "),
@@ -687,13 +686,13 @@ function buildGraph() {
           "border-width": 1,
           "border-color": "rgba(13,15,22,.35)",
       }},
-      { selector: "node.fanout-node", style: {
+      { selector: "node.branch-node", style: {
           "width": "150px",
           "border-width": 2,
           "border-style": "dashed",
           "border-color": ele => GROUP_COLORS[ele.data("group")],
       }},
-      { selector: "node.fanout-node.expanded", style: { "border-style": "solid" } },
+      { selector: "node.branch-node.expanded", style: { "border-style": "solid" } },
       { selector: "node.buggy", style: { "border-color": "#ff4d4f", "border-width": 2 } },
       { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
       { selector: "node.highlight", style: { "border-color": "#ffffff", "border-width": 3 } },
@@ -714,14 +713,15 @@ function buildGraph() {
     ],
     layout: { name: "preset" },
     wheelSensitivity: 0.2,
+    maxZoom: 1.5,
     autoungrabify: true,
   });
   layoutTree();
   routeExtraEdges();
   cy.on("tap", "node", evt => {
     const p = allPages().find(x => x.id === evt.target.id());
-    if (evt.target.hasClass("fanout-node")) {
-      toggleFanoutNode(evt.target.id());
+    if (evt.target.hasClass("branch-node")) {
+      toggleBranchNode(evt.target.id());
       buildGraph();
       if (p) showPage(p);
       return;
@@ -738,8 +738,8 @@ function buildGraph() {
   cy.fit(undefined, 20);
 }
 
-// Block-based tree layout: normal branches keep strict depth, while high-fanout
-// navigation groups use a viewport-aware grid whose rows reserve full subtree space.
+// Block-based tree layout: expanded branches use a viewport-aware grid whose
+// rows reserve complete subtree space.
 function layoutTree() {
   const children = {};
   const incoming = new Set();
@@ -760,7 +760,7 @@ function layoutTree() {
     if (!kids.length) return { id, width: nodeWidth, height: nodeHeight, nodeX: nodeWidth / 2, nodeY: nodeHeight / 2, children: [] };
 
     const childBlocks = kids.map(k => makeBlock(k, gridColumns));
-    const useGrid = node.hasClass("fanout-node");
+    const useGrid = node.hasClass("branch-node");
     const rows = [];
     if (useGrid) {
       const columns = Math.min(gridColumns, childBlocks.length);
@@ -903,7 +903,7 @@ function emptyPanelHtml() {
     <section class="empty-section">
       <h3>Toolbar</h3>
       <div class="tip-list">
-        <div class="tip-row"><span class="tip-term">Large branches</span><span class="tip-copy">nodes with more than four child pages show a disclosure arrow; click the node to expand or collapse its branch</span></div>
+        <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">every node with children starts collapsed; click the node to reveal or hide the next level</span></div>
         <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
         <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
         <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
