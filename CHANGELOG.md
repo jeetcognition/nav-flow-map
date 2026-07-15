@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-15 — Adaptive search placement + panel-side suggestions
+- **What:** The search pill now lives on whichever side is wider: on the graph when the graph area is bigger (unchanged behavior — node highlight/dim, auto-open on a single match), and centered at the top of the detail panel when the panel is wider (or in full-panel mode). On the panel side, typing opens a dropdown of matching page suggestions (name + route); clicking one opens that page and highlights/centers its node in the graph. Placement re-evaluates on panel resize, view-mode change, sidebar collapse and window resize.
+- **Why:** When the panel dominates the layout the graph-side search was cramped and highlight-only feedback wasn't visible; on the panel side, clickable page recommendations are more useful.
+
 ## 2026-07-15 — Fix graph top-bar control overlap
 - **What:** The graph's top controls (+ Add page/+ Add link, the search pill, and Fit view/Panel/Split) are now laid out in a single flex row instead of three independently absolutely-positioned groups. The search flexes in the middle between the two fixed control groups.
 - **Why:** When the graph area was narrow (wide detail panel / smaller window), the centered search pill overlapped and covered the side controls — "+ Add link" was clipped to "+" and "Fit view" disappeared. The flex row guarantees the groups never overlap at any width; the search shrinks gracefully instead.
