@@ -63,7 +63,15 @@ body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans
 #main.panel-full #graph-area, #main.panel-full #resizer { display: none; }
 #main.panel-full #panel { flex: 1 1 0; min-width: 0; width: auto !important; }
 body.resizing { user-select: none; cursor: col-resize; }
-#panel-view-toggle { position: absolute; top: 12px; right: 12px; z-index: 5; }
+#panel-topbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; min-height: 34px; }
+#panel-search-slot { position: relative; flex: 1; display: flex; min-width: 0; }
+#search-suggest { display: none; position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); width: min(380px, 100%); background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.18); z-index: 30; max-height: 320px; overflow-y: auto; }
+.suggest-item { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left; padding: 8px 12px; background: transparent; border: 0; cursor: pointer; font-family: inherit; }
+.suggest-item + .suggest-item { border-top: 1px solid var(--border-soft); }
+.suggest-item:hover { background: var(--accent-tint); }
+.suggest-label { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.suggest-route { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px; color: var(--text-dim); word-break: break-all; }
+.suggest-empty { padding: 10px 12px; font-size: 12px; color: var(--text-faint); }
 #panel-toggle, #panel-view-toggle { display: flex; gap: 2px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; flex: 0 0 auto; }
 #graph-tools { display: flex; gap: 4px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; flex: 0 0 auto; }
 #graph-tools .btn, #panel-toggle button { white-space: nowrap; }
@@ -87,7 +95,7 @@ body.resizing { user-select: none; cursor: col-resize; }
 #panel-toggle button.active, #panel-view-toggle button.active { background: var(--bg-elev); color: var(--text); font-weight: 700; box-shadow: 0 1px 3px rgba(31,35,40,.14); }
 #panel-toggle button.active:hover, #panel-view-toggle button.active:hover { background: var(--bg-elev); }
 #panel-toggle button:active, #panel-view-toggle button:active, .btn:active { transform: translateY(1px); }
-#panel h2 { font-size: 16px; line-height: 1.25; margin-bottom: 7px; padding-right: 155px; }
+#panel h2 { font-size: 16px; line-height: 1.25; margin-bottom: 7px; }
 #panel .badge { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 999px; margin-bottom: 11px; color: #0d1117; font-weight: 600; }
 .empty-state { padding: 8px 0 20px; }
 .empty-state .empty-kicker { color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
@@ -183,9 +191,12 @@ dialog .actions button:last-child { background: var(--accent) !important; border
   </button>
   <div id="resizer" title="Drag to resize the panel"></div>
   <aside id="panel">
-    <div id="panel-view-toggle">
-      <button id="pt-collapse" title="Full-screen graph (hide panel)" aria-selected="false">Graph</button>
-      <button id="pt-panel-split" class="active" title="Split view" aria-selected="true">Split</button>
+    <div id="panel-topbar">
+      <div id="panel-search-slot"><div id="search-suggest"></div></div>
+      <div id="panel-view-toggle">
+        <button id="pt-collapse" title="Full-screen graph (hide panel)" aria-selected="false">Graph</button>
+        <button id="pt-panel-split" class="active" title="Split view" aria-selected="true">Split</button>
+      </div>
     </div>
     <h2 id="p-title">Select a page</h2>
     <div id="p-body">
@@ -790,7 +801,7 @@ function setSidebarCollapsed(collapsed) {
   sidebarToggle.title = label;
   sidebarExpand.setAttribute("aria-label", label);
   sidebarExpand.title = label;
-  requestAnimationFrame(() => { if (cy) { cy.resize(); cy.fit(undefined, 20); } });
+  requestAnimationFrame(() => { placeSearch(); if (cy) { cy.resize(); cy.fit(undefined, 20); } });
 }
 setSidebarCollapsed(localStorage.getItem("navmap-sidebar") === "collapsed");
 sidebarToggle.addEventListener("click", () => setSidebarCollapsed(true));
@@ -810,6 +821,7 @@ function setView(mode) {
   main.classList.remove("panel-collapsed", "panel-full");
   if (mode) main.classList.add(mode);
   updateViewToggle(mode);
+  placeSearch();
   requestAnimationFrame(() => { if (cy) { cy.resize(); cy.fit(undefined, 20); } });
 }
 function fitGraphView() { cy.animate({ fit: { padding: 20 }, duration: 300 }); }
@@ -823,6 +835,23 @@ document.getElementById("theme-toggle").addEventListener("click", () => {
   applyTheme(next);
   buildGraph();
 });
+
+// ---- adaptive search placement (wider side hosts the search) ----
+const graphAreaEl = document.getElementById("graph-area");
+function searchOnPanel() { return document.getElementById("graph-search").parentElement.id === "panel-search-slot"; }
+function placeSearch() {
+  const gs = document.getElementById("graph-search");
+  const onPanel = main.classList.contains("panel-full") ||
+    (!main.classList.contains("panel-collapsed") && panelEl.offsetWidth > graphAreaEl.offsetWidth);
+  if (onPanel && !searchOnPanel()) {
+    document.getElementById("panel-search-slot").prepend(gs);
+  } else if (!onPanel && searchOnPanel()) {
+    document.getElementById("graph-topbar").insertBefore(gs, document.getElementById("panel-toggle"));
+    hideSuggestions();
+  }
+  refreshSearchResults();
+}
+window.addEventListener("resize", placeSearch);
 
 // ---- draggable panel resizer ----
 const panelEl = document.getElementById("panel");
@@ -846,6 +875,7 @@ resizer.addEventListener("pointerdown", (e) => {
     resizer.classList.remove("dragging");
     document.body.classList.remove("resizing");
     localStorage.setItem("navmap-panel-width", panelEl.offsetWidth);
+    placeSearch();
     if (cy) { cy.resize(); cy.fit(undefined, 20); }
   };
   resizer.addEventListener("pointermove", onMove);
@@ -854,6 +884,7 @@ resizer.addEventListener("pointerdown", (e) => {
 resizer.addEventListener("dblclick", () => {
   panelEl.style.width = "460px";
   localStorage.setItem("navmap-panel-width", 460);
+  placeSearch();
   if (cy) { cy.resize(); cy.fit(undefined, 20); }
 });
 
@@ -993,18 +1024,53 @@ document.getElementById("reset-edits").addEventListener("click", () => {
 });
 
 // ---- search / fit ----
-document.getElementById("search").addEventListener("input", e => {
-  const q = e.target.value.trim().toLowerCase();
-  document.getElementById("graph-search").classList.toggle("has-query", Boolean(e.target.value));
-  cy.elements().removeClass("highlight hushed");
-  if (!q) return;
-  const matches = allPages().filter(p => p.label.toLowerCase().includes(q) || p.route.toLowerCase().includes(q));
-  if (matches.length) {
-    cy.elements().addClass("hushed");
-    matches.forEach(p => cy.getElementById(p.id).removeClass("hushed").addClass("highlight"));
-    if (matches.length === 1) showPage(matches[0]);
+const suggestEl = document.getElementById("search-suggest");
+function hideSuggestions() { suggestEl.style.display = "none"; suggestEl.innerHTML = ""; }
+function showSuggestions(matches) {
+  if (!matches.length) {
+    suggestEl.innerHTML = '<div class="suggest-empty">No matching pages</div>';
+  } else {
+    suggestEl.innerHTML = matches.slice(0, 10).map(p =>
+      `<button type="button" class="suggest-item" data-page="${p.id}"><span class="suggest-label">${p.label}</span><span class="suggest-route">${p.route}</span></button>`
+    ).join("");
+  }
+  suggestEl.style.display = "block";
+}
+suggestEl.addEventListener("click", e => {
+  const item = e.target.closest(".suggest-item");
+  if (!item) return;
+  const p = allPages().find(x => x.id === item.dataset.page);
+  if (!p) return;
+  hideSuggestions();
+  showPage(p);
+  if (cy) {
+    const node = cy.getElementById(p.id);
+    if (node.length) { cy.elements().addClass("hushed"); node.removeClass("hushed").addClass("highlight"); cy.center(node); }
   }
 });
+document.addEventListener("click", e => {
+  if (!e.target.closest("#panel-search-slot")) hideSuggestions();
+});
+function refreshSearchResults() {
+  const input = document.getElementById("search");
+  const q = input.value.trim().toLowerCase();
+  document.getElementById("graph-search").classList.toggle("has-query", Boolean(input.value));
+  if (cy) cy.elements().removeClass("highlight hushed");
+  if (!q) { hideSuggestions(); return; }
+  const matches = allPages().filter(p => p.label.toLowerCase().includes(q) || p.route.toLowerCase().includes(q));
+  if (cy && matches.length) {
+    cy.elements().addClass("hushed");
+    matches.forEach(p => cy.getElementById(p.id).removeClass("hushed").addClass("highlight"));
+  }
+  if (searchOnPanel()) {
+    showSuggestions(matches);
+  } else {
+    hideSuggestions();
+    if (matches.length === 1) showPage(matches[0]);
+  }
+}
+document.getElementById("search").addEventListener("input", refreshSearchResults);
+document.getElementById("search").addEventListener("keydown", e => { if (e.key === "Escape") hideSuggestions(); });
 document.getElementById("search-clear").addEventListener("click", () => {
   const search = document.getElementById("search");
   search.value = "";
@@ -1020,6 +1086,7 @@ fetch("navmap-edits.json", { cache: "no-store" })
     if (data) BASELINE = { ...emptyEdits(), ...data };
     buildGraph();
     updateEditButtons();
+    placeSearch();
   });
 </script>
 </body>
