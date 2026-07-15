@@ -51,7 +51,7 @@ Do NOT, without explicit approval + immediate revert: delete/modify real session
 | `12_enterprise_connections_mcp.md` | Connections/Integrations, MCP management |
 | `13_enterprise_repositories.md` | Repositories & permissions |
 | `14_enterprise_security_guardrails.md` | Guardrails + Violations, Secure Mode Profiles, Code-Scan/Security Swarm |
-| `15_enterprise_infra_misc.md` | Enterprise Sessions, Rollout, Outpost Pools, VPC, Infrastructure, Devin API/Service users |
+| `15_enterprise_infra_misc.md` | Devin API/service users, Infrastructure, Skills & Rules |
 | `16_suborg.md` | Sub-org: New session, Automations, Security, Review, Wiki, Invite, org panel |
 | `17_automations_schedules.md` | Automations (triggers), Scheduled sessions |
 | `18_login.md` | Tenant login and hosted authentication page |

@@ -4,17 +4,13 @@ PRD §8.9 (Analytics), §8.4 (Usage/Consumption). Page: `/org/cog-enterprise-qa/
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| ANAL-SMK01 | Smoke | P1 | Enterprise settings → Analytics | Load cold | Breadcrumb; tab bar (Usage selected); date-range="This month"; org filter="All organizations"; charts render without layout shift/console errors; "Last updated…" timestamp accurate. |
-| ANAL-SAN01 | Sanity | P2 | Analytics | Click each tab (Usage/Consumption/Categories); deep-link `?tab=` | Content swaps; `?tab=consumption/categories` restore; invalid `?tab=xxx` → Usage. |
-| ANAL-SAN02 | Sanity | P2 | Usage tab | Toggle sub-tabs (Overall/Users/Service-users/Reviews); grouping By size/origin, Daily/Weekly | Charts refetch/re-render; no crash. |
-| ANAL-REG01 | Regression | P2 | Analytics | **Date-range** picker: Current/Previous toggle + presets (This week/month/quarter/billing cycle/Last 7/30/90/Custom) | Each preset refetches all charts; selection in URL; survives refresh (deep-link). |
-| ANAL-REG02 | Regression | P1 | Analytics | **Custom range**: start>end, start==end, multi-year, future end | Validation/clamping; sensible partial/empty result; no 500. |
-| ANAL-REG03 | Regression | P1 | Analytics | Query-param tamper `?start=abc&end=<script>alert(1)</script>` | Server sanitizes/falls back to default; no XSS echo; no 500. |
-| ANAL-REG04 | Regression | P2 | Analytics | **Org filter**: lists sub-orgs (searchable, incl. jeet-test-org) + "Entire Enterprise"; select one | Charts rescope; selection in URL; survives refresh; only in-enterprise orgs listed (IDOR). |
-| ANAL-REG05 | Regression | P1 | Analytics | Org filter search: XSS/SQLi/5000-char/emoji | Literal filtering; no exec; debounced; no 500. |
-| ANAL-REG06 | Regression | P2 | Analytics | Org filter on **Consumption** tab | Filter DISABLED (enterprise-billing scoped); switching from single-org (Usage) to Consumption must not silently apply stale scope; disabled state announced to AT. |
-| ANAL-REG07 | Regression | P1 | Analytics | IDOR: tamper org-id in metrics request to org outside enterprise | Server rejects; no cross-tenant leak. **N/E** (request forgery). |
-| ANAL-REG08 | Regression | P2 | Analytics | Select org with zero activity | Clean empty states in every widget (no NaN/`—`-only breakage). |
-| ANAL-REG09 | Regression | P1 | Consumption (Overall) | Verify ACU KPI internal consistency (consumed + left = total; % correct) | Numbers self-consistent (prior: 636+2,364=3,000, 21.2%); Export-to-CSV works. |
-| ANAL-REG10 | Regression | P2 | Analytics | Throttle Slow 3G / force metrics 500 | Per-widget skeleton then graceful per-widget error+retry; not infinite spinner/blank page; stale range data not shown as current. |
-| ANAL-E2E01 | E2E | P2 | Analytics | Set date range + single org → switch to Categories → refresh | Scope carries over; Categories rescopes; deep-link restores full state. |
+| ANAL-SMK01 | Smoke | P1 | Settings → Analytics | Load cold. | Usage, Consumption, Categories, date range, organization filter, Overall/Organizations/Users/Repositories views, refresh, export, charts, and KPIs render without page errors. |
+| ANAL-SAN01 | Sanity | P1 | Analytics | Switch Usage, Consumption, and Categories; then Overall, Organizations, Users, Repositories. | Tab/view selection updates charts and URL/deep link consistently. |
+| ANAL-SAN02 | Sanity | P1 | Analytics | Open date range, organization, view, and grouping dropdowns. | Options are readable, current selections are marked, and closing without selection leaves charts unchanged. |
+| ANAL-REG01 | Regression | P1 | Analytics → Date range | Select current/previous/custom ranges including start>end, same-day, future, and very large range. | Invalid ranges are rejected or clamped clearly; valid ranges refetch all widgets without stale data. |
+| ANAL-REG02 | Regression | P1 | Analytics → Organization filter | Search/select all organizations and one organization with no-match, Unicode, long, HTML-like, and injection-like input. | Filtering is literal and safe; charts rescope only to allowed organizations. |
+| ANAL-REG03 | Regression | P1 | Analytics → charts | Switch by size/origin/grouping and daily/weekly/monthly where available. | Chart labels, totals, legends, and empty states update consistently; no NaN or broken axis labels appear. |
+| ANAL-REG04 | Regression | P1 | Analytics → Export/refresh | Refresh data and export each supported view/range. | Refresh timestamp updates correctly; export file matches active filters and contains no unauthorized user/session detail. |
+| ANAL-REG05 | Regression | P1 | Analytics | Tamper query params for dates, org IDs, tab/view, and grouping with invalid and HTML-like values. | App falls back safely or shows validation; no XSS echo, 500, or cross-tenant data leak. |
+| ANAL-REG06 | Regression | P0 | Analytics | As restricted user or with tampered org/user/repo IDs, request analytics outside the enterprise. | Server denies unauthorized metrics and does not expose private usage, cost, or session metadata. |
+| ANAL-E2E01 | E2E | P1 | Analytics | Set date range + organization + view, refresh, export, deep-link reload, then clear/restore defaults. | Full analytics state is reproducible through URL and exported data matches the selected UI scope. |
