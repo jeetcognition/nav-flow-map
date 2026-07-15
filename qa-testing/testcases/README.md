@@ -59,4 +59,8 @@ Do NOT, without explicit approval + immediate revert: delete/modify real session
 | `22_enterprise_settings.md` | Enterprise Settings root page |
 
 ## Known bugs folded in as regression checks
-BUG-001 (dup org "kush-5"), BUG-002 (dup service-user name), BUG-003 (apk_+org-id exposed in Guardrails logs — P0 security), BUG-004 ("1 members" grammar), BUG-005 (idp "provider." text), BUG-006 (automation network-policy accepts javascript:/`<script>`/http:// unvalidated), BUG-011 (no Sessions list in sub-org sidebar), BUG-013 (Env Upkeep 404), BUG-014 (Devin Ultra/Fast toggle 400, no persist), BUG-015 (Review "Go to pull request" button never enables).
+BUG-002 (dup service-user name), BUG-003 (apk_+org-id exposed in Guardrails logs — P0 security), BUG-004 ("1 members" grammar), BUG-005 (idp "provider." text), BUG-006 (automation network-policy accepts javascript:/`<script>`/http:// unvalidated), BUG-011 (no Sessions list in sub-org sidebar), BUG-013 (Env Upkeep 404), BUG-014 (Devin Ultra/Fast toggle 400, no persist), BUG-015 (Review "Go to pull request" button never enables).
+
+## Organization observations reserved for bug tracking
+- Duplicate organization display names are visible in the table (including `ok1` and `p1`), making row identity ambiguous when names are the only visible identifier. Previously tracked as BUG-001.
+- The Manage organization modal accepts an extremely large positive ACU limit client-side, then returns only a generic **Failed to update organization** response. The UI does not state the supported maximum before submission.
