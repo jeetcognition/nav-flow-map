@@ -5,109 +5,187 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Enterprise Web App — Navigation Flow Map</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f1117'/%3E%3Cpath d='M32 14v10M20 40V30a6 6 0 0 1 6-6h12a6 6 0 0 1 6 6v10' stroke='%232c3446' stroke-width='3' fill='none'/%3E%3Ccircle cx='32' cy='12' r='7' fill='%23f2c744'/%3E%3Ccircle cx='20' cy='46' r='7' fill='%234c7dff'/%3E%3Ccircle cx='44' cy='46' r='7' fill='%235dd3a0'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
 <script src="testcases.js"></script>
 <script src="bugs.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f1117; color: #e6e8ee; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-  header { padding: 10px 20px; background: #161a23; border-bottom: 1px solid #262c3a; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  header h1 { font-size: 15px; font-weight: 600; }
-  header .sub { font-size: 12px; color: #8b93a7; }
-  #search { background: #0f1117; border: 1px solid #2c3446; color: #e6e8ee; padding: 6px 10px; border-radius: 6px; font-size: 13px; width: 200px; }
-  #search:focus { outline: none; border-color: #4c7dff; }
-  .save-repo { margin-left: auto; }
-  #main { flex: 1; display: flex; min-height: 0; position: relative; }
-  #cy { flex: 1; min-width: 0; }
-  #panel { width: 460px; background: #161a23; border-left: 1px solid #262c3a; padding: 16px; overflow-y: auto; position: relative; flex-shrink: 0; }
-  #resizer { width: 5px; cursor: col-resize; background: #262c3a; flex-shrink: 0; transition: background .15s; }
-  #resizer:hover, #resizer.dragging { background: #4c7dff; }
-  #main.panel-collapsed #panel, #main.panel-collapsed #resizer { display: none; }
-  #main.panel-full #cy, #main.panel-full #resizer { display: none; }
-  #main.panel-full #panel { width: 100% !important; }
-  body.resizing { user-select: none; cursor: col-resize; }
-  #panel-toggle { position: absolute; top: 8px; right: 8px; z-index: 5; display: flex; gap: 4px; }
-  #panel-toggle button, .btn { background: #1e2433; border: 1px solid #2c3446; color: #e6e8ee; padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-  #panel-toggle button:hover, .btn:hover { border-color: #4c7dff; }
-  .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
-  .btn:disabled:hover { border-color: #2c3446; }
-  .btn.save-repo:disabled { background: #1e2433; border-color: #2c3446; color: #8b93a7; }
-  .btn.save-repo:disabled:hover { background: #1e2433; border-color: #2c3446; }
-  .btn.save-repo { background: #d93025; border-color: #d93025; color: #fff; font-weight: 700; padding: 7px 14px; box-shadow: 0 0 8px rgba(217, 48, 37, 0.55); }
-  .btn.save-repo:hover { background: #f04438; border-color: #f04438; }
-  #panel h2 { font-size: 15px; margin-bottom: 6px; padding-right: 90px; }
-  #panel .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; color: #0f1117; font-weight: 600; }
-  #panel .route { font-family: ui-monospace, monospace; font-size: 12px; background: #0f1117; border: 1px solid #2c3446; padding: 6px 8px; border-radius: 6px; word-break: break-all; margin-bottom: 10px; color: #9fd0ff; }
-  #panel p { font-size: 13px; color: #b8bfd0; line-height: 1.5; margin-bottom: 10px; }
-  #panel h3 { font-size: 11px; color: #8b93a7; text-transform: uppercase; letter-spacing: .05em; margin: 12px 0 6px; }
-  ol.path { margin: 0 0 6px 18px; font-size: 12.5px; color: #cfd5e2; }
-  ol.path li { margin-bottom: 3px; }
-  .filters { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
-  .filters button { background: #1e2433; border: 1px solid #2c3446; color: #b8bfd0; padding: 3px 10px; border-radius: 12px; font-size: 11px; cursor: pointer; }
-  .filters button.active { background: #4c7dff; border-color: #4c7dff; color: #fff; }
-  table.tc { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-  table.tc th, table.tc td { border: 1px solid #262c3a; padding: 5px 6px; text-align: left; vertical-align: top; }
-  table.tc th { background: #1e2433; color: #8b93a7; font-size: 10.5px; text-transform: uppercase; }
-  table.tc td.id { font-family: ui-monospace, monospace; white-space: nowrap; color: #9fd0ff; }
-  .tt { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 600; color: #0f1117; }
-  .tt.Sanity { background: #5dd3a0; } .tt.Regression { background: #ff8a6b; } .tt.Draft { background: #f2c744; }
-  .sev { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 700; color: #0f1117; }
-  .sev.S1 { background: #ff4d4f; color: #fff; } .sev.S2 { background: #ff8a6b; } .sev.S3 { background: #f2c744; } .sev.S4 { background: #8b93a7; }
-  .bstatus { font-size: 10.5px; font-weight: 600; } .bstatus.Open { color: #ff8a6b; } .bstatus.Fixed { color: #5dd3a0; }
-  table.tc a { color: #9fd0ff; text-decoration: none; } table.tc a:hover { text-decoration: underline; }
-  .bug-row { cursor: pointer; } .bug-row:hover td { background: #1a2130; }
-  .empty { font-size: 12px; color: #6b7285; }
-  table.tc code { font-family: ui-monospace, monospace; font-size: 10.5px; color: #9fd0ff; background: #0f1117; padding: 0 3px; border-radius: 3px; }
-  .hint { font-size: 12px; color: #6b7285; margin-top: 12px; line-height: 1.5; }
-  footer { padding: 5px 20px; background: #161a23; border-top: 1px solid #262c3a; font-size: 11px; color: #6b7285; }
-  [contenteditable="true"] { outline: 1px dashed #4c7dff; background: #10182b; }
-  #editbar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-  dialog { margin: auto; background: #161a23; color: #e6e8ee; border: 1px solid #2c3446; border-radius: 10px; padding: 18px; width: 460px; max-width: 92vw; }
-  dialog::backdrop { background: rgba(0,0,0,.6); }
-  dialog h2 { font-size: 15px; margin-bottom: 12px; }
-  dialog label { display: block; font-size: 11px; color: #8b93a7; text-transform: uppercase; margin: 8px 0 3px; }
-  dialog input, dialog select, dialog textarea { width: 100%; background: #0f1117; border: 1px solid #2c3446; color: #e6e8ee; padding: 6px 8px; border-radius: 6px; font-size: 13px; font-family: inherit; }
-  dialog textarea { min-height: 70px; resize: vertical; }
-  dialog .row { display: flex; gap: 10px; }
-  dialog .row > div { flex: 1; }
-  dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
-  .note { font-size: 11px; color: #6b7285; margin-top: 4px; line-height: 1.4; }
+:root {
+  --bg: #ffffff; --bg-elev: #fbfbfc; --sidebar-bg: #f7f7f8;
+  --border: #e4e4e7; --border-soft: #ececf0;
+  --text: #1f2328; --text-dim: #656d76; --text-faint: #8b949e;
+  --accent: #317cff; --accent-tint: #eaf1ff;
+  --canvas-bg: #fbfbfd; --edge: #d0d7de; --dot: rgba(0,0,0,0.05);
+}
+[data-theme="dark"] {
+  --bg: #0d1117; --bg-elev: #12171e; --sidebar-bg: #161b22;
+  --border: #30363d; --border-soft: #262c35;
+  --text: #e6edf3; --text-dim: #8b949e; --text-faint: #6e7681;
+  --accent: #58a6ff; --accent-tint: #172740;
+  --canvas-bg: #0d1117; --edge: #39415a; --dot: rgba(255,255,255,0.035);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; overflow: hidden; }
+#main { flex: 1; display: flex; min-height: 0; position: relative; }
+#sidebar { width: 220px; flex: 0 0 220px; padding: 18px 12px 14px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+.brand { display: flex; align-items: center; gap: 9px; padding: 2px 8px 16px; font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
+.section-label { padding: 10px 10px 3px; color: var(--text-faint); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+#search { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 8px; font-size: 12px; margin-bottom: 2px; }
+#search::placeholder { color: var(--text-faint); }
+#search:focus, dialog input:focus, dialog select:focus, dialog textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-nav .btn { width: 100%; text-align: left; border-color: transparent; background: transparent; padding: 7px 10px; border-radius: 6px; }
+.sidebar-nav .btn:hover { background: var(--accent-tint); border-color: transparent; }
+.sidebar-nav #all-bugs { color: #d1242f; }
+.sidebar-bottom { margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 12px; }
+#graph-area { flex: 1; min-width: 0; position: relative; }
+#cy { width: 100%; height: 100%; background-color: var(--canvas-bg); background-image: radial-gradient(var(--dot) 1px, transparent 1px); background-size: 22px 22px; }
+#panel { width: 460px; background: var(--bg-elev); border-left: 1px solid var(--border); padding: 20px; overflow-y: auto; position: relative; flex-shrink: 0; }
+#resizer { width: 5px; cursor: col-resize; background: var(--border-soft); flex-shrink: 0; transition: background .15s; }
+#resizer:hover, #resizer.dragging { background: var(--accent); }
+#main.panel-collapsed #panel, #main.panel-collapsed #resizer { display: none; }
+#main.panel-full #graph-area, #main.panel-full #resizer { display: none; }
+#main.panel-full #panel { flex: 1 1 0; min-width: 0; width: auto !important; }
+body.resizing { user-select: none; cursor: col-resize; }
+#panel-toggle, #panel-view-toggle { position: absolute; top: 12px; right: 12px; z-index: 5; display: flex; gap: 2px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; }
+#graph-tools { position: absolute; top: 12px; left: 12px; z-index: 5; display: flex; gap: 4px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; }
+#graph-tools .btn { border-radius: 999px; padding: 5px 9px; font-size: 11px; }
+.btn:hover { border-color: var(--accent); background: var(--accent-tint); }
+#panel-toggle button:active, .btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:disabled:hover { border-color: var(--border); background: var(--bg-elev); }
+.btn.save-repo { background: #d1242f; border-color: #d1242f; color: #fff; font-weight: 700; width: 100%; }
+.btn.save-repo:hover { background: #b91c1c; border-color: #b91c1c; filter: brightness(1.06); }
+.btn.save-repo:disabled { background: var(--bg-elev); border-color: var(--border); color: var(--text-dim); }
+#reset-edits { width: 40px; height: 40px; padding: 0; display: grid; place-items: center; flex: 0 0 40px; border-radius: 10px; color: var(--text-dim); }
+#reset-edits:hover { color: #d1242f; background: var(--accent-tint); border-color: #d1242f; }
+#reset-edits:disabled:hover { color: var(--text-dim); background: var(--bg-elev); border-color: var(--border); }
+#sidebar .sidebar-bottom .save-repo { flex: 1; min-width: 0; width: auto; }
+#theme-toggle { position: fixed; right: 14px; bottom: 36px; z-index: 20; width: 40px; height: 40px; padding: 0; display: grid; place-items: center; border-radius: 10px; background: var(--bg-elev); border-color: var(--border); color: var(--text-dim); font-size: 18px; line-height: 1; box-shadow: 0 2px 8px rgba(31,35,40,.14); }
+#theme-toggle:hover { color: var(--text); background: var(--accent-tint); border-color: var(--accent); }
+#panel-toggle button, #panel-view-toggle button, .btn { background: var(--bg-elev); border: 1px solid var(--border); color: var(--text); padding: 7px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; transition: background .15s, border-color .15s, transform .1s; }
+#panel-toggle button, #panel-view-toggle button { border: 0; border-radius: 999px; background: transparent; color: var(--text-dim); font-size: 11px; font-weight: 500; padding: 5px 9px; }
+#panel-toggle button:hover, #panel-view-toggle button:hover { color: var(--text); background: var(--accent-tint); }
+#panel-toggle button.active, #panel-view-toggle button.active { background: var(--bg-elev); color: var(--text); font-weight: 700; box-shadow: 0 1px 3px rgba(31,35,40,.14); }
+#panel-toggle button.active:hover, #panel-view-toggle button.active:hover { background: var(--bg-elev); }
+#panel-toggle button:active, #panel-view-toggle button:active, .btn:active { transform: translateY(1px); }
+#panel h2 { font-size: 16px; line-height: 1.25; margin-bottom: 7px; padding-right: 155px; }
+#panel .badge { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 999px; margin-bottom: 11px; color: #0d1117; font-weight: 600; }
+.empty-state { padding: 8px 0 20px; }
+.empty-state .empty-kicker { color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+.empty-state .empty-subtitle { color: var(--text-dim); font-size: 13px; line-height: 1.55; margin-bottom: 20px; }
+.empty-state h3 { margin-top: 0; }
+.empty-section { margin-top: 20px; }
+.step-list { list-style: none; margin: 0; padding: 0; counter-reset: empty-step; }
+.step-list li { counter-increment: empty-step; display: flex; align-items: flex-start; gap: 9px; color: var(--text-dim); font-size: 12.5px; line-height: 1.45; padding: 8px 0; }
+.step-list li::before { content: counter(empty-step); display: grid; place-items: center; flex: 0 0 22px; width: 22px; height: 22px; border: 1px solid var(--border); border-radius: 999px; background: var(--accent-tint); color: var(--accent); font-size: 10px; font-weight: 700; }
+.tip-list { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.tip-row { display: flex; gap: 8px; padding: 9px 10px; font-size: 11.5px; line-height: 1.45; }
+.tip-row + .tip-row { border-top: 1px solid var(--border-soft); }
+.tip-term { color: var(--text); font-weight: 700; white-space: nowrap; }
+.tip-copy { color: var(--text-dim); }
+#panel .route { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; background: var(--bg); border: 1px solid var(--border); padding: 8px 9px; border-radius: 8px; word-break: break-all; margin-bottom: 11px; color: var(--accent); }
+#panel p { font-size: 13px; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px; }
+#panel h3 { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin: 14px 0 7px; }
+ol.path { margin: 0 0 7px 18px; font-size: 12.5px; color: var(--text-dim); }
+ol.path li { margin-bottom: 4px; }
+.filters { display: flex; gap: 6px; margin-bottom: 9px; flex-wrap: wrap; }
+.filters button { background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-dim); padding: 4px 10px; border-radius: 999px; font-size: 11px; cursor: pointer; }
+.filters button.active { background: var(--accent-tint); border-color: var(--accent); color: var(--accent); }
+table.tc { width: 100%; border: 1px solid var(--border); border-radius: 8px; border-spacing: 0; overflow: hidden; font-size: 11.5px; }
+table.tc th, table.tc td { border-bottom: 1px solid var(--border-soft); padding: 6px 7px; text-align: left; vertical-align: top; }
+table.tc tr:last-child td { border-bottom: 0; }
+table.tc th { background: var(--bg); color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+table.tc tr:hover td { background: var(--accent-tint); }
+table.tc td.id { font-family: "JetBrains Mono", ui-monospace, monospace; white-space: nowrap; color: var(--accent); }
+.tt, .sev { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; color: #0d1117; }
+.tt.Sanity { background: #5dd3a0; } .tt.Regression { background: #ff8a6b; } .tt.Draft { background: #f2c744; }
+.sev { font-weight: 700; } .sev.S1 { background: #ff4d4f; color: #fff; } .sev.S2 { background: #ff8a6b; } .sev.S3 { background: #f2c744; } .sev.S4 { background: #8b949e; }
+.bstatus { font-size: 10.5px; font-weight: 600; } .bstatus.Open { color: #d1242f; } .bstatus.Fixed { color: #1a7f37; }
+table.tc a { color: var(--accent); text-decoration: none; } table.tc a:hover { text-decoration: underline; }
+.bug-row { cursor: pointer; } .bug-row:hover td { background: var(--accent-tint); }
+.empty, .hint, .note { font-size: 12px; color: var(--text-faint); line-height: 1.5; }
+table.tc code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px; color: var(--accent); background: var(--bg); padding: 0 3px; border-radius: 3px; }
+footer { padding: 6px 16px; background: var(--bg-elev); border-top: 1px solid var(--border); font-size: 11px; color: var(--text-faint); }
+[contenteditable="true"] { outline: 1px dashed var(--accent); background: var(--accent-tint); }
+#editbar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+dialog { margin: auto; background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 460px; max-width: 92vw; box-shadow: 0 16px 50px rgba(0,0,0,.2); animation: dialog-in .15s ease-out; }
+@keyframes dialog-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
+dialog::backdrop { background: rgba(15, 23, 42, .35); backdrop-filter: blur(3px); }
+dialog h2 { font-size: 16px; margin-bottom: 13px; }
+dialog label { display: block; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; margin: 9px 0 4px; }
+dialog input, dialog select, dialog textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 9px; border-radius: 8px; font-size: 13px; font-family: inherit; }
+dialog textarea { min-height: 70px; resize: vertical; }
+dialog .row { display: flex; gap: 10px; } dialog .row > div { flex: 1; }
+dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 15px; }
+dialog .actions button:last-child { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff; }
+.note { font-size: 11px; margin-top: 4px; }
+::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
 </style>
 </head>
 <body>
-<header>
-  <h1>Enterprise Web App</h1>
-  <input id="search" type="text" placeholder="Search pages / routes…" />
-  <button id="fit" class="btn">Fit view</button>
-  <button id="add-node" class="btn">+ Add page</button>
-  <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
-  <button id="all-bugs" class="btn" style="border-color:#ff4d4f" title="All known bugs across every page — pages with active bugs have this same red border on their node">Bugs</button>
-  <button id="reset-edits" class="btn" title="No unsaved edits" disabled>Reset edits</button>
-  <button id="save-repo" class="btn save-repo" data-tip="Commit edits to the GitHub repo; if there's anything to promote (drafts, new pages, field edits), an AI session automatically rewrites and promotes it into the source files" title="No unsaved edits" disabled>Save to repo</button>
-</header>
 <div id="main">
-  <div id="cy"></div>
+  <aside id="sidebar">
+    <div class="brand">Enterprise</div>
+    <input id="search" type="text" placeholder="Search pages / routes…" />
+    <div class="section-label">TOOLS</div>
+    <nav class="sidebar-nav" aria-label="Graph tools">
+      <button id="all-bugs" class="btn" title="All known bugs across every page — pages with active bugs have this same red border on their node">Bugs</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <button id="save-repo" class="btn save-repo" data-tip="Commit edits to the GitHub repo; if there's anything to promote (drafts, new pages, field edits), an AI session automatically rewrites and promotes it into the source files" title="No unsaved edits" disabled>Save to repo</button>
+      <button id="reset-edits" class="btn" title="Reset edits" aria-label="Reset edits" disabled></button>
+    </div>
+  </aside>
+  <section id="graph-area">
+    <div id="cy"></div>
+    <div id="graph-tools" aria-label="Graph editing tools">
+      <button id="add-node" class="btn">+ Add page</button>
+      <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
+    </div>
+    <div id="panel-toggle">
+      <button id="pt-fit" title="Fit graph view" aria-selected="false">Fit view</button>
+      <button id="pt-expand" title="Full-screen panel" aria-selected="false">Panel</button>
+      <button id="pt-normal" class="active" title="Split view" aria-selected="true">Split</button>
+    </div>
+  </section>
   <div id="resizer" title="Drag to resize the panel"></div>
-  <div id="panel-toggle">
-    <button id="pt-collapse" title="Full-screen graph (hide panel)">⤢ Graph</button>
-    <button id="pt-expand" title="Full-screen panel">⤢ Panel</button>
-    <button id="pt-normal" title="Split view">⿻ Split</button>
-  </div>
   <aside id="panel">
+    <div id="panel-view-toggle">
+      <button id="pt-collapse" title="Full-screen graph (hide panel)" aria-selected="false">Graph</button>
+      <button id="pt-panel-split" class="active" title="Split view" aria-selected="true">Split</button>
+    </div>
     <h2 id="p-title">Select a page</h2>
     <div id="p-body">
-      <p>The flow reads top to bottom. Click any page node to see how to reach it and the test cases linked to it (Sanity / Regression).</p>
-      <div class="hint">
-        Main flow:<br/>
-        1. Log in (OTP)<br/>
-        2. Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b><br/>
-        3. Top-left corner → click the logo / <b>jeet-test-org ▾</b><br/>
-        4. <b>Enterprise settings</b> → pick a tab<br/><br/>
-        Toolbar: <b>+ Add page</b> adds a node (with optional draft test cases for an LLM to rewrite); <b>Edit</b> in the panel makes fields and test case text editable. Edits persist in this browser (localStorage); <b>Save to repo</b> commits them to GitHub so they're permanent for everyone — and when the save contains drafts, new pages, or field edits, it automatically starts a Devin session that rewrites and promotes them into the source files.
+      <div class="empty-state">
+        <div class="empty-kicker">Navigation flow map</div>
+        <p class="empty-subtitle">The flow reads top to bottom. Click any page node to see how to reach it and the test cases linked to it (Sanity / Regression).</p>
+        <section class="empty-section">
+          <h3>Main flow</h3>
+          <ol class="step-list">
+            <li>Log in (OTP)</li>
+            <li>Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b></li>
+            <li>Top-left corner → click the logo / <b>jeet-test-org ▾</b></li>
+            <li><b>Enterprise settings</b> → pick a tab</li>
+          </ol>
+        </section>
+        <section class="empty-section">
+          <h3>Toolbar</h3>
+          <div class="tip-list">
+            <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
+            <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
+            <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
+            <div class="tip-row"><span class="tip-term">Save to repo</span><span class="tip-copy">commits them to GitHub so they're permanent for everyone — and when the save contains drafts, new pages, or field edits, it automatically starts a Devin session that rewrites and promotes them into the source files.</span></div>
+          </div>
+        </section>
       </div>
     </div>
   </aside>
 </div>
+<button id="theme-toggle" class="btn" type="button"></button>
 <footer>Sources: qa-testing/nav_graph.md &middot; qa-testing/testcases/*.md &middot; Suites: Sanity (SM/SN) &amp; Regression (RG)</footer>
 
 <dialog id="node-dialog">
@@ -164,6 +242,22 @@
 <script>
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
 const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
+const MOON_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+const SUN_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path fill="currentColor" d="M11 1h2v4h-2zM11 19h2v4h-2zM1 11h4v2H1zM19 11h4v2h-4zM4.22 2.81l1.41-1.42 2.83 2.83-1.42 1.41zM15.54 19.78l1.42-1.41 2.82 2.82-1.41 1.42zM2.81 19.78l2.83-2.82 1.41 1.41-2.82 2.83zM19.78 4.22l-2.82 2.82-1.42-1.41 2.83-2.83z"/></svg>';
+const RESET_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 11a8 8 0 1 1 2.34 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 5v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function applyTheme(theme) {
+  const next = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem("navmap-theme", next);
+  const toggle = document.getElementById("theme-toggle");
+  if (toggle) {
+    toggle.innerHTML = next === "dark" ? SUN_ICON : MOON_ICON;
+    toggle.setAttribute("aria-label", next === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  }
+}
+applyTheme(localStorage.getItem("navmap-theme") || "light");
+document.getElementById("reset-edits").innerHTML = RESET_ICON;
 
 // tree: id, label, group, route, desc, parent, via (how to navigate from parent), prefixes (testcase ID prefixes)
 const BASE_PAGES = [
@@ -229,7 +323,7 @@ function updateEditButtons() {
   reset.disabled = !dirty;
   const title = dirty ? "" : "No unsaved edits";
   save.title = title || save.dataset.tip;
-  reset.title = title;
+  reset.title = "Reset edits";
 }
 
 function mergedEdits() {
@@ -340,6 +434,7 @@ function tcFor(page) {
 let cy;
 function buildGraph() {
   const pages = allPages();
+  const edgeColor = getComputedStyle(document.documentElement).getPropertyValue("--edge").trim();
   const elements = [
     ...pages.map(p => {
       const nb = bugsFor(p).filter(b => b.status !== "Fixed").length;
@@ -357,7 +452,7 @@ function buildGraph() {
           "shape": "round-rectangle",
           "background-color": ele => GROUP_COLORS[ele.data("group")],
           "label": "data(label)",
-          "color": "#0f1117",
+          "color": "#0d0f16",
           "font-size": "10px",
           "font-weight": 600,
           "text-valign": "center",
@@ -368,7 +463,7 @@ function buildGraph() {
           "height": ele => 26 + 10 * Math.floor(ele.data("label").length / 22),
           "padding": "6px",
           "border-width": 1,
-          "border-color": "#0f1117",
+          "border-color": "rgba(13,15,22,.35)",
       }},
       { selector: "node.buggy", style: { "border-color": "#ff4d4f", "border-width": 2 } },
       { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
@@ -379,8 +474,8 @@ function buildGraph() {
           "taxi-turn": 18,
           "target-arrow-shape": "triangle",
           "arrow-scale": 0.8,
-          "line-color": "#3a4256",
-          "target-arrow-color": "#3a4256",
+          "line-color": edgeColor,
+          "target-arrow-color": edgeColor,
           "width": 1.5,
       }},
       { selector: "edge.extra", style: { "line-style": "dashed", "line-color": "#8a6bff", "target-arrow-color": "#8a6bff", "opacity": 0.25 } },
@@ -399,7 +494,7 @@ function buildGraph() {
     if (evt.target === cy) {
       cy.elements().removeClass("highlight hushed");
       pTitle.textContent = "Select a page";
-      pBody.innerHTML = `<p>Click any page node to see how to reach it and its linked test cases.</p>`;
+      pBody.innerHTML = emptyPanelHtml();
     }
   });
   cy.fit(undefined, 20);
@@ -500,6 +595,30 @@ function routeExtraEdges() {
 
 const pTitle = document.getElementById("p-title");
 const pBody = document.getElementById("p-body");
+function emptyPanelHtml() {
+  return `<div class="empty-state">
+    <div class="empty-kicker">Navigation flow map</div>
+    <p class="empty-subtitle">The flow reads top to bottom. Click any page node to see how to reach it and the test cases linked to it (Sanity / Regression).</p>
+    <section class="empty-section">
+      <h3>Main flow</h3>
+      <ol class="step-list">
+        <li>Log in (OTP)</li>
+        <li>Landing page → type <b>jeet-test-org</b> in the search bar → click <b>jeet-test-org</b></li>
+        <li>Top-left corner → click the logo / <b>jeet-test-org ▾</b></li>
+        <li><b>Enterprise settings</b> → pick a tab</li>
+      </ol>
+    </section>
+    <section class="empty-section">
+      <h3>Toolbar</h3>
+      <div class="tip-list">
+        <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
+        <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
+        <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
+        <div class="tip-row"><span class="tip-term">Save to repo</span><span class="tip-copy">commits them to GitHub so they're permanent for everyone — and when the save contains drafts, new pages, or field edits, it automatically starts a Devin session that rewrites and promotes them into the source files.</span></div>
+      </div>
+    </section>
+  </div>`;
+}
 
 function pathTo(page) {
   const byId = Object.fromEntries(allPages().map(p => [p.id, p]));
@@ -627,14 +746,33 @@ function wirePageFieldEdits(page) {
 
 // ---- panel expand/collapse ----
 const main = document.getElementById("main");
+function updateViewToggle(mode) {
+  const graphActiveId = mode === "panel-full" ? "pt-expand" : mode === null ? "pt-normal" : null;
+  const panelActiveId = mode === "panel-collapsed" ? "pt-collapse" : mode === null ? "pt-panel-split" : null;
+  document.querySelectorAll("#panel-toggle button, #panel-view-toggle button").forEach(button => {
+    const activeId = button.closest("#panel-view-toggle") ? panelActiveId : graphActiveId;
+    const active = activeId !== null && button.id === activeId;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+}
 function setView(mode) {
   main.classList.remove("panel-collapsed", "panel-full");
   if (mode) main.classList.add(mode);
+  updateViewToggle(mode);
   requestAnimationFrame(() => { if (cy) { cy.resize(); cy.fit(undefined, 20); } });
 }
+function fitGraphView() { cy.animate({ fit: { padding: 20 }, duration: 300 }); }
+document.getElementById("pt-fit").addEventListener("click", fitGraphView);
 document.getElementById("pt-collapse").addEventListener("click", () => setView("panel-collapsed"));
 document.getElementById("pt-expand").addEventListener("click", () => setView("panel-full"));
 document.getElementById("pt-normal").addEventListener("click", () => setView(null));
+document.getElementById("pt-panel-split").addEventListener("click", () => setView(null));
+document.getElementById("theme-toggle").addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  applyTheme(next);
+  buildGraph();
+});
 
 // ---- draggable panel resizer ----
 const panelEl = document.getElementById("panel");
@@ -801,11 +939,10 @@ document.getElementById("reset-edits").addEventListener("click", () => {
   EDITS = emptyEdits();
   saveEdits(); buildGraph();
   pTitle.textContent = "Select a page";
-  pBody.innerHTML = `<p>Click any page node to see how to reach it and its linked test cases.</p>`;
+  pBody.innerHTML = emptyPanelHtml();
 });
 
 // ---- search / fit ----
-document.getElementById("fit").addEventListener("click", () => cy.animate({ fit: { padding: 20 }, duration: 300 }));
 document.getElementById("search").addEventListener("input", e => {
   const q = e.target.value.trim().toLowerCase();
   cy.elements().removeClass("highlight hushed");
