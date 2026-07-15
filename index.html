@@ -160,8 +160,7 @@ const BASE_PAGES = [
   { id: "e-env", label: "Environment", group: "enterprise", route: "…/settings (Environment tab)", desc: "Environment blueprints / snapshots.", parent: "ent", via: "Left nav → Environment", prefixes: ["ENV"] },
   { id: "e-playbooks", label: "Playbooks", group: "enterprise", route: "…/settings (Playbooks tab)", desc: "Org playbooks.", parent: "ent", via: "Left nav → Playbooks", prefixes: ["PLAY"] },
   { id: "e-repos", label: "Repositories", group: "enterprise", route: "/settings/repositories", desc: "Repository permissions; DeepWiki.", parent: "ent", via: "Left nav → Repositories", prefixes: ["REPO"] },
-  { id: "e-membership", label: "Membership", group: "enterprise", route: "/settings/membership", desc: "Invite members; IdP sync; enterprise scope.", parent: "ent", via: "Left nav → Membership", prefixes: ["MEMB", "IDP"] },
-  { id: "e-roles", label: "Roles", group: "enterprise", route: "…/settings (Roles tab)", desc: "Role management.", parent: "ent", via: "Left nav → Roles", prefixes: ["ROLE"] },
+  { id: "e-membership", label: "Membership", group: "enterprise", route: "/settings/membership", desc: "Enterprise members and invitations.", parent: "ent", via: "Left nav → Membership", prefixes: ["MEMB"] },
   { id: "e-orgs", label: "Organizations", group: "enterprise", route: "…/settings/organizations", desc: "Sub-org list: create, search, drill into per-org settings.", parent: "ent", via: "Left nav → Organizations", prefixes: ["ORG"] },
   { id: "e-analytics", label: "Analytics", group: "enterprise", route: "…/settings (Analytics tab)", desc: "Usage analytics.", parent: "ent", via: "Left nav → Analytics", prefixes: ["ANAL"] },
   { id: "e-infra", label: "Infra & Misc", group: "enterprise", route: "…/settings (API, VPC, Outposts…)", desc: "Devin API, VPC, outpost pools, rollouts, skills, tags.", parent: "ent", via: "Left nav → misc admin tabs", prefixes: ["API", "INFRA", "OUT", "ROLL", "SKILL", "TAG", "VPC"] },
@@ -171,8 +170,8 @@ const BASE_PAGES = [
   { id: "user-support-page-mrkjukp2", label: "Support Page", group: "personal", route: "/org/cog-enterprise-qa/settings/support", desc: "\n", parent: "landing", via: "Left Side bar: Bottom Right corner (?) > Click on Support", prefixes: ["SUP"] },
   { id: "user-create-organisation-mrl0fx5d", label: "Create Organisation", group: "enterprise", route: "/org/cog-enterprise-qa/settings/organizations/create", desc: "User-added page.", parent: "e-orgs", via: "Click on \"Create Organisation\"", prefixes: [] },
   { id: "user-my-analytics-mrl5ps0u", label: "My Analytics", group: "personal", route: "/settings/my-analytics", desc: "User-added page.", parent: "ent", via: "Click on My analytics (on sidebar)", prefixes: [] },
-  { id: "user-roles-mrlw4bf3", label: "Roles", group: "enterprise", route: "org/cog-enterprise-qa/settings/membership?tab=roles", desc: "User-added page.", parent: "e-membership", via: "Click on Roles Tab in Membership page.", prefixes: [] },
-  { id: "user-groups-mrlw5j7x", label: "Groups", group: "enterprise", route: "/org/cog-enterprise-qa/settings/membership?tab=groups", desc: "User-added page.", parent: "e-membership", via: "Click on Groups tab", prefixes: [] },
+  { id: "user-roles-mrlw4bf3", label: "Roles", group: "enterprise", route: "/org/cog-enterprise-qa/settings/membership?tab=roles", desc: "Enterprise and organization role management.", parent: "e-membership", via: "Click the Roles tab in Membership.", prefixes: ["ROLE"] },
+  { id: "user-groups-mrlw5j7x", label: "Groups (IdP)", group: "enterprise", route: "/org/cog-enterprise-qa/settings/membership?tab=groups", desc: "Identity-provider groups and mappings.", parent: "e-membership", via: "Click the Groups (IdP) tab in Membership.", prefixes: ["IDP"] },
 ];
 
 // ---- persistence of user edits ----
