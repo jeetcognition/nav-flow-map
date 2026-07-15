@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-15 — Remove sources footer bar
+- **What:** Removed the bottom "Sources: qa-testing/nav_graph.md · qa-testing/testcases/*.md · Suites: Sanity (SM/SN) & Regression (RG)" footer bar; the main layout now fills the full viewport height.
+- **Why:** User requested the section be removed — it took vertical space without adding value in the app UI.
+
 ## 2026-07-15 — Graph toolbar polish (borders, corners, cramped hiding)
 - **What:** Removed the outlined container around + Add page / + Add link (buttons keep their own pill outlines). When the search lives on the panel side, the tools pin to the graph's left corner and Fit view/Panel/Split to the right corner (space-between) instead of sticking together. When the graph area is too narrow to fit both capsules, the whole top bar hides.
 - **Why:** The double border looked heavy in dark mode; without the search the two groups clumped together; and shrinking the graph via the resizer made the capsules overflow on top of the panel.
