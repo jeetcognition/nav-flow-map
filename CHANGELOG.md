@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-15 — Mobile-responsive application layout
+- **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
+- **Why:** The desktop-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and desktop dialogs overflowed or became inaccessible on phone-sized screens.
+
 ## 2026-07-15 — Remove sources footer bar
 - **What:** Removed the bottom "Sources: qa-testing/nav_graph.md · qa-testing/testcases/*.md · Suites: Sanity (SM/SN) & Regression (RG)" footer bar; the main layout now fills the full viewport height.
 - **Why:** User requested the section be removed — it took vertical space without adding value in the app UI.
