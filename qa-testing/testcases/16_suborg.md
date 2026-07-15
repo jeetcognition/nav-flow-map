@@ -29,7 +29,7 @@ See `14_...` SCAN-*. Sub-org: Start-scan gating + Auto-Scan schedules + Profiles
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
 | SUB-RV-SMK01 | Smoke | P2 | Sidebar → Review | Load | Review renders; PR URL input (dismiss intro modal — BL-043). |
-| SUB-RV-REG01 | Regression | P2 | Review | Paste valid PR URL → click "Go to pull request" | **BUG-015**: button never enables; Enter submits (then works incl. graceful "PR Not Found"). |
+| SUB-RV-REG01 | Regression | P2 | Review | Paste valid PR URL → click "Go to pull request" | **BUG-017**: button never enables; Enter submits (then works incl. graceful "PR Not Found"). |
 
 ## Wiki — sub-org
 
