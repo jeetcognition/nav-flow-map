@@ -39,7 +39,8 @@ body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans
 #sidebar-expand { display: none; position: fixed; top: 58px; left: 12px; z-index: 20; background: var(--bg-elev); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(31,35,40,.14); }
 #main.sidebar-collapsed #sidebar { display: none; }
 #main.sidebar-collapsed #sidebar-expand { display: grid; }
-#graph-search { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: 7px; width: min(380px, calc(100% - 320px)); min-width: 220px; padding: 3px 5px 3px 10px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; color: var(--text-faint); }
+#graph-topbar { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 6; display: flex; align-items: center; gap: 8px; min-width: 0; }
+#graph-search { position: static; transform: none; display: flex; align-items: center; gap: 7px; flex: 1 1 220px; width: auto; max-width: 380px; min-width: 0; margin: 0 auto; padding: 3px 5px 3px 10px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; color: var(--text-faint); }
 #graph-search svg { width: 15px; height: 15px; flex: 0 0 auto; }
 #search { width: 100%; min-width: 0; background: transparent; border: 0; color: var(--text); padding: 6px 0; border-radius: 0; font-size: 12px; }
 #search::placeholder { color: var(--text-faint); }
@@ -62,8 +63,10 @@ body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans
 #main.panel-full #graph-area, #main.panel-full #resizer { display: none; }
 #main.panel-full #panel { flex: 1 1 0; min-width: 0; width: auto !important; }
 body.resizing { user-select: none; cursor: col-resize; }
-#panel-toggle, #panel-view-toggle { position: absolute; top: 12px; right: 12px; z-index: 5; display: flex; gap: 2px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; }
-#graph-tools { position: absolute; top: 12px; left: 12px; z-index: 5; display: flex; gap: 4px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; }
+#panel-view-toggle { position: absolute; top: 12px; right: 12px; z-index: 5; }
+#panel-toggle, #panel-view-toggle { display: flex; gap: 2px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; flex: 0 0 auto; }
+#graph-tools { display: flex; gap: 4px; padding: 3px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 999px; flex: 0 0 auto; }
+#graph-tools .btn, #panel-toggle button { white-space: nowrap; }
 #graph-tools .btn { border-radius: 999px; padding: 5px 9px; font-size: 11px; }
 .btn:hover { border-color: var(--accent); background: var(--accent-tint); }
 #panel-toggle button:active, .btn:active { transform: translateY(1px); }
@@ -158,19 +161,21 @@ dialog .actions button:last-child { background: var(--accent) !important; border
   </aside>
   <section id="graph-area">
     <div id="cy"></div>
-    <div id="graph-search">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input id="search" type="text" placeholder="Search pages / routes…" />
-      <button id="search-clear" type="button" title="Clear search" aria-label="Clear search">×</button>
-    </div>
-    <div id="graph-tools" aria-label="Graph editing tools">
-      <button id="add-node" class="btn">+ Add page</button>
-      <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
-    </div>
-    <div id="panel-toggle">
-      <button id="pt-fit" title="Fit graph view" aria-selected="false">Fit view</button>
-      <button id="pt-expand" title="Full-screen panel" aria-selected="false">Panel</button>
-      <button id="pt-normal" class="active" title="Split view" aria-selected="true">Split</button>
+    <div id="graph-topbar">
+      <div id="graph-tools" aria-label="Graph editing tools">
+        <button id="add-node" class="btn">+ Add page</button>
+        <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
+      </div>
+      <div id="graph-search">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="search" type="text" placeholder="Search pages / routes…" />
+        <button id="search-clear" type="button" title="Clear search" aria-label="Clear search">×</button>
+      </div>
+      <div id="panel-toggle">
+        <button id="pt-fit" title="Fit graph view" aria-selected="false">Fit view</button>
+        <button id="pt-expand" title="Full-screen panel" aria-selected="false">Panel</button>
+        <button id="pt-normal" class="active" title="Split view" aria-selected="true">Split</button>
+      </div>
     </div>
   </section>
   <button id="sidebar-expand" class="btn" type="button" title="Expand sidebar" aria-label="Expand sidebar">
