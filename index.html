@@ -548,6 +548,14 @@ document.getElementById("nd-cancel").addEventListener("click", () => dlg.close()
 document.getElementById("nd-save").addEventListener("click", () => {
   const label = document.getElementById("nd-label").value.trim();
   if (!label) { alert("Page name is required"); return; }
+  const pagesNow = allPages();
+  if (pagesNow.some(p => p.label.trim().toLowerCase() === label.toLowerCase())) { alert('A page named "' + label + '" already exists — pick a different name or edit the existing page.'); return; }
+  const routeVal = document.getElementById("nd-route").value.trim();
+  if (routeVal) {
+    const clash = pagesNow.find(p => String(p.route).trim().toLowerCase() === routeVal.toLowerCase());
+    if (clash && !confirm('The page "' + clash.label + '" already has this route. Add anyway?')) return;
+  }
+  if (!pagesNow.some(p => p.id === document.getElementById("nd-parent").value)) { alert("Pick a valid parent page"); return; }
   const id = "user-" + label.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString(36);
   const page = {
     id, label,
@@ -583,7 +591,9 @@ document.getElementById("ld-save").addEventListener("click", () => {
   if (source === target) { alert("Source and target must be different pages"); return; }
   const pages = allPages();
   if (pages.some(p => p.id === target && p.parent === source)) { alert("That link already exists as the page's main parent link"); return; }
+  if (pages.some(p => p.id === source && p.parent === target)) { alert("That link is the reverse of the page's main parent link"); return; }
   if (extraLinks().some(l => l.source === source && l.target === target)) { alert("That link already exists"); return; }
+  if (extraLinks().some(l => l.source === target && l.target === source)) { alert("The reverse of that link already exists"); return; }
   const via = document.getElementById("ld-via").value.trim();
   EDITS.removedLinks = EDITS.removedLinks.filter(r => !(r.source === source && r.target === target));
   EDITS.addedLinks.push({ source, target, via: via || "Navigate directly" });
