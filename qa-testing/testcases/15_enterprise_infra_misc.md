@@ -1,44 +1,39 @@
-# 15 — Enterprise Infra & Admin misc
+# 15 — Enterprise Settings: Devin API, Infrastructure, Skills & Rules
 
-PRD §8.3 (Service users/API keys), §8.8 (Outposts/VPC/Infra), §8.9 (Rollout/Sessions), §8.10 (Categories). Pages: `/settings/{devin-api, enterprise-members, enterprise-rollout, infrastructure, outpost-pools, enterprise-sessions, enterprise-skills}`.
+Pages: `/org/cog-enterprise-qa/settings/devin-api`, `/org/cog-enterprise-qa/settings/infrastructure`, `/org/cog-enterprise-qa/settings/enterprise-skills`.
 
-## Devin API / Service users — `/settings/devin-api`
-
-| ID | Type | Pri | How to reach | Steps | Expected |
-|---|---|---|---|---|---|
-| API-SMK01 | Smoke | P1 | Enterprise settings → Devin API | Load | Service users list renders with `cog_*`/scoped tokens (masked). |
-| API-REG01 | Regression | P2 | Devin API | Check for duplicate service-user names | **BUG-002** (WORSENED to 4×): multiple "test-api key" rows. Expected: unique or warn. |
-| API-REG02 | Regression | P1 | Devin API | Create service user; verify token masked; scope permissions | Token shown once then masked; scopes enforced. **N/E** (creates real key) / delete after. |
-| API-REG03 | Regression | P0 | Devin API | Confirm no full token/secret in DOM or logs | No plaintext token persisted in UI. |
-
-## Enterprise Rollout — `/settings/enterprise-rollout`
+## Devin API — `/org/cog-enterprise-qa/settings/devin-api`
 
 | ID | Type | Pri | How to reach | Steps | Expected |
-|---|---|---|---|---|---|
-| ROLL-SMK01 | Smoke | P2 | `/settings/enterprise-rollout` | Load | **Access-gated** — "Access denied" for non-authorized (AUTO-057); with permission staged-rollout controls render. |
+|---|---|---:|---|---|---|
+| API-SMK01 | Smoke | P1 | Settings → Devin API | Load Service users cold. | Service users and Legacy API tabs, counts, search, organization/role filters, Provision, table columns, Copy role ID, and Delete actions render without page errors. |
+| API-SAN01 | Sanity | P1 | Devin API → Service users | Inspect table rows. | Name, scope, organization, role, created/expires timestamps, and actions are readable without displaying API token values. |
+| API-SAN02 | Sanity | P1 | Devin API → Legacy API | Switch to Legacy API tab. | Legacy token list/state renders; token values are masked or only shown according to documented one-time behavior. |
+| API-SAN03 | Sanity | P1 | Devin API → Provision | Open Provision without submitting. | Name, scope, organization, role, expiration, create/cancel controls, and gated submission are visible. |
+| API-REG01 | Regression | P1 | Devin API → Search/filter | Search and filter by organization/role with no-match, whitespace, Unicode, long, duplicate-name, and HTML-like text. | Filtering is literal and safe; duplicate display names remain distinguishable by metadata. |
+| API-REG02 | Regression | P1 | Devin API → Provision | With approval, test blank, duplicate, long, Unicode, HTML-like names; invalid scope/role/expiration; then cancel or delete disposable user. | Validation is clear; unsafe text is inert; invalid service users are not created. |
+| API-REG03 | Regression | P0 | Devin API | With approval, create a disposable service user and inspect UI, DOM, console, network, transcript, and logs. | Token is shown only once where intended, then masked; no full token is stored or exposed diagnostically. |
+| API-REG04 | Regression | P1 | Devin API → Delete | With approval, delete a disposable service user: cancel once, then confirm. | Confirmation identifies exact user/scope; cancel changes nothing; confirm revokes only selected credentials. |
+| API-REG05 | Regression | P0 | Devin API | As non-admin or with tampered service-user/enterprise IDs, attempt list/create/delete/legacy-token operations. | Server-side authorization prevents unauthorized key access, IDOR, and privilege escalation. |
 
-## Enterprise Sessions — `/settings/enterprise-sessions`
-See `02_sessions_composer.md` (SESS-*).
-
-## Outpost Pools / VPC / Infrastructure
-
-| ID | Type | Pri | How to reach | Steps | Expected |
-|---|---|---|---|---|---|
-| OUT-SMK01 | Smoke | P2 | `/settings/outpost-pools` | Load | Outpost pool list / hypervisors render (or empty state if none). |
-| VPC-SMK01 | Smoke | P2 | `/settings/vpc-monitoring` | Load | VPC monitoring renders (or empty state). |
-| INFRA-SMK01 | Smoke | P2 | `/settings/infrastructure` | Load | Infrastructure page renders; no console errors. |
-| INFRA-REG01 | Regression | P2 | Infrastructure | Any list search/filter | Inert to injection; filters apply. |
-
-## Enterprise Skills — `/settings/enterprise-skills`
+## Infrastructure — `/org/cog-enterprise-qa/settings/infrastructure`
 
 | ID | Type | Pri | How to reach | Steps | Expected |
-|---|---|---|---|---|---|
-| SKILL-SMK01 | Smoke | P2 | `/settings/enterprise-skills` (or sidebar Skills & Rules) | Load | Skills hub / skills analytics render. |
-| SKILL-REG01 | Regression | P2 | Skills | View skill analytics; filter by repo/org | Charts render; filters apply. |
+|---|---|---:|---|---|---|
+| INFRA-SMK01 | Smoke | P1 | Settings → Infrastructure | Load cold. | Infrastructure heading, hypervisor/capacity health copy, Refresh action, and empty/list state render without page errors. |
+| INFRA-SAN01 | Sanity | P1 | Infrastructure | Inspect current VPC/tenant/hypervisor state. | Empty state such as “No VPC data available” is clear, or populated rows show tenant/hypervisor/capacity status accurately. |
+| INFRA-REG01 | Regression | P1 | Infrastructure → Refresh | Click Refresh repeatedly and during slow/error network conditions. | Refresh is idempotent; loading/error state is clear; stale health data is not shown as current after failure. |
+| INFRA-REG02 | Regression | P1 | Infrastructure | If list/search/filter controls are present, test no-match, Unicode, long, HTML-like, and injection-like values. | Filters are literal and safe; no cross-tenant infrastructure identifiers appear. |
+| INFRA-REG03 | Regression | P0 | Infrastructure | As restricted user or with tampered tenant/hypervisor IDs, request infrastructure health data. | Server denies unauthorized/cross-tenant infra visibility and does not expose internal host details unnecessarily. |
 
-## Categories & Tags
+## Skills & Rules — `/org/cog-enterprise-qa/settings/enterprise-skills`
 
 | ID | Type | Pri | How to reach | Steps | Expected |
-|---|---|---|---|---|---|
-| TAG-SMK01 | Smoke | P3 | Enterprise categories page | Load | Categories/tags list renders for reporting. |
-| TAG-REG01 | Regression | P3 | Categories | Create/rename a tag with XSS/long name | Inert; validated. **N/E** on live. |
+|---|---|---:|---|---|---|
+| SKILL-SMK01 | Smoke | P1 | Settings → Skills & Rules | Load cold. | Skills analytics, runtime filter, date filter, usage over time, most invoked skills, task types, search, and table render without page errors. |
+| SKILL-SAN01 | Sanity | P1 | Skills & Rules | Inspect analytics cards and table rows. | Invocation/session/user/last-used metrics are readable; repository/source names are associated with the correct skill. |
+| SKILL-SAN02 | Sanity | P1 | Skills & Rules | Open runtime and date-range filters. | Current selections and available ranges are clear; closing filters without selection leaves data unchanged. |
+| SKILL-REG01 | Regression | P1 | Skills & Rules → Search | Search skills/sources with match/no-match, whitespace, Unicode, long, HTML-like, and injection-like text. | Filtering is literal and safe; no-match state is clear; clearing restores all rows. |
+| SKILL-REG02 | Regression | P1 | Skills & Rules | Switch Cloud/local runtime and date ranges. | Charts/table refetch consistently; stale data is not shown as current; empty ranges render cleanly. |
+| SKILL-REG03 | Regression | P1 | Skills & Rules | Click View sessions or skill detail for a row, then return. | Navigation opens the correct filtered sessions/details view and Back restores filters/search. |
+| SKILL-REG04 | Regression | P0 | Skills & Rules | As restricted user or with tampered skill/source/session IDs, request analytics/details. | Server denies unauthorized data access and does not expose private session prompts or repository metadata. |

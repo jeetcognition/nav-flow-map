@@ -21,15 +21,15 @@ PRD §2 (Sessions), §2.3 (Progress tab tools), §2.8 (DANA), §8.9 (enterprise-
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| SESS-SMK01 | Smoke | P1 | `/settings/enterprise-sessions` | Load | List renders; filter params (creator/archived/updatedDate) in URL; no console errors. |
-| SESS-SAN01 | Sanity | P2 | Sessions | Use **Display** dropdown; select each option | View updates; no race on rapid open/close. |
-| SESS-REG01 | Regression | P1 | Sessions | Search bar: `"><script>alert(1)</script>`, `SELECT * FROM sessions`, 10,000-char | Sanitized/handled; no exec; no buffer crash. |
-| SESS-REG02 | Regression | P2 | Sessions | Filters (Creator/Archived/Date): inject `' OR 1=1 --`, empty, whitespace | Literal filtering; no 500; combining filters has no logic conflict/500. |
-| SESS-REG03 | Regression | P2 | Sessions | Clear filters → reload | Filters purged; not cached in localStorage; URL clean. |
-| SESS-REG04 | Regression | P2 | Sessions | Modify `?id=`/`?creator=` to another tenant's id (IDOR) | Server rejects cross-tenant; no data leak. |
-| SESS-REG05 | Regression | P1 | Sessions | Session titles containing `<img src=x onerror=alert(1)>` | Rendered inert (stored-XSS safe). |
-| SESS-REG06 | Regression | P2 | Sessions | Rapid double-click a session link | Exactly one navigation. |
-| SESS-E2E01 | E2E | P2 | Sessions | Filter by creator+date → open a session → back | Filtered result correct; Back restores filter state. |
+| SESS-SMK01 | Smoke | P1 | Settings → Sessions | Load cold. | Sessions list, search, Display, Creator, Archived Status, Updated date filters, Clear filters, counts, and rows render without page errors. |
+| SESS-SAN01 | Sanity | P1 | Sessions | Inspect session rows. | Title/prompt preview, organization, date, status grouping, and navigation actions are readable and do not expose sensitive hidden content. |
+| SESS-SAN02 | Sanity | P1 | Sessions | Open Display, Creator, Archived Status, and Updated date filters without applying destructive actions. | Options render, current filters are shown in URL/UI, and clearing filters resets only this page’s filter state. |
+| SESS-REG01 | Regression | P1 | Sessions → Search | Search with matching title, no-match, whitespace, Unicode, long, HTML-like, and injection-like values. | Filtering is literal and safe; no-match is clear; stored session titles/prompts render inertly. |
+| SESS-REG02 | Regression | P1 | Sessions → Filters | Combine creator, archived status, date, display, and search; refresh and Back/Forward. | Results remain consistent; URL/deep link restores filter state; Clear filters removes all criteria. |
+| SESS-REG03 | Regression | P1 | Sessions | Open a session row, then use Back/Forward. | Navigation opens the correct session; returning restores prior filters, scroll, and list state. |
+| SESS-REG04 | Regression | P0 | Sessions | As a restricted user or with tampered creator/session/enterprise IDs, request sessions outside the enterprise. | Server denies cross-enterprise or unauthorized session access; no prompt, transcript, attachment, or secret-derived data leaks. |
+| SESS-REG05 | Regression | P1 | Sessions | Force list/search/filter API 403/404/500 or slow responses. | Loading and error states are scoped to the list; stale results are not presented as current. |
+| SESS-E2E01 | E2E | P1 | Sessions | Filter to a known creator/date, open a session, return, then clear filters. | End-to-end session discovery and return navigation work without losing state. |
 
 ## Session Progress tools (PRD §2.3)
 

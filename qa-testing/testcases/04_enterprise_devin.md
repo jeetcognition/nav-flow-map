@@ -4,16 +4,12 @@ PRD §2/§6.2 (Devin product + bot-comment). Page: `/org/cog-enterprise-qa/setti
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| DEVIN-SMK01 | Smoke | P1 | Enterprise settings → Devin | Load | Renders "Devin"; 6 toggles (Ultra, Fast mode, Fusion, Enable native deployments, Allow web search tool, Lock user commit email) + Git commit attribution + Open PRs as. |
-| DEVIN-SAN01 | Sanity | P1 | Devin | Toggle **Allow web search tool** ON→reload→revert | Persists (web-search saves fine — contrast BUG-015). |
-| DEVIN-REG01 | Regression | P0 | Devin | Toggle **Ultra** → wait → reload | **Known BUG-015**: PUT/PATCH returns **400** + "Failed to update" toast; state does NOT persist. Expected once fixed: persists + reverts cleanly. |
-| DEVIN-REG02 | Regression | P0 | Devin | Toggle **Fast mode** → reload | **Known BUG-015**: 400, no persist. |
-| DEVIN-REG03 | Regression | P2 | Devin | Toggle **Fusion**, **Enable native deployments** → reload → revert | Persist + revert. |
-| DEVIN-REG04 | Regression | P1 | Devin | Open **Git commit author** dropdown | Exactly 7 options: Per-user (Default), Devin only, Co-authored (Devin+you), Co-authored (you+Devin), You only, You as author/Devin committer, Devin as author/you committer. |
-| DEVIN-REG05 | Regression | P2 | Devin | Select each commit-author option → reload | Selection persists; metadata applied to commits. (Mutates enterprise git behavior → revert.) |
-| DEVIN-REG06 | Regression | P1 | Devin | **Commit email** dropdown → "Custom email…" → enter invalid / empty / 2000-char / `' OR 1=1 --` | Options Default + Custom email; malformed rejected server-side. |
-| DEVIN-REG07 | Regression | P2 | Devin | Toggle **Lock user commit email** ON | Standard users cannot override; enforce via API attempt (IDOR check). |
-| DEVIN-REG08 | Regression | P1 | Devin | Open **Open PRs as** dropdown | Exactly 4: Devin / User / User only / Per-organization (with correct descriptions). |
-| DEVIN-REG09 | Regression | P2 | Devin | Select each "Open PRs as" → reload | Persists; behavior matches description. |
-| DEVIN-REG10 | Regression | P2 | Devin | Rapid-toggle any switch 10× | No race; no XSS in config object/DOM attrs; CSRF token required. |
-| DEVIN-E2E01 | E2E | P1 | Devin → session → PR | Set commit author = "Co-authored (Devin+you)" + Open PRs as = User → run session → open PR | PR authored/committed per settings; co-author trailer present. |
+| DEVIN-SMK01 | Smoke | P1 | Settings → Devin | Load cold. | Sessions model/mode controls, native deployments, web search, git commit attribution, commit email, lock email, and PR behavior controls render without page errors. |
+| DEVIN-SAN01 | Sanity | P1 | Devin | Inspect all switches and dropdowns without saving. | Current values and descriptions are clear; disabled/locked options explain why they cannot be changed. |
+| DEVIN-REG01 | Regression | P1 | Devin → model/mode settings | With approval, toggle Ultra/Fast/SWE/GPT/Fusion settings one at a time, reload, then restore. | Each accepted change persists; rejected changes show actionable errors and leave prior state intact. |
+| DEVIN-REG02 | Regression | P1 | Devin → tools/deployments | With approval, toggle native deployments and web search, reload, then restore. | New sessions receive allowed tools only according to saved settings; cleanup restores original state. |
+| DEVIN-REG03 | Regression | P1 | Devin → Git commit attribution | Open/select each commit-author option and reload, then restore. | Selection persists; descriptions match effective git metadata behavior; enterprise policy overrides are explicit. |
+| DEVIN-REG04 | Regression | P1 | Devin → Commit email | Test default/custom email, blank, malformed, long, Unicode, and injection-like values. | Valid email persists; invalid values are rejected server-side and unsafe text stays inert. |
+| DEVIN-REG05 | Regression | P1 | Devin → PR behavior | Change Open PRs as option, reload, and restore. | Saved option is reflected consistently in UI and applies to later PR creation as documented. |
+| DEVIN-REG06 | Regression | P0 | Devin | As non-admin or with tampered enterprise ID, attempt to update Devin settings. | Server-side authorization prevents unauthorized setting changes and privilege escalation. |
+| DEVIN-E2E01 | E2E | P1 | Devin → new session → PR | With approval, set disposable git/PR behavior, create a session that opens a PR, then restore. | PR author/commit metadata follows settings; cleanup restores original enterprise configuration. |
