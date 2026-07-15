@@ -5,9 +5,9 @@ PRD §2/§6.2 (Devin product + bot-comment). Page: `/org/cog-enterprise-qa/setti
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
 | DEVIN-SMK01 | Smoke | P1 | Enterprise settings → Devin | Load | Renders "Devin"; 6 toggles (Ultra, Fast mode, Fusion, Enable native deployments, Allow web search tool, Lock user commit email) + Git commit attribution + Open PRs as. |
-| DEVIN-SAN01 | Sanity | P1 | Devin | Toggle **Allow web search tool** ON→reload→revert | Persists (web-search saves fine — contrast BUG-014). |
-| DEVIN-REG01 | Regression | P0 | Devin | Toggle **Ultra** → wait → reload | **Known BUG-014**: PUT/PATCH returns **400** + "Failed to update" toast; state does NOT persist. Expected once fixed: persists + reverts cleanly. |
-| DEVIN-REG02 | Regression | P0 | Devin | Toggle **Fast mode** → reload | **Known BUG-014**: 400, no persist. |
+| DEVIN-SAN01 | Sanity | P1 | Devin | Toggle **Allow web search tool** ON→reload→revert | Persists (web-search saves fine — contrast BUG-015). |
+| DEVIN-REG01 | Regression | P0 | Devin | Toggle **Ultra** → wait → reload | **Known BUG-015**: PUT/PATCH returns **400** + "Failed to update" toast; state does NOT persist. Expected once fixed: persists + reverts cleanly. |
+| DEVIN-REG02 | Regression | P0 | Devin | Toggle **Fast mode** → reload | **Known BUG-015**: 400, no persist. |
 | DEVIN-REG03 | Regression | P2 | Devin | Toggle **Fusion**, **Enable native deployments** → reload → revert | Persist + revert. |
 | DEVIN-REG04 | Regression | P1 | Devin | Open **Git commit author** dropdown | Exactly 7 options: Per-user (Default), Devin only, Co-authored (Devin+you), Co-authored (you+Devin), You only, You as author/Devin committer, Devin as author/you committer. |
 | DEVIN-REG05 | Regression | P2 | Devin | Select each commit-author option → reload | Selection persists; metadata applied to commits. (Mutates enterprise git behavior → revert.) |

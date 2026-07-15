@@ -20,6 +20,6 @@ PRD §6.1 (Devin Review), §6.2 (bot comments). Pages: `/org/cog-enterprise-qa/s
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
 | REVUI-SMK01 | Smoke | P2 | Sub-org sidebar → Review, or `/review` | Load | Review landing renders; PR URL input present. |
-| REVUI-REG01 | Regression | P2 | Review landing | Paste a valid PR URL → click **"Go to pull request"** button | **Known BUG-015**: button never enables; only pressing **Enter** submits. Expected once fixed: button enables on valid URL and submits. |
+| REVUI-REG01 | Regression | P2 | Review landing | Paste a valid PR URL → click **"Go to pull request"** button | **Known BUG-017**: button never enables; only pressing **Enter** submits. Expected once fixed: button enables on valid URL and submits. |
 | REVUI-REG02 | Regression | P2 | Review landing | Enter invalid / nonexistent PR URL → Enter | Graceful "PR Not Found"; no crash. |
 | REVUI-E2E01 | E2E | P2 | Review UI | Open a real reviewed PR → view findings → "fix with Devin" | Findings list renders; fix spawns a session. |
