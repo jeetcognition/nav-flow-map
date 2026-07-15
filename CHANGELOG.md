@@ -6,6 +6,10 @@ Record of what changed and **why**. Newest first. Keep this updated for every fe
 - **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
 - **Why:** The desktop-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and desktop dialogs overflowed or became inaccessible on phone-sized screens.
 
+## 2026-07-15 — Inline sidebar-expand button in the graph toolbar
+- **What:** When the sidebar is collapsed, the expand button now sits inside the graph top bar, in line with and to the left of the + Add page / + Add link capsules (round pill, same height), instead of floating below them at a fixed position. Its width is included in the cramped-hiding calculation.
+- **Why:** The floating expand icon was misaligned with the toolbar row after the sidebar was collapsed.
+
 ## 2026-07-15 — Remove sources footer bar
 - **What:** Removed the bottom "Sources: qa-testing/nav_graph.md · qa-testing/testcases/*.md · Suites: Sanity (SM/SN) & Regression (RG)" footer bar; the main layout now fills the full viewport height.
 - **Why:** User requested the section be removed — it took vertical space without adding value in the app UI.
