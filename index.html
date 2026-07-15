@@ -28,6 +28,10 @@
   #panel-toggle { position: absolute; top: 8px; right: 8px; z-index: 5; display: flex; gap: 4px; }
   #panel-toggle button, .btn { background: #1e2433; border: 1px solid #2c3446; color: #e6e8ee; padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; }
   #panel-toggle button:hover, .btn:hover { border-color: #4c7dff; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+  .btn:disabled:hover { border-color: #2c3446; }
+  .btn.save-repo:disabled { background: #1e2433; border-color: #2c3446; color: #8b93a7; }
+  .btn.save-repo:disabled:hover { background: #1e2433; border-color: #2c3446; }
   .btn.save-repo { background: #d93025; border-color: #d93025; color: #fff; font-weight: 700; padding: 7px 14px; box-shadow: 0 0 8px rgba(217, 48, 37, 0.55); }
   .btn.save-repo:hover { background: #f04438; border-color: #f04438; }
   #panel h2 { font-size: 15px; margin-bottom: 6px; padding-right: 90px; }
@@ -71,8 +75,8 @@
   <button id="fit" class="btn">Fit view</button>
   <button id="add-node" class="btn">+ Add page</button>
   <button id="add-link" class="btn" title="Add an extra navigation link between two existing pages (e.g. a second way to reach the same page)">+ Add link</button>
-  <button id="reset-edits" class="btn">Reset edits</button>
-  <button id="save-repo" class="btn save-repo" title="Commit edits to the GitHub repo; if there's anything to promote (drafts, new pages, field edits), an AI session automatically rewrites and promotes it into the source files">Save to repo</button>
+  <button id="reset-edits" class="btn" title="No unsaved edits" disabled>Reset edits</button>
+  <button id="save-repo" class="btn save-repo" data-tip="Commit edits to the GitHub repo; if there's anything to promote (drafts, new pages, field edits), an AI session automatically rewrites and promotes it into the source files" title="No unsaved edits" disabled>Save to repo</button>
 </header>
 <div id="main">
   <div id="cy"></div>
@@ -183,7 +187,21 @@ function loadEdits() {
 }
 let EDITS = loadEdits();
 let BASELINE = emptyEdits(); // committed navmap-edits.json from the repo
-function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(EDITS)); }
+function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(EDITS)); updateEditButtons(); }
+
+function hasLocalEdits() {
+  return EDITS.addedPages.length > 0 || EDITS.addedLinks.length > 0 || EDITS.removedLinks.length > 0 ||
+    Object.keys(EDITS.pageOverrides).length > 0 || Object.keys(EDITS.caseOverrides).length > 0 || Object.keys(EDITS.addedCases).length > 0;
+}
+function updateEditButtons() {
+  const dirty = hasLocalEdits();
+  const save = document.getElementById("save-repo"), reset = document.getElementById("reset-edits");
+  save.disabled = !dirty;
+  reset.disabled = !dirty;
+  const title = dirty ? "" : "No unsaved edits";
+  save.title = title || save.dataset.tip;
+  reset.title = title;
+}
 
 function mergedEdits() {
   const m = emptyEdits();
@@ -644,7 +662,7 @@ document.getElementById("save-repo").addEventListener("click", async () => {
   } catch (err) {
     alert("Save failed: " + err.message);
   } finally {
-    btn.disabled = false; btn.textContent = "Save to repo";
+      btn.textContent = "Save to repo"; updateEditButtons();
   }
 });
 
@@ -678,6 +696,7 @@ fetch("navmap-edits.json", { cache: "no-store" })
   .then(data => {
     if (data) BASELINE = { ...emptyEdits(), ...data };
     buildGraph();
+    updateEditButtons();
   });
 </script>
 </body>
