@@ -306,14 +306,29 @@ function layoutTree() {
     if (p.parent && ids.has(p.parent)) (children[p.parent] = children[p.parent] || []).push(p.id);
     else roots.push(p.id);
   });
-  const XGAP = 155, YGAP = 105;
+  const XGAP = 155, YGAP = 80, MAXROW = 4;
   let nextX = 0;
   function place(id, depth) {
     const kids = children[id] || [];
     let x;
     if (!kids.length) { x = nextX; nextX += XGAP; }
     else {
-      const xs = kids.map(k => place(k, depth + 1));
+      const leaves = kids.filter(k => !(children[k] || []).length);
+      const branches = kids.filter(k => (children[k] || []).length);
+      const xs = [];
+      if (leaves.length) {
+        // stack leaf children in rows of MAXROW under the parent instead of one wide row
+        const cols = Math.min(leaves.length, MAXROW);
+        const startX = nextX;
+        leaves.forEach((k, i) => {
+          const col = i % cols, row = Math.floor(i / cols);
+          const lx = startX + col * XGAP;
+          cy.getElementById(k).position({ x: lx, y: (depth + 1 + row) * YGAP });
+          xs.push(lx);
+        });
+        nextX = startX + cols * XGAP;
+      }
+      branches.forEach(k => xs.push(place(k, depth + 1)));
       x = (Math.min(...xs) + Math.max(...xs)) / 2;
     }
     cy.getElementById(id).position({ x, y: depth * YGAP });
