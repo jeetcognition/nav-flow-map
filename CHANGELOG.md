@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-15 — Fix graph top-bar control overlap
+- **What:** The graph's top controls (+ Add page/+ Add link, the search pill, and Fit view/Panel/Split) are now laid out in a single flex row instead of three independently absolutely-positioned groups. The search flexes in the middle between the two fixed control groups.
+- **Why:** When the graph area was narrow (wide detail panel / smaller window), the centered search pill overlapped and covered the side controls — "+ Add link" was clipped to "+" and "Fit view" disappeared. The flex row guarantees the groups never overlap at any width; the search shrinks gracefully instead.
+
 ## 2026-07-15 — Graph search bar + collapsible sidebar
 - **What:** Moved the page search out of the sidebar into a floating, centered pill at the top of the graph (magnifier icon + a ✕ clear button that appears only when there's text). Added a collapse/expand toggle next to the "Enterprise" brand: it hides the sidebar so the graph reclaims the space (with a `cy.resize()`/`cy.fit()` reflow), shows a small floating expand button while collapsed, and remembers the state in `localStorage["navmap-sidebar"]`.
 - **Why:** The user wanted the search where the graph is (more discoverable, more canvas room in the sidebar) and a way to collapse the sidebar for a wider graph view.
