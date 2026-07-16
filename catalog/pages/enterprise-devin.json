@@ -13,6 +13,7 @@
     {
       "id": "DEVIN-SMK01",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Render the complete Devin settings page",
       "type": "Smoke",
       "priority": "P1",
@@ -58,7 +59,7 @@
         ]
       },
       "executors": {
-        "desktop": "eligible",
+        "devinBrowser": "eligible",
         "playwright": "eligible"
       },
       "automation": {
@@ -77,6 +78,7 @@
     {
       "id": "DEVIN-SAN01",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Explain current, disabled, and locked control states",
       "type": "Sanity",
       "priority": "P1",
@@ -122,7 +124,7 @@
         ]
       },
       "executors": {
-        "desktop": "eligible",
+        "devinBrowser": "eligible",
         "playwright": "eligible"
       },
       "automation": {
@@ -141,6 +143,7 @@
     {
       "id": "DEVIN-REG01",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Persist or safely reject model and mode changes",
       "type": "Regression",
       "priority": "P1",
@@ -195,7 +198,7 @@
         ]
       },
       "executors": {
-        "desktop": "required",
+        "devinBrowser": "required",
         "playwright": "eligible"
       },
       "automation": {
@@ -222,6 +225,7 @@
     {
       "id": "DEVIN-REG02",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Apply tool and deployment settings to new sessions",
       "type": "Regression",
       "priority": "P1",
@@ -277,7 +281,7 @@
         ]
       },
       "executors": {
-        "desktop": "required",
+        "devinBrowser": "required",
         "playwright": "eligible"
       },
       "automation": {
@@ -304,6 +308,7 @@
     {
       "id": "DEVIN-REG03",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Persist git commit attribution selection",
       "type": "Regression",
       "priority": "P1",
@@ -358,7 +363,7 @@
         ]
       },
       "executors": {
-        "desktop": "required",
+        "devinBrowser": "required",
         "playwright": "eligible"
       },
       "automation": {
@@ -385,6 +390,7 @@
     {
       "id": "DEVIN-REG04",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Validate custom git commit email values",
       "type": "Regression",
       "priority": "P1",
@@ -440,7 +446,7 @@
         ]
       },
       "executors": {
-        "desktop": "required",
+        "devinBrowser": "required",
         "playwright": "eligible"
       },
       "automation": {
@@ -459,6 +465,7 @@
     {
       "id": "DEVIN-REG05",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Persist the Open PRs behavior",
       "type": "Regression",
       "priority": "P1",
@@ -513,7 +520,7 @@
         ]
       },
       "executors": {
-        "desktop": "required",
+        "devinBrowser": "required",
         "playwright": "eligible"
       },
       "automation": {
@@ -532,6 +539,7 @@
     {
       "id": "DEVIN-REG06",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Reject unauthorized Devin settings updates",
       "type": "Regression",
       "priority": "P0",
@@ -584,7 +592,7 @@
         ]
       },
       "executors": {
-        "desktop": "eligible",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
         "blockedReason": "A deterministic non-admin fixture and safe tenant-tampering harness do not exist yet."
       },
@@ -604,6 +612,7 @@
     {
       "id": "DEVIN-E2E01",
       "pageId": "e-devin",
+      "surface": "webapp",
       "title": "Apply git and PR settings to an end-to-end PR flow",
       "type": "E2E",
       "priority": "P1",
@@ -664,7 +673,7 @@
         ]
       },
       "executors": {
-        "desktop": "required",
+        "devinBrowser": "required",
         "playwright": "eligible"
       },
       "automation": {
