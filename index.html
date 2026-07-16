@@ -753,7 +753,7 @@ function buildGraph() {
       pBody.innerHTML = emptyPanelHtml();
     }
   });
-  cy.fit(undefined, 20);
+  cy.fit(undefined, defaultGraphFitPadding());
 }
 
 // Block-based tree layout: expanded branches use a viewport-aware grid whose
@@ -900,7 +900,12 @@ function relayoutAndFitGraph() {
   cy.resize();
   layoutTree();
   routeExtraEdges();
-  cy.fit(undefined, 20);
+  cy.fit(undefined, defaultGraphFitPadding());
+}
+
+function defaultGraphFitPadding() {
+  const container = cy.container();
+  return Math.max(40, Math.min(120, Math.min(container.clientWidth, container.clientHeight) * 0.14));
 }
 
 const pTitle = document.getElementById("p-title");
