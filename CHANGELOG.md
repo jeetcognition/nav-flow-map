@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-16 — Unified QA catalog foundation
+- **What:** Established this repository as the active QA platform home, added a versioned canonical testcase schema, migrated the nine Enterprise Devin settings cases as the initial catalog pilot, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references.
+- **Why:** Test definitions, Desktop execution, and Playwright automation need one stable contract and repository boundary before the remaining legacy cases and runners can be consolidated safely.
+
 ## 2026-07-15 — Mobile-responsive application layout
 - **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
 - **Why:** The desktop-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and desktop dialogs overflowed or became inaccessible on phone-sized screens.

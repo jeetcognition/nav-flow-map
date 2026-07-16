@@ -4,6 +4,18 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 
 **Live:** https://jeetcognition.github.io/nav-flow-map/
 
+## QA platform direction
+
+This repository is the active home for the unified QA platform: Nav Flow UI, canonical catalog, Devin Desktop runner, Playwright automation, and future triage/integration services. The other QA repositories are migration sources rather than parallel systems. See [`docs/architecture.md`](docs/architecture.md).
+
+The canonical catalog contract lives under [`catalog/`](catalog/). Enterprise Settings → Devin is the initial schema pilot; the existing Markdown files and `testcases.js` continue to power the UI until catalog generation is added in the next migration step.
+
+Validate catalog changes with:
+
+```bash
+npm run catalog:validate
+```
+
 ## Features
 - Top-to-bottom flow tree (Cytoscape.js breadthfirst layout): Login → landing (search `jeet-test-org`) → top-left logo menu → Enterprise/Personal settings → tabs.
 - Click any page to see its route, description, numbered "How to reach" path, and a filterable test case table (Sanity / Regression; ex-Smoke shown as `SM-n`, ex-Sanity `SN-n`, ex-Regression/E2E `RG-n`, original IDs as tooltips).
@@ -51,4 +63,4 @@ No build step. Cytoscape.js loads from the unpkg CDN (internet required on first
 - `qa-testing/nav_graph.md` — route topology.
 - `bugs.js` — known bugs mapped to pages (seeded from the QA Bug.md tracker).
 - `CHANGELOG.md` — record of every feature/behaviour change and why it was made.
-- `qa-testing/testcases/*.md` — 220 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; later files (e.g. `18_login.md`, `19_support.md`) hold cases added afterwards or promoted from website edits.
+- `qa-testing/testcases/*.md` — 372 legacy test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; later files (e.g. `18_login.md`, `19_support.md`) hold cases added afterwards or promoted from website edits.

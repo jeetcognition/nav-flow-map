@@ -1,0 +1,8 @@
+{
+  "name": "nav-flow-map",
+  "private": true,
+  "scripts": {
+    "catalog:validate": "node scripts/validate-catalog.mjs",
+    "check": "npm run catalog:validate"
+  }
+}

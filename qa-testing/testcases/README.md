@@ -2,6 +2,8 @@
 
 Structured, repeatable test cases (Smoke / Sanity / Regression / E2E) for every page in this repo's QA scope and every page we've visited across runs R1–R7. Derived from the Enterprise PRD (`devin-enterprise-prd.md`), the Notion ENT-QA Guide, and observed application behavior.
 
+These Markdown tables are the legacy UI source during the catalog migration. New canonical metadata lives under [`../../catalog/`](../../catalog/); migrate pages incrementally rather than creating another parallel testcase source.
+
 ## Test types
 
 | Type | Purpose | When to run | Depth |
