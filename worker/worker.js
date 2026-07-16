@@ -9,6 +9,7 @@ function cors(origin) {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin",
   };
 }
 
@@ -81,6 +82,8 @@ export default {
     const headers = { ...cors(origin), "Content-Type": "application/json" };
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
     if (request.method !== "POST") return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
+    if (!ALLOWED_ORIGINS.includes(origin))
+      return new Response(JSON.stringify({ error: "origin not allowed" }), { status: 403, headers });
 
     if (new URL(request.url).pathname === "/rewrite") return handleRewrite(env, headers);
 

@@ -507,19 +507,22 @@ function bugsFor(page) { return allBugs().filter(b => b.pageId === page.id); }
 
 function bugLinksHtml(b) {
   const out = [];
-  for (const [k, v] of Object.entries(b.links || {})) if (v) out.push(`<a href="${v}" target="_blank" rel="noopener">${k[0].toUpperCase() + k.slice(1)}</a>`);
+  for (const [k, v] of Object.entries(b.links || {})) {
+    const url = v && safeUrl(v);
+    if (url) out.push(`<a href="${esc(url)}" target="_blank" rel="noopener">${esc(k[0].toUpperCase() + k.slice(1))}</a>`);
+  }
   return out.join(" · ") || "—";
 }
 
 function bugRowsHtml(bugs, withPage) {
   const byId = Object.fromEntries(allPages().map(p => [p.id, p]));
-  return bugs.map(b => `<tr class="bug-row" data-bugpage="${b.pageId}" title="${(b.notes || "").replace(/"/g, "&quot;")}">
-    <td class="id">${b.id}</td>
-    <td><span class="sev ${b.severity}">${b.severity}</span></td>
-    <td><span class="bstatus ${b.status.replace(/[^A-Za-z]/g, "")}">${b.status}</span></td>
-    ${withPage ? `<td>${(byId[b.pageId] || {}).label || b.pageId}</td>` : ""}
+  return bugs.map(b => `<tr class="bug-row" data-bugpage="${esc(b.pageId)}" title="${esc(b.notes || "")}">
+    <td class="id">${esc(b.id)}</td>
+    <td><span class="sev ${esc(b.severity)}">${esc(b.severity)}</span></td>
+    <td><span class="bstatus ${esc(b.status.replace(/[^A-Za-z]/g, ""))}">${esc(b.status)}</span></td>
+    ${withPage ? `<td>${esc((byId[b.pageId] || {}).label || b.pageId)}</td>` : ""}
     <td>${fmt(b.title)}</td>
-    <td class="id">${(b.caseIds || []).join("<br>") || "—"}</td>
+    <td class="id">${(b.caseIds || []).map(esc).join("<br>") || "—"}</td>
     <td>${bugLinksHtml(b)}</td>
   </tr>`).join("");
 }
@@ -951,11 +954,23 @@ function fmt(s) {
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function safeUrl(u) {
+  try {
+    const p = new URL(String(u), location.href);
+    return p.protocol === "http:" || p.protocol === "https:" ? p.href : null;
+  } catch (e) { return null; }
+}
+
 function renderTable(cases, filter, editable) {
   const list = filter === "All" ? cases : cases.filter(c => c.suite === filter);
   if (!list.length) return '<div class="empty">No ' + (filter === "All" ? "" : filter + " ") + 'test cases linked to this page.</div>';
   return `<div class="table-scroll"><table class="tc"><tr><th>ID</th><th>Suite</th><th>Pri</th><th>Steps</th><th>Expected</th></tr>` +
-    list.map(c => `<tr data-key="${c.key}"><td class="id" title="${fmt(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${c.suite}">${c.suite}</span></td><td>${fmt(c.pri)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table></div>`;
+    list.map(c => `<tr data-key="${esc(c.key)}"><td class="id" title="${esc(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${esc(c.suite)}">${esc(c.suite)}</span></td><td>${fmt(c.pri)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table></div>`;
 }
 
 let editMode = false;
@@ -1035,7 +1050,7 @@ function altRoutesHtml(page) {
   const incoming = extraLinks().filter(l => l.target === page.id);
   if (!incoming.length) return "";
   return `<h3>Also reachable via</h3><ol class="path">` +
-    incoming.map(l => `<li>From <b>${fmt((byId[l.source] || {}).label || l.source)}</b>: ${fmt(l.via || "Navigate directly")}${editMode ? ` <button class="btn" data-unlink="${l.source}|${page.id}" style="padding:0 6px;font-size:10px">remove</button>` : ""}</li>`).join("") + `</ol>`;
+    incoming.map(l => `<li>From <b>${fmt((byId[l.source] || {}).label || l.source)}</b>: ${fmt(l.via || "Navigate directly")}${editMode ? ` <button class="btn" data-unlink="${esc(l.source)}|${esc(page.id)}" style="padding:0 6px;font-size:10px">remove</button>` : ""}</li>`).join("") + `</ol>`;
 }
 function currentFilter() { const b = pBody.querySelector(".filters button.active"); return b ? b.dataset.f : "All"; }
 
@@ -1182,7 +1197,7 @@ resizer.addEventListener("dblclick", () => {
 const dlg = document.getElementById("node-dialog");
 document.getElementById("add-node").addEventListener("click", () => {
   const sel = document.getElementById("nd-parent");
-  sel.innerHTML = allPages().map(p => `<option value="${p.id}">${p.label}</option>`).join("");
+  sel.innerHTML = allPages().map(p => `<option value="${esc(p.id)}">${esc(p.label)}</option>`).join("");
   sel.value = "ent";
   dlg.showModal();
 });
@@ -1221,7 +1236,7 @@ document.getElementById("nd-save").addEventListener("click", () => {
 // ---- add link dialog ----
 const ldlg = document.getElementById("link-dialog");
 document.getElementById("add-link").addEventListener("click", () => {
-  const opts = allPages().map(p => `<option value="${p.id}">${p.label}</option>`).join("");
+  const opts = allPages().map(p => `<option value="${esc(p.id)}">${esc(p.label)}</option>`).join("");
   document.getElementById("ld-source").innerHTML = opts;
   document.getElementById("ld-target").innerHTML = opts;
   ldlg.showModal();
@@ -1324,7 +1339,7 @@ function showSuggestions(matches) {
     suggestEl.innerHTML = '<div class="suggest-empty">No matching pages</div>';
   } else {
     suggestEl.innerHTML = matches.slice(0, 10).map(p =>
-      `<button type="button" class="suggest-item" data-page="${p.id}"><span class="suggest-label">${p.label}</span><span class="suggest-route">${p.route}</span></button>`
+      `<button type="button" class="suggest-item" data-page="${esc(p.id)}"><span class="suggest-label">${esc(p.label)}</span><span class="suggest-route">${esc(p.route)}</span></button>`
     ).join("");
   }
   suggestEl.style.display = "block";
