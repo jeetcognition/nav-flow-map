@@ -2,9 +2,9 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
-## 2026-07-16 — Unified QA catalog foundation
-- **What:** Established this repository as the active webapp QA platform home, added a versioned canonical testcase schema, migrated the nine Enterprise Devin settings cases as the initial catalog pilot, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references. Current cases declare `surface: webapp`; all Devin-controlled Chrome execution is named `devinBrowser`. Added append-only decision/work logs and repository rules so future sessions preserve questions, answers, implementation context, and unresolved work.
-- **Why:** Test definitions, `devinBrowser` execution, and Playwright automation need one stable contract and repository boundary before the remaining legacy cases and runners can be consolidated safely.
+## 2026-07-16 — Unified QA catalog foundation (architecture only)
+- **What:** Established this repository as the active webapp QA platform home, added a versioned canonical testcase schema, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references. The catalog ships empty: page catalogs will be re-authored fresh against the schema rather than mechanically migrated. Cases declare `surface: webapp`; all Devin-controlled Chrome execution is named `devinBrowser`. Added append-only decision/work logs and repository rules so future sessions preserve questions, answers, implementation context, and unresolved work.
+- **Why:** Test definitions, `devinBrowser` execution, and Playwright automation need one stable contract and repository boundary first; authoring the case data fresh on that firm architecture avoids carrying legacy inconsistencies forward.
 
 ## 2026-07-16 — Remove QA files imported from the empty repo
 - **What:** Deleted `qa-testing/nav_graph.md` and `qa-testing/testcases/01–17_*.md` (the area files imported from jeetcognition/empty's QA suite); kept files 18–23, which were created via this app's promotion flow. Updated README and the testcases README accordingly.

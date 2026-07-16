@@ -35,8 +35,8 @@ Git stores definitions, automation source, skills, schemas, workflows, and stabl
 ## Migration sequence
 
 1. Establish the catalog contract and validator.
-2. Migrate one page at a time, beginning with Enterprise Settings → Devin.
-3. Generate Nav Flow UI data from migrated catalog files while preserving unmigrated legacy cases.
+2. Re-author page catalogs fresh against the schema, one page at a time (legacy data is reference material, not a mechanical migration source).
+3. Generate Nav Flow UI data from authored catalog files while preserving legacy cases not yet re-authored.
 4. Move the `devinBrowser` runner skill from `empty`.
 5. Move Playwright into this repository and activate ID-linked specs.
 6. Add runtime result storage, failure triage, notifications, and Pylon intake.

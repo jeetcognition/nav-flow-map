@@ -112,14 +112,12 @@ const bugIds = new Set(loadScriptConstant(path.join(root, "bugs.js"), "BUGS").ma
 const legacyCases = loadScriptConstant(path.join(root, "testcases.js"), "TESTCASES");
 const legacyById = new Map(legacyCases.map((testcase) => [testcase.id, testcase]));
 
+// An empty catalog is valid: page catalogs are re-authored fresh against the
+// schema (QA-DEC-012), so the directory starts empty by design.
 const files = fs
   .readdirSync(pagesDir)
   .filter((file) => file.endsWith(".json"))
   .sort();
-
-if (files.length === 0) {
-  fail("catalog/pages", "must contain at least one page catalog");
-}
 
 for (const file of files) {
   const relativeFile = path.join("catalog", "pages", file);

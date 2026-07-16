@@ -104,3 +104,24 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Deferred
 
 - Catalog generation into the UI dataset; runner skill; Playwright pilot specs (next vertical-slice steps).
+
+## 2026-07-16 — Strip case data; ship architecture only
+
+### Requested
+
+- Remove the migrated Enterprise Settings → Devin pilot data (and similar data changes) from the foundation PR; case data will be re-authored fresh on the firm architecture (QA-DEC-012).
+
+### Implemented
+
+- Deleted `catalog/pages/enterprise-devin.json`; `catalog/pages/` now ships empty with `.gitkeep`.
+- Validator accepts an empty catalog (removed the at-least-one-page requirement).
+- Reverted `testcases.js` to main (dropped the `STOOL-SAN02` wording edit).
+- Reworded README, `catalog/README.md`, CHANGELOG, and the architecture migration sequence from "migrate" to "re-author fresh".
+
+### Validation
+
+- `npm run check` passes (0 page files, 0 testcases).
+
+### Deferred
+
+- Fresh page-catalog authoring (page by page); catalog → UI generation; runner skill; Playwright pilot specs.

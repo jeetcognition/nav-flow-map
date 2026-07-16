@@ -2,7 +2,7 @@
 
 `catalog/pages/*.json` is the versioned testcase contract for the unified QA platform. Each page file contains page metadata and its cases; `catalog/schema/page-catalog.schema.json` defines the accepted shape.
 
-The initial pilot is Enterprise Settings → Devin. The legacy Markdown tables and `testcases.js` remain the live Nav Flow UI source until the next migration step adds generation from this catalog. During this transition, do not delete or bulk-convert the remaining legacy cases.
+The catalog starts empty (`catalog/pages/` holds only `.gitkeep`): page catalogs are re-authored fresh against the schema, page by page, rather than mechanically migrated from the legacy dataset. The legacy Markdown tables and `testcases.js` remain the live Nav Flow UI source until a later step adds generation from this catalog. During this transition, do not delete or bulk-convert the legacy cases.
 
 ## Required testcase metadata
 

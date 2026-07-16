@@ -105,6 +105,14 @@ Status values:
 - **Answer:** Reference `testcases.js`, the surviving canonical source the markdown was parsed into.
 - **Implementation:** PR #34 revival (this branch).
 
+## QA-DEC-012 — Architecture-only foundation; case data re-authored fresh
+
+- **Date:** 2026-07-16
+- **Status:** Accepted
+- **Question:** Should the foundation PR carry migrated case data (the nine Enterprise Settings → Devin pilot cases), or ship architecture only?
+- **Answer:** Architecture only. The pilot data and the `STOOL-SAN02` legacy edit were removed from the branch; `catalog/pages/` ships empty (`.gitkeep` only) and the validator accepts an empty catalog. Page catalogs will be re-authored fresh against the schema, page by page, using legacy data as reference material rather than a mechanical migration source. This supersedes the pilot-migration portion of QA-DEC-011 (the nine pilot cases no longer exist in the catalog); QA-DEC-010's validator scoping remains in force for any future `migration`-sourced cases.
+- **Rationale:** Re-authoring on a firm architecture avoids carrying legacy inconsistencies (duplicate sources, priority inflation, uneven step quality) into the canonical catalog.
+
 ## Open questions
 
 ### QA-OPEN-001 — Runtime data platform
