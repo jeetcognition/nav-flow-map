@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-16 — Playwright monorepo consolidation foundation
+- **What:** Added the Playwright-only QA project under `playwright/`, moved its CI workflow to `.github/workflows/playwright.yml` with Playwright path filters, and added sidecar automation/result overlays plus `runs/` report templates. The navigation map now renders case status, automation state, and optional per-page health pips from those overlays.
+- **Why:** Consolidate case authoring and browser automation in one repository without moving root-served GitHub Pages files or churning the canonical six-field catalog.
+
 ## 2026-07-15 — Mobile-responsive application layout
 - **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
 - **Why:** The desktop-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and desktop dialogs overflowed or became inaccessible on phone-sized screens.

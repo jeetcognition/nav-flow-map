@@ -1,0 +1,69 @@
+name: Playwright QA
+
+# Runs the Playwright suite from the monorepo's playwright/ project.
+on:
+  push:
+    paths:
+      - 'playwright/**'
+      - '.github/workflows/playwright.yml'
+  pull_request:
+    paths:
+      - 'playwright/**'
+      - '.github/workflows/playwright.yml'
+  workflow_dispatch:
+
+# Enterprise state (orgs/members) is shared, so never run two suites at once.
+concurrency:
+  group: playwright-qa
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # --- required secrets ---
+      BASE_URL: ${{ secrets.BASE_URL }}
+      DEVIN_ADMIN_EMAIL: ${{ secrets.DEVIN_ADMIN_EMAIL }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      # --- optional (fall back to code defaults if unset) ---
+      TEST_SUBORG: ${{ secrets.TEST_SUBORG || 'jeet-devin-qa-primary' }}
+      ENTERPRISE_SLUG: ${{ secrets.ENTERPRISE_SLUG }}
+      OTP_SUBJECT_INCLUDES: ${{ secrets.OTP_SUBJECT_INCLUDES }}
+      OTP_FROM_INCLUDES: ${{ secrets.OTP_FROM_INCLUDES }}
+      OTP_CODE_REGEX: ${{ secrets.OTP_CODE_REGEX }}
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: playwright/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: playwright
+
+      - name: Install Playwright Chromium + system deps
+        run: npx playwright install --with-deps chromium
+        working-directory: playwright
+
+      - name: Run Playwright tests
+        run: npm run test:ci
+        working-directory: playwright
+
+      - name: Upload Playwright report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright/playwright-report/
+            playwright/test-results/
+          retention-days: 14
+          if-no-files-found: ignore

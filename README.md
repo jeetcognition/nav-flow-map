@@ -20,6 +20,32 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 - **Permanent edits**: the site loads a committed `navmap-edits.json` from this repo on startup, so saved edits appear for everyone. `Save to repo` posts your current edits to a Cloudflare Worker (`worker/`, deployed at `navmap-save.jeet-navmap.workers.dev`) which commits the file using a server-side GitHub token — no token needed in the browser. The Worker only accepts requests from the Pages origin and validates the JSON shape.
 - **Bugs**: `bugs.js` tracks known bugs mapped to pages. Nodes with active bugs get a red border; each page's panel shows a Bugs table (ID, severity, status, linked test-case IDs, Linear/JAM links); the red-bordered `Bugs` toolbar button opens an all-bugs view with severity filters (click a row to jump to the node); `+ Report bug` on any page files a draft bug (`BUG-DRAFT-…`) that the AI promotion turns into the next `BUG-NNN` in `bugs.js`.
 - **Automatic AI promotion**: when a save contains anything promotable (drafts, added pages, field edits, or reported bugs), the Worker automatically starts a Devin session (server-side Devin API key) that rewrites the drafts and **promotes everything into the source files** (see "How edits flow" below), committing directly to `main`; reload the site once it finishes (~1–2 min). Saves that only change links don't trigger a session.
+- **QA status and automation overlays**: the page case table reads optional `qa-testing/automation.json` and `qa-testing/results.json` side files to show Playwright automation state and the latest result without changing the canonical six-field case objects. Graph nodes show a small health pip when overlay data is present.
+
+## Monorepo QA layout
+
+This repository is the monorepo base. The deployed navigation map remains at the
+repository root because GitHub Pages serves `main` from that location:
+
+```
+playwright/                 # Playwright-only browser automation project
+qa-testing/testcases/*.md   # canonical human-readable case catalog
+qa-testing/automation.json  # case ID -> Playwright automation mapping
+qa-testing/results.json     # case ID -> latest result overlay
+runs/                       # durable per-run QA summaries and template
+```
+
+The six-field cases in `testcases.js` and `qa-testing/testcases/*.md` remain the
+canonical catalog. The Playwright-only QA loop authors or selects a case, adds
+its spec mapping to `qa-testing/automation.json`, runs the relevant specs, then
+records the latest case status and evidence in `qa-testing/results.json` and a
+human-readable report under `runs/`. The overlays are intentionally separate so
+the 372 canonical case objects do not need extra execution fields.
+
+The Playwright project is run from `playwright/` with `npm ci` and
+`npm run test:ci`; `.github/workflows/playwright.yml` runs it for changes under
+`playwright/**` or workflow changes. This consolidation does not use desktop/CDP
+testing.
 
 ## How edits flow
 
@@ -51,4 +77,4 @@ No build step. Cytoscape.js loads from the unpkg CDN (internet required on first
 - `qa-testing/nav_graph.md` — route topology.
 - `bugs.js` — known bugs mapped to pages (seeded from the QA Bug.md tracker).
 - `CHANGELOG.md` — record of every feature/behaviour change and why it was made.
-- `qa-testing/testcases/*.md` — 220 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; later files (e.g. `18_login.md`, `19_support.md`) hold cases added afterwards or promoted from website edits.
+- `qa-testing/testcases/*.md` — 372 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; later files (e.g. `18_login.md`, `19_support.md`) hold cases added afterwards or promoted from website edits.

@@ -1,0 +1,10 @@
+node_modules/
+.env
+.auth/
+test-results/
+playwright-report/
+.playwright-mcp/
+.DS_Store
+
+# Machine-local tool configs
+**/*.local.json

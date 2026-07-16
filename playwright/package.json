@@ -1,0 +1,25 @@
+{
+  "name": "enterprise-qa-smoke",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Black-box Playwright smoke suite for Devin Enterprise (beta/staging). No repo access required.",
+  "scripts": {
+    "auth": "playwright test tests/auth.setup.ts --headed",
+    "test": "playwright test",
+    "test:ci": "playwright test",
+    "report": "playwright show-report",
+    "api:health": "node scripts/api-health.mjs",
+    "element-map": "node scripts/element-map.mjs",
+    "otp:test": "node scripts/otp-test.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@types/mailparser": "^3.4.6"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "imapflow": "^1.4.2",
+    "mailparser": "^3.9.11"
+  }
+}

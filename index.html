@@ -131,6 +131,14 @@ table.tc tr:hover td { background: var(--accent-tint); }
 table.tc td.id { font-family: "JetBrains Mono", ui-monospace, monospace; white-space: nowrap; color: var(--accent); }
 .tt, .sev { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; color: #0d1117; }
 .tt.Sanity { background: #5dd3a0; } .tt.Regression { background: #ff8a6b; } .tt.Draft { background: #f2c744; }
+.qstatus, .auto-indicator { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.qstatus.pass { background: #5dd3a0; color: #0d1117; }
+.qstatus.fail { background: #ff4d4f; color: #fff; }
+.qstatus.blocked { background: #f2c744; color: #0d1117; }
+.qstatus.untested { background: #8b949e; color: #0d1117; }
+.auto-indicator { color: var(--text-dim); background: var(--bg); border: 1px solid var(--border); }
+.auto-indicator.automated { color: var(--accent); border-color: var(--accent); }
+.health-pip { opacity: .95; }
 .sev { font-weight: 700; } .sev.S1 { background: #ff4d4f; color: #fff; } .sev.S2 { background: #ff8a6b; } .sev.S3 { background: #f2c744; } .sev.S4 { background: #8b949e; }
 .bstatus { font-size: 10.5px; font-weight: 600; } .bstatus.Open { color: #d1242f; } .bstatus.Fixed { color: #1a7f37; }
 table.tc a { color: var(--accent); text-decoration: none; } table.tc a:hover { text-decoration: underline; }
@@ -450,6 +458,28 @@ function loadEdits() {
 }
 let EDITS = loadEdits();
 let BASELINE = emptyEdits(); // committed navmap-edits.json from the repo
+let AUTOMATION = {};
+let RESULTS = {};
+function overlayEntry(map, caseId) {
+  return map && map[caseId] && typeof map[caseId] === "object" ? map[caseId] : {};
+}
+function caseStatus(caseId) {
+  const status = overlayEntry(RESULTS, caseId).status;
+  return ["pass", "fail", "blocked", "untested"].includes(status) ? status : "untested";
+}
+function automationEntry(caseId) {
+  const entry = overlayEntry(AUTOMATION, caseId);
+  return ["planned", "automated", "manual-only"].includes(entry.state) ? entry : {};
+}
+function statusRank(status) { return { pass: 0, untested: 1, blocked: 2, fail: 3 }[status] ?? 1; }
+function pageHealth(page) {
+  const statuses = tcFor(page).map(c => caseStatus(c.orig));
+  if (!statuses.length) return "untested";
+  return statuses.reduce((worst, status) => statusRank(status) > statusRank(worst) ? status : worst, "pass");
+}
+function healthColor(status) {
+  return { pass: "#1a7f37", fail: "#ff4d4f", blocked: "#d29922", untested: "#8b949e" }[status] || "#8b949e";
+}
 function saveEdits() { localStorage.setItem(STORE_KEY, JSON.stringify(EDITS)); updateEditButtons(); }
 
 function hasLocalEdits() {
@@ -580,6 +610,10 @@ function buildGraph() {
       const nb = bugsFor(p).filter(b => b.status !== "Fixed").length;
       return { data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group }, classes: nb ? "buggy" : "" };
     }),
+    ...pages.map(p => {
+      const health = pageHealth(p);
+      return { data: { id: "health-" + p.id, health, pageId: p.id }, classes: "health-pip" };
+    }),
     ...pages.filter(p => p.parent).map(p => ({ data: { id: "edge-" + p.id, source: p.parent, target: p.id } })),
     ...extraLinks().map(l => ({ data: { id: "xedge-" + l.source + "-" + l.target, source: l.source, target: l.target }, classes: "extra" })),
   ];
@@ -605,6 +639,16 @@ function buildGraph() {
           "border-width": 1,
           "border-color": "rgba(13,15,22,.35)",
       }},
+      { selector: "node.health-pip", style: {
+          "shape": "ellipse",
+          "background-color": ele => healthColor(ele.data("health")),
+          "width": 9,
+          "height": 9,
+          "border-width": 1,
+          "border-color": "#ffffff",
+          "z-index": 10,
+          "label": "",
+      }},
       { selector: "node.buggy", style: { "border-color": "#ff4d4f", "border-width": 2 } },
       { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
       { selector: "node.highlight", style: { "border-color": "#ffffff", "border-width": 3 } },
@@ -628,6 +672,7 @@ function buildGraph() {
     autoungrabify: true,
   });
   layoutTree();
+  positionHealthPips();
   routeExtraEdges();
   cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
   cy.on("tap", evt => {
@@ -681,6 +726,16 @@ function layoutTree() {
     return x;
   }
   roots.forEach(r => { place(r, 0); nextX += XGAP; });
+}
+
+function positionHealthPips() {
+  cy.nodes(".health-pip").forEach(pip => {
+    const page = cy.getElementById(pip.data("pageId"));
+    if (!page.length) return;
+    const pos = page.position();
+    const bb = page.boundingBox();
+    pip.position({ x: bb.x2 - 7, y: bb.y1 + 7 });
+  });
 }
 
 // Route extra links through a gutter beside the tree so they never cross nodes:
@@ -775,11 +830,29 @@ function fmt(s) {
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
+function attr(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function statusHtml(caseId) {
+  const status = caseStatus(caseId);
+  return `<span class="qstatus ${status}">${status}</span>`;
+}
+
+function automationHtml(caseId) {
+  const entry = automationEntry(caseId);
+  const state = entry.state || "planned";
+  if (state === "automated" && entry.spec) {
+    return `<a class="auto-indicator automated" href="${attr(entry.spec)}" title="${attr(entry.spec)}">${state}</a>`;
+  }
+  return `<span class="auto-indicator">${state}</span>`;
+}
+
 function renderTable(cases, filter, editable) {
   const list = filter === "All" ? cases : cases.filter(c => c.suite === filter);
   if (!list.length) return '<div class="empty">No ' + (filter === "All" ? "" : filter + " ") + 'test cases linked to this page.</div>';
-  return `<div class="table-scroll"><table class="tc"><tr><th>ID</th><th>Suite</th><th>Pri</th><th>Steps</th><th>Expected</th></tr>` +
-    list.map(c => `<tr data-key="${c.key}"><td class="id" title="${fmt(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${c.suite}">${c.suite}</span></td><td>${fmt(c.pri)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table></div>`;
+  return `<div class="table-scroll"><table class="tc"><tr><th>ID</th><th>Suite</th><th>Pri</th><th>Status</th><th>Auto</th><th>Steps</th><th>Expected</th></tr>` +
+    list.map(c => `<tr data-key="${c.key}"><td class="id" title="${attr(c.orig)}">${fmt(c.id)}</td><td><span class="tt ${c.suite}">${c.suite}</span></td><td>${fmt(c.pri)}</td><td>${statusHtml(c.orig)}</td><td>${automationHtml(c.orig)}</td><td class="ed" data-field="steps" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.steps)}</td><td class="ed" data-field="expected" ${editable ? 'contenteditable="true"' : ""}>${fmt(c.expected)}</td></tr>`).join("") + `</table></div>`;
 }
 
 let editMode = false;
@@ -1189,16 +1262,19 @@ document.getElementById("search-clear").addEventListener("click", () => {
   search.focus();
 });
 
-// ---- startup: load committed edits, then render ----
-fetch("navmap-edits.json", { cache: "no-store" })
-  .then(r => (r.ok ? r.json() : null))
-  .catch(() => null)
-  .then(data => {
-    if (data) BASELINE = { ...emptyEdits(), ...data };
-    buildGraph();
-    updateEditButtons();
-    placeSearch();
-  });
+// ---- startup: load committed overlays, then render ----
+Promise.all([
+  fetch("navmap-edits.json", { cache: "no-store" }).then(r => (r.ok ? r.json() : null)).catch(() => null),
+  fetch("qa-testing/automation.json", { cache: "no-store" }).then(r => (r.ok ? r.json() : {})).catch(() => ({})),
+  fetch("qa-testing/results.json", { cache: "no-store" }).then(r => (r.ok ? r.json() : {})).catch(() => ({})),
+]).then(([edits, automation, results]) => {
+  if (edits) BASELINE = { ...emptyEdits(), ...edits };
+  if (automation && typeof automation === "object" && !Array.isArray(automation)) AUTOMATION = automation;
+  if (results && typeof results === "object" && !Array.isArray(results)) RESULTS = results;
+  buildGraph();
+  updateEditButtons();
+  placeSearch();
+});
 </script>
 </body>
 </html>
