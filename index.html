@@ -311,7 +311,7 @@ dialog .actions button:last-child { background: var(--accent) !important; border
         <section class="empty-section">
           <h3>Toolbar</h3>
           <div class="tip-list">
-            <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">every node with children starts collapsed; click the node to reveal or hide the next level</span></div>
+            <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">the first four layers open by default; click any parent node to reveal or hide its next level</span></div>
             <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
             <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
             <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
@@ -379,12 +379,17 @@ dialog .actions button:last-child { background: var(--accent) !important; border
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
 const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
 const BRANCH_STORE_KEY = "navmap-expanded-branches-v1";
+const DEFAULT_VISIBLE_LAYERS = 4;
 const MOON_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
 const SUN_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path fill="currentColor" d="M11 1h2v4h-2zM11 19h2v4h-2zM1 11h4v2H1zM19 11h4v2h-4zM4.22 2.81l1.41-1.42 2.83 2.83-1.42 1.41zM15.54 19.78l1.42-1.41 2.82 2.82-1.41 1.42zM2.81 19.78l2.83-2.82 1.41 1.41-2.82 2.83zM19.78 4.22l-2.82 2.82-1.42-1.41 2.83-2.83z"/></svg>';
 const RESET_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 11a8 8 0 1 1 2.34 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 5v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-let expandedBranchNodes;
-try { expandedBranchNodes = new Set(JSON.parse(localStorage.getItem(BRANCH_STORE_KEY)) || []); }
-catch (e) { expandedBranchNodes = new Set(); }
+const storedBranchState = localStorage.getItem(BRANCH_STORE_KEY);
+let expandedBranchNodes, branchStateInitialized = storedBranchState !== null;
+try { expandedBranchNodes = new Set(JSON.parse(storedBranchState) || []); }
+catch (e) {
+  expandedBranchNodes = new Set();
+  branchStateInitialized = false;
+}
 
 function applyTheme(theme) {
   const next = theme === "dark" ? "dark" : "light";
@@ -588,6 +593,18 @@ function graphHierarchy(pages = allPages()) {
   };
 }
 
+function defaultExpandedBranches(pages, hierarchy) {
+  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
+  const depths = {};
+  function depthFor(id) {
+    if (depths[id] !== undefined) return depths[id];
+    const page = byId[id];
+    depths[id] = page && page.parent && byId[page.parent] ? depthFor(page.parent) + 1 : 0;
+    return depths[id];
+  }
+  return new Set([...hierarchy.collapsible].filter(id => depthFor(id) < DEFAULT_VISIBLE_LAYERS - 1));
+}
+
 function collapsedAncestorForPage(pageId, pages = allPages(), hierarchy = graphHierarchy(pages)) {
   const byId = Object.fromEntries(pages.map(p => [p.id, p]));
   let page = byId[pageId], collapsedAncestor = null;
@@ -626,6 +643,10 @@ function revealPageNode(pageId) {
 function buildGraph() {
   const pages = allPages();
   const hierarchy = graphHierarchy(pages);
+  if (!branchStateInitialized) {
+    expandedBranchNodes = defaultExpandedBranches(pages, hierarchy);
+    branchStateInitialized = true;
+  }
   const visiblePages = pages.filter(p => !collapsedAncestorForPage(p.id, pages, hierarchy));
   const visibleIds = new Set(visiblePages.map(p => p.id));
   const endpointFor = id => visibleIds.has(id) ? id : collapsedAncestorForPage(id, pages, hierarchy);
@@ -903,7 +924,7 @@ function emptyPanelHtml() {
     <section class="empty-section">
       <h3>Toolbar</h3>
       <div class="tip-list">
-        <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">every node with children starts collapsed; click the node to reveal or hide the next level</span></div>
+        <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">the first four layers open by default; click any parent node to reveal or hide its next level</span></div>
         <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
         <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
         <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>

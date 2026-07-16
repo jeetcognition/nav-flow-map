@@ -3,8 +3,8 @@
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
 ## 2026-07-15 — Collapsible, responsive graph branches
-- **What:** Every node with children now collapses by default, so the initial graph shows only its root node. Clicking a parent reveals the next level in place using a viewport-aware grid. Expansion state persists locally, hidden extra-link endpoints proxy to their collapsed ancestor, searches reveal hidden matches automatically, and active bug styling rolls up from hidden descendants. The tree measures complete subtree blocks and chooses the column count that best fits the current graph viewport.
-- **Why:** Progressive disclosure keeps the overview compact while avoiding fixed-row wrapping that placed sibling Settings tabs on fake deeper levels and shrank the full graph into a thin strip.
+- **What:** Every node with children is collapsible. The first four layers open by default, while deeper parents stay collapsed until clicked and user changes persist locally. Hidden extra-link endpoints proxy to their collapsed ancestor, searches reveal hidden matches automatically, and active bug styling rolls up from hidden descendants. The tree measures complete subtree blocks and chooses the column count that best fits the current graph viewport.
+- **Why:** Four visible layers preserve useful landing context while progressive disclosure keeps deeper high-fanout branches compact and avoids fixed-row wrapping that placed sibling Settings tabs on fake deeper levels.
 
 ## 2026-07-15 — Mobile-responsive application layout
 - **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
