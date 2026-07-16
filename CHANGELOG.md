@@ -6,6 +6,14 @@ Record of what changed and **why**. Newest first. Keep this updated for every fe
 - **What:** Established this repository as the active webapp QA platform home, added a versioned canonical testcase schema, migrated the nine Enterprise Devin settings cases as the initial catalog pilot, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references. Current cases declare `surface: webapp`; all Devin-controlled Chrome execution is named `devinBrowser`. Added append-only decision/work logs and repository rules so future sessions preserve questions, answers, implementation context, and unresolved work.
 - **Why:** Test definitions, `devinBrowser` execution, and Playwright automation need one stable contract and repository boundary before the remaining legacy cases and runners can be consolidated safely.
 
+## 2026-07-16 — Roomier default graph framing
+- **What:** Automatic graph fits now reserve responsive viewport padding (14% of the shorter graph dimension, clamped to 40–120px), while the explicit **Fit view** button retains its tighter 20px fit.
+- **Why:** The four-layer landing graph previously filled nearly the entire canvas; the roomier default framing keeps useful space around the hierarchy and makes the overview easier to scan.
+
+## 2026-07-15 — Collapsible, responsive graph branches
+- **What:** Every node with children is collapsible. The first four layers open by default, while deeper parents stay collapsed until clicked and user changes persist locally. Hidden extra-link endpoints proxy to their collapsed ancestor, searches reveal hidden matches automatically, and active bug styling rolls up from hidden descendants. The tree measures complete subtree blocks and chooses the column count that best fits the current graph viewport.
+- **Why:** Four visible layers preserve useful landing context while progressive disclosure keeps deeper high-fanout branches compact and avoids fixed-row wrapping that placed sibling Settings tabs on fake deeper levels.
+
 ## 2026-07-15 — Mobile-responsive application layout
 - **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
 - **Why:** The large-screen-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and large-screen dialogs overflowed or became inaccessible on phone-sized screens.

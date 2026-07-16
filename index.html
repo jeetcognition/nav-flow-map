@@ -308,6 +308,7 @@ dialog .actions button:last-child { background: var(--accent) !important; border
         <section class="empty-section">
           <h3>Toolbar</h3>
           <div class="tip-list">
+            <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">the first four layers open by default; click any parent node to reveal or hide its next level</span></div>
             <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
             <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
             <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
@@ -374,9 +375,18 @@ dialog .actions button:last-child { background: var(--accent) !important; border
 <script>
 const GROUP_COLORS = { entry: "#f2c744", suborg: "#4c7dff", personal: "#ff7eb6", enterprise: "#5dd3a0" };
 const GROUP_NAMES = { entry: "Auth & Entry (Yellow)", suborg: "Workspace (Blue)", personal: "User settings (Pink)", enterprise: "Enterprise settings (Green)" };
+const BRANCH_STORE_KEY = "navmap-expanded-branches-v1";
+const DEFAULT_VISIBLE_LAYERS = 4;
 const MOON_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
 const SUN_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path fill="currentColor" d="M11 1h2v4h-2zM11 19h2v4h-2zM1 11h4v2H1zM19 11h4v2h-4zM4.22 2.81l1.41-1.42 2.83 2.83-1.42 1.41zM15.54 19.78l1.42-1.41 2.82 2.82-1.41 1.42zM2.81 19.78l2.83-2.82 1.41 1.41-2.82 2.83zM19.78 4.22l-2.82 2.82-1.42-1.41 2.83-2.83z"/></svg>';
 const RESET_ICON = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 11a8 8 0 1 1 2.34 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 5v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const storedBranchState = localStorage.getItem(BRANCH_STORE_KEY);
+let expandedBranchNodes, branchStateInitialized = storedBranchState !== null;
+try { expandedBranchNodes = new Set(JSON.parse(storedBranchState) || []); }
+catch (e) {
+  expandedBranchNodes = new Set();
+  branchStateInitialized = false;
+}
 
 function applyTheme(theme) {
   const next = theme === "dark" ? "dark" : "light";
@@ -569,16 +579,108 @@ function tcFor(page) {
 
 // ---- graph ----
 let cy;
+function graphHierarchy(pages = allPages()) {
+  const children = {};
+  pages.forEach(p => {
+    if (p.parent) (children[p.parent] = children[p.parent] || []).push(p.id);
+  });
+  return {
+    children,
+    collapsible: new Set(Object.keys(children)),
+  };
+}
+
+function defaultExpandedBranches(pages, hierarchy) {
+  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
+  const depths = {};
+  function depthFor(id) {
+    if (depths[id] !== undefined) return depths[id];
+    const page = byId[id];
+    depths[id] = page && page.parent && byId[page.parent] ? depthFor(page.parent) + 1 : 0;
+    return depths[id];
+  }
+  return new Set([...hierarchy.collapsible].filter(id => depthFor(id) < DEFAULT_VISIBLE_LAYERS - 1));
+}
+
+function collapsedAncestorForPage(pageId, pages = allPages(), hierarchy = graphHierarchy(pages)) {
+  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
+  let page = byId[pageId], collapsedAncestor = null;
+  while (page && page.parent) {
+    if (hierarchy.collapsible.has(page.parent) && !expandedBranchNodes.has(page.parent)) collapsedAncestor = page.parent;
+    page = byId[page.parent];
+  }
+  return collapsedAncestor;
+}
+
+function toggleBranchNode(nodeId) {
+  if (expandedBranchNodes.has(nodeId)) expandedBranchNodes.delete(nodeId);
+  else expandedBranchNodes.add(nodeId);
+  localStorage.setItem(BRANCH_STORE_KEY, JSON.stringify([...expandedBranchNodes]));
+}
+
+function revealPageNode(pageId) {
+  const pages = allPages();
+  const hierarchy = graphHierarchy(pages);
+  const byId = Object.fromEntries(pages.map(p => [p.id, p]));
+  let page = byId[pageId], changed = false;
+  while (page && page.parent) {
+    if (hierarchy.collapsible.has(page.parent) && !expandedBranchNodes.has(page.parent)) {
+      expandedBranchNodes.add(page.parent);
+      changed = true;
+    }
+    page = byId[page.parent];
+  }
+  if (changed) {
+    localStorage.setItem(BRANCH_STORE_KEY, JSON.stringify([...expandedBranchNodes]));
+    buildGraph();
+  }
+  return cy ? cy.getElementById(pageId) : null;
+}
+
 function buildGraph() {
   const pages = allPages();
+  const hierarchy = graphHierarchy(pages);
+  if (!branchStateInitialized) {
+    expandedBranchNodes = defaultExpandedBranches(pages, hierarchy);
+    branchStateInitialized = true;
+  }
+  const visiblePages = pages.filter(p => !collapsedAncestorForPage(p.id, pages, hierarchy));
+  const visibleIds = new Set(visiblePages.map(p => p.id));
+  const endpointFor = id => visibleIds.has(id) ? id : collapsedAncestorForPage(id, pages, hierarchy);
   const edgeColor = getComputedStyle(document.documentElement).getPropertyValue("--edge").trim();
+  const extraEdgeKeys = new Set();
+  const extraEdges = extraLinks().flatMap(l => {
+    const source = endpointFor(l.source), target = endpointFor(l.target);
+    const key = source && target ? source + "|" + target : "";
+    if (!source || !target || source === target || extraEdgeKeys.has(key)) return [];
+    extraEdgeKeys.add(key);
+    return [{ data: { id: "xedge-" + source + "-" + target, source, target }, classes: "extra" }];
+  });
   const elements = [
-    ...pages.map(p => {
-      const nb = bugsFor(p).filter(b => b.status !== "Fixed").length;
-      return { data: { id: p.id, label: p.label + (tcFor(p).length ? " (" + tcFor(p).length + ")" : ""), group: p.group }, classes: nb ? "buggy" : "" };
+    ...visiblePages.map(p => {
+      const testCount = tcFor(p).length;
+      const childCount = (hierarchy.children[p.id] || []).length;
+      const collapsible = hierarchy.collapsible.has(p.id);
+      const expanded = collapsible && expandedBranchNodes.has(p.id);
+      const label = collapsible
+        ? (expanded ? "▾ " : "▸ ") + p.label + "\n" + childCount + (childCount === 1 ? " child" : " children") + (testCount ? " · " + testCount + " tests" : "")
+        : p.label + (testCount ? " (" + testCount + ")" : "");
+      const hasActiveBug = pages.some(candidate =>
+        endpointFor(candidate.id) === p.id && bugsFor(candidate).some(b => b.status !== "Fixed")
+      );
+      return {
+        data: { id: p.id, label, group: p.group },
+        classes: [
+          collapsible ? "branch-node" : "",
+          collapsible ? (expanded ? "expanded" : "collapsed") : "",
+          hasActiveBug ? "buggy" : "",
+        ].filter(Boolean).join(" "),
+      };
     }),
-    ...pages.filter(p => p.parent).map(p => ({ data: { id: "edge-" + p.id, source: p.parent, target: p.id } })),
-    ...extraLinks().map(l => ({ data: { id: "xedge-" + l.source + "-" + l.target, source: l.source, target: l.target }, classes: "extra" })),
+    ...visiblePages.filter(p => p.parent && visibleIds.has(p.parent)).map(p => ({
+      data: { id: "edge-" + p.id, source: p.parent, target: p.id },
+    })),
+    ...extraEdges,
   ];
   if (cy) cy.destroy();
   cy = cytoscape({
@@ -602,6 +704,13 @@ function buildGraph() {
           "border-width": 1,
           "border-color": "rgba(13,15,22,.35)",
       }},
+      { selector: "node.branch-node", style: {
+          "width": "150px",
+          "border-width": 2,
+          "border-style": "dashed",
+          "border-color": ele => GROUP_COLORS[ele.data("group")],
+      }},
+      { selector: "node.branch-node.expanded", style: { "border-style": "solid" } },
       { selector: "node.buggy", style: { "border-color": "#ff4d4f", "border-width": 2 } },
       { selector: "node.hushed", style: { "opacity": 0.2, "text-opacity": 0.15 } },
       { selector: "node.highlight", style: { "border-color": "#ffffff", "border-width": 3 } },
@@ -622,11 +731,21 @@ function buildGraph() {
     ],
     layout: { name: "preset" },
     wheelSensitivity: 0.2,
+    maxZoom: 1.5,
     autoungrabify: true,
   });
   layoutTree();
   routeExtraEdges();
-  cy.on("tap", "node", evt => { const p = allPages().find(x => x.id === evt.target.id()); if (p) showPage(p); });
+  cy.on("tap", "node", evt => {
+    const p = allPages().find(x => x.id === evt.target.id());
+    if (evt.target.hasClass("branch-node")) {
+      toggleBranchNode(evt.target.id());
+      buildGraph();
+      if (p) showPage(p);
+      return;
+    }
+    if (p) showPage(p);
+  });
   cy.on("tap", evt => {
     if (evt.target === cy) {
       cy.elements().removeClass("highlight hushed");
@@ -634,50 +753,96 @@ function buildGraph() {
       pBody.innerHTML = emptyPanelHtml();
     }
   });
-  cy.fit(undefined, 20);
+  cy.fit(undefined, defaultGraphFitPadding());
 }
 
-// Tidy-tree layout: leaves get sequential x slots, parents are centered over
-// their children, so every subtree sits directly under its own parent and
-// sibling subtrees never visually merge — stays correct as pages are added.
+// Block-based tree layout: expanded branches use a viewport-aware grid whose
+// rows reserve complete subtree space.
 function layoutTree() {
-  const pages = allPages();
-  const ids = new Set(pages.map(p => p.id));
   const children = {};
-  const roots = [];
-  pages.forEach(p => {
-    if (p.parent && ids.has(p.parent)) (children[p.parent] = children[p.parent] || []).push(p.id);
-    else roots.push(p.id);
+  const incoming = new Set();
+  cy.edges().not(".extra").forEach(edge => {
+    const source = edge.source().id(), target = edge.target().id();
+    (children[source] = children[source] || []).push(target);
+    incoming.add(target);
   });
-  const XGAP = 155, YGAP = 80, MAXROW = 4;
-  let nextX = 0;
-  function place(id, depth) {
+  const roots = cy.nodes().filter(node => !incoming.has(node.id())).map(node => node.id());
+  const H_GAP = 26, V_GAP = 52, FOREST_GAP = 80;
+  const container = cy.container();
+  const maxColumns = container.clientWidth < 520 ? 1 : container.clientWidth < 1100 ? 2 : 3;
+
+  function makeBlock(id, gridColumns) {
+    const node = cy.getElementById(id);
+    const nodeWidth = node.outerWidth(), nodeHeight = node.outerHeight();
     const kids = children[id] || [];
-    let x;
-    if (!kids.length) { x = nextX; nextX += XGAP; }
-    else {
-      const leaves = kids.filter(k => !(children[k] || []).length);
-      const branches = kids.filter(k => (children[k] || []).length);
-      const xs = [];
-      if (leaves.length) {
-        // stack leaf children in rows of MAXROW under the parent instead of one wide row
-        const cols = Math.min(leaves.length, MAXROW);
-        const startX = nextX;
-        leaves.forEach((k, i) => {
-          const col = i % cols, row = Math.floor(i / cols);
-          const lx = startX + col * XGAP;
-          cy.getElementById(k).position({ x: lx, y: (depth + 1 + row) * YGAP });
-          xs.push(lx);
-        });
-        nextX = startX + cols * XGAP;
-      }
-      branches.forEach(k => xs.push(place(k, depth + 1)));
-      x = (Math.min(...xs) + Math.max(...xs)) / 2;
+    if (!kids.length) return { id, width: nodeWidth, height: nodeHeight, nodeX: nodeWidth / 2, nodeY: nodeHeight / 2, children: [] };
+
+    const childBlocks = kids.map(k => makeBlock(k, gridColumns));
+    const useGrid = node.hasClass("branch-node");
+    const rows = [];
+    if (useGrid) {
+      const columns = Math.min(gridColumns, childBlocks.length);
+      for (let i = 0; i < childBlocks.length; i += columns) rows.push(childBlocks.slice(i, i + columns));
+    } else {
+      rows.push(childBlocks);
     }
-    cy.getElementById(id).position({ x, y: depth * YGAP });
-    return x;
+
+    const rowMetrics = rows.map(row => ({
+      width: row.reduce((sum, block) => sum + block.width, 0) + H_GAP * Math.max(0, row.length - 1),
+      height: Math.max(...row.map(block => block.height)),
+    }));
+    const contentWidth = Math.max(...rowMetrics.map(row => row.width));
+    const contentHeight = rowMetrics.reduce((sum, row) => sum + row.height, 0) + V_GAP * Math.max(0, rows.length - 1);
+    const width = Math.max(nodeWidth, contentWidth);
+    const placements = [];
+    let rowY = nodeHeight + V_GAP;
+    rows.forEach((row, rowIndex) => {
+      let rowX = (width - rowMetrics[rowIndex].width) / 2;
+      row.forEach(block => {
+        placements.push({ block, x: rowX, y: rowY });
+        rowX += block.width + H_GAP;
+      });
+      rowY += rowMetrics[rowIndex].height + V_GAP;
+    });
+    return {
+      id,
+      width,
+      height: nodeHeight + V_GAP + contentHeight,
+      nodeX: width / 2,
+      nodeY: nodeHeight / 2,
+      children: placements,
+    };
   }
-  roots.forEach(r => { place(r, 0); nextX += XGAP; });
+
+  function makeForest(gridColumns) {
+    const blocks = roots.map(root => makeBlock(root, gridColumns));
+    return {
+      blocks,
+      width: blocks.reduce((sum, block) => sum + block.width, 0) + FOREST_GAP * Math.max(0, blocks.length - 1),
+      height: Math.max(...blocks.map(block => block.height)),
+    };
+  }
+
+  let bestForest = null, bestScale = -1;
+  for (let columns = 1; columns <= maxColumns; columns++) {
+    const forest = makeForest(columns);
+    const scale = Math.min(container.clientWidth / forest.width, container.clientHeight / forest.height);
+    if (scale > bestScale) {
+      bestScale = scale;
+      bestForest = forest;
+    }
+  }
+
+  function applyBlock(block, offsetX, offsetY) {
+    cy.getElementById(block.id).position({ x: offsetX + block.nodeX, y: offsetY + block.nodeY });
+    block.children.forEach(child => applyBlock(child.block, offsetX + child.x, offsetY + child.y));
+  }
+
+  let forestX = 0;
+  bestForest.blocks.forEach(block => {
+    applyBlock(block, forestX, 0);
+    forestX += block.width + FOREST_GAP;
+  });
 }
 
 // Route extra links through a gutter beside the tree so they never cross nodes:
@@ -730,6 +895,19 @@ function routeExtraEdges() {
   });
 }
 
+function relayoutAndFitGraph() {
+  if (!cy) return;
+  cy.resize();
+  layoutTree();
+  routeExtraEdges();
+  cy.fit(undefined, defaultGraphFitPadding());
+}
+
+function defaultGraphFitPadding() {
+  const container = cy.container();
+  return Math.max(40, Math.min(120, Math.min(container.clientWidth, container.clientHeight) * 0.14));
+}
+
 const pTitle = document.getElementById("p-title");
 const pBody = document.getElementById("p-body");
 function emptyPanelHtml() {
@@ -748,6 +926,7 @@ function emptyPanelHtml() {
     <section class="empty-section">
       <h3>Toolbar</h3>
       <div class="tip-list">
+        <div class="tip-row"><span class="tip-term">Branches</span><span class="tip-copy">the first four layers open by default; click any parent node to reveal or hide its next level</span></div>
         <div class="tip-row"><span class="tip-term">+ Add page</span><span class="tip-copy">adds a node (with optional draft test cases for an LLM to rewrite)</span></div>
         <div class="tip-row"><span class="tip-term">+ Add link</span><span class="tip-copy">adds an extra navigation link between two existing pages (a second way to reach the same page), drawn as a dashed arrow and listed under "Also reachable via" on the target page</span></div>
         <div class="tip-row"><span class="tip-term">Edit</span><span class="tip-copy">in the panel makes fields and test case text editable; edits persist in this browser (localStorage)</span></div>
@@ -781,6 +960,7 @@ function renderTable(cases, filter, editable) {
 
 let editMode = false;
 function showPage(page, keepFilter) {
+  if (!cy || !cy.getElementById(page.id).length) revealPageNode(page.id);
   cy.elements().removeClass("highlight hushed").addClass("hushed");
   const node = cy.getElementById(page.id);
   node.removeClass("hushed").addClass("highlight");
@@ -894,7 +1074,7 @@ function setSidebarCollapsed(collapsed, persist = true) {
   sidebarToggle.title = label;
   sidebarExpand.setAttribute("aria-label", label);
   sidebarExpand.title = label;
-  requestAnimationFrame(() => { placeSearch(); if (cy) { cy.resize(); cy.fit(undefined, 20); } });
+  requestAnimationFrame(() => { placeSearch(); relayoutAndFitGraph(); });
 }
 setSidebarCollapsed(mobileLayout.matches || localStorage.getItem("navmap-sidebar") === "collapsed", false);
 sidebarToggle.addEventListener("click", () => setSidebarCollapsed(true));
@@ -919,7 +1099,7 @@ function setView(mode) {
   if (mode) main.classList.add(mode);
   updateViewToggle(mode);
   placeSearch();
-  requestAnimationFrame(() => { if (cy) { cy.resize(); cy.fit(undefined, 20); } });
+  requestAnimationFrame(relayoutAndFitGraph);
 }
 function fitGraphView() { cy.animate({ fit: { padding: 20 }, duration: 300 }); }
 document.getElementById("pt-fit").addEventListener("click", fitGraphView);
@@ -957,7 +1137,10 @@ function updateTopbarVisibility() {
     document.getElementById("sidebar-expand").offsetWidth + 16;
   topbar.classList.toggle("cramped", !mobileLayout.matches && graphAreaEl.clientWidth - 24 < needed);
 }
-window.addEventListener("resize", placeSearch);
+window.addEventListener("resize", () => {
+  placeSearch();
+  relayoutAndFitGraph();
+});
 
 // ---- draggable panel resizer ----
 const panelEl = document.getElementById("panel");
@@ -983,7 +1166,7 @@ resizer.addEventListener("pointerdown", (e) => {
     document.body.classList.remove("resizing");
     localStorage.setItem("navmap-panel-width", panelEl.offsetWidth);
     placeSearch();
-    if (cy) { cy.resize(); cy.fit(undefined, 20); }
+    relayoutAndFitGraph();
   };
   resizer.addEventListener("pointermove", onMove);
   resizer.addEventListener("pointerup", onUp);
@@ -992,7 +1175,7 @@ resizer.addEventListener("dblclick", () => {
   panelEl.style.width = "460px";
   localStorage.setItem("navmap-panel-width", 460);
   placeSearch();
-  if (cy) { cy.resize(); cy.fit(undefined, 20); }
+  relayoutAndFitGraph();
 });
 
 // ---- add node dialog ----
@@ -1170,7 +1353,12 @@ function refreshSearchResults() {
   const matches = allPages().filter(p => p.label.toLowerCase().includes(q) || p.route.toLowerCase().includes(q));
   if (cy && matches.length) {
     cy.elements().addClass("hushed");
-    matches.forEach(p => cy.getElementById(p.id).removeClass("hushed").addClass("highlight"));
+    matches.forEach(p => {
+      const node = cy.getElementById(p.id);
+      const ancestor = collapsedAncestorForPage(p.id);
+      const visibleNode = node.length ? node : ancestor ? cy.getElementById(ancestor) : node;
+      visibleNode.removeClass("hushed").addClass("highlight");
+    });
   }
   if (searchOnPanel()) {
     showSuggestions(matches);

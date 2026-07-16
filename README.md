@@ -17,7 +17,8 @@ npm run catalog:validate
 ```
 
 ## Features
-- Top-to-bottom flow tree (Cytoscape.js breadthfirst layout): Login → landing (search `jeet-test-org`) → top-left logo menu → Enterprise/Personal settings → tabs.
+- Responsive top-to-bottom flow tree: Login → landing (search `jeet-test-org`) → top-left logo menu → Enterprise/Personal settings → tabs.
+- Every node with children is collapsible. The first four layers open by default with responsive viewport breathing room; deeper branches remain collapsed until clicked, expansion state persists in the browser, and searches reveal hidden matches automatically.
 - Click any page to see its route, description, numbered "How to reach" path, and a filterable test case table (Sanity / Regression; ex-Smoke shown as `SM-n`, ex-Sanity `SN-n`, ex-Regression/E2E `RG-n`, original IDs as tooltips).
 - Panel view toggles: full-screen graph, full-screen panel, or split.
 - `+ Add page`: add your own nodes with draft test cases (type `Draft`, intended for a later AI rewrite pass).
