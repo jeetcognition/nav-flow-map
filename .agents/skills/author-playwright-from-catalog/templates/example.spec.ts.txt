@@ -1,0 +1,20 @@
+import { test, expect } from '@playwright/test';
+import { SettingsPage } from './pages/settings.page';
+
+test.describe('Preferences', () => {
+  test('@smoke loads the preferences page [PREF-SMK01]', async ({ page }) => {
+    const preferences = new SettingsPage(page);
+
+    await preferences.goto();
+    await expect(page).toHaveURL(/\/settings/);
+  });
+
+  test('@sanity preserves a setting after reload [PREF-SAN01]', async ({ page }) => {
+    const preferences = new SettingsPage(page);
+
+    // Add the observed setting locator and save/revert methods to SettingsPage
+    // before implementing this case against the live application.
+    await preferences.goto();
+    await expect(page).toHaveURL(/\/settings/);
+  });
+});
