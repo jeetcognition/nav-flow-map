@@ -13,6 +13,7 @@ const pageIds = new Set();
 const requiredCaseFields = [
   "id",
   "pageId",
+  "surface",
   "title",
   "type",
   "priority",
@@ -43,11 +44,11 @@ const cadences = new Set([
   "change-triggered",
   "on-demand",
 ]);
-const desktopExecutors = new Set(["required", "eligible", "unsupported"]);
+const devinBrowserExecutors = new Set(["required", "eligible", "unsupported"]);
 const playwrightExecutors = new Set(["eligible", "blocked", "unsupported"]);
 const automationStatuses = new Set([
   "manual",
-  "desktop_verified",
+  "devin_verified",
   "candidate",
   "implementation_pr",
   "active",
@@ -176,6 +177,9 @@ for (const file of files) {
     if (testcase.pageId !== page.id) {
       fail(location, `pageId ${testcase.pageId} does not match page ${page.id}`);
     }
+    if (testcase.surface !== "webapp") {
+      fail(location, `unsupported surface ${testcase.surface}; current scope is webapp only`);
+    }
     if (!page.prefixes.some((prefix) => testcase.id.startsWith(`${prefix}-`))) {
       fail(location, `ID does not use one of page prefixes: ${page.prefixes.join(", ")}`);
     }
@@ -237,11 +241,14 @@ for (const file of files) {
 
     checkAllowedFields(
       testcase.executors,
-      ["desktop", "playwright", "blockedReason"],
+      ["devinBrowser", "playwright", "blockedReason"],
       `${location}.executors`,
     );
-    if (!desktopExecutors.has(testcase.executors?.desktop)) {
-      fail(location, `unsupported Desktop executor ${testcase.executors?.desktop}`);
+    if (!devinBrowserExecutors.has(testcase.executors?.devinBrowser)) {
+      fail(
+        location,
+        `unsupported Devin browser executor ${testcase.executors?.devinBrowser}`,
+      );
     }
     if (!playwrightExecutors.has(testcase.executors?.playwright)) {
       fail(location, `unsupported Playwright executor ${testcase.executors?.playwright}`);

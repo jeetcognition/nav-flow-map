@@ -6,7 +6,7 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 
 ## QA platform direction
 
-This repository is the active home for the unified QA platform: Nav Flow UI, canonical catalog, Devin Desktop runner, Playwright automation, and future triage/integration services. The other QA repositories are migration sources rather than parallel systems. See [`docs/architecture.md`](docs/architecture.md).
+This repository is the active home for the unified webapp QA platform: Nav Flow UI, canonical catalog, Devin browser-session runner, Playwright automation, and future triage/integration services. The other QA repositories are migration sources rather than parallel systems. See [`docs/architecture.md`](docs/architecture.md).
 
 The canonical catalog contract lives under [`catalog/`](catalog/). Enterprise Settings → Devin is the initial schema pilot; the existing Markdown files and `testcases.js` continue to power the UI until catalog generation is added in the next migration step.
 
