@@ -3,8 +3,8 @@
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
 ## 2026-07-16 — Unified QA catalog foundation
-- **What:** Established this repository as the active webapp QA platform home, added a versioned canonical testcase schema, migrated the nine Enterprise Devin settings cases as the initial catalog pilot, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references. Current cases declare `surface: webapp`; `devinBrowser` means a Devin session controls Chrome. Added append-only decision/work logs and repository rules so future sessions preserve questions, answers, implementation context, and unresolved work.
-- **Why:** Test definitions, Devin browser execution, and Playwright automation need one stable contract and repository boundary before the remaining legacy cases and runners can be consolidated safely.
+- **What:** Established this repository as the active webapp QA platform home, added a versioned canonical testcase schema, migrated the nine Enterprise Devin settings cases as the initial catalog pilot, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references. Current cases declare `surface: webapp`; all Devin-controlled Chrome execution is named `devinBrowser`. Added append-only decision/work logs and repository rules so future sessions preserve questions, answers, implementation context, and unresolved work.
+- **Why:** Test definitions, `devinBrowser` execution, and Playwright automation need one stable contract and repository boundary before the remaining legacy cases and runners can be consolidated safely.
 
 ## 2026-07-16 — Remove QA files imported from the empty repo
 - **What:** Deleted `qa-testing/nav_graph.md` and `qa-testing/testcases/01–17_*.md` (the area files imported from jeetcognition/empty's QA suite); kept files 18–23, which were created via this app's promotion flow. Updated README and the testcases README accordingly.
@@ -20,7 +20,7 @@ Record of what changed and **why**. Newest first. Keep this updated for every fe
 
 ## 2026-07-15 — Mobile-responsive application layout
 - **What:** Added phone/tablet layouts with a stacked graph and details panel in portrait and side-by-side panes in landscape. The sidebar becomes a dismissible drawer; graph controls remain visible in a compact two-row toolbar; wide tables scroll within the panel; dialogs fit the viewport and stack their fields; controls, inputs, dynamic viewport height, and safe areas are tuned for touch devices.
-- **Why:** The desktop-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and desktop dialogs overflowed or became inaccessible on phone-sized screens.
+- **Why:** The large-screen-only fixed sidebar, 460px details panel, single-row graph toolbar, wide tables, and large-screen dialogs overflowed or became inaccessible on phone-sized screens.
 
 ## 2026-07-15 — Inline sidebar-expand button in the graph toolbar
 - **What:** When the sidebar is collapsed, the expand button now sits inside the graph top bar, in line with and to the left of the + Add page / + Add link capsules (round pill, same height), instead of floating below them at a fixed position. Its width is included in the cramped-hiding calculation.
@@ -115,7 +115,7 @@ Record of what changed and **why**. Newest first. Keep this updated for every fe
 - **Why:** Drafts were staying as rough one-liners in the overlay file; promotion keeps the markdown sources the single source of truth.
 
 ## 2026-07-14 — Notion import & cleanup
-- **What:** Imported missing test cases from the Notion QA doc's sub-pages; later removed the Docs/API/CLI/Desktop areas (pages 18–23) from the site, repo and Notion on request.
+- **What:** Imported missing test cases from the Notion QA doc's sub-pages; later removed the Docs/API/CLI/native-app areas (pages 18–23) from the site, repo and Notion on request.
 - **Why:** Keep the map in sync with the curated Notion test suite, scoped to the console app only.
 
 ## 2026-07-14 — Token-free saving via Cloudflare Worker

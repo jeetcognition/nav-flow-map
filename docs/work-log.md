@@ -7,7 +7,7 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Requested
 
 - Understand `empty`, `playwright-enterprise-qa`, `nav-flow-map`, and `enterprise-self-qa`.
-- Design a system that stores testcases in Nav Flow, executes them through Devin-controlled Chrome, promotes repeatable cases to Playwright, triages failures, and later learns from Pylon tickets.
+- Design a system that stores testcases in Nav Flow, executes them through `devinBrowser`, promotes repeatable cases to Playwright, triages failures, and later learns from Pylon tickets.
 - Re-check the architecture after the Nav Flow repository changed.
 
 ### Completed
@@ -36,7 +36,7 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Requested
 
 - Create a Nav Flow feature branch and implement the first two steps: establish the single-repository direction and canonical catalog contract.
-- Clarify that current testing covers webapps only; Devin uses Chrome and does not test a desktop application.
+- Clarify that current testing covers webapps only; `devinBrowser` means Devin controls Chrome.
 - Preserve future questions, answers, and implementation context in repository documentation.
 
 ### Implemented
@@ -60,3 +60,26 @@ This file is append-only. Each entry summarizes requested work, completed implem
 
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
+
+## 2026-07-16 — devinBrowser terminology normalization
+
+### Requested
+
+- Replace QA-executor references with `devinBrowser` across schema, code, testcases, and documentation.
+
+### Implemented
+
+- Standardized the executor key and `devinBrowser_verified` lifecycle terminology.
+- Removed ambiguous application/device terminology from current QA-platform documentation.
+- Kept `surface: webapp` separate from executor identity.
+- Updated the browser-control testcase wording in both legacy sources.
+
+### Validation
+
+- Repository-wide case-insensitive terminology scan
+- `npm run check`
+- `git diff --check`
+
+### Decision
+
+- QA-DEC-009.

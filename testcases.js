@@ -292,7 +292,7 @@ const TESTCASES = [
     "type": "Sanity",
     "pri": "P2",
     "reach": "Session → Browser",
-    "steps": "\"Live Desktop\" take-over",
+    "steps": "Open devinBrowser control for the session.",
     "expected": "Can control Devin's Chrome (login/2FA)."
   },
   {

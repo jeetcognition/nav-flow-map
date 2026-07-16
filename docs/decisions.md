@@ -23,7 +23,7 @@ Status values:
 - **Date:** 2026-07-16
 - **Status:** Accepted
 - **Question:** Where should testcase definitions live and how should they be structured?
-- **Answer:** Store versioned page catalog files under `catalog/pages/`, governed by `catalog/schema/page-catalog.schema.json`. Stable IDs connect the Nav Flow UI, Devin browser execution, bugs, and Playwright.
+- **Answer:** Store versioned page catalog files under `catalog/pages/`, governed by `catalog/schema/page-catalog.schema.json`. Stable IDs connect the Nav Flow UI, `devinBrowser` execution, bugs, and Playwright.
 - **Rationale:** A schema prevents duplicate IDs and missing execution metadata while allowing page-by-page migration from the legacy Markdown and JavaScript sources.
 - **Implementation:** The nine Enterprise Settings → Devin cases are the first schema pilot in PR #34. The existing 372-case UI source remains unchanged until generation is implemented.
 
@@ -31,10 +31,10 @@ Status values:
 
 - **Date:** 2026-07-16
 - **Status:** Accepted
-- **Question:** Does “Desktop” mean the platform is testing a desktop application?
-- **Answer:** No. Current scope is web applications only. Every current catalog case uses `surface: webapp`.
+- **Question:** What does `devinBrowser` mean, and which product surface is currently in scope?
+- **Answer:** Current scope is web applications only. Every current catalog case uses `surface: webapp`.
 - **Terminology:** `devinBrowser` means a Devin session opens and controls the webapp in Chrome. `playwright` means deterministic browser automation.
-- **Future extension:** Desktop-application and CLI surfaces may be added later, but they are not enabled now. The testcase `type` field continues to mean Smoke, Sanity, Regression, or E2E.
+- **Future extension:** Additional application and CLI surfaces may be added later, but they are not enabled now. The testcase `type` field continues to mean Smoke, Sanity, Regression, or E2E.
 - **Implementation:** PR #34.
 
 ## QA-DEC-004 — Repeatable versus adaptive execution
@@ -42,7 +42,7 @@ Status values:
 - **Date:** 2026-07-16
 - **Status:** Proposed
 - **Question:** How can recurring checks avoid repeatedly spending Devin tokens?
-- **Answer:** Promote stable, deterministic catalog cases to Playwright. Reserve Devin browser sessions for exploratory testing, changed surfaces, ambiguous behavior, and Playwright failure triage.
+- **Answer:** Promote stable, deterministic catalog cases to Playwright. Reserve `devinBrowser` sessions for exploratory testing, changed surfaces, ambiguous behavior, and Playwright failure triage.
 - **Guardrail:** Do not automate visual, destructive, unstable, or assertion-ambiguous cases until deterministic fixtures and cleanup exist.
 
 ## QA-DEC-005 — Failed Playwright cases
@@ -50,7 +50,7 @@ Status values:
 - **Date:** 2026-07-16
 - **Status:** Proposed
 - **Question:** Should every Playwright failure immediately become a product bug or rewrite the test?
-- **Answer:** No. Retry once in a clean context, fingerprint and deduplicate the failure, then have a Devin browser session reproduce the exact catalog case.
+- **Answer:** No. Retry once in a clean context, fingerprint and deduplicate the failure, then have a `devinBrowser` session reproduce the exact catalog case.
 - **Classification:** Product regression, selector/test drift, intentional product change, infrastructure/auth/fixture, flaky/timing, or inconclusive.
 - **Guardrail:** The system may propose a test-maintenance PR but must never weaken expected behavior merely to make a test pass.
 
@@ -77,6 +77,15 @@ Status values:
 - **Question:** How will future sessions know every relevant question, answer, decision, and implementation direction?
 - **Answer:** Maintain append-only `docs/decisions.md` and `docs/work-log.md`, enforced by root `AGENTS.md`. Update these documents before completing future work.
 - **Privacy boundary:** Preserve durable context, not secrets, raw customer content, authentication material, or transient command output.
+- **Implementation:** PR #34.
+
+## QA-DEC-009 — devinBrowser terminology
+
+- **Date:** 2026-07-16
+- **Status:** Accepted
+- **Question:** What term should schema, code, testcases, and documentation use for a Devin session controlling Chrome?
+- **Answer:** Use `devinBrowser` everywhere. Do not use a device or application-surface label as shorthand for this executor.
+- **Rationale:** Executor identity and product surface are separate concepts: `devinBrowser` executes the case, while `surface: webapp` identifies what is under test.
 - **Implementation:** PR #34.
 
 ## Open questions

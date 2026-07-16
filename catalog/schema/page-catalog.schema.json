@@ -339,7 +339,7 @@
         "status": {
           "enum": [
             "manual",
-            "devin_verified",
+            "devinBrowser_verified",
             "candidate",
             "implementation_pr",
             "active",
