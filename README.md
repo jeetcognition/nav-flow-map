@@ -49,7 +49,7 @@ python3 -m http.server 8899
 No build step. Cytoscape.js loads from the unpkg CDN (internet required on first load).
 
 ## Data sources
-- `qa-testing/nav_graph.md` — route topology.
+- `testcases.js` — canonical test case data loaded by the site (originally parsed from the imported QA markdown suite), mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO).
 - `bugs.js` — known bugs mapped to pages (seeded from the QA Bug.md tracker).
 - `CHANGELOG.md` — record of every feature/behaviour change and why it was made.
-- `qa-testing/testcases/*.md` — 220 test cases, parsed into `testcases.js` and mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO). Files 01–17 mirror the Notion "Devin Enterprise — QA Test Cases" console sub-pages; later files (e.g. `18_login.md`, `19_support.md`) hold cases added afterwards or promoted from website edits.
+- `qa-testing/testcases/*.md` — markdown source for cases added or promoted through the website (files 18+). The imported 01–17 area files and `nav_graph.md` were removed once their content lived in `testcases.js` and the in-app graph.

@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-16 — Remove QA files imported from the empty repo
+- **What:** Deleted `qa-testing/nav_graph.md` and `qa-testing/testcases/01–17_*.md` (the area files imported from jeetcognition/empty's QA suite); kept files 18–23, which were created via this app's promotion flow. Updated README and the testcases README accordingly.
+- **Why:** The site never reads these files at runtime — all cases were already parsed into `testcases.js` and the topology lives in `BASE_PAGES` — so they were redundant duplicates of content maintained elsewhere.
+
 ## 2026-07-16 — Roomier default graph framing
 - **What:** Automatic graph fits now reserve responsive viewport padding (14% of the shorter graph dimension, clamped to 40–120px), while the explicit **Fit view** button retains its tighter 20px fit.
 - **Why:** The four-layer landing graph previously filled nearly the entire canvas; the roomier default framing keeps useful space around the hierarchy and makes the overview easier to scan.
