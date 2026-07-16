@@ -1,0 +1,684 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-devin",
+    "name": "Enterprise Devin settings",
+    "route": "/org/cog-enterprise-qa/settings/enterprise-devin",
+    "prefixes": [
+      "DEVIN"
+    ]
+  },
+  "testcases": [
+    {
+      "id": "DEVIN-SMK01",
+      "pageId": "e-devin",
+      "title": "Render the complete Devin settings page",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": [
+        "availability",
+        "rendering"
+      ],
+      "cadence": [
+        "deploy",
+        "nightly",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Settings → Devin",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Enterprise Settings → Devin in a cold page load."
+        },
+        {
+          "number": 2,
+          "action": "Inspect every settings section and the browser console."
+        }
+      ],
+      "assertions": [
+        "Model and mode controls render.",
+        "Native deployments, web search, git attribution, commit email, lock email, and PR behavior controls render.",
+        "The page has no blocking UI or console errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-SAN01",
+      "pageId": "e-devin",
+      "title": "Explain current, disabled, and locked control states",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": [
+        "configuration",
+        "usability"
+      ],
+      "cadence": [
+        "nightly",
+        "weekly",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect every switch, dropdown, value, label, and description without saving."
+        },
+        {
+          "number": 2,
+          "action": "Inspect controls that are disabled or locked by another setting or policy."
+        }
+      ],
+      "assertions": [
+        "Every control exposes its current value and purpose.",
+        "Disabled and locked controls explain why they cannot be changed.",
+        "Inspection does not mutate settings."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-REG01",
+      "pageId": "e-devin",
+      "title": "Persist or safely reject model and mode changes",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": [
+        "configuration",
+        "persistence",
+        "validation"
+      ],
+      "cadence": [
+        "weekly",
+        "change-triggered",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin → model/mode settings",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization.",
+        "The original model and mode settings have been recorded."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Change each available Ultra, Fast, SWE, GPT, and Fusion setting one at a time."
+        },
+        {
+          "number": 2,
+          "action": "Save the change and record the response."
+        },
+        {
+          "number": 3,
+          "action": "Reload the page and inspect the effective value."
+        }
+      ],
+      "assertions": [
+        "Each accepted change persists after reload.",
+        "Each rejected change shows an actionable error and preserves the prior value.",
+        "One setting change does not unexpectedly alter unrelated settings."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Restore every changed model and mode value.",
+          "Reload and verify the original configuration is active."
+        ]
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [
+        "BUG-015"
+      ],
+      "externalReferences": [
+        {
+          "system": "Linear",
+          "id": "ENG-45170",
+          "url": "https://linear.app/cognition/issue/ENG-45170"
+        }
+      ],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-REG02",
+      "pageId": "e-devin",
+      "title": "Apply tool and deployment settings to new sessions",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": [
+        "configuration",
+        "persistence",
+        "permissions"
+      ],
+      "cadence": [
+        "weekly",
+        "change-triggered",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin → tools/deployments",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization.",
+        "The original native deployments and web search values have been recorded.",
+        "Creating a disposable session is approved."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Change native deployments and web search independently."
+        },
+        {
+          "number": 2,
+          "action": "Save and reload the settings page."
+        },
+        {
+          "number": 3,
+          "action": "Create a disposable session and inspect the tools available to it."
+        }
+      ],
+      "assertions": [
+        "Accepted settings persist after reload.",
+        "New sessions receive tools according to the saved enterprise settings.",
+        "The setting change does not expose disallowed tools."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Restore the original native deployments and web search values.",
+          "Reload and verify the original values are active."
+        ]
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [
+        "BUG-015"
+      ],
+      "externalReferences": [
+        {
+          "system": "Linear",
+          "id": "ENG-45170",
+          "url": "https://linear.app/cognition/issue/ENG-45170"
+        }
+      ],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-REG03",
+      "pageId": "e-devin",
+      "title": "Persist git commit attribution selection",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": [
+        "configuration",
+        "git-metadata",
+        "persistence"
+      ],
+      "cadence": [
+        "weekly",
+        "change-triggered",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin → Git commit attribution",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization.",
+        "The original commit attribution value has been recorded."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the commit attribution control and inspect every available option."
+        },
+        {
+          "number": 2,
+          "action": "Select and save each option in turn."
+        },
+        {
+          "number": 3,
+          "action": "Reload after each save and inspect the effective selection."
+        }
+      ],
+      "assertions": [
+        "Each accepted selection persists after reload.",
+        "Option descriptions match the effective git metadata behavior.",
+        "Enterprise policy overrides are explicit."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Restore the original commit attribution value.",
+          "Reload and verify the original value is active."
+        ]
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [
+        "BUG-015"
+      ],
+      "externalReferences": [
+        {
+          "system": "Linear",
+          "id": "ENG-45170",
+          "url": "https://linear.app/cognition/issue/ENG-45170"
+        }
+      ],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-REG04",
+      "pageId": "e-devin",
+      "title": "Validate custom git commit email values",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": [
+        "git-metadata",
+        "input-validation",
+        "persistence",
+        "security"
+      ],
+      "cadence": [
+        "weekly",
+        "change-triggered",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin → Commit email",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization.",
+        "The original commit email setting has been recorded."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Test default and valid custom email values."
+        },
+        {
+          "number": 2,
+          "action": "Test blank, malformed, long, Unicode, and injection-like values."
+        },
+        {
+          "number": 3,
+          "action": "Reload after each accepted save."
+        }
+      ],
+      "assertions": [
+        "Valid email values persist after reload.",
+        "Invalid values are rejected server-side with an actionable error.",
+        "Unsafe input remains inert in the UI and network response."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Restore the original commit email setting.",
+          "Reload and verify the original value is active."
+        ]
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-REG05",
+      "pageId": "e-devin",
+      "title": "Persist the Open PRs behavior",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": [
+        "configuration",
+        "persistence",
+        "pull-requests"
+      ],
+      "cadence": [
+        "weekly",
+        "change-triggered",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin → PR behavior",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization.",
+        "The original Open PRs setting has been recorded."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Change the Open PRs option."
+        },
+        {
+          "number": 2,
+          "action": "Save and reload the settings page."
+        },
+        {
+          "number": 3,
+          "action": "Inspect a later approved PR creation flow."
+        }
+      ],
+      "assertions": [
+        "The saved option persists after reload.",
+        "Later PR creation follows the saved behavior.",
+        "The UI and effective behavior remain consistent."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Restore the original Open PRs value.",
+          "Reload and verify the original value is active."
+        ]
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-REG06",
+      "pageId": "e-devin",
+      "title": "Reject unauthorized Devin settings updates",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": [
+        "authorization",
+        "privilege-escalation",
+        "tenant-isolation"
+      ],
+      "cadence": [
+        "release",
+        "change-triggered",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin",
+      "preconditions": [
+        "A non-admin QA account or approved authorization fixture is available.",
+        "The target enterprise settings have been recorded."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Attempt to update Devin settings as a non-admin."
+        },
+        {
+          "number": 2,
+          "action": "Attempt the update with a tampered enterprise identifier."
+        },
+        {
+          "number": 3,
+          "action": "Reload as an administrator and inspect the effective settings."
+        }
+      ],
+      "assertions": [
+        "The server rejects unauthorized setting changes.",
+        "Tampered enterprise identifiers cannot change another tenant.",
+        "The effective settings remain unchanged."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin",
+          "enterprise-member"
+        ]
+      },
+      "executors": {
+        "desktop": "eligible",
+        "playwright": "blocked",
+        "blockedReason": "A deterministic non-admin fixture and safe tenant-tampering harness do not exist yet."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    },
+    {
+      "id": "DEVIN-E2E01",
+      "pageId": "e-devin",
+      "title": "Apply git and PR settings to an end-to-end PR flow",
+      "type": "E2E",
+      "priority": "P1",
+      "riskTags": [
+        "git-metadata",
+        "persistence",
+        "pull-requests",
+        "workflow"
+      ],
+      "cadence": [
+        "release",
+        "on-demand"
+      ],
+      "owner": "enterprise-qa",
+      "navigation": "Devin → new session → PR",
+      "preconditions": [
+        "An enterprise administrator is authenticated in the target organization.",
+        "Creating a disposable session and PR is approved.",
+        "The original git attribution, commit email, and PR settings have been recorded."
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Set an approved disposable git attribution, commit email, and PR behavior combination."
+        },
+        {
+          "number": 2,
+          "action": "Save and reload the settings page."
+        },
+        {
+          "number": 3,
+          "action": "Create a disposable session that commits a change and opens a PR."
+        },
+        {
+          "number": 4,
+          "action": "Inspect the resulting commit and PR metadata."
+        }
+      ],
+      "assertions": [
+        "The commit author and email follow the saved settings.",
+        "The PR opens according to the saved enterprise behavior.",
+        "No unrelated enterprise setting changes."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Close or remove the disposable PR and branch according to the approved test procedure.",
+          "Restore the original enterprise settings.",
+          "Reload and verify the original configuration is active."
+        ]
+      },
+      "environment": {
+        "targets": [
+          "enterprise-qa"
+        ],
+        "roles": [
+          "enterprise-admin"
+        ]
+      },
+      "executors": {
+        "desktop": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-14"
+    }
+  ]
+}

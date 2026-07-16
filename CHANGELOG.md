@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-16 — Unified QA catalog foundation
+- **What:** Established this repository as the active QA platform home, added a versioned canonical testcase schema, migrated the nine Enterprise Devin settings cases as the initial catalog pilot, and added dependency-free local/CI validation for IDs, mappings, cleanup, executor eligibility, automation state, source files, and bug references.
+- **Why:** Test definitions, Desktop execution, and Playwright automation need one stable contract and repository boundary before the remaining legacy cases and runners can be consolidated safely.
+
 ## 2026-07-16 — Remove QA files imported from the empty repo
 - **What:** Deleted `qa-testing/nav_graph.md` and `qa-testing/testcases/01–17_*.md` (the area files imported from jeetcognition/empty's QA suite); kept files 18–23, which were created via this app's promotion flow. Updated README and the testcases README accordingly.
 - **Why:** The site never reads these files at runtime — all cases were already parsed into `testcases.js` and the topology lives in `BASE_PAGES` — so they were redundant duplicates of content maintained elsewhere.

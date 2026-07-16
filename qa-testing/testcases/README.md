@@ -2,6 +2,8 @@
 
 Structured, repeatable test cases (Smoke / Sanity / Regression / E2E) for pages added or promoted through the navigation-flow-map website. The original 01–17 area files (imported from the `empty` repo's QA suite) were removed after their cases were parsed into [`testcases.js`](../../testcases.js), which is the canonical runtime source; this folder now holds only cases created afterwards.
 
+These Markdown tables are the legacy UI source during the catalog migration. New canonical metadata lives under [`../../catalog/`](../../catalog/); migrate pages incrementally rather than creating another parallel testcase source.
+
 ## Test types
 
 | Type | Purpose | When to run | Depth |

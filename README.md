@@ -4,6 +4,18 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 
 **Live:** https://jeetcognition.github.io/nav-flow-map/
 
+## QA platform direction
+
+This repository is the active home for the unified QA platform: Nav Flow UI, canonical catalog, Devin Desktop runner, Playwright automation, and future triage/integration services. The other QA repositories are migration sources rather than parallel systems. See [`docs/architecture.md`](docs/architecture.md).
+
+The canonical catalog contract lives under [`catalog/`](catalog/). Enterprise Settings → Devin is the initial schema pilot; the existing Markdown files and `testcases.js` continue to power the UI until catalog generation is added in the next migration step.
+
+Validate catalog changes with:
+
+```bash
+npm run catalog:validate
+```
+
 ## Features
 - Responsive top-to-bottom flow tree: Login → landing (search `jeet-test-org`) → top-left logo menu → Enterprise/Personal settings → tabs.
 - Every node with children is collapsible. The first four layers open by default with responsive viewport breathing room; deeper branches remain collapsed until clicked, expansion state persists in the browser, and searches reveal hidden matches automatically.
@@ -53,3 +65,4 @@ No build step. Cytoscape.js loads from the unpkg CDN (internet required on first
 - `bugs.js` — known bugs mapped to pages (seeded from the QA Bug.md tracker).
 - `CHANGELOG.md` — record of every feature/behaviour change and why it was made.
 - `qa-testing/testcases/*.md` — markdown source for cases added or promoted through the website (files 18+). The imported 01–17 area files and `nav_graph.md` were removed once their content lived in `testcases.js` and the in-app graph.
+- `catalog/` — canonical schema-validated testcase catalog (Enterprise Settings → Devin pilot); see `catalog/README.md`.
