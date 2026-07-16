@@ -37,5 +37,5 @@ PRD §2 (Sessions), §2.3 (Progress tab tools), §2.8 (DANA), §8.9 (enterprise-
 |---|---|---|---|---|---|
 | STOOL-SMK01 | Smoke | P1 | Open any running session | Load Progress tab | Shell / IDE(Editor) / Browser / Planner tabs render. |
 | STOOL-SAN01 | Sanity | P2 | Session → Shell | Take over, type a command | Command executes; output streams. |
-| STOOL-SAN02 | Sanity | P2 | Session → Browser | "Live Desktop" take-over | Can control Devin's Chrome (login/2FA). |
+| STOOL-SAN02 | Sanity | P2 | Session → Browser | Open devinBrowser control for the session. | Can control Devin's Chrome (login/2FA). |
 | STOOL-E2E01 | E2E | P2 | Session lifecycle | Prompt → plan → code → PR → offered test/video | PR created; end-to-end test + video recording offered/attached. |

@@ -48,7 +48,7 @@ const devinBrowserExecutors = new Set(["required", "eligible", "unsupported"]);
 const playwrightExecutors = new Set(["eligible", "blocked", "unsupported"]);
 const automationStatuses = new Set([
   "manual",
-  "devin_verified",
+  "devinBrowser_verified",
   "candidate",
   "implementation_pr",
   "active",
@@ -247,7 +247,7 @@ for (const file of files) {
     if (!devinBrowserExecutors.has(testcase.executors?.devinBrowser)) {
       fail(
         location,
-        `unsupported Devin browser executor ${testcase.executors?.devinBrowser}`,
+        `unsupported devinBrowser executor ${testcase.executors?.devinBrowser}`,
       );
     }
     if (!playwrightExecutors.has(testcase.executors?.playwright)) {
