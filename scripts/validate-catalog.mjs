@@ -294,7 +294,10 @@ for (const file of files) {
       if (!sourceTypes.has(testcase.source.type)) {
         fail(location, `unsupported source type ${testcase.source.type}`);
       }
-      if (!fs.existsSync(path.join(root, testcase.source.reference))) {
+      if (
+        testcase.source.type === "migration" &&
+        !fs.existsSync(path.join(root, testcase.source.reference))
+      ) {
         fail(location, `source reference does not exist: ${testcase.source.reference}`);
       }
     }
@@ -327,13 +330,18 @@ for (const file of files) {
       });
     }
 
-    const legacy = legacyById.get(testcase.id);
-    if (!legacy) {
-      fail(location, "pilot testcase is missing from the current Nav Flow dataset");
-    } else {
-      if (legacy.type !== testcase.type) fail(location, `legacy type is ${legacy.type}`);
-      if (legacy.pri !== testcase.priority) fail(location, `legacy priority is ${legacy.pri}`);
-      if (legacy.reach !== testcase.navigation) fail(location, `legacy navigation is ${legacy.reach}`);
+    // Legacy cross-check applies only to cases migrated from the Nav Flow dataset;
+    // cases authored from other sources (manual, exploratory, customer-ticket,
+    // production-bug) legitimately have no legacy counterpart.
+    if (testcase.source?.type === "migration") {
+      const legacy = legacyById.get(testcase.id);
+      if (!legacy) {
+        fail(location, "migrated testcase is missing from the current Nav Flow dataset");
+      } else {
+        if (legacy.type !== testcase.type) fail(location, `legacy type is ${legacy.type}`);
+        if (legacy.pri !== testcase.priority) fail(location, `legacy priority is ${legacy.pri}`);
+        if (legacy.reach !== testcase.navigation) fail(location, `legacy navigation is ${legacy.reach}`);
+      }
     }
   }
 }

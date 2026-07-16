@@ -68,7 +68,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [],
       "externalReferences": [],
@@ -133,7 +133,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [],
       "externalReferences": [],
@@ -207,7 +207,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [
         "BUG-015"
@@ -290,7 +290,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [
         "BUG-015"
@@ -372,7 +372,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [
         "BUG-015"
@@ -455,7 +455,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [],
       "externalReferences": [],
@@ -529,7 +529,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [],
       "externalReferences": [],
@@ -602,7 +602,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [],
       "externalReferences": [],
@@ -682,7 +682,7 @@
       },
       "source": {
         "type": "migration",
-        "reference": "qa-testing/testcases/04_enterprise_devin.md"
+        "reference": "testcases.js"
       },
       "linkedBugIds": [],
       "externalReferences": [],

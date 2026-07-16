@@ -88,6 +88,23 @@ Status values:
 - **Rationale:** Executor identity and product surface are separate concepts: `devinBrowser` executes the case, while `surface: webapp` identifies what is under test.
 - **Implementation:** PR #34.
 
+## QA-DEC-010 — Legacy cross-checks apply only to migrated cases
+
+- **Date:** 2026-07-16
+- **Status:** Accepted
+- **Question:** Should the catalog validator require every case to exist in the legacy `testcases.js` dataset and reference an existing repo file?
+- **Answer:** No. The legacy presence/consistency comparison and the `source.reference` file-existence check apply only when `source.type` is `migration`. Cases authored from other sources (`manual`, `exploratory`, `customer-ticket`, `production-bug`) have no legacy counterpart, and their reference may be an external identifier such as a ticket URL.
+- **Rationale:** The unconditional check (flagged in PR #34 review) would have blocked the documented catalog workflows for customer tickets, exploratory findings, and manually authored cases.
+- **Implementation:** PR #34 revival (this branch).
+
+## QA-DEC-011 — Migrated pilot cases reference `testcases.js`
+
+- **Date:** 2026-07-16
+- **Status:** Accepted
+- **Question:** What should the nine pilot cases use as `source.reference` now that `qa-testing/testcases/04_enterprise_devin.md` was deleted (PR #36)?
+- **Answer:** Reference `testcases.js`, the surviving canonical source the markdown was parsed into.
+- **Implementation:** PR #34 revival (this branch).
+
 ## Open questions
 
 ### QA-OPEN-001 — Runtime data platform

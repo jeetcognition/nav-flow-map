@@ -83,3 +83,24 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Decision
 
 - QA-DEC-009.
+
+## 2026-07-16 — Revive PR #34 onto current main
+
+### Requested
+
+- Salvage the closed, conflicting PR #34 (canonical catalog foundation): rebase onto main, fix the review finding, and repair references made stale by PR #36.
+
+### Implemented
+
+- Rebased all PR #34 commits onto main (post PR #35/#36); resolved CHANGELOG/README conflicts and kept `qa-testing/testcases/02_sessions_composer.md` deleted as on main.
+- Scoped the validator's legacy `testcases.js` cross-check and the `source.reference` file-existence check to `source.type: migration` only (QA-DEC-010, review finding on PR #34).
+- Updated the nine pilot cases' `source.reference` from the deleted `qa-testing/testcases/04_enterprise_devin.md` to `testcases.js` (QA-DEC-011).
+
+### Validation
+
+- `npm run catalog:validate` passes (1 page, 9 testcases).
+- Verified a synthetic `customer-ticket` case with an external URL reference passes validation (then removed it).
+
+### Deferred
+
+- Catalog generation into the UI dataset; runner skill; Playwright pilot specs (next vertical-slice steps).
