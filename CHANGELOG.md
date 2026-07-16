@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-16 — Roomier default graph framing
+- **What:** Automatic graph fits now reserve responsive viewport padding (14% of the shorter graph dimension, clamped to 40–120px), while the explicit **Fit view** button retains its tighter 20px fit.
+- **Why:** The four-layer landing graph previously filled nearly the entire canvas; the roomier default framing keeps useful space around the hierarchy and makes the overview easier to scan.
+
 ## 2026-07-15 — Collapsible, responsive graph branches
 - **What:** Every node with children is collapsible. The first four layers open by default, while deeper parents stay collapsed until clicked and user changes persist locally. Hidden extra-link endpoints proxy to their collapsed ancestor, searches reveal hidden matches automatically, and active bug styling rolls up from hidden descendants. The tree measures complete subtree blocks and chooses the column count that best fits the current graph viewport.
 - **Why:** Four visible layers preserve useful landing context while progressive disclosure keeps deeper high-fanout branches compact and avoids fixed-row wrapping that placed sibling Settings tabs on fake deeper levels.
