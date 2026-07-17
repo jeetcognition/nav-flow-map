@@ -29,7 +29,7 @@ This file is append-only. Each entry summarizes requested work, completed implem
 - `node scripts/validate-data.js` passes.
 - `cd app && npx tsc -b --force` passes (no `app/` code changes).
 - `cd tests/playwright && npx playwright install chromium` and `npx playwright test --list` succeed; `npx playwright test` skips cleanly without env vars.
-- Headed run of `LOGIN-SAN01` against the QA base URL passed after aligning locators to the live Auth0 Universal Login page (`#prompt-logo-center`, "Welcome", "Work email address", exact "Continue").
+- All six `login` node cases are now automated in `tests/playwright/specs/unauthenticated/login.spec.ts` and linked as `active` in `catalog/pages/login.json`. Headed run of the full suite passed against the live Auth0 Universal Login page.
 - `app/` `npm run lint` and `npm run build` could not run locally because the `oxlint` / `rolldown` optional native bindings require Node `^20.19.0 || >=22.12.0` and the VM runs Node `v20.18.1`; CI uses Node 22 and will exercise them.
 
 ### Deferred

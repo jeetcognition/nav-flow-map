@@ -88,8 +88,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/unauthenticated/login.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -132,8 +132,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/unauthenticated/login.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -178,8 +178,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/unauthenticated/login.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -224,8 +224,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/unauthenticated/login.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -270,8 +270,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/unauthenticated/login.spec.ts"
       },
       "source": {
         "type": "migration",

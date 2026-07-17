@@ -14,6 +14,11 @@ export class LoginPage extends BasePage {
   readonly emailInput: Locator;
   readonly continueButton: Locator;
   readonly loginButton: Locator;
+  readonly githubButton: Locator;
+  readonly googleButton: Locator;
+  readonly signUpLink: Locator;
+  readonly signUpPrompt: Locator;
+  readonly errorMessage: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -25,6 +30,11 @@ export class LoginPage extends BasePage {
       .first();
     this.continueButton = page.getByRole("button", { name: "Continue", exact: true });
     this.loginButton = page.getByRole("button", { name: /log in|sign in/i }).first();
+    this.githubButton = page.getByRole("button", { name: /continue with github/i });
+    this.googleButton = page.getByRole("button", { name: /continue with google/i });
+    this.signUpLink = page.getByRole("link", { name: /sign up/i }).first();
+    this.signUpPrompt = page.getByText(/don't have an account\?/i);
+    this.errorMessage = page.getByText(/email is not valid/i);
   }
 
   /** Fill the email field and submit to request a code. */
