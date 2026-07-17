@@ -8,6 +8,7 @@ import runResultsJson from "./fixtures/runResults.json";
 import incidentsJson from "./fixtures/incidents.json";
 import sessionsJson from "./fixtures/sessions.json";
 import { SURFACES, USERS } from "./fixtures/static";
+import { devinSessionUrl } from "../lib/config";
 import type {
   Bug,
   CaseResult,
@@ -191,7 +192,7 @@ export function triggerDevinSession(scope: string, surfaceId: SurfaceId): DevinS
     scope,
     status: "queued",
     startedAt: new Date().toISOString(),
-    url: `https://app.devin.ai/sessions/${id}`,
+    url: devinSessionUrl(id),
   };
   store.sessions.unshift(session);
   notify();

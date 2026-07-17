@@ -26,6 +26,7 @@ import { SkeletonLines } from "../components/ui/SkeletonLines";
 import { ResultBadge, SessionBadge } from "../components/ui/badges";
 import { fadeUp, rowFadeUp } from "../lib/motion";
 import { formatDate, formatDuration } from "../lib/format";
+import { devinSessionUrl } from "../lib/config";
 import type { Run } from "../types";
 import "../styles/runs.css";
 
@@ -154,10 +155,7 @@ export default function RunDetail() {
           </div>
           <div className="run-head-actions">
             {run.devinSessionId && (
-              <ExternalLink
-                className="devin-pill"
-                href={`https://app.devin.ai/sessions/${run.devinSessionId}`}
-              >
+              <ExternalLink className="devin-pill" href={devinSessionUrl(run.devinSessionId)}>
                 <Robot size={16} weight="duotone" />
                 <span className="mono">{run.devinSessionId}</span>
                 {session && <SessionBadge status={session.status} />}

@@ -11,3 +11,10 @@ export const EDITS_JSON_URL =
   "https://raw.githubusercontent.com/jeetcognition/nav-flow-map/main/navmap-edits.json";
 
 export const DEFAULT_SURFACE = "enterprise";
+
+/** Base URL for Devin session deep links; the session id is appended. */
+export const DEVIN_SESSION_BASE_URL =
+  import.meta.env.VITE_DEVIN_SESSION_BASE_URL ?? "https://app.devin.ai/sessions";
+
+/** Deep link to a Devin session by id. */
+export const devinSessionUrl = (id: string) => `${DEVIN_SESSION_BASE_URL}/${id}`;
