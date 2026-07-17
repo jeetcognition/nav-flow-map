@@ -2,6 +2,11 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-17 — Revive canonical QA catalog foundation on React app
+- **What:** Ported the `catalog-foundation-revived` catalog foundation onto current `main`. Added `catalog/schema/page-catalog.schema.json`, `catalog/README.md`, empty `catalog/pages/`, and `scripts/validate-catalog.mjs` (adapted to read `app/src/data/fixtures/*.json` instead of the removed root `testcases.js`/`bugs.js`). Added durable docs (`docs/decisions.md`, `docs/work-log.md`, `docs/architecture.md`, `docs/README.md`, and the full `docs/qa-platform-architecture-plan.md`). Updated `AGENTS.md`, `README.md`, root `package.json` (`catalog:validate` script), and `.github/workflows/validate.yml` to run catalog validation. No `app/` or `worker/` changes.
+- **Why:** The previous catalog branch predated the React app (`newui`); a direct merge would have deleted `app/` and reverted the worker to legacy sources. This revamp preserves the live site while re-establishing the canonical catalog contract as the source-of-truth foundation.
+
+
 ## 2026-07-18 — Legacy site removed; QA Command Center deployed to Pages
 - **What:** Deleted the legacy no-build site (root `index.html`, `testcases.js`, `bugs.js`) and the one-shot `app/scripts/seed.mjs`. GitHub Pages now builds and serves `app/` via `.github/workflows/deploy.yml` (Vite base `/nav-flow-map/`, router basename, `404.html` SPA fallback). The Devin promotion pipeline and `scripts/validate-data.js` were retargeted at the canonical fixtures (`app/src/data/fixtures/nodes.json`/`testcases.json`/`bugs.json` + `qa-testing/*.md`). Fixed stale fixture references left over from seeding (five promoted `user-*` pages had been renamed; two bug `caseIds` pointed at cases that never existed).
 - **Why:** The React app fully replaced the legacy site, so serving the old UI and keeping two canonical data stores (legacy files vs fixtures) meant promotions never reached what users actually see. One canonical store + build-on-push closes that loop.
