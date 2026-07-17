@@ -16,6 +16,8 @@ import Incidents from "./pages/Incidents";
 import IncidentDetail from "./pages/IncidentDetail";
 import Automation from "./pages/Automation";
 import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import { isAuthed } from "./lib/auth";
 
 /** old bookmarks/deep links: /map?node=… → /navflow?node=… */
 function LegacyMapRedirect() {
@@ -54,21 +56,31 @@ function AnimatedRoutes() {
   );
 }
 
+function Shell() {
+  if (!isAuthed()) return <Navigate to="/login" replace />;
+  return (
+    <div className="app-frame">
+      <Sidebar />
+      <div className="app-main">
+        <Topbar />
+        <main className="app-scroll">
+          <AnimatedRoutes />
+        </main>
+      </div>
+      <MobileNav />
+      <GlobalSearch />
+      <ThemeToggle />
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <AppProvider>
-      <div className="app-frame">
-        <Sidebar />
-        <div className="app-main">
-          <Topbar />
-          <main className="app-scroll">
-            <AnimatedRoutes />
-          </main>
-        </div>
-        <MobileNav />
-        <GlobalSearch />
-        <ThemeToggle />
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Shell />} />
+      </Routes>
     </AppProvider>
   );
 }

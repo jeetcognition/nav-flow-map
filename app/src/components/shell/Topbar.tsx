@@ -1,15 +1,19 @@
 import { useEffect, useState, type CSSProperties } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   CaretDown,
   MagnifyingGlass,
   Check,
   Monitor,
   Desktop,
+  SignOut,
   Terminal,
 } from "@phosphor-icons/react";
 import { useApp } from "../../hooks/useApp";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getSurfaces, getUsers } from "../../data/dataService";
+import { clearAuth } from "../../lib/auth";
+import { SuggestionBox } from "./SuggestionBox";
 
 const KIND_ICON = { webapp: Monitor, desktop: Desktop, cli: Terminal };
 
@@ -66,6 +70,7 @@ function UserMenu() {
   const { user, setUserId } = useApp();
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(() => setOpen(false));
+  const navigate = useNavigate();
   return (
     <div className="dropdown user-menu" ref={ref}>
       <button
@@ -103,6 +108,16 @@ function UserMenu() {
               {u.id === user.id && <Check size={14} style={CHECK_STYLE} />}
             </button>
           ))}
+          <button
+            className="dropdown-item"
+            onClick={() => {
+              clearAuth();
+              navigate("/login", { replace: true });
+            }}
+          >
+            <SignOut size={16} />
+            <span>Log out</span>
+          </button>
         </div>
       )}
     </div>
@@ -134,6 +149,7 @@ export function Topbar() {
         <span>Search testcases, bugs, incidents…</span>
         <kbd className="mono">⌘K</kbd>
       </button>
+      <SuggestionBox />
       <UserMenu />
     </header>
   );

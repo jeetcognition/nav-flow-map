@@ -18,7 +18,6 @@ import {
 } from "@xyflow/react";
 import {
   ArrowsInSimple,
-  Bug as BugIcon,
   CornersOut,
   FloppyDisk,
   LinkSimple,
@@ -42,7 +41,6 @@ import { readStorage, writeStorage } from "../lib/storage";
 import { layoutNodes } from "../components/graph/layout";
 import { FlowNode, type FlowNodeType } from "../components/flow/FlowNode";
 import { FlowPanel } from "../components/flow/FlowPanel";
-import { AllBugsPanel } from "../components/flow/AllBugsPanel";
 import { AddPageModal, AddLinkModal, ReportBugModal } from "../components/flow/dialogs";
 import type { NavNode, NodeStats } from "../types";
 import "@xyflow/react/dist/style.css";
@@ -159,7 +157,6 @@ function FlowMapInner() {
   const selectedPage = selectedId ? (byId.get(selectedId) ?? null) : null;
   const caseParam = searchParams.get("case");
   const mode: HeatMode = searchParams.get("view") === "risk" ? "risk" : "coverage";
-  const [allBugsOpen, setAllBugsOpen] = useState(false);
 
   const setParam = useCallback(
     (key: string, value: string | null) => {
@@ -178,7 +175,6 @@ function FlowMapInner() {
 
   const selectNode = useCallback(
     (id: string | null) => {
-      if (id) setAllBugsOpen(false);
       setParam("node", id);
       if (!id) setParam("case", null);
     },
@@ -430,7 +426,7 @@ function FlowMapInner() {
 
   const panelVisible = layout !== "graph";
   const graphVisible = layout !== "panel";
-  const showNodePanel = allBugsOpen ? false : selectedPage !== null;
+  const showNodePanel = selectedPage !== null;
 
   return (
     <div className="fm-root">
@@ -492,15 +488,6 @@ function FlowMapInner() {
           </button>
           <button className="btn fm-btn" onClick={() => setAddLinkOpen(true)}>
             <LinkSimple size={13} weight="bold" /> Add link
-          </button>
-          <button
-            className={`btn fm-btn fm-bugs-btn ${allBugsOpen ? "is-active" : ""}`}
-            onClick={() => {
-              setAllBugsOpen((v) => !v);
-              if (layout === "graph") setLayout("split");
-            }}
-          >
-            <BugIcon size={13} weight="bold" /> Bugs
           </button>
           <button
             className="btn btn-primary fm-btn"
@@ -578,15 +565,7 @@ function FlowMapInner() {
             style={layout === "panel" ? undefined : { width: panelW }}
             aria-label="Details panel"
           >
-            {allBugsOpen ? (
-              <AllBugsPanel
-                onClose={() => setAllBugsOpen(false)}
-                onJump={(pageId) => {
-                  setAllBugsOpen(false);
-                  selectNode(pageId);
-                }}
-              />
-            ) : showNodePanel && selectedPage ? (
+            {showNodePanel && selectedPage ? (
               <FlowPanel
                 key={selectedPage.id}
                 page={selectedPage}

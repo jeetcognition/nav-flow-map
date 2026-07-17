@@ -54,10 +54,6 @@
   background: var(--danger-tint);
 }
 
-.fm-bugs-btn {
-  border-color: rgba(239, 68, 68, 0.45);
-}
-
 .fm-seg {
   display: inline-flex;
   border: 1px solid var(--border);

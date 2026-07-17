@@ -151,11 +151,11 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Test cases</th>
             <th>Title</th>
             <th>Severity</th>
             <th>Status</th>
-            <th>Node</th>
-            <th>Cases</th>
+            <th>Area</th>
             <th>Reporter</th>
             <th>Age</th>
             <th>Links</th>
@@ -182,6 +182,9 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
                 onKeyDown={onKeyDown}
               >
                 <td className="mono">{b.id}</td>
+                <td className="mono bug-cases-cell" title={b.caseIds.join(", ")}>
+                  {b.caseIds.join(", ") || "\u2014"}
+                </td>
                 <td>{b.title}</td>
                 <td>
                   <SeverityBadge severity={b.severity} />
@@ -194,7 +197,6 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
                     {node?.label ?? b.nodeId}
                   </Link>
                 </td>
-                <td className="num">{b.caseIds.length}</td>
                 <td>{userName(b.reporter)}</td>
                 <td className="bug-age-cell">{timeAgo(b.createdAt)}</td>
                 <td>
