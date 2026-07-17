@@ -154,3 +154,31 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Deferred
 
 - Catalog → fixture generator; YAML migration; runner skill; Playwright import; D1/R2 runtime storage; failure triage automation; Pylon intake.
+
+## 2026-07-17 — Audit and refactor validator for engineering discipline
+
+### Requested
+
+- Ensure the catalog foundation is not "vibe coded" and follows an engineered structure.
+
+### Implemented
+
+- Audited the validator for god files and hard-coded paths.
+- Split `scripts/validate-catalog.mjs` (353 lines) into focused modules under `scripts/catalog-lib/`:
+  - `config.mjs`: repository and fixture paths.
+  - `schema.mjs`: catalog constants and regex patterns.
+  - `checks.mjs`: generic validation helpers.
+  - `fixtures.mjs`: fixture loading.
+  - `document.mjs`: page and testcase validation logic (under 300 lines).
+- Rewrote `scripts/validate-catalog.mjs` as a 40-line entry point.
+
+### Validation
+
+- `npm run catalog:validate` passes.
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- PR #61 CI passes (lint, typecheck, build, validate).
+
+### Deferred
+
+- Add unit tests for the validator once a test runner is selected; integrate catalog generation with `app/` fixtures.
