@@ -2,12 +2,15 @@
 
 React 19 + Vite + TypeScript (strict) single-page app: Dashboard, **NavFlow**
 (the interactive navigation-flow graph, successor to the legacy root
-`index.html` site), Runs, Issues, Incidents, Automation, and Settings.
+`index.html` site, removed 2026-07-18), Runs, Issues, Incidents, Automation,
+and Settings.
 
 Phase 1: all data is mock — typed JSON fixtures behind a swappable data layer.
-Fixtures: 372 testcases (converted from the legacy `testcases.js`), 17 bugs,
-12 runs with per-case results, 25 incidents, Devin sessions, users, surfaces
-(regenerate with `node scripts/seed.mjs`).
+Fixtures: 372 testcases (originally converted from the legacy `testcases.js`),
+17 bugs, 12 runs with per-case results, 25 incidents, Devin sessions, users,
+surfaces. The fixtures are now the canonical data — the Devin promotion
+pipeline maintains them (see the root README), and
+`node scripts/validate-data.js` (repo root) cross-checks them.
 
 ## Architecture
 

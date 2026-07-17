@@ -17,29 +17,29 @@ function cors(origin) {
   };
 }
 
-const REWRITE_PROMPT = `You are rewriting and promoting website edits for the nav-flow-map site into its source files.
+const REWRITE_PROMPT = `You are rewriting and promoting website edits for the QA Command Center app (the React app in app/ of the repo) into its source fixtures.
 In the repo jeetcognition/nav-flow-map, the file navmap-edits.json holds edits made on the website: "addedPages" (new graph pages), "pageOverrides" (edited page fields), "addedCases" (map of pageId -> array of rough one-liner draft test cases), "caseOverrides" (edited/rewritten case fields, keyed by case id or "<pageId>-draft-<index>"), and "addedBugs" (draft bug reports with temporary BUG-DRAFT-* ids).
+
+The canonical sources are the JSON fixtures in app/src/data/fixtures/: nodes.json (graph pages), testcases.json, and bugs.json, plus the markdown case tables in qa-testing/testcases/*.md.
 
 Do the following:
 
 1. REWRITE each draft in "addedCases" into a full structured test case (use any existing "<pageId>-draft-<index>" entry in "caseOverrides" if one exists):
-   - suite: Sanity or Regression; pri: P1/P2/P3;
-   - steps: concrete numbered steps in the same style as the existing cases in qa-testing/testcases/*.md (study a few for tone and navigation paths; page metadata is in index.html BASE_PAGES);
+   - suite: Sanity or Regression; priority: P1/P2/P3;
+   - steps: concrete numbered steps in the same style as the existing cases in qa-testing/testcases/*.md (study a few for tone and navigation paths; page metadata is in app/src/data/fixtures/nodes.json);
    - expected: a clear, specific expected result.
 
-2. PROMOTE everything out of navmap-edits.json into the real sources:
-   - Test cases: assign each rewritten case a stable ID with a prefix for its page (reuse the page's existing prefix from BASE_PAGES in index.html; if the page has none, invent a short uppercase prefix, add it to that page's "prefixes" array, and number cases <PREFIX>-SAN01/-REG01 style). Append each case as a table row in the matching qa-testing/testcases/*.md file (create a new numbered .md file for pages without one, following the existing file format), and append the same case object to the TESTCASES array in testcases.js (fields: id, type, pri, reach, steps, expected — match existing objects exactly).
-   - Pages: fold each entry of "addedPages" into the BASE_PAGES array in index.html as a normal page object, and apply "pageOverrides" (label/route/desc/via edits) directly to the corresponding BASE_PAGES entries.
-   - Case edits: apply "caseOverrides" that target existing case ids directly to those cases in testcases.js AND in their qa-testing/testcases/*.md row.
-   - Bugs: move each entry of "addedBugs" into the BUGS array in bugs.js, replacing its BUG-DRAFT-* id with the next sequential BUG-NNN id; keep its pageId, severity, status, caseIds, links and notes as-is, but drop any caseIds that don't match an existing test case id.
+2. PROMOTE everything out of navmap-edits.json into the fixtures:
+   - Test cases: assign each rewritten case a stable ID with a prefix for its page (reuse the page's existing prefix from its nodes.json entry; if the page has none, invent a short uppercase prefix, add it to that page's "prefixes" array, and number cases <PREFIX>-SAN01/-REG01 style). Append each case as a table row in the matching qa-testing/testcases/*.md file (create a new numbered .md file for pages without one, following the existing file format), and append the same case object to app/src/data/fixtures/testcases.json (fields: id, title, surfaceId, nodeId, suite, priority, reach, steps, expected, automation: "manual", flaky: false, createdBy, source: "authored" — match existing objects exactly; title is a short version of steps; surfaceId "enterprise" unless the page clearly belongs elsewhere).
+   - Pages: fold each entry of "addedPages" into app/src/data/fixtures/nodes.json as a normal page object (fields: id, label, group, route, desc, parent, via, prefixes). If the added page has an auto-generated id like "user-support-page-mrkjukp2", give it a clean short kebab-case id instead and use that id everywhere (nodeId of its cases and bugs, "parent" of other pages, addedLinks endpoints in navmap-edits.json). Apply "pageOverrides" (label/route/desc/via edits) directly to the corresponding nodes.json entries.
+   - Case edits: apply "caseOverrides" that target existing case ids directly to those cases in testcases.json AND in their qa-testing/testcases/*.md row.
+   - Bugs: move each entry of "addedBugs" into app/src/data/fixtures/bugs.json, replacing its BUG-DRAFT-* id with the next sequential BUG-NNN id; map its fields onto the existing bug object shape (id, title, severity, status, surfaceId, nodeId, caseIds, links, reproSteps, environment, reporter, createdAt, incidentId: null), but drop any caseIds that don't match an existing test case id.
 
-3. CLEAN UP: after promoting, empty the promoted keys in navmap-edits.json ("addedPages": [], "pageOverrides": {}, "caseOverrides": {}, "addedCases": {}, "addedBugs": []) but keep "addedLinks" and "removedLinks" untouched — extra graph links are rendered from this file, not from index.html. Keep it pretty-printed with 2-space indentation.
+3. CLEAN UP: after promoting, empty the promoted keys in navmap-edits.json ("addedPages": [], "pageOverrides": {}, "caseOverrides": {}, "addedCases": {}, "addedBugs": []) but keep "addedLinks" and "removedLinks" (with any id remapping from step 2) — extra graph links are rendered from this file, not from nodes.json. Keep it pretty-printed with 2-space indentation.
 
-4. VERIFY: node --check testcases.js and node --check bugs.js, and check every new case ID matches a prefix in BASE_PAGES so it renders on its node. Do not change any other content, and never renumber or edit unrelated existing cases.
+4. VERIFY: run "node scripts/validate-data.js" (cross-checks the fixtures and navmap-edits.json) and "cd app && npm ci && npm run lint && npm run build" — both must pass. Do not change any other content, and never renumber or edit unrelated existing cases. Follow the repo's Prettier formatting for the files you touch.
 
-5. LAYOUT (only when new pages were added): insert each promoted page into BASE_PAGES next to its siblings (right after the other children of the same parent) with the correct "parent" id, so the site's automatic tidy-tree layout keeps the graph balanced. Then open the site locally (python3 -m http.server + a headless browser) and confirm the new nodes render under their parent without overlapping neighbouring subtrees; if the layoutTree() function in index.html needs a spacing tweak to stay compact and readable, make it.
-
-Commit all changed files (testcases.js, bugs.js, index.html, qa-testing/testcases/*.md, navmap-edits.json) directly to the main branch — do NOT open a PR.`;
+Commit all changed files (app/src/data/fixtures/*.json, qa-testing/testcases/*.md, navmap-edits.json) directly to the main branch — do NOT open a PR. The site rebuilds and deploys from main automatically.`;
 
 function hasPromotable(edits) {
   return !!(

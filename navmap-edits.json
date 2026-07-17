@@ -11,7 +11,7 @@
     },
     {
       "source": "suborg",
-      "target": "user-support-page-mrkjukp2",
+      "target": "support",
       "via": "Navigate directly"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "source": "logomenu",
-      "target": "user-create-organisation-mrl0fx5d",
+      "target": "org-create",
       "via": "Click on \"+\" next to Organisation"
     }
   ],

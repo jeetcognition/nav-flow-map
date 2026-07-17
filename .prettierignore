@@ -1,9 +1,4 @@
-# Legacy no-build app: frozen except for safety-net changes (see AUDIT.md).
-# Formatting these would create huge diffs and conflict with the automated
-# Devin promotion pipeline that edits them directly.
-index.html
-testcases.js
-bugs.js
+# Written by the save worker / Devin promotion pipeline, not by hand.
 navmap-edits.json
 qa-testing/
 CHANGELOG.md
