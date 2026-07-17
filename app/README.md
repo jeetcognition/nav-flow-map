@@ -1,31 +1,44 @@
-# QA Command Center (Phase 1)
+# QA Command Center (`app/`)
 
-Multi-surface AI QA command center — UI-only with a mock data layer. Built with Vite + React 19 + TypeScript, React Flow, framer-motion, recharts, Phosphor icons.
+React 19 + Vite + TypeScript (strict) single-page app: Dashboard, **NavFlow**
+(the interactive navigation-flow graph, successor to the legacy root
+`index.html` site), Runs, Issues, Incidents, Automation, and Settings.
 
-## Run
-
-```bash
-cd app
-npm install
-npm run dev        # http://localhost:5173
-```
+Phase 1: all data is mock — typed JSON fixtures behind a swappable data layer.
+Fixtures: 372 testcases (converted from the legacy `testcases.js`), 17 bugs,
+12 runs with per-case results, 25 incidents, Devin sessions, users, surfaces
+(regenerate with `node scripts/seed.mjs`).
 
 ## Architecture
 
-- `src/data/fixtures/` — typed JSON fixtures: 372 testcases (converted from the legacy `testcases.js`), 17 bugs, 12 runs with per-case results, 25 incidents (mock Pylon/Datadog), Devin sessions, users, surfaces.
-- `src/data/dataService.ts` — the single data layer (reads, mutations, derived stats, subscribe). Swap its internals for real APIs in Phase 2 without touching UI.
-- `src/data/aiService.ts` — all AI features (`AI_MOCK = true` returns canned responses with latency). Every AI output is a draft the human edits before saving.
-- `scripts/seed.mjs` — regenerates fixtures from the legacy repo data deterministically (`node scripts/seed.mjs`).
+| Layer  | Where                      | Notes                                                                                                                                                                       |
+| ------ | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data   | `src/data/dataService.ts`  | Singleton store over `src/data/fixtures/*.json` + pub/sub. UI never imports fixtures directly — swap this module's internals for real APIs.                                 |
+| AI     | `src/data/aiService.ts`    | `AI_MOCK = true`; canned drafts behind fake latency. Swap `mockDelay` bodies for Anthropic API calls.                                                                       |
+| Edits  | `src/data/editsService.ts` | Port of the legacy NavFlow edit overlay: localStorage → committed `navmap-edits.json` baseline → Save to repo (worker) → AI promotion. Payload shape must match the worker. |
+| Auth   | `src/lib/auth.ts`          | Mock email → OTP login (code shown as a dev hint). Swap `sendOtp` for a real backend.                                                                                       |
+| Config | `src/lib/config.ts`        | Worker endpoint, edits-JSON URL, default surface. Override with `VITE_*` env vars (see `.env.example`).                                                                     |
+| State  | `src/state/AppContext.tsx` | UI chrome only (user, surface, search palette).                                                                                                                             |
 
-## Modules
+Pages live in `src/pages/`, shared components in `src/components/`
+(`flow/` = NavFlow graph + panel, `shell/` = sidebar/topbar/search/suggestion
+box, `ui/` = generic widgets). Design tokens in `src/styles/tokens.css`.
 
-| Route                          | Module                                                                                                                                                |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                            | Dashboard — coverage, runs, bugs, incident charts, escaped defects                                                                                    |
-| `/map`                         | Graph coverage map — React Flow + dagre, progress rings, coverage/risk heat toggle, node panel with AI testcase suggestions (`?node=<id>` deep links) |
-| `/runs`, `/runs/:id`           | Run history + detail with AI summary, failure clustering, flaky flags                                                                                 |
-| `/bugs`, `/bugs/:id`           | Issues — table + kanban, AI bug drafting with duplicate detection                                                                                     |
-| `/incidents`, `/incidents/:id` | AI triage feed (category + confidence + human override), create-testcase-from-incident, escaped-defect traceability                                   |
-| `/automation`                  | Coverage by node, testcase explorer (`?case=<id>`), live mock Devin sessions, AI coverage-gap report                                                  |
+## Develop
 
-The legacy single-file app remains untouched at the repo root (`index.html`).
+```bash
+npm install
+npm run dev        # http://localhost:8899 — port is on the save worker's CORS allowlist
+npm run lint       # oxlint --deny-warnings (warnings fail)
+npx tsc -b         # strict typecheck
+npm run build      # tsc + vite build
+```
+
+Formatting is repo-wide Prettier — run `npm run format` at the repo root.
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, and build on every PR.
+
+## Conventions
+
+See `../AGENTS.md`. Highlights: no new god files (~300-line ceiling), config
+in `lib/config.ts` (never inline URLs/IDs), every async UI path needs a
+loading **and** an error state, data access only through the `data/` services.

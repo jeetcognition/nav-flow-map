@@ -52,18 +52,19 @@ function hasPromotable(edits) {
   );
 }
 
+// override via a DEVIN_SESSIONS_URL env var when the org or API version changes
+const DEFAULT_DEVIN_SESSIONS_URL =
+  "https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions";
+
 async function startDevinSession(env, prompt, title) {
-  const res = await fetch(
-    "https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${env.DEVIN_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt, title }),
+  const res = await fetch(env.DEVIN_SESSIONS_URL || DEFAULT_DEVIN_SESSIONS_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.DEVIN_API_KEY}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ prompt, title }),
+  });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) return { error: "Devin API " + res.status };
   return { session_id: data.session_id, url: data.url };
