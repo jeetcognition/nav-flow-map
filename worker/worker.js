@@ -1,6 +1,10 @@
 const REPO = "jeetcognition/nav-flow-map";
 const FILE = "navmap-edits.json";
-const ALLOWED_ORIGINS = ["https://jeetcognition.github.io", "http://localhost:8898", "http://localhost:8899"];
+const ALLOWED_ORIGINS = [
+  "https://jeetcognition.github.io",
+  "http://localhost:8898",
+  "http://localhost:8899",
+];
 const MAX_BYTES = 512 * 1024;
 
 function cors(origin) {
@@ -48,18 +52,67 @@ function hasPromotable(edits) {
   );
 }
 
-async function startRewriteSession(env) {
-  const res = await fetch("https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions", {
+// override via a DEVIN_SESSIONS_URL env var when the org or API version changes
+const DEFAULT_DEVIN_SESSIONS_URL =
+  "https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions";
+
+async function startDevinSession(env, prompt, title) {
+  const res = await fetch(env.DEVIN_SESSIONS_URL || DEFAULT_DEVIN_SESSIONS_URL, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.DEVIN_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ prompt: REWRITE_PROMPT, title: "Rewrite & promote navmap edits to source files" }),
+    body: JSON.stringify({ prompt, title }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) return { error: "Devin API " + res.status };
   return { session_id: data.session_id, url: data.url };
+}
+
+function startRewriteSession(env) {
+  return startDevinSession(env, REWRITE_PROMPT, "Rewrite & promote navmap edits to source files");
+}
+
+const MAX_SUGGESTION_BYTES = 16 * 1024;
+
+// "Suggest an improvement" box in the QA Command Center app: the session
+// implements the change and opens a PR that an admin reviews and merges.
+async function handleSuggest(request, env, headers) {
+  let body;
+  try {
+    const text = await request.text();
+    if (text.length > MAX_SUGGESTION_BYTES) throw new Error("payload too large");
+    body = JSON.parse(text);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), {
+      status: 400,
+      headers,
+    });
+  }
+  const suggestion = typeof body.suggestion === "string" ? body.suggestion.trim() : "";
+  if (suggestion.length < 10)
+    return new Response(JSON.stringify({ error: "suggestion too short" }), {
+      status: 400,
+      headers,
+    });
+  const context = typeof body.context === "string" ? body.context.slice(0, 500) : "";
+  const prompt = `A user of the QA Command Center app (the React app in app/ of the repo ${REPO}) submitted this improvement suggestion through the in-app "Suggest an improvement" box:
+
+---
+${suggestion}
+---
+${
+  context
+    ? `
+Context: ${context}
+`
+    : ""
+}
+Implement the suggestion in the repo. Work on a feature branch and open a pull request describing what you changed and why — do NOT commit directly to main; an admin reviews and merges the PR. Keep the diff focused on the suggestion, follow the repo's Prettier/oxlint/TypeScript-strict tooling (run app/'s lint and build before pushing), and if the suggestion is unclear or infeasible, open a PR that only adds your analysis to TODO.md instead.`;
+  const result = await startDevinSession(env, prompt, "App suggestion: " + suggestion.slice(0, 60));
+  if (result.error) return new Response(JSON.stringify(result), { status: 502, headers });
+  return new Response(JSON.stringify({ ok: true, ...result }), { headers });
 }
 
 async function handleRewrite(env, headers) {
@@ -69,7 +122,10 @@ async function handleRewrite(env, headers) {
   if (cur.ok) {
     const edits = await cur.json().catch(() => null);
     if (!hasPromotable(edits))
-      return new Response(JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }), { status: 400, headers });
+      return new Response(
+        JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }),
+        { status: 400, headers },
+      );
   }
   const result = await startRewriteSession(env);
   if (result.error) return new Response(JSON.stringify(result), { status: 502, headers });
@@ -81,11 +137,17 @@ export default {
     const origin = request.headers.get("Origin") || "";
     const headers = { ...cors(origin), "Content-Type": "application/json" };
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
-    if (request.method !== "POST") return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
+    if (request.method !== "POST")
+      return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
     if (!ALLOWED_ORIGINS.includes(origin))
-      return new Response(JSON.stringify({ error: "origin not allowed" }), { status: 403, headers });
+      return new Response(JSON.stringify({ error: "origin not allowed" }), {
+        status: 403,
+        headers,
+      });
 
-    if (new URL(request.url).pathname === "/rewrite") return handleRewrite(env, headers);
+    const pathname = new URL(request.url).pathname;
+    if (pathname === "/rewrite") return handleRewrite(env, headers);
+    if (pathname === "/suggest") return handleSuggest(request, env, headers);
 
     let edits;
     try {
@@ -93,10 +155,17 @@ export default {
       if (text.length > MAX_BYTES) throw new Error("payload too large");
       edits = JSON.parse(text);
     } catch (e) {
-      return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), { status: 400, headers });
+      return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), {
+        status: 400,
+        headers,
+      });
     }
     for (const k of ["addedPages", "pageOverrides", "caseOverrides", "addedCases"]) {
-      if (!(k in edits)) return new Response(JSON.stringify({ error: "missing key " + k }), { status: 400, headers });
+      if (!(k in edits))
+        return new Response(JSON.stringify({ error: "missing key " + k }), {
+          status: 400,
+          headers,
+        });
     }
 
     const api = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
@@ -118,7 +187,10 @@ export default {
     const res = await fetch(api, { method: "PUT", headers: gh, body: JSON.stringify(body) });
     if (!res.ok) {
       const detail = (await res.text()).slice(0, 300);
-      return new Response(JSON.stringify({ error: "GitHub API " + res.status, detail }), { status: 502, headers });
+      return new Response(JSON.stringify({ error: "GitHub API " + res.status, detail }), {
+        status: 502,
+        headers,
+      });
     }
     const out = { ok: true };
     if (hasPromotable(edits)) out.rewrite = await startRewriteSession(env);

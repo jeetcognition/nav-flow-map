@@ -1,0 +1,362 @@
+[
+  {
+    "id": "login",
+    "label": "Login Page",
+    "group": "entry",
+    "route": "/login",
+    "desc": "Entry login page for the Enterprise webapp.",
+    "parent": null,
+    "via": null,
+    "prefixes": ["LOGIN"]
+  },
+  {
+    "id": "auth",
+    "label": "Auth (Email + OTP)",
+    "group": "entry",
+    "route": "hosted auth → OTP verify",
+    "desc": "Authentication between the Login page and the Landing search page: enter work email, receive a one-time code, verify it.",
+    "parent": "login",
+    "via": "Enter work email → Continue",
+    "prefixes": ["AUTH"]
+  },
+  {
+    "id": "landing",
+    "label": "Landing Search Page",
+    "group": "entry",
+    "route": "/org/cog-enterprise-qa/org-selector",
+    "desc": "The page we land on after submitting a correct OTP.",
+    "parent": "auth",
+    "via": "Submit the valid OTP code",
+    "prefixes": ["ORGSEL"]
+  },
+  {
+    "id": "suborg",
+    "label": "Landing Repo Page",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/",
+    "desc": "Sub-org workspace home.",
+    "parent": "landing",
+    "via": "Type jeet-test-org in the search bar → click jeet-test-org",
+    "prefixes": ["SUB", "SUB-NS"]
+  },
+  {
+    "id": "composer",
+    "label": "New session (Composer)",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/ (composer)",
+    "desc": "Prompt box, Agent/Ask mode, repo and context selectors, and session tools.",
+    "parent": "suborg",
+    "via": "Use the composer on the home page",
+    "prefixes": ["COMP", "STOOL"]
+  },
+  {
+    "id": "automations",
+    "label": "Automations",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/automations",
+    "desc": "Automations list; create at /automations/create. Includes legacy Schedules.",
+    "parent": "suborg",
+    "via": "Left nav → Automations",
+    "prefixes": ["AUTO", "SCHED", "SUB-AU"]
+  },
+  {
+    "id": "security",
+    "label": "Security (Code scan)",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/code-scan",
+    "desc": "Code scans, profiles, and secure mode coverage.",
+    "parent": "suborg",
+    "via": "Left nav → Security",
+    "prefixes": ["SCAN", "SECM"]
+  },
+  {
+    "id": "wiki",
+    "label": "Wiki",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/wiki",
+    "desc": "Repo wiki at /wiki/<owner>/<repo>?branch=<b>.",
+    "parent": "suborg",
+    "via": "Left nav → Wiki",
+    "prefixes": ["SUB-WK", "DWIKI"]
+  },
+  {
+    "id": "review",
+    "label": "Review",
+    "group": "suborg",
+    "route": "/review",
+    "desc": "Devin Review landing and pull-request review UI.",
+    "parent": "suborg",
+    "via": "Left nav → Review",
+    "prefixes": ["SUB-RV", "REVUI"]
+  },
+  {
+    "id": "logomenu",
+    "label": "Top Left Menu",
+    "group": "suborg",
+    "route": "(dropdown)",
+    "desc": "Top-left corner dropdown: Enterprise settings, Invite members, org switcher, switch account, log out.",
+    "parent": "landing",
+    "via": "Top-left corner → click dropdown arrow",
+    "prefixes": ["SUB-IM"]
+  },
+  {
+    "id": "prefs",
+    "label": "Preferences",
+    "group": "personal",
+    "route": "/settings/preferences",
+    "desc": "Profile, display, notifications, git identity, pull-request, and Review preferences.",
+    "parent": "ent",
+    "via": "Settings → Preferences",
+    "prefixes": ["PREF"]
+  },
+  {
+    "id": "pconn",
+    "label": "Personal Connections",
+    "group": "personal",
+    "route": "/settings/connections",
+    "desc": "Personal integration and MCP account connections.",
+    "parent": "ent",
+    "via": "Settings → Connections",
+    "prefixes": ["PCON"]
+  },
+  {
+    "id": "my-analytics",
+    "label": "My Analytics",
+    "group": "personal",
+    "route": "/settings/my-analytics",
+    "desc": "Personal usage and consumption analytics.",
+    "parent": "ent",
+    "via": "Settings → My Analytics",
+    "prefixes": ["MYAN"]
+  },
+  {
+    "id": "ent",
+    "label": "Settings",
+    "group": "enterprise",
+    "route": "/org/cog-enterprise-qa/settings",
+    "desc": "Enterprise settings root; left-nav with all enterprise tabs below.",
+    "parent": "logomenu",
+    "via": "Logo menu → Enterprise settings",
+    "prefixes": ["ENTSET"]
+  },
+  {
+    "id": "e-general",
+    "label": "General",
+    "group": "enterprise",
+    "route": "…/settings/general",
+    "desc": "Enterprise authentication and SSO requirements.",
+    "parent": "ent",
+    "via": "Left nav → General",
+    "prefixes": ["GEN"]
+  },
+  {
+    "id": "e-conn",
+    "label": "Connections",
+    "group": "enterprise",
+    "route": "…/settings/connections?tab=integrations",
+    "desc": "GitHub/GitLab configure, repos, disconnect, register app; MCPs tab.",
+    "parent": "ent",
+    "via": "Left nav → Connections",
+    "prefixes": ["ECON", "ECON-MCP"]
+  },
+  {
+    "id": "e-sessions",
+    "label": "Sessions",
+    "group": "enterprise",
+    "route": "…/settings/enterprise-sessions",
+    "desc": "Enterprise session discovery, search, filters, and navigation.",
+    "parent": "ent",
+    "via": "Left nav → Sessions",
+    "prefixes": ["SESS"]
+  },
+  {
+    "id": "e-devin",
+    "label": "Devin",
+    "group": "enterprise",
+    "route": "…/settings/enterprise-devin",
+    "desc": "Devin model, tool, git identity, and pull-request configuration.",
+    "parent": "ent",
+    "via": "Left nav → Devin",
+    "prefixes": ["DEVIN"]
+  },
+  {
+    "id": "e-review",
+    "label": "Review",
+    "group": "enterprise",
+    "route": "…/settings/review",
+    "desc": "Devin Review enterprise configuration.",
+    "parent": "ent",
+    "via": "Left nav → Review",
+    "prefixes": ["REV"]
+  },
+  {
+    "id": "e-knowledge",
+    "label": "Knowledge",
+    "group": "enterprise",
+    "route": "…/settings (Knowledge tab)",
+    "desc": "Org knowledge notes.",
+    "parent": "ent",
+    "via": "Left nav → Knowledge",
+    "prefixes": ["KNOW"]
+  },
+  {
+    "id": "e-env",
+    "label": "Environment",
+    "group": "enterprise",
+    "route": "…/settings/enterprise-environment",
+    "desc": "Environment configuration, blueprints, outposts, snapshots, and steering knowledge.",
+    "parent": "ent",
+    "via": "Left nav → Environment",
+    "prefixes": ["ENV"]
+  },
+  {
+    "id": "e-playbooks",
+    "label": "Playbooks",
+    "group": "enterprise",
+    "route": "…/settings (Playbooks tab)",
+    "desc": "Org playbooks.",
+    "parent": "ent",
+    "via": "Left nav → Playbooks",
+    "prefixes": ["PLAY"]
+  },
+  {
+    "id": "e-skills",
+    "label": "Skills & Rules",
+    "group": "enterprise",
+    "route": "…/settings/enterprise-skills",
+    "desc": "Enterprise skill usage, sources, task types, and session drill-downs.",
+    "parent": "ent",
+    "via": "Left nav → Skills & Rules",
+    "prefixes": ["SKILL"]
+  },
+  {
+    "id": "e-repos",
+    "label": "Repositories",
+    "group": "enterprise",
+    "route": "…/settings/repositories",
+    "desc": "Organization-scoped repository access and permissions.",
+    "parent": "ent",
+    "via": "Left nav → Repositories",
+    "prefixes": ["REPO"]
+  },
+  {
+    "id": "e-membership",
+    "label": "Membership",
+    "group": "enterprise",
+    "route": "/settings/membership",
+    "desc": "Enterprise members and invitations.",
+    "parent": "ent",
+    "via": "Left nav → Membership",
+    "prefixes": ["MEMB"]
+  },
+  {
+    "id": "e-orgs",
+    "label": "Organizations",
+    "group": "enterprise",
+    "route": "…/settings/organizations",
+    "desc": "Sub-org list: create, search, drill into per-org settings.",
+    "parent": "ent",
+    "via": "Left nav → Organizations",
+    "prefixes": ["ORG"]
+  },
+  {
+    "id": "s-settings",
+    "label": "Sub-orgs and Settings",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/settings",
+    "desc": "Per-sub-org settings: General, Connections, Products, Resources, and Administration.",
+    "parent": "ent",
+    "via": "Settings → Organizations → click jeet-test-org",
+    "prefixes": ["SUB-OS"]
+  },
+  {
+    "id": "e-api",
+    "label": "Devin API",
+    "group": "enterprise",
+    "route": "…/settings/devin-api",
+    "desc": "Service users, scoped credentials, and Legacy API access.",
+    "parent": "ent",
+    "via": "Left nav → Devin API",
+    "prefixes": ["API"]
+  },
+  {
+    "id": "e-guardrails",
+    "label": "Guardrails",
+    "group": "enterprise",
+    "route": "…/settings/guardrails",
+    "desc": "Enterprise guardrail policies, actions, and violation records.",
+    "parent": "ent",
+    "via": "Left nav → Guardrails",
+    "prefixes": ["GUARD"]
+  },
+  {
+    "id": "e-infra",
+    "label": "Infra",
+    "group": "enterprise",
+    "route": "…/settings/infrastructure",
+    "desc": "Hypervisor, VPC, tenant health, and capacity monitoring.",
+    "parent": "ent",
+    "via": "Left nav → Infrastructure",
+    "prefixes": ["INFRA"]
+  },
+  {
+    "id": "e-analytics",
+    "label": "Analytics",
+    "group": "enterprise",
+    "route": "…/settings/analytics",
+    "desc": "Enterprise usage, consumption, category, organization, user, and repository analytics.",
+    "parent": "ent",
+    "via": "Left nav → Analytics",
+    "prefixes": ["ANAL"]
+  },
+  {
+    "id": "s-secrets",
+    "label": "Secrets",
+    "group": "suborg",
+    "route": "/org/jeet-devin-qa/settings/secrets",
+    "desc": "Organization and personal credentials for future Devin sessions.",
+    "parent": "s-settings",
+    "via": "Organization settings → Secrets",
+    "prefixes": ["SECRET"]
+  },
+  {
+    "id": "support",
+    "label": "Support Page",
+    "group": "personal",
+    "route": "/org/cog-enterprise-qa/settings/support",
+    "desc": "In-app support and help resources.",
+    "parent": "landing",
+    "via": "Left sidebar → (?) → Support",
+    "prefixes": ["SUP"]
+  },
+  {
+    "id": "org-create",
+    "label": "Create Organisation",
+    "group": "enterprise",
+    "route": "…/settings/organizations/create",
+    "desc": "Create a sub-organization with an ACU limit and initial members.",
+    "parent": "e-orgs",
+    "via": "Click \"Create Organisation\"",
+    "prefixes": ["ORGCRT"]
+  },
+  {
+    "id": "roles",
+    "label": "Roles",
+    "group": "enterprise",
+    "route": "…/settings/membership?tab=roles",
+    "desc": "Enterprise and organization role management.",
+    "parent": "e-membership",
+    "via": "Roles tab in Membership",
+    "prefixes": ["ROLE"]
+  },
+  {
+    "id": "groups-idp",
+    "label": "Groups (IdP)",
+    "group": "enterprise",
+    "route": "…/settings/membership?tab=groups",
+    "desc": "Identity-provider groups and mappings.",
+    "parent": "e-membership",
+    "via": "Groups (IdP) tab in Membership",
+    "prefixes": ["IDP"]
+  }
+]

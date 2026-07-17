@@ -4,7 +4,22 @@ Interactive top-to-bottom map of the enterprise web app's navigation, with each 
 
 **Live:** https://jeetcognition.github.io/nav-flow-map/
 
-## Features
+## Repository layout
+
+| Path                                      | What                                                                                                                                                   |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `app/`                                    | **QA Command Center** — the React successor app (Dashboard, NavFlow graph, Runs, Issues, Incidents, Automation). See [`app/README.md`](app/README.md). |
+| `index.html` + `testcases.js` + `bugs.js` | The legacy no-build site documented below — frozen except safety-net fixes; the Devin promotion pipeline still maintains it.                           |
+| `worker/`                                 | Cloudflare Worker: commits `navmap-edits.json`, starts Devin promotion/suggestion sessions (`wrangler deploy`).                                        |
+| `qa-testing/`                             | Markdown test-case sources maintained by the AI promotion pass.                                                                                        |
+| `AUDIT.md` / `TODO.md` / `AGENTS.md`      | Engineering audit, living backlog, and contributor/agent conventions.                                                                                  |
+
+Tooling: repo-wide Prettier (`npm run format`), pre-commit hooks via husky +
+lint-staged, and CI (lint · strict typecheck · build) on every PR — see
+`AGENTS.md` for the rules.
+
+## Features (legacy site)
+
 - Responsive top-to-bottom flow tree: Login → landing (search `jeet-test-org`) → top-left logo menu → Enterprise/Personal settings → tabs.
 - Every node with children is collapsible. The first four layers open by default with responsive viewport breathing room; deeper branches remain collapsed until clicked, expansion state persists in the browser, and searches reveal hidden matches automatically.
 - Click any page to see its route, description, numbered "How to reach" path, and a filterable test case table (Sanity / Regression; ex-Smoke shown as `SM-n`, ex-Sanity `SN-n`, ex-Regression/E2E `RG-n`, original IDs as tooltips).
@@ -42,13 +57,16 @@ browser edits ─▶ localStorage ──Save to repo─▶ navmap-edits.json ─
 So `navmap-edits.json` is the fast permanent layer, and the markdown files + `testcases.js` + `index.html` are the canonical sources the AI pass maintains.
 
 ## Run locally
+
 ```bash
 python3 -m http.server 8899
 # open http://localhost:8899/index.html
 ```
+
 No build step. Cytoscape.js loads from the unpkg CDN (internet required on first load).
 
 ## Data sources
+
 - `testcases.js` — canonical test case data loaded by the site (originally parsed from the imported QA markdown suite), mapped to pages by ID prefix (e.g. `GEN-*` → General & SSO).
 - `bugs.js` — known bugs mapped to pages (seeded from the QA Bug.md tracker).
 - `CHANGELOG.md` — record of every feature/behaviour change and why it was made.

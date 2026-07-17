@@ -1,0 +1,158 @@
+/* Two-theme token system. Dark = true-black OLED (default), Light = slate-on-white.
+   Components only ever reference the semantic tokens below. */
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* surfaces — true black base, cool slate elevation steps */
+  --bg: #050608;
+  --surface: #0b0e14;
+  --surface-2: #12161f;
+  --surface-3: #1a202c;
+  --overlay: rgba(2, 4, 8, 0.72);
+  --glass: rgba(8, 11, 17, 0.72);
+  --glass-strong: rgba(8, 11, 17, 0.92);
+
+  /* text */
+  --text: #f1f5f9;
+  --text-2: #b6c2d4;
+  --text-3: #7b8aa3;
+
+  /* borders + hairlines */
+  --border: rgba(148, 163, 184, 0.14);
+  --border-strong: rgba(148, 163, 184, 0.28);
+  --grid-line: rgba(148, 163, 184, 0.08);
+  --edge: rgba(148, 163, 184, 0.35);
+
+  /* semantic */
+  --accent: #22c55e;
+  --accent-strong: #4ade80;
+  --accent-tint: rgba(34, 197, 94, 0.12);
+  --on-accent: #04120a;
+  --danger: #ef4444;
+  --danger-tint: rgba(239, 68, 68, 0.12);
+  --warning: #f59e0b;
+  --warning-tint: rgba(245, 158, 11, 0.12);
+  --info: #38bdf8;
+  --info-tint: rgba(56, 189, 248, 0.12);
+  --ai: #a78bfa;
+  --ai-tint: rgba(167, 139, 250, 0.12);
+  --on-ai: #14082b;
+
+  /* soft text-on-tint colors */
+  --red-soft: #fca5a5;
+  --amber-soft: #fcd34d;
+  --blue-soft: #7dd3fc;
+  --purple-soft: #c4b5fd;
+  --gray-strong: #64748b;
+
+  /* graph heat states */
+  --heat-covered: #22c55e;
+  --heat-partial: #f59e0b;
+  --heat-uncovered: #ef4444;
+  --heat-bug: #fb7185;
+  --heat-incident: #f97316;
+
+  /* elevation */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 6px 24px rgba(0, 0, 0, 0.55);
+  --glow-accent: 0 0 14px rgba(34, 197, 94, 0.25);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* surfaces — warm-neutral paper with cool slate depth */
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #eef1f6;
+  --surface-3: #e2e7ef;
+  --overlay: rgba(15, 23, 42, 0.42);
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.94);
+
+  --text: #0f172a;
+  --text-2: #3f4c63;
+  --text-3: #68758c;
+
+  --border: rgba(15, 23, 42, 0.09);
+  --border-strong: rgba(15, 23, 42, 0.18);
+  --grid-line: rgba(15, 23, 42, 0.06);
+  --edge: rgba(71, 85, 105, 0.4);
+
+  --accent: #16a34a;
+  --accent-strong: #15803d;
+  --accent-tint: rgba(22, 163, 74, 0.1);
+  --on-accent: #ffffff;
+  --danger: #dc2626;
+  --danger-tint: rgba(220, 38, 38, 0.09);
+  --warning: #d97706;
+  --warning-tint: rgba(217, 119, 6, 0.1);
+  --info: #0284c7;
+  --info-tint: rgba(2, 132, 199, 0.09);
+  --ai: #7c3aed;
+  --ai-tint: rgba(124, 58, 237, 0.08);
+  --on-ai: #ffffff;
+
+  --red-soft: #b91c1c;
+  --amber-soft: #a16207;
+  --blue-soft: #075985;
+  --purple-soft: #6d28d9;
+  --gray-strong: #64748b;
+
+  --heat-covered: #16a34a;
+  --heat-partial: #d97706;
+  --heat-uncovered: #dc2626;
+  --heat-bug: #e11d48;
+  --heat-incident: #ea580c;
+
+  --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-2: 0 8px 28px rgba(15, 23, 42, 0.12);
+  --glow-accent: 0 0 14px rgba(22, 163, 74, 0.18);
+}
+
+:root {
+  /* typography */
+  --font-sans: "Fira Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, "SF Mono", monospace;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.625rem;
+  --fs-2xl: 2.125rem;
+
+  /* dense dashboard spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  /* radii */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 150ms;
+  --dur: 220ms;
+  --dur-slow: 400ms;
+
+  /* layout */
+  --sidebar-w: 216px;
+  --sidebar-w-collapsed: 64px;
+  --topbar-h: 56px;
+
+  /* z-scale */
+  --z-nav: 40;
+  --z-panel: 60;
+  --z-overlay: 100;
+  --z-toast: 1000;
+}
