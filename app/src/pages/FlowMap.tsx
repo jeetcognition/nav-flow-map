@@ -240,6 +240,7 @@ function FlowMapInner() {
               nodesDraggable={false}
               nodesConnectable={false}
               elementsSelectable={false}
+              proOptions={{ hideAttribution: true }}
             >
               <Background
                 variant={BackgroundVariant.Dots}
