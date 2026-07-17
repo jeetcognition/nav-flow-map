@@ -413,11 +413,18 @@ function DraftBugModal({ open, onClose }: { open: boolean; onClose: () => void }
     let cancelled = false;
     setDupsLoading(true);
     const t = setTimeout(() => {
-      findDuplicateBugs(title).then((res) => {
-        if (cancelled) return;
-        setDups(res);
-        setDupsLoading(false);
-      });
+      findDuplicateBugs(title)
+        .then((res) => {
+          if (cancelled) return;
+          setDups(res);
+          setDupsLoading(false);
+        })
+        .catch(() => {
+          // duplicate scan is advisory — degrade to "no matches" instead of hanging
+          if (cancelled) return;
+          setDups([]);
+          setDupsLoading(false);
+        });
     }, 250);
     return () => {
       cancelled = true;

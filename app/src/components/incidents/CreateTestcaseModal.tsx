@@ -30,22 +30,29 @@ interface Props {
 export function CreateTestcaseModal({ incident, onClose }: Props) {
   const { user } = useApp();
   const [form, setForm] = useState<FormState | null>(null);
+  const [draftError, setDraftError] = useState<string | null>(null);
 
   useEffect(() => {
     setForm(null);
+    setDraftError(null);
     if (!incident) return;
     let alive = true;
-    draftTestCaseFromIncident(incident).then((draft) => {
-      if (!alive) return;
-      setForm({
-        title: draft.title,
-        nodeId: draft.nodeId,
-        priority: draft.priority,
-        preconditions: draft.preconditions,
-        steps: draft.steps,
-        expected: draft.expected,
+    draftTestCaseFromIncident(incident)
+      .catch(() => {
+        if (alive) setDraftError("The AI draft failed to load — close and retry.");
+        return null;
+      })
+      .then((draft) => {
+        if (!alive || !draft) return;
+        setForm({
+          title: draft.title,
+          nodeId: draft.nodeId,
+          priority: draft.priority,
+          preconditions: draft.preconditions,
+          steps: draft.steps,
+          expected: draft.expected,
+        });
       });
-    });
     return () => {
       alive = false;
     };
@@ -83,7 +90,11 @@ export function CreateTestcaseModal({ incident, onClose }: Props) {
         AI draft — review before saving
       </div>
 
-      {!form ? (
+      {draftError ? (
+        <p className="ai-error" role="alert">
+          {draftError}
+        </p>
+      ) : !form ? (
         <SkeletonLines lines={5} />
       ) : (
         <div className="tc-form">

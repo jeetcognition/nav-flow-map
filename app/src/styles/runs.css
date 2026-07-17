@@ -278,3 +278,12 @@ tr.case-row--failed.clickable:hover {
     max-width: 180px;
   }
 }
+
+.ai-error {
+  font-size: 12px;
+  color: var(--danger);
+  background: var(--danger-tint);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 0;
+}

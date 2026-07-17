@@ -455,11 +455,18 @@ function riskCls(risk: number): string {
 function CoverageGapCard() {
   const [loading, setLoading] = useState(false);
   const [gaps, setGaps] = useState<CoverageGap[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const generate = async () => {
     setLoading(true);
-    setGaps(await coverageGapReport());
-    setLoading(false);
+    setError(null);
+    try {
+      setGaps(await coverageGapReport());
+    } catch {
+      setError("The coverage report failed to generate — try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -477,7 +484,11 @@ function CoverageGapCard() {
           <Sparkle size={15} weight="duotone" /> {gaps ? "Regenerate" : "Generate"}
         </button>
       </div>
-      {loading ? (
+      {error ? (
+        <p className="ai-error" role="alert">
+          {error}
+        </p>
+      ) : loading ? (
         <SkeletonLines lines={5} />
       ) : gaps === null ? (
         <EmptyState
@@ -513,11 +524,18 @@ function CoverageGapCard() {
 function CandidatesCard() {
   const [loading, setLoading] = useState(false);
   const [candidates, setCandidates] = useState<TestCase[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const generate = async () => {
     setLoading(true);
-    setCandidates(await automationCandidates());
-    setLoading(false);
+    setError(null);
+    try {
+      setCandidates(await automationCandidates());
+    } catch {
+      setError("Candidate generation failed — try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -533,7 +551,11 @@ function CandidatesCard() {
           <Sparkle size={15} weight="duotone" /> {candidates ? "Regenerate" : "Generate"}
         </button>
       </div>
-      {loading ? (
+      {error ? (
+        <p className="ai-error" role="alert">
+          {error}
+        </p>
+      ) : loading ? (
         <SkeletonLines lines={5} />
       ) : candidates === null ? (
         <EmptyState
