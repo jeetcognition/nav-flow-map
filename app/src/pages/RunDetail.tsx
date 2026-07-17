@@ -1,5 +1,5 @@
 import { ExternalLink } from "../components/ui/ExternalLink";
-import { Fragment, useEffect, useState, type KeyboardEvent } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -9,22 +9,15 @@ import {
   Copy,
   MagnifyingGlass,
   Robot,
-  Sparkle,
 } from "@phosphor-icons/react";
-import {
-  getNode,
-  getRun,
-  getRunResults,
-  getSessions,
-  getTestCase,
-  userName,
-} from "../data/dataService";
+import { getRun, getRunResults, getSessions, userName } from "../data/dataService";
 import { summarizeRun, type RunSummary } from "../data/aiService";
 import { StatStrip } from "../components/ui/StatStrip";
 import { EmptyState } from "../components/ui/EmptyState";
-import { SkeletonLines } from "../components/ui/SkeletonLines";
-import { ResultBadge, SessionBadge } from "../components/ui/badges";
-import { fadeUp, rowFadeUp } from "../lib/motion";
+import { SessionBadge } from "../components/ui/badges";
+import { RunSummaryCard } from "../components/runs/RunSummaryCard";
+import { RunResultsTable } from "../components/runs/RunResultsTable";
+import { fadeUp } from "../lib/motion";
 import { formatDate, formatDuration } from "../lib/format";
 import { devinSessionUrl } from "../lib/config";
 import type { Run } from "../types";
@@ -37,22 +30,6 @@ function RunStatusBadge({ status }: { status: Run["status"] }) {
   return <span className={`badge ${cls}`}>{label}</span>;
 }
 
-/** fake log excerpt derived from the case's expected text */
-function logExcerpt(caseId: string): string {
-  const tc = getTestCase(caseId);
-  const raw = (tc?.expected ?? "the expected state to hold").trim().replace(/\.\s*$/, "");
-  const clipped = raw.length > 110 ? `${raw.slice(0, 110)}…` : raw;
-  const lowered = clipped.charAt(0).toLowerCase() + clipped.slice(1);
-  return [
-    `FAIL  ${caseId} › ${tc?.title ?? "unknown case"}`,
-    `AssertionError: expected ${lowered}`,
-    `    at assertState (qa-runner/executor.ts:214:11)`,
-    `    at async runCase (qa-runner/executor.ts:88:5)`,
-    ``,
-    `Retried 1x — same failure. Exit code 1.`,
-  ].join("\n");
-}
-
 export default function RunDetail() {
   const { runId = "" } = useParams();
   const run = getRun(runId);
@@ -60,7 +37,6 @@ export default function RunDetail() {
   const [summary, setSummary] = useState<RunSummary | null>(null);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const runKey = run?.id;
 
   useEffect(() => {
@@ -103,19 +79,9 @@ export default function RunDetail() {
   }
 
   const results = getRunResults(run.id);
-  const sorted = [...results].sort(
-    (a, b) => (a.status === "failed" ? 0 : 1) - (b.status === "failed" ? 0 : 1),
-  );
   const session = run.devinSessionId
     ? getSessions().find((s) => s.id === run.devinSessionId)
     : undefined;
-
-  const toggleExpand = (caseId: string) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (!next.delete(caseId)) next.add(caseId);
-      return next;
-    });
 
   const copyLink = () => {
     navigator.clipboard
@@ -182,133 +148,9 @@ export default function RunDetail() {
         />
       </motion.div>
 
-      <motion.div className="card ai-run-card" {...fadeUp(0.12)}>
-        <div className="ai-run-card-head">
-          <Sparkle size={16} weight="duotone" /> AI Run Summary
-        </div>
-        {summaryError ? (
-          <p className="ai-error" role="alert">
-            {summaryError}
-          </p>
-        ) : summary === null ? (
-          <SkeletonLines lines={3} />
-        ) : (
-          <>
-            <p className="ai-headline">{summary.headline}</p>
-            {summary.clusters.map((cluster) => (
-              <div className="ai-cluster" key={cluster.cause}>
-                <span className="ai-cluster-cause">{cluster.cause}</span>
-                <span className="ai-chip-row">
-                  {cluster.caseIds.map((id) => (
-                    <span className="ai-chip" key={id}>
-                      {id}
-                    </span>
-                  ))}
-                </span>
-              </div>
-            ))}
-            {summary.flaky.length > 0 && (
-              <div className="ai-flaky-row">
-                <span className="badge badge-amber">flaky</span>
-                <span>Known-flaky signatures:</span>
-                <span className="ai-chip-row">
-                  {summary.flaky.map((id) => (
-                    <span className="ai-chip" key={id}>
-                      {id}
-                    </span>
-                  ))}
-                </span>
-              </div>
-            )}
-          </>
-        )}
-      </motion.div>
+      <RunSummaryCard summary={summary} error={summaryError} />
 
-      {sorted.length === 0 ? (
-        <div className="card">
-          <EmptyState title="No per-case results recorded for this run" />
-        </div>
-      ) : (
-        <div className="table-wrap">
-          <table className="data">
-            <thead>
-              <tr>
-                <th>Case ID</th>
-                <th>Title</th>
-                <th>Node</th>
-                <th>Result</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((res, i) => {
-                const tc = getTestCase(res.caseId);
-                const node = getNode(res.nodeId);
-                const failed = res.status === "failed";
-                const isOpen = expanded.has(res.caseId);
-                const onKeyDown = failed
-                  ? (e: KeyboardEvent) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        toggleExpand(res.caseId);
-                      }
-                    }
-                  : undefined;
-                return (
-                  <Fragment key={res.caseId}>
-                    <motion.tr
-                      className={failed ? "case-row--failed clickable" : ""}
-                      role={failed ? "button" : undefined}
-                      tabIndex={failed ? 0 : undefined}
-                      aria-expanded={failed ? isOpen : undefined}
-                      onClick={failed ? () => toggleExpand(res.caseId) : undefined}
-                      onKeyDown={onKeyDown}
-                      {...rowFadeUp(i, 0.03)}
-                    >
-                      <td className="mono">{res.caseId}</td>
-                      <td>
-                        <span className="case-title" title={tc?.title}>
-                          {tc?.title ?? "—"}
-                        </span>
-                      </td>
-                      <td>
-                        <Link
-                          to={`/navflow?node=${res.nodeId}`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {node?.label ?? res.nodeId}
-                        </Link>
-                      </td>
-                      <td>
-                        <span className="result-badges">
-                          <ResultBadge status={res.status} />
-                          {tc?.flaky && <span className="badge badge-amber">flaky</span>}
-                        </span>
-                      </td>
-                      <td className="num">{formatDuration(res.durationSec)}</td>
-                    </motion.tr>
-                    {failed && isOpen && (
-                      <tr>
-                        <td className="case-expand-cell" colSpan={5}>
-                          <pre className="log-block">{logExcerpt(res.caseId)}</pre>
-                          <div className="shot-strip-label">Screenshots (placeholder)</div>
-                          <div className="shot-strip">
-                            {[1, 2, 3].map((n) => (
-                              <div className="shot-box" key={n}>
-                                Screenshot {n}
-                              </div>
-                            ))}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <RunResultsTable results={results} />
     </div>
   );
 }
