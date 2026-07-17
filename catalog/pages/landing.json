@@ -37,10 +37,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -83,10 +84,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -128,9 +130,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -176,10 +178,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -219,9 +222,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -267,10 +270,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -312,9 +316,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -357,9 +361,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -404,9 +408,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -453,10 +457,10 @@
       "executors": {
         "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Playwright implementation in progress"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -496,9 +500,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -543,10 +547,10 @@
       "executors": {
         "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Playwright implementation in progress"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -586,9 +590,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -632,10 +636,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -676,10 +681,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -721,9 +727,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",
@@ -768,9 +774,9 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
+        "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Requires human judgment / visual verification"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
         "status": "manual",

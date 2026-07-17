@@ -85,10 +85,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -130,10 +131,10 @@
       "executors": {
         "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Playwright implementation in progress"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -176,10 +177,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -222,10 +224,11 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "eligible"
+        "playwright": "blocked",
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
@@ -241,7 +244,7 @@
       "id": "LOGIN-REG03",
       "pageId": "login",
       "surface": "webapp",
-      "title": "Inspect the URL, visible UI, and browser console before and after submitting an invalid…",
+      "title": "Inspect the URL, visible UI, and browser console before and after submitting an invalid\u2026",
       "type": "Regression",
       "priority": "P0",
       "riskTags": ["auth-flow", "security", "input-validation", "ui-rendering"],
@@ -269,10 +272,10 @@
       "executors": {
         "devinBrowser": "eligible",
         "playwright": "blocked",
-        "blockedReason": "Playwright implementation in progress"
+        "blockedReason": "Playwright spec not yet authored"
       },
       "automation": {
-        "status": "candidate",
+        "status": "manual",
         "specPath": null
       },
       "source": {
