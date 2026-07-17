@@ -22,16 +22,23 @@ function search(q: string): Hit[] {
   const hits: Hit[] = [];
   for (const n of getNodes()) {
     if (match(n.label) || match(n.id))
-      hits.push({ kind: "node", id: n.id, title: n.label, sub: n.route, to: `/map?node=${n.id}` });
+      hits.push({
+        kind: "node",
+        id: n.id,
+        title: n.label,
+        sub: n.route,
+        to: `/navflow?node=${n.id}`,
+      });
   }
   for (const c of getTestCases()) {
+    // jump straight to the owning node on the NavFlow graph, case row highlighted
     if (match(c.id) || match(c.title))
       hits.push({
         kind: "testcase",
         id: c.id,
         title: c.id,
         sub: c.title,
-        to: `/automation?case=${c.id}`,
+        to: `/navflow?node=${c.nodeId}&case=${c.id}`,
       });
   }
   for (const b of getBugs()) {

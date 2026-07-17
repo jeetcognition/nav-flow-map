@@ -190,7 +190,7 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
                   <BugStatusBadge status={b.status} />
                 </td>
                 <td>
-                  <Link to={`/map?node=${b.nodeId}`} onClick={(e) => e.stopPropagation()}>
+                  <Link to={`/navflow?node=${b.nodeId}`} onClick={(e) => e.stopPropagation()}>
                     {node?.label ?? b.nodeId}
                   </Link>
                 </td>

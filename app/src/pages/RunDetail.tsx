@@ -264,7 +264,10 @@ export default function RunDetail() {
                         </span>
                       </td>
                       <td>
-                        <Link to={`/map?node=${res.nodeId}`} onClick={(e) => e.stopPropagation()}>
+                        <Link
+                          to={`/navflow?node=${res.nodeId}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {node?.label ?? res.nodeId}
                         </Link>
                       </td>

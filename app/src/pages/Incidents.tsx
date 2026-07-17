@@ -112,7 +112,7 @@ function IncidentCard({
           <span className="inc-customer mono">{incident.customer}</span>
           <span className="inc-ago">{timeAgo(incident.createdAt)}</span>
           {node && (
-            <Link className="node-chip" to={`/map?node=${node.id}`} title={node.route}>
+            <Link className="node-chip" to={`/navflow?node=${node.id}`} title={node.route}>
               {node.label}
             </Link>
           )}
@@ -369,7 +369,7 @@ export default function Incidents() {
               ) : (
                 <div className="top-nodes">
                   {topNodes.map(([nodeId, count]) => (
-                    <Link key={nodeId} className="top-node-row" to={`/map?node=${nodeId}`}>
+                    <Link key={nodeId} className="top-node-row" to={`/navflow?node=${nodeId}`}>
                       <span className="top-node-label">{getNode(nodeId)?.label ?? nodeId}</span>
                       <span className="top-node-bar">
                         <span style={{ width: `${(count / maxNodeCount) * 100}%` }} />

@@ -1,4 +1,13 @@
-import { SquaresFour, Graph, Play, Bug, Fire, Robot, Gear, type Icon } from "@phosphor-icons/react";
+import {
+  SquaresFour,
+  TreeStructure,
+  Play,
+  Bug,
+  Fire,
+  Robot,
+  Gear,
+  type Icon,
+} from "@phosphor-icons/react";
 
 export interface NavItem {
   to: string;
@@ -9,7 +18,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Dashboard", icon: SquaresFour, end: true },
-  { to: "/map", label: "Graph Map", icon: Graph },
+  { to: "/navflow", label: "NavFlow", icon: TreeStructure },
   { to: "/runs", label: "Runs", icon: Play },
   { to: "/bugs", label: "Issues", icon: Bug },
   { to: "/incidents", label: "Incidents", icon: Fire },

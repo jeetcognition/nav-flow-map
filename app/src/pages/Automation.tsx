@@ -149,7 +149,7 @@ function CoverageTable({ rows, index }: { rows: CovRow[]; index: number }) {
               {rows.map(({ node, stats, autoPct }) => (
                 <tr key={node.id}>
                   <td>
-                    <Link className="cov-node-link" to={`/map?node=${node.id}`}>
+                    <Link className="cov-node-link" to={`/navflow?node=${node.id}`}>
                       {node.label}
                     </Link>
                   </td>
@@ -496,7 +496,7 @@ function CoverageGapCard() {
             <motion.div key={g.nodeId} className="gap-item" {...rowFadeUp(i, 0.05)}>
               <span className="gap-rank">{i + 1}</span>
               <div style={{ minWidth: 0 }}>
-                <Link className="cov-node-link gap-label" to={`/map?node=${g.nodeId}`}>
+                <Link className="cov-node-link gap-label" to={`/navflow?node=${g.nodeId}`}>
                   {g.label}
                 </Link>
                 <div className="gap-reason">{g.reason}</div>

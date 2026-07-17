@@ -240,7 +240,7 @@ export default function IncidentDetail() {
                   <MapTrifold size={13} weight="duotone" /> Node
                 </span>
                 {node ? (
-                  <Link to={`/map?node=${node.id}`}>{node.label}</Link>
+                  <Link to={`/navflow?node=${node.id}`}>{node.label}</Link>
                 ) : (
                   <span className="trace-missing">—</span>
                 )}
