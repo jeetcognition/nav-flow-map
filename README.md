@@ -12,10 +12,11 @@ views.
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app/`                               | **QA Command Center** — the React app served at the URL above (Dashboard, NavFlow graph, Runs, Issues, Incidents, Automation). See [`app/README.md`](app/README.md). |
 | `app/src/data/fixtures/`             | Canonical data: `nodes.json` (graph pages), `testcases.json`, `bugs.json`, plus runs/incidents/sessions fixtures.                                                    |
-| `catalog/`                           | Canonical page/testcase catalog foundation (schema + empty `pages/`).                                                                                                |
+| `catalog/`                           | Canonical page/testcase catalog foundation (schema + `pages/*.json`).                                                                                                |
 | `docs/`                              | Architecture, durable decisions, and work-log.                                                                                                                       |
 | `scripts/validate-catalog.mjs`       | Validates `catalog/pages/*.json` against `catalog/schema/page-catalog.schema.json`.                                                                                  |
 | `scripts/validate-data.js`           | Cross-checks the fixtures and `navmap-edits.json` (run by the Validate CI workflow).                                                                                 |
+| `tests/playwright/`                  | Playwright E2E suite for product webapp cases. See [`tests/playwright/README.md`](tests/playwright/README.md).                                                       |
 | `worker/`                            | Cloudflare Worker: commits `navmap-edits.json`, starts Devin promotion/suggestion sessions (`wrangler deploy`).                                                      |
 | `qa-testing/`                        | Markdown test-case sources maintained by the AI promotion pass.                                                                                                      |
 | `AUDIT.md` / `TODO.md` / `AGENTS.md` | Engineering audit, living backlog, and contributor/agent conventions.                                                                                                |
@@ -25,9 +26,9 @@ removed on 2026-07-18 once the React app replaced it; its data lives on as the
 app's fixtures.
 
 Tooling: repo-wide Prettier (`npm run format`, `npm run format:check`), catalog
-validation (`npm run catalog:validate`), pre-commit hooks via husky + lint-staged,
-and CI (lint · strict typecheck · build · data validation · catalog validation)
-on every PR — see `AGENTS.md` for the rules.
+validation (`npm run catalog:validate`), Playwright E2E tests (`tests/playwright/`),
+pre-commit hooks via husky + lint-staged, and CI (lint · strict typecheck · build ·
+data validation · catalog validation) on every PR — see `AGENTS.md` for the rules.
 
 ## Deployment
 

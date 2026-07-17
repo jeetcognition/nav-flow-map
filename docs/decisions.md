@@ -144,3 +144,21 @@ Status values:
 
 - **Status:** Open
 - **Question:** How should the richer catalog case fields (e.g., `surface`, `type`, `steps` array, `assertions`) map onto the current `app/src/data/fixtures/testcases.json` shape (`surfaceId`, `suite`, `steps` string, `expected`) when generation is implemented?
+
+## QA-DEC-013 — Seeding the first catalog pages from fixtures
+
+- **Date:** 2026-07-17
+- **Status:** Accepted
+- **Question:** Should the first catalog pages be hand-written or seeded from existing fixtures?
+- **Answer:** Seed the first three pages (`login`, `auth`, `landing`) from `app/src/data/fixtures/testcases.json` and `qa-testing/testcases/*.md`, then curate them with the richer schema fields. Use `source.type: migration` and keep the fixtures as the live UI source until a generator is built.
+- **Rationale:** Writing 30+ cases by hand is error-prone and slow; a controlled, auditable seed plus human curation gets the first pages into the catalog quickly while preserving provenance.
+- **Implementation:** `catalog/pages/login.json`, `catalog/pages/auth.json`, `catalog/pages/landing.json`.
+
+## QA-DEC-014 — Playwright project layout and optional authentication
+
+- **Date:** 2026-07-17
+- **Status:** Accepted
+- **Question:** How should the Playwright suite be structured so it can run in CI before auth secrets are configured?
+- **Answer:** Separate `setup`, `unauthenticated`, and `authenticated` projects. The first catalog spec (`LOGIN-SAN01`) lives in `tests/playwright/specs/unauthenticated/` and only needs `BASE_URL`. `specs/auth.setup.ts` captures an admin session for authenticated specs and skips cleanly when `DEVIN_ADMIN_EMAIL` / `GMAIL_APP_PASSWORD` are absent.
+- **Rationale:** Keeps CI green before credentials are provisioned, while still importing the email+OTP login flow from `playwright-enterprise-qa` as reusable infrastructure.
+- **Implementation:** `tests/playwright/playwright.config.ts`, `tests/playwright/specs/auth.setup.ts`, `tests/playwright/specs/unauthenticated/login.spec.ts`.

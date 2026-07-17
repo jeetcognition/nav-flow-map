@@ -1,0 +1,288 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "login",
+    "name": "Login Page",
+    "route": "/login",
+    "prefixes": ["LOGIN"]
+  },
+  "testcases": [
+    {
+      "id": "LOGIN-SAN01",
+      "pageId": "login",
+      "surface": "webapp",
+      "title": "Load the Login page",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["auth-flow", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Open the tenant `/login` route",
+      "preconditions": ["Browser is on a clean profile with no active Devin Enterprise session"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the Login page"
+        }
+      ],
+      "assertions": [
+        "The Devin logo, Welcome heading, tenant description, work email field, and Continue button are visible and readable"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["anonymous"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/unauthenticated/login.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "LOGIN-SAN02",
+      "pageId": "login",
+      "surface": "webapp",
+      "title": "Inspect the available login methods",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["auth-flow", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "On the Login page",
+      "preconditions": ["Browser is on a clean profile with no active Devin Enterprise session"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the available login methods"
+        }
+      ],
+      "assertions": [
+        "The work email field and at least the GitHub and Google login buttons are visible with the correct icons and labels"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["anonymous"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "candidate",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "LOGIN-SAN03",
+      "pageId": "login",
+      "surface": "webapp",
+      "title": "Inspect the account registration prompt",
+      "type": "Sanity",
+      "priority": "P2",
+      "riskTags": ["auth-flow", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "On the Login page",
+      "preconditions": ["Browser is on a clean profile with no active Devin Enterprise session"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the account registration prompt"
+        }
+      ],
+      "assertions": ["\"Don't have an account? Sign up\" is visible and readable"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["anonymous"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "blocked",
+        "blockedReason": "Playwright implementation in progress"
+      },
+      "automation": {
+        "status": "candidate",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "LOGIN-REG01",
+      "pageId": "login",
+      "surface": "webapp",
+      "title": "Click the Sign up link",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["auth-flow", "security", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Login page",
+      "preconditions": ["Browser is on a clean profile with no active Devin Enterprise session"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click the Sign up link"
+        }
+      ],
+      "assertions": [
+        "The URL contains `/signup/`, and \"Already have an account? Log in\" is visible and readable"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["anonymous"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "candidate",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "LOGIN-REG02",
+      "pageId": "login",
+      "surface": "webapp",
+      "title": "Submit each invalid email value separately: `abc`, `a@`, and spaces only",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["auth-flow", "input-validation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "On the Login page",
+      "preconditions": ["Browser is on a clean profile with no active Devin Enterprise session"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Submit each invalid email value separately: `abc`, `a@`, and spaces only"
+        }
+      ],
+      "assertions": [
+        "Each invalid email is rejected with clear validation, and the user remains on the Login page"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Clear the form and return to the starting page"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["anonymous"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "candidate",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "LOGIN-REG03",
+      "pageId": "login",
+      "surface": "webapp",
+      "title": "Inspect the URL, visible UI, and browser console before and after submitting an invalid…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["auth-flow", "security", "input-validation", "ui-rendering"],
+      "cadence": ["nightly"],
+      "owner": "priya",
+      "navigation": "On the Login page",
+      "preconditions": ["Browser is on a clean profile with no active Devin Enterprise session"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the URL, visible UI, and browser console before and after submitting an invalid email"
+        }
+      ],
+      "assertions": [
+        "No credentials, OTPs, sensitive tokens, or internal error details appear in the URL, UI, or browser console"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Clear the form and return to the starting page"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["anonymous"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "blocked",
+        "blockedReason": "Playwright implementation in progress"
+      },
+      "automation": {
+        "status": "candidate",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    }
+  ]
+}

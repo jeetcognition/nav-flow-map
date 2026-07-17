@@ -8,15 +8,17 @@ rest is enforced by review.
 | Path                | What                                                           | Status                                                                                                                         |
 | ------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `app/`              | QA Command Center — React 19 + Vite + TS strict                | Active development                                                                                                             |
-| `catalog/`          | Canonical page/testcase catalog (architecture foundation)      | Active development — currently empty, validated by `scripts/validate-catalog.mjs`                                              |
+| `catalog/`          | Canonical page/testcase catalog (architecture foundation)      | Active development — validated by `scripts/validate-catalog.mjs`                                                               |
 | `docs/`             | Architecture, decisions, and work-log durable memory           | Append-only documentation                                                                                                      |
 | `navmap-edits.json` | Pending website edits (overlay merged over the fixtures)       | Pipeline-owned — written by the save worker, promoted into `app/src/data/fixtures/` by the Devin pass; excluded from Prettier. |
+| `tests/playwright/` | E2E product webapp tests                                       | Active development — run from `tests/playwright/`; env-driven (see `.env.example`).                                            |
 | `worker/`           | Cloudflare Worker: commits edits, starts Devin sessions        | Active; deploy with `wrangler deploy`                                                                                          |
 | `qa-testing/`       | Markdown test-case sources maintained by the AI promotion pass | Pipeline-owned                                                                                                                 |
 
 ## Rules
 
 - **Tooling gates**: `prettier --check .` (root), `npm run catalog:validate`,
+  `tests/playwright: npx playwright test` (when `BASE_URL` is configured),
   `app: oxlint --deny-warnings`, `app: tsc -b` (strict), `app: vite build`.
   Nothing merges red. Never weaken a rule to get green — fix the code or discuss first.
 - **No new god files**: keep modules under ~300 lines and single-purpose.

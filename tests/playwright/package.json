@@ -1,0 +1,22 @@
+{
+  "name": "@nav-flow-map/playwright",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "auth": "playwright test specs/auth.setup.ts --headed",
+    "test": "playwright test",
+    "test:ci": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^20.17.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "imapflow": "^1.4.2",
+    "mailparser": "^3.9.11"
+  }
+}

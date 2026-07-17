@@ -8,6 +8,8 @@
     "format:check": "prettier --check .",
     "catalog:validate": "node scripts/validate-catalog.mjs",
     "check": "npm run format:check && npm run catalog:validate",
+    "test:e2e:install": "cd tests/playwright && npx playwright install chromium",
+    "test:e2e": "cd tests/playwright && npx playwright test",
     "prepare": "husky"
   },
   "devDependencies": {

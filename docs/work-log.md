@@ -2,6 +2,44 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-17 — First three catalog pages and Playwright E2E scaffold
+
+### Requested
+
+- Re-author the first three Nav Flow nodes (`login`, `auth`, `landing`) into `catalog/pages/*.json`.
+- Use `jeetcognition/playwright-enterprise-qa` as the reference for the login/auth Playwright foundation.
+- Create the first Playwright spec from a catalog case.
+
+### Implemented
+
+- Added `catalog/pages/login.json` (6 cases), `auth.json` (9 cases), and `landing.json` (17 cases) conforming to `catalog/schema/page-catalog.schema.json`. Cases are sourced from `app/src/data/fixtures/testcases.json` and the `qa-testing/testcases/*.md` specs, re-authored with risk tags, cadence, environment, executors, automation lifecycle, and cleanup.
+- Created `tests/playwright/` as a standalone package:
+  - `package.json` with `@playwright/test`, `dotenv`, `imapflow`, `mailparser`.
+  - Environment-configurable `playwright.config.ts` with `setup`, `unauthenticated`, and `authenticated` projects.
+  - Page objects (`BasePage`, `LoginPage`, `OrgSelectorPage`) and `support/paths.ts`/`support/gmail-otp.ts` (OTP flow adapted from the reference repo).
+  - `specs/auth.setup.ts` to capture an admin session.
+  - `specs/unauthenticated/login.spec.ts` implementing `LOGIN-SAN01` (Load the Login page) and setting its catalog `automation.status` to `active`.
+- All URLs, tenant slugs, and credentials are externalized via `.env`/`.env.example` and `process.env`; specs skip with a clear message when env vars are missing.
+- Updated `README.md`, `AGENTS.md`, `CHANGELOG.md`, `catalog/README.md`, `.prettierignore`, and this work-log.
+
+### Validation
+
+- `npm run catalog:validate` passes (3 page files, 32 testcases).
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- `cd app && npx tsc -b --force` passes (no `app/` code changes).
+- `cd tests/playwright && npx playwright install chromium` and `npx playwright test --list` succeed; `npx playwright test` skips cleanly without env vars.
+- `app/` `npm run lint` and `npm run build` could not run locally because the `oxlint` / `rolldown` optional native bindings require Node `^20.19.0 || >=22.12.0` and the VM runs Node `v20.18.1`; CI uses Node 22 and will exercise them.
+
+### Deferred
+
+- Remaining landing regression cases not included in the focused subset; auth/landing authenticated specs; catalog → fixture generator; YAML migration; runner skill; D1/R2 runtime storage.
+
+### Decisions
+
+- QA-DEC-013: First catalog pages are seeded from fixtures as `source.type: migration` while the UI still consumes the JSON fixtures; a future generator will make the catalog the single source of truth.
+- QA-DEC-014: Playwright specs are split into `unauthenticated/` and `authenticated/` projects; the auth setup is optional and skips when credentials are missing so CI stays green before env vars are configured.
+
 ## 2026-07-16 — Repository review and target architecture
 
 ### Requested

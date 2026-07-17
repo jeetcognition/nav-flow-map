@@ -2,7 +2,7 @@
 
 `catalog/pages/*.json` is the versioned testcase contract for the unified QA platform. Each page file contains page metadata and its cases; `catalog/schema/page-catalog.schema.json` defines the accepted shape.
 
-The catalog starts empty (`catalog/pages/` holds only `.gitkeep`): page catalogs are re-authored fresh against the schema, page by page, rather than mechanically migrated from the legacy dataset. The React app (`app/src/data/fixtures/*.json`) remains the live Nav Flow UI source until a later step adds generation from this catalog. During this transition, do not delete or bulk-convert the existing fixtures.
+Page catalogs are authored fresh against the schema, page by page, using the legacy fixtures and markdown as reference material. The first three pages (`login`, `auth`, `landing`) are in `catalog/pages/`; the React app (`app/src/data/fixtures/*.json`) remains the live Nav Flow UI source until a later step adds generation from this catalog. During this transition, do not delete the existing fixtures.
 
 ## Required testcase metadata
 
