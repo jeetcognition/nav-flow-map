@@ -29,7 +29,9 @@ import { useDataVersion } from "../../hooks/useData";
 import { useEditsVersion } from "../../hooks/useEdits";
 import { DEFAULT_SURFACE } from "../../lib/config";
 import { AutomationBadge, PriorityBadge, SessionBadge } from "../ui/badges";
-import type { Bug, NavNode, TestCase } from "../../types";
+import { BugsTable } from "./BugsTable";
+import { EditableCell, EditableText } from "./editable";
+import type { NavNode, TestCase } from "../../types";
 
 const GROUP_LABEL: Record<NavNode["group"], string> = {
   entry: "Entry",
@@ -46,38 +48,6 @@ interface Props {
   highlightCase: string | null;
   onClose: () => void;
   onReportBug: () => void;
-}
-
-/** contentEditable cell that commits to the edits overlay on blur */
-function EditableText({
-  value,
-  editable,
-  as: Tag = "div",
-  className,
-  onCommit,
-}: {
-  value: string;
-  editable: boolean;
-  as?: "div" | "p" | "li" | "h2";
-  className?: string;
-  onCommit: (next: string) => void;
-}) {
-  const ref = useRef<HTMLElement | null>(null);
-  return (
-    <Tag
-      // @ts-expect-error — polymorphic ref on intrinsic tags
-      ref={ref}
-      className={`${className ?? ""} ${editable ? "fp-ed" : ""}`.trim()}
-      contentEditable={editable}
-      suppressContentEditableWarning
-      onBlur={() => {
-        const next = ref.current?.innerText.trim() ?? "";
-        if (next && next !== value) onCommit(next);
-      }}
-    >
-      {value}
-    </Tag>
-  );
 }
 
 export function FlowPanel({ page, highlightCase, onClose, onReportBug }: Props) {
@@ -386,105 +356,5 @@ export function FlowPanel({ page, highlightCase, onClose, onReportBug }: Props) 
         )}
       </div>
     </div>
-  );
-}
-
-function EditableCell({
-  value,
-  editable,
-  onCommit,
-}: {
-  value: string;
-  editable: boolean;
-  onCommit: (v: string) => void;
-}) {
-  const ref = useRef<HTMLTableCellElement>(null);
-  return (
-    <td
-      ref={ref}
-      className={editable ? "fp-ed" : ""}
-      contentEditable={editable}
-      suppressContentEditableWarning
-      onBlur={() => {
-        const next = ref.current?.innerText.trim() ?? "";
-        if (next && next !== value) onCommit(next);
-      }}
-    >
-      {value}
-    </td>
-  );
-}
-
-function BugsTable({ real, draft }: { real: Bug[]; draft: ReturnType<typeof draftBugs> }) {
-  const total = real.length + draft.length;
-  if (total === 0) return null;
-  return (
-    <section className="fp-section">
-      <h3 className="fp-section-title">
-        <BugIcon size={14} weight="duotone" /> Bugs <span className="fp-count mono">{total}</span>
-      </h3>
-      <div className="fp-table-wrap">
-        <table className="fp-table fp-bugs-table">
-          <thead>
-            <tr>
-              <th>Bug</th>
-              <th>Sev</th>
-              <th>Status</th>
-              <th>Title</th>
-              <th>Cases</th>
-              <th>Links</th>
-            </tr>
-          </thead>
-          <tbody>
-            {real.map((b) => (
-              <tr key={b.id} title={b.reproSteps}>
-                <td className="mono fp-td-id">{b.id}</td>
-                <td>
-                  <span className={`fp-sev fp-sev-${b.severity.toLowerCase()}`}>{b.severity}</span>
-                </td>
-                <td>
-                  <span className="fp-bstatus">{b.status}</span>
-                </td>
-                <td>{b.title}</td>
-                <td className="mono fp-td-cases">{b.caseIds.join(", ") || "—"}</td>
-                <td>
-                  {Object.entries(b.links ?? {}).length === 0
-                    ? "—"
-                    : Object.entries(b.links).map(([k, v]) =>
-                        v ? (
-                          <a key={k} href={v} target="_blank" rel="noopener noreferrer">
-                            {k[0]!.toUpperCase() + k.slice(1)}{" "}
-                          </a>
-                        ) : null,
-                      )}
-                </td>
-              </tr>
-            ))}
-            {draft.map((b) => (
-              <tr key={b.id} className="fp-draft-row" title={b.notes}>
-                <td className="mono fp-td-id">{b.id.replace(/^BUG-DRAFT.*$/, "draft")}</td>
-                <td>
-                  <span className={`fp-sev fp-sev-${b.severity.toLowerCase()}`}>{b.severity}</span>
-                </td>
-                <td>
-                  <span className="fp-bstatus">{b.status}</span>
-                </td>
-                <td>{b.title}</td>
-                <td className="mono fp-td-cases">{b.caseIds.join(", ") || "—"}</td>
-                <td>
-                  {Object.entries(b.links).map(([k, v]) =>
-                    v ? (
-                      <a key={k} href={v} target="_blank" rel="noopener noreferrer">
-                        {k[0]!.toUpperCase() + k.slice(1)}{" "}
-                      </a>
-                    ) : null,
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
   );
 }
