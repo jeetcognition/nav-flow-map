@@ -7,7 +7,7 @@
 //
 // Tree state lives in useNavTree, node/edge mapping in graphModel, the
 // toolbar in FlowToolbar, and panel resizing in usePanelWidth.
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Background,
@@ -19,23 +19,15 @@ import {
   type Edge,
   type NodeTypes,
 } from "@xyflow/react";
-import { nodeStats } from "../data/dataService";
-import {
-  extraLinks,
-  hasLocalEdits,
-  loadBaseline,
-  resetLocalEdits,
-  saveToRepo,
-} from "../data/editsService";
+import { hasLocalEdits, loadBaseline, resetLocalEdits, saveToRepo } from "../data/editsService";
 import { usePanelWidth } from "../hooks/usePanelWidth";
-import { layoutNodes } from "../components/graph/layout";
 import { FlowNode, type FlowNodeType } from "../components/flow/FlowNode";
 import { FlowPanel } from "../components/flow/FlowPanel";
 import { FlowToolbar, type HeatMode, type LayoutMode } from "../components/flow/FlowToolbar";
 import { useNavTree } from "../components/flow/useNavTree";
-import { buildFlowEdges, buildFlowNodes } from "../components/flow/graphModel";
+import { useFlowGraph } from "../components/flow/useFlowGraph";
 import { AddPageModal, AddLinkModal, ReportBugModal } from "../components/flow/dialogs";
-import type { NavNode, NodeStats } from "../types";
+import type { NavNode } from "../types";
 import "@xyflow/react/dist/style.css";
 import "../styles/flowmap.css";
 
@@ -89,68 +81,8 @@ function FlowMapInner() {
 
   // ---- tree + graph model ----
   const tree = useNavTree(selectedId);
-  const { visiblePages, pathIds, selectedPage } = tree;
-
-  const statsById = useMemo(() => {
-    const m = new Map<string, NodeStats>();
-    for (const p of visiblePages) m.set(p.id, nodeStats(p.id));
-    return m;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visiblePages, tree.dataVersion]);
-
-  const positions = useMemo(() => layoutNodes(visiblePages), [visiblePages]);
-
-  const rfNodes = useMemo<FlowNodeType[]>(
-    () =>
-      buildFlowNodes({
-        visiblePages,
-        positions,
-        statsById,
-        fallbackStats: nodeStats,
-        childrenOf: tree.childrenOf,
-        expanded: tree.expanded,
-        descendantCount: tree.descendantCount,
-        pathIds,
-        selectedId,
-        mode,
-        onToggleBranch: tree.toggleBranch,
-      }),
-    [
-      visiblePages,
-      positions,
-      statsById,
-      tree.childrenOf,
-      tree.expanded,
-      tree.descendantCount,
-      pathIds,
-      selectedId,
-      mode,
-      tree.toggleBranch,
-    ],
-  );
-
-  const rfEdges = useMemo<Edge[]>(
-    () => buildFlowEdges(visiblePages, extraLinks(), pathIds),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [visiblePages, pathIds, tree.editsVersion],
-  );
-
-  // refit when the visible tree shape changes (old relayoutAndFitGraph behavior)
-  const visibleSignature = useMemo(
-    () =>
-      visiblePages
-        .map((p) => p.id)
-        .sort()
-        .join(","),
-    [visiblePages],
-  );
-  const lastSignature = useRef(visibleSignature);
-  useEffect(() => {
-    if (lastSignature.current === visibleSignature) return;
-    lastSignature.current = visibleSignature;
-    const t = setTimeout(() => fitView({ padding: 0.14, duration: 300 }), 60);
-    return () => clearTimeout(t);
-  }, [visibleSignature, fitView]);
+  const { selectedPage } = tree;
+  const { rfNodes, rfEdges } = useFlowGraph(tree, selectedId, mode);
 
   // ---- layout mode + resizable panel ----
   const [layout, setLayout] = useState<LayoutMode>("split");
