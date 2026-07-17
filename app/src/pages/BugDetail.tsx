@@ -106,7 +106,7 @@ export default function BugDetail() {
               <div className="meta-row">
                 <dt>Node</dt>
                 <dd>
-                  <Link to={`/map?node=${bug.nodeId}`}>{node?.label ?? bug.nodeId}</Link>
+                  <Link to={`/navflow?node=${bug.nodeId}`}>{node?.label ?? bug.nodeId}</Link>
                 </dd>
               </div>
               <div className="meta-row">

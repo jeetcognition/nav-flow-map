@@ -57,6 +57,7 @@ export default function RunDetail() {
   const run = getRun(runId);
 
   const [summary, setSummary] = useState<RunSummary | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const runKey = run?.id;
@@ -65,9 +66,14 @@ export default function RunDetail() {
     if (!runKey) return;
     let live = true;
     setSummary(null);
-    summarizeRun(runKey).then((s) => {
-      if (live) setSummary(s);
-    });
+    setSummaryError(null);
+    summarizeRun(runKey)
+      .then((s) => {
+        if (live) setSummary(s);
+      })
+      .catch(() => {
+        if (live) setSummaryError("The run summary failed to load — reload to retry.");
+      });
     return () => {
       live = false;
     };
@@ -182,7 +188,11 @@ export default function RunDetail() {
         <div className="ai-run-card-head">
           <Sparkle size={16} weight="duotone" /> AI Run Summary
         </div>
-        {summary === null ? (
+        {summaryError ? (
+          <p className="ai-error" role="alert">
+            {summaryError}
+          </p>
+        ) : summary === null ? (
           <SkeletonLines lines={3} />
         ) : (
           <>
@@ -264,7 +274,10 @@ export default function RunDetail() {
                         </span>
                       </td>
                       <td>
-                        <Link to={`/map?node=${res.nodeId}`} onClick={(e) => e.stopPropagation()}>
+                        <Link
+                          to={`/navflow?node=${res.nodeId}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {node?.label ?? res.nodeId}
                         </Link>
                       </td>

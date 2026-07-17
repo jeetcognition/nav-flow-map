@@ -52,24 +52,67 @@ function hasPromotable(edits) {
   );
 }
 
-async function startRewriteSession(env) {
-  const res = await fetch(
-    "https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${env.DEVIN_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: REWRITE_PROMPT,
-        title: "Rewrite & promote navmap edits to source files",
-      }),
+// override via a DEVIN_SESSIONS_URL env var when the org or API version changes
+const DEFAULT_DEVIN_SESSIONS_URL =
+  "https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions";
+
+async function startDevinSession(env, prompt, title) {
+  const res = await fetch(env.DEVIN_SESSIONS_URL || DEFAULT_DEVIN_SESSIONS_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.DEVIN_API_KEY}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ prompt, title }),
+  });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) return { error: "Devin API " + res.status };
   return { session_id: data.session_id, url: data.url };
+}
+
+function startRewriteSession(env) {
+  return startDevinSession(env, REWRITE_PROMPT, "Rewrite & promote navmap edits to source files");
+}
+
+const MAX_SUGGESTION_BYTES = 16 * 1024;
+
+// "Suggest an improvement" box in the QA Command Center app: the session
+// implements the change and opens a PR that an admin reviews and merges.
+async function handleSuggest(request, env, headers) {
+  let body;
+  try {
+    const text = await request.text();
+    if (text.length > MAX_SUGGESTION_BYTES) throw new Error("payload too large");
+    body = JSON.parse(text);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), {
+      status: 400,
+      headers,
+    });
+  }
+  const suggestion = typeof body.suggestion === "string" ? body.suggestion.trim() : "";
+  if (suggestion.length < 10)
+    return new Response(JSON.stringify({ error: "suggestion too short" }), {
+      status: 400,
+      headers,
+    });
+  const context = typeof body.context === "string" ? body.context.slice(0, 500) : "";
+  const prompt = `A user of the QA Command Center app (the React app in app/ of the repo ${REPO}) submitted this improvement suggestion through the in-app "Suggest an improvement" box:
+
+---
+${suggestion}
+---
+${
+  context
+    ? `
+Context: ${context}
+`
+    : ""
+}
+Implement the suggestion in the repo. Work on a feature branch and open a pull request describing what you changed and why — do NOT commit directly to main; an admin reviews and merges the PR. Keep the diff focused on the suggestion, follow the repo's Prettier/oxlint/TypeScript-strict tooling (run app/'s lint and build before pushing), and if the suggestion is unclear or infeasible, open a PR that only adds your analysis to TODO.md instead.`;
+  const result = await startDevinSession(env, prompt, "App suggestion: " + suggestion.slice(0, 60));
+  if (result.error) return new Response(JSON.stringify(result), { status: 502, headers });
+  return new Response(JSON.stringify({ ok: true, ...result }), { headers });
 }
 
 async function handleRewrite(env, headers) {
@@ -102,7 +145,9 @@ export default {
         headers,
       });
 
-    if (new URL(request.url).pathname === "/rewrite") return handleRewrite(env, headers);
+    const pathname = new URL(request.url).pathname;
+    if (pathname === "/rewrite") return handleRewrite(env, headers);
+    if (pathname === "/suggest") return handleSuggest(request, env, headers);
 
     let edits;
     try {

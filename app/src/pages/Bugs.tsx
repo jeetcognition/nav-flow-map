@@ -151,11 +151,11 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Test cases</th>
             <th>Title</th>
             <th>Severity</th>
             <th>Status</th>
-            <th>Node</th>
-            <th>Cases</th>
+            <th>Area</th>
             <th>Reporter</th>
             <th>Age</th>
             <th>Links</th>
@@ -182,6 +182,9 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
                 onKeyDown={onKeyDown}
               >
                 <td className="mono">{b.id}</td>
+                <td className="mono bug-cases-cell" title={b.caseIds.join(", ")}>
+                  {b.caseIds.join(", ") || "\u2014"}
+                </td>
                 <td>{b.title}</td>
                 <td>
                   <SeverityBadge severity={b.severity} />
@@ -190,11 +193,10 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
                   <BugStatusBadge status={b.status} />
                 </td>
                 <td>
-                  <Link to={`/map?node=${b.nodeId}`} onClick={(e) => e.stopPropagation()}>
+                  <Link to={`/navflow?node=${b.nodeId}`} onClick={(e) => e.stopPropagation()}>
                     {node?.label ?? b.nodeId}
                   </Link>
                 </td>
-                <td className="num">{b.caseIds.length}</td>
                 <td>{userName(b.reporter)}</td>
                 <td className="bug-age-cell">{timeAgo(b.createdAt)}</td>
                 <td>
@@ -411,11 +413,18 @@ function DraftBugModal({ open, onClose }: { open: boolean; onClose: () => void }
     let cancelled = false;
     setDupsLoading(true);
     const t = setTimeout(() => {
-      findDuplicateBugs(title).then((res) => {
-        if (cancelled) return;
-        setDups(res);
-        setDupsLoading(false);
-      });
+      findDuplicateBugs(title)
+        .then((res) => {
+          if (cancelled) return;
+          setDups(res);
+          setDupsLoading(false);
+        })
+        .catch(() => {
+          // duplicate scan is advisory — degrade to "no matches" instead of hanging
+          if (cancelled) return;
+          setDups([]);
+          setDupsLoading(false);
+        });
     }, 250);
     return () => {
       cancelled = true;

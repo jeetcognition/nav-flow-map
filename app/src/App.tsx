@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { AppProvider } from "./state/AppContext";
 import { Sidebar, MobileNav } from "./components/shell/Sidebar";
@@ -7,7 +7,7 @@ import { GlobalSearch } from "./components/shell/GlobalSearch";
 import { ThemeToggle } from "./components/shell/ThemeToggle";
 import "./styles/shell.css";
 import Dashboard from "./pages/Dashboard";
-import GraphMap from "./pages/GraphMap";
+import FlowMap from "./pages/FlowMap";
 import Runs from "./pages/Runs";
 import RunDetail from "./pages/RunDetail";
 import Bugs from "./pages/Bugs";
@@ -16,6 +16,15 @@ import Incidents from "./pages/Incidents";
 import IncidentDetail from "./pages/IncidentDetail";
 import Automation from "./pages/Automation";
 import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import { isAuthed } from "./lib/auth";
+
+/** old bookmarks/deep links: /map?node=… → /navflow?node=… */
+function LegacyMapRedirect() {
+  const [params] = useSearchParams();
+  const qs = params.toString();
+  return <Navigate to={`/navflow${qs ? `?${qs}` : ""}`} replace />;
+}
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -31,7 +40,8 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/map" element={<GraphMap />} />
+          <Route path="/navflow" element={<FlowMap />} />
+          <Route path="/map" element={<LegacyMapRedirect />} />
           <Route path="/runs" element={<Runs />} />
           <Route path="/runs/:runId" element={<RunDetail />} />
           <Route path="/bugs" element={<Bugs />} />
@@ -46,21 +56,31 @@ function AnimatedRoutes() {
   );
 }
 
+function Shell() {
+  if (!isAuthed()) return <Navigate to="/login" replace />;
+  return (
+    <div className="app-frame">
+      <Sidebar />
+      <div className="app-main">
+        <Topbar />
+        <main className="app-scroll">
+          <AnimatedRoutes />
+        </main>
+      </div>
+      <MobileNav />
+      <GlobalSearch />
+      <ThemeToggle />
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <AppProvider>
-      <div className="app-frame">
-        <Sidebar />
-        <div className="app-main">
-          <Topbar />
-          <main className="app-scroll">
-            <AnimatedRoutes />
-          </main>
-        </div>
-        <MobileNav />
-        <GlobalSearch />
-        <ThemeToggle />
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Shell />} />
+      </Routes>
     </AppProvider>
   );
 }

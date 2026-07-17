@@ -156,4 +156,12 @@ Each phase = small, single-concern PRs. Nothing merges red once CI exists.
 
 1. **Devin pipeline vs branch protection**: promotions will flow through a **bot PR with auto-merge on green CI** (worker prompt updated in Phase 4); branch protection stays absolute.
 2. **Legacy app scope**: **safety net only** — tests, schema validation, config extraction, error-handling fixes. The full modular split of `index.html` (Phase 2, item 6) is dropped; `app/` is the successor.
-3. Phase 1 approved and started 2026-07-17.
+3. Phase 1 approved and started 2026-07-17. Scope amendment (user): characterization tests and the coverage ratchet were **descoped**; CI gates are lint + strict typecheck + build.
+
+## 5. Progress (2026-07-17)
+
+- ✅ Phase 1 (amended): Prettier repo-wide, oxlint `--deny-warnings`, TS strict + `noUncheckedIndexedAccess`, CI on every PR and push to `main`/`newui`.
+- ✅ NavFlow amalgamation (`app/`): legacy graph rebuilt with the new UI; edits/persistence layer ported 1:1 (`editsService`); login (mock OTP), suggestion box (worker `/suggest` → Devin PR), `alert()`s eliminated.
+- ✅ Phase 2 partials: config extracted (`lib/config.ts` + `VITE_*` env + worker `DEVIN_SESSIONS_URL`); AI-promise error handling fixed app-wide; NavFlow modules kept under the ~300-line ceiling.
+- ✅ Phase 3/4 partials: READMEs, `AGENTS.md`, `TODO.md`, PR template, Dependabot, husky + lint-staged pre-commit.
+- ⏳ Remaining: see `TODO.md` (worker rate limiting, god-page splits for Automation/Bugs/Incidents, pipeline PR flow + branch protection on `main`).
