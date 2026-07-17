@@ -50,7 +50,7 @@ export function buildAttentionItems(): AttentionItem[] {
   }
 
   const needsReview = getIncidents().filter(
-    (i) => incidentCategory(i) === "unknown" && i.status !== "resolved"
+    (i) => incidentCategory(i) === "unknown" && i.status !== "resolved",
   );
   if (needsReview.length > 0) {
     items.push({

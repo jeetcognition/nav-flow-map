@@ -16,7 +16,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       searchOpen,
       setSearchOpen,
     }),
-    [userId, surfaceId, searchOpen]
+    [userId, surfaceId, searchOpen],
   );
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

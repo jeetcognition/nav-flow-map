@@ -1,0 +1,16 @@
+# Legacy no-build app: frozen except for safety-net changes (see AUDIT.md).
+# Formatting these would create huge diffs and conflict with the automated
+# Devin promotion pipeline that edits them directly.
+index.html
+testcases.js
+bugs.js
+navmap-edits.json
+qa-testing/
+CHANGELOG.md
+
+# Build artifacts and vendored content
+app/dist/
+node_modules/
+package-lock.json
+app/package-lock.json
+.claude/

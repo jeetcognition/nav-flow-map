@@ -1,296 +1,266 @@
 [
- {
-  "id": "BUG-017",
-  "title": "Review \"Go to pull request\" button does not enable for a valid PR URL",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "review",
-  "caseIds": [
-   "REVUI-REG01",
-   "SUB-RV-REG01"
-  ],
-  "links": {},
-  "reproSteps": "Entering a valid pull request URL leaves the button disabled. Pressing Enter submits the same URL successfully.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-02T09:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-016",
-  "title": "Organization ACU limit accepts unsupported large values before failing with a generic error",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-orgs",
-  "caseIds": [
-   "ORG-REG08",
-   "ORGCRT-REG03"
-  ],
-  "links": {},
-  "reproSteps": "The Manage organization modal and Create organization form accept values such as 100000000000000 client-side. Manage then returns only \"Failed to update organization\"; neither surface shows the supported maximum before submission.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-05T10:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-015",
-  "title": "Devin settings — model/capability toggles rejected with 400 \"Fusion requires Devin Lite…\" (Ultra reverts on reload)",
-  "severity": "S2",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-devin",
-  "caseIds": [
-   "DEVIN-REG01",
-   "DEVIN-REG02",
-   "DEVIN-REG03",
-   "DEVIN-REG07"
-  ],
-  "links": {
-   "linear": "https://linear.app/cognition/issue/ENG-45170",
-   "jam": "https://jam.dev/c/demo-bug-015"
+  {
+    "id": "BUG-017",
+    "title": "Review \"Go to pull request\" button does not enable for a valid PR URL",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "review",
+    "caseIds": ["REVUI-REG01", "SUB-RV-REG01"],
+    "links": {},
+    "reproSteps": "Entering a valid pull request URL leaves the button disabled. Pressing Enter submits the same URL successfully.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-02T09:00:00.000Z",
+    "incidentId": null
   },
-  "reproSteps": "Regression from #45170; whole settings payload re-validated so Ultra/Fast/native/lock-email all 400 and revert. Web search saves fine.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-08T11:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-014",
-  "title": "Knowledge folder contents ignore sort — only top-level items reorder",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-knowledge",
-  "caseIds": [],
-  "links": {
-   "jam": "https://jam.dev/c/demo-bug-014"
+  {
+    "id": "BUG-016",
+    "title": "Organization ACU limit accepts unsupported large values before failing with a generic error",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-orgs",
+    "caseIds": ["ORG-REG08", "ORGCRT-REG03"],
+    "links": {},
+    "reproSteps": "The Manage organization modal and Create organization form accept values such as 100000000000000 client-side. Manage then returns only \"Failed to update organization\"; neither surface shows the supported maximum before submission.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-05T10:00:00.000Z",
+    "incidentId": null
   },
-  "reproSteps": "Sort applied to top-level list only, not nested folder children.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-11T12:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-013",
-  "title": "Environment Upkeep tab triggers 404 API error — /api/beta/ endpoint not found",
-  "severity": "S4",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-env",
-  "caseIds": [
-   "ENV-REG05"
-  ],
-  "links": {},
-  "reproSteps": "Background call to /api/beta/ 404s when opening Upkeep tab; visible content still renders.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-14T13:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-012",
-  "title": "No file size validation on profile picture upload — 20MB file accepted silently",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "prefs",
-  "caseIds": [
-   "PREF-REG05"
-  ],
-  "links": {},
-  "reproSteps": "No client-side size limit or error toast on avatar upload.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-17T14:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-011",
-  "title": "Sub-org has no Sessions page in settings sidebar — direct navigation returns 404",
-  "severity": "S2",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "s-settings",
-  "caseIds": [],
-  "links": {},
-  "reproSteps": "Enterprise sidebar has Sessions; sub-org doesn't, and /settings/sessions hard-404s.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-20T15:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-010",
-  "title": "Snapshots \"Filter by script\" dropdown doesn't truncate long text — expands modal",
-  "severity": "S4",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-env",
-  "caseIds": [],
-  "links": {},
-  "reproSteps": "Long auto-generated URN option wraps and stretches the dropdown.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-23T16:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-009",
-  "title": "Enterprise Sessions — clicking an active session from settings list crashes the app (React #185)",
-  "severity": "S2",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "ent",
-  "caseIds": [],
-  "links": {
-   "jam": "https://jam.dev/c/demo-bug-009"
+  {
+    "id": "BUG-015",
+    "title": "Devin settings — model/capability toggles rejected with 400 \"Fusion requires Devin Lite…\" (Ultra reverts on reload)",
+    "severity": "S2",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-devin",
+    "caseIds": ["DEVIN-REG01", "DEVIN-REG02", "DEVIN-REG03", "DEVIN-REG07"],
+    "links": {
+      "linear": "https://linear.app/cognition/issue/ENG-45170",
+      "jam": "https://jam.dev/c/demo-bug-015"
+    },
+    "reproSteps": "Regression from #45170; whole settings payload re-validated so Ultra/Fast/native/lock-email all 400 and revert. Web search saves fine.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-08T11:00:00.000Z",
+    "incidentId": null
   },
-  "reproSteps": "Maximum update depth exceeded for active/running sessions; completed sessions open fine.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-26T09:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-008",
-  "title": "Display language setting doesn't affect all UI elements — most content stays in English",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "prefs",
-  "caseIds": [
-   "PREF-REG02"
-  ],
-  "links": {},
-  "reproSteps": "Sidebar translates; most content labels/descriptions hard-code English.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-06-29T10:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-007",
-  "title": "Self-hosted GitLab \"Register app\" modal appears at top of page instead of centered",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-conn",
-  "caseIds": [],
-  "links": {},
-  "reproSteps": "Modal renders at y=16px instead of vertically centered.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-02T11:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-006",
-  "title": "Automation Network policy \"Add domain\" accepts invalid/garbage values with no validation",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "automations",
-  "caseIds": [
-   "AUTO-REG02"
-  ],
-  "links": {},
-  "reproSteps": "javascript:alert(1), whitespace, schemes all accepted verbatim into a security allowlist.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-05T12:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-005",
-  "title": "Missing line break rendering in IdP groups help text",
-  "severity": "S4",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "user-groups-mrlw5j7x",
-  "caseIds": [
-   "IDP-SMK01"
-  ],
-  "links": {},
-  "reproSteps": "\"provider.Please contact…\" concatenated; <br> without space.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-08T13:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-004",
-  "title": "Grammatical error \"1 members\" should be \"1 member\" (singular)",
-  "severity": "S4",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "landing",
-  "caseIds": [
-   "ORGSEL-SAN03",
-   "SUB-IM-SAN01"
-  ],
-  "links": {},
-  "reproSteps": "Pluralization bug in org selector member counts.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-11T14:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-003",
-  "title": "API keys and org IDs exposed in plaintext in Guardrails violation logs",
-  "severity": "S2",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "security",
-  "caseIds": [
-   "GUARD-REG01"
-  ],
-  "links": {
-   "linear": "https://linear.app/cognition/issue/ENG-demo-003"
+  {
+    "id": "BUG-014",
+    "title": "Knowledge folder contents ignore sort — only top-level items reorder",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-knowledge",
+    "caseIds": [],
+    "links": {
+      "jam": "https://jam.dev/c/demo-bug-014"
+    },
+    "reproSteps": "Sort applied to top-level list only, not nested folder children.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-11T12:00:00.000Z",
+    "incidentId": null
   },
-  "reproSteps": "Guardrails blocks the message but the violation log shows the full unredacted secret.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-14T15:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-002",
-  "title": "Duplicate service user name \"test-api key\" in Devin API settings",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-infra",
-  "caseIds": [
-   "API-REG01"
-  ],
-  "links": {},
-  "reproSteps": "Multiple service users share an identical name; no uniqueness warning.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-17T16:00:00.000Z",
-  "incidentId": null
- },
- {
-  "id": "BUG-001",
-  "title": "Duplicate organization names in Organizations list",
-  "severity": "S3",
-  "status": "open",
-  "surfaceId": "enterprise",
-  "nodeId": "e-orgs",
-  "caseIds": [
-   "ORG-REG02"
-  ],
-  "links": {},
-  "reproSteps": "Multiple rows share visible names, including \"ok1\" and \"p1\". With no stable identifier shown, edit and delete actions are ambiguous.",
-  "environment": "beta",
-  "reporter": "u-priya",
-  "createdAt": "2026-07-20T09:00:00.000Z",
-  "incidentId": null
- }
+  {
+    "id": "BUG-013",
+    "title": "Environment Upkeep tab triggers 404 API error — /api/beta/ endpoint not found",
+    "severity": "S4",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-env",
+    "caseIds": ["ENV-REG05"],
+    "links": {},
+    "reproSteps": "Background call to /api/beta/ 404s when opening Upkeep tab; visible content still renders.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-14T13:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-012",
+    "title": "No file size validation on profile picture upload — 20MB file accepted silently",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "prefs",
+    "caseIds": ["PREF-REG05"],
+    "links": {},
+    "reproSteps": "No client-side size limit or error toast on avatar upload.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-17T14:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-011",
+    "title": "Sub-org has no Sessions page in settings sidebar — direct navigation returns 404",
+    "severity": "S2",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "s-settings",
+    "caseIds": [],
+    "links": {},
+    "reproSteps": "Enterprise sidebar has Sessions; sub-org doesn't, and /settings/sessions hard-404s.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-20T15:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-010",
+    "title": "Snapshots \"Filter by script\" dropdown doesn't truncate long text — expands modal",
+    "severity": "S4",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-env",
+    "caseIds": [],
+    "links": {},
+    "reproSteps": "Long auto-generated URN option wraps and stretches the dropdown.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-23T16:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-009",
+    "title": "Enterprise Sessions — clicking an active session from settings list crashes the app (React #185)",
+    "severity": "S2",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "ent",
+    "caseIds": [],
+    "links": {
+      "jam": "https://jam.dev/c/demo-bug-009"
+    },
+    "reproSteps": "Maximum update depth exceeded for active/running sessions; completed sessions open fine.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-26T09:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-008",
+    "title": "Display language setting doesn't affect all UI elements — most content stays in English",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "prefs",
+    "caseIds": ["PREF-REG02"],
+    "links": {},
+    "reproSteps": "Sidebar translates; most content labels/descriptions hard-code English.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-06-29T10:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-007",
+    "title": "Self-hosted GitLab \"Register app\" modal appears at top of page instead of centered",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-conn",
+    "caseIds": [],
+    "links": {},
+    "reproSteps": "Modal renders at y=16px instead of vertically centered.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-02T11:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-006",
+    "title": "Automation Network policy \"Add domain\" accepts invalid/garbage values with no validation",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "automations",
+    "caseIds": ["AUTO-REG02"],
+    "links": {},
+    "reproSteps": "javascript:alert(1), whitespace, schemes all accepted verbatim into a security allowlist.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-05T12:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-005",
+    "title": "Missing line break rendering in IdP groups help text",
+    "severity": "S4",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "user-groups-mrlw5j7x",
+    "caseIds": ["IDP-SMK01"],
+    "links": {},
+    "reproSteps": "\"provider.Please contact…\" concatenated; <br> without space.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-08T13:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-004",
+    "title": "Grammatical error \"1 members\" should be \"1 member\" (singular)",
+    "severity": "S4",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "landing",
+    "caseIds": ["ORGSEL-SAN03", "SUB-IM-SAN01"],
+    "links": {},
+    "reproSteps": "Pluralization bug in org selector member counts.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-11T14:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-003",
+    "title": "API keys and org IDs exposed in plaintext in Guardrails violation logs",
+    "severity": "S2",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "security",
+    "caseIds": ["GUARD-REG01"],
+    "links": {
+      "linear": "https://linear.app/cognition/issue/ENG-demo-003"
+    },
+    "reproSteps": "Guardrails blocks the message but the violation log shows the full unredacted secret.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-14T15:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-002",
+    "title": "Duplicate service user name \"test-api key\" in Devin API settings",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-infra",
+    "caseIds": ["API-REG01"],
+    "links": {},
+    "reproSteps": "Multiple service users share an identical name; no uniqueness warning.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-17T16:00:00.000Z",
+    "incidentId": null
+  },
+  {
+    "id": "BUG-001",
+    "title": "Duplicate organization names in Organizations list",
+    "severity": "S3",
+    "status": "open",
+    "surfaceId": "enterprise",
+    "nodeId": "e-orgs",
+    "caseIds": ["ORG-REG02"],
+    "links": {},
+    "reproSteps": "Multiple rows share visible names, including \"ok1\" and \"p1\". With no stable identifier shown, edit and delete actions are ambiguous.",
+    "environment": "beta",
+    "reporter": "u-priya",
+    "createdAt": "2026-07-20T09:00:00.000Z",
+    "incidentId": null
+  }
 ]

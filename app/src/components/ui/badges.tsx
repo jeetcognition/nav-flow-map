@@ -1,9 +1,24 @@
-import type { AutomationStatus, Bug, BugStatus, CaseResultStatus, IncidentCategory, SessionStatus, TestCase } from "../../types";
+import type {
+  AutomationStatus,
+  Bug,
+  BugStatus,
+  CaseResultStatus,
+  IncidentCategory,
+  SessionStatus,
+  TestCase,
+} from "../../types";
 import { CATEGORY_META } from "../../lib/categoryMeta";
 import type { Severity } from "../../lib/severity";
 
 export function SeverityBadge({ severity }: { severity: Severity }) {
-  const cls = severity === "S1" ? "badge-red" : severity === "S2" ? "badge-amber" : severity === "S3" ? "badge-blue" : "badge-gray";
+  const cls =
+    severity === "S1"
+      ? "badge-red"
+      : severity === "S2"
+        ? "badge-amber"
+        : severity === "S3"
+          ? "badge-blue"
+          : "badge-gray";
   return <span className={`badge ${cls} mono`}>{severity}</span>;
 }
 
@@ -13,7 +28,9 @@ export function PriorityBadge({ priority }: { priority: TestCase["priority"] }) 
 }
 
 export function EnvBadge({ env }: { env: Bug["environment"] }) {
-  return <span className={`badge ${env === "staging" ? "badge-blue" : "badge-purple"}`}>{env}</span>;
+  return (
+    <span className={`badge ${env === "staging" ? "badge-blue" : "badge-purple"}`}>{env}</span>
+  );
 }
 
 const BUG_STATUS: Record<BugStatus, [string, string]> = {

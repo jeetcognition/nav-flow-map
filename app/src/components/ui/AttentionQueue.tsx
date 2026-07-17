@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle, Fire, Play, ShieldWarning, Sparkle, WarningCircle } from "@phosphor-icons/react";
+import {
+  CheckCircle,
+  Fire,
+  Play,
+  ShieldWarning,
+  Sparkle,
+  WarningCircle,
+} from "@phosphor-icons/react";
 import { buildAttentionItems } from "../../lib/attention";
 
 const ICONS = { run: Play, fire: Fire, shield: ShieldWarning, ai: Sparkle, warn: WarningCircle };

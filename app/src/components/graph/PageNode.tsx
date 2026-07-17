@@ -27,11 +27,9 @@ export function PageNode({ data, selected }: NodeProps<PageNodeType>) {
   const hasCases = stats.total > 0;
   const autoPct = hasCases ? pct(stats.automated, stats.total) : 0;
 
-  const cls = [
-    "page-node",
-    selected ? "is-selected" : "",
-    heat.strong ? "is-hot" : "",
-  ].filter(Boolean).join(" ");
+  const cls = ["page-node", selected ? "is-selected" : "", heat.strong ? "is-hot" : ""]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div
@@ -61,13 +59,19 @@ export function PageNode({ data, selected }: NodeProps<PageNodeType>) {
         </span>
         <span className="pn-badges">
           {stats.openBugs > 0 && (
-            <span className="pn-chip pn-chip-bug" title={`${stats.openBugs} open bug${stats.openBugs > 1 ? "s" : ""}`}>
+            <span
+              className="pn-chip pn-chip-bug"
+              title={`${stats.openBugs} open bug${stats.openBugs > 1 ? "s" : ""}`}
+            >
               <Bug size={12} weight="duotone" />
               {stats.openBugs}
             </span>
           )}
           {stats.incidents > 0 && (
-            <span className="pn-chip pn-chip-incident" title={`${stats.incidents} open incident${stats.incidents > 1 ? "s" : ""}`}>
+            <span
+              className="pn-chip pn-chip-incident"
+              title={`${stats.incidents} open incident${stats.incidents > 1 ? "s" : ""}`}
+            >
               <Fire size={12} weight="duotone" />
               {stats.incidents}
             </span>

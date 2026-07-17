@@ -2,7 +2,13 @@ import type { Surface, User } from "../../types";
 
 export const SURFACES: Surface[] = [
   { id: "enterprise", label: "Enterprise", kind: "webapp", status: "active" },
-  { id: "retail", label: "Retail", kind: "webapp", status: "coming-soon", dimensions: ["browser", "device", "viewport"] },
+  {
+    id: "retail",
+    label: "Retail",
+    kind: "webapp",
+    status: "coming-soon",
+    dimensions: ["browser", "device", "viewport"],
+  },
   { id: "windsurf", label: "Windsurf", kind: "desktop", status: "coming-soon" },
   { id: "devin-cli", label: "Devin CLI", kind: "cli", status: "coming-soon" },
 ];

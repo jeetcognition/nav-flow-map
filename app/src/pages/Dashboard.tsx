@@ -40,9 +40,7 @@ export default function Dashboard() {
   const d = useMemo(() => {
     void version;
     const ss = surfaceStats(surface.id);
-    const openBugs = getBugs().filter(
-      (b) => b.status !== "closed" && b.status !== "verified"
-    );
+    const openBugs = getBugs().filter((b) => b.status !== "closed" && b.status !== "verified");
     const incidents = getIncidents();
     const openIncidents = incidents.filter((i) => i.status !== "resolved").length;
 
@@ -60,9 +58,7 @@ export default function Dashboard() {
       };
     });
 
-    const runs = [...getRuns()]
-      .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
-      .slice(0, 5);
+    const runs = [...getRuns()].sort((a, b) => b.startedAt.localeCompare(a.startedAt)).slice(0, 5);
 
     const severities = SEVERITIES.map((sev) => ({
       sev,
@@ -108,8 +104,7 @@ export default function Dashboard() {
         <div>
           <h1 className="page-title">Dashboard</h1>
           <p className="page-sub">
-            Start with what needs attention — everything else is one click
-            deeper.
+            Start with what needs attention — everything else is one click deeper.
           </p>
         </div>
       </motion.div>
@@ -168,10 +163,7 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="progress-track dash-cov-track">
-              <div
-                className="progress-fill"
-                style={{ width: `${d.ss.coveredPct}%` }}
-              />
+              <div className="progress-fill" style={{ width: `${d.ss.coveredPct}%` }} />
             </div>
           </div>
           <div className="dash-groups">

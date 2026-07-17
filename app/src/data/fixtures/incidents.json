@@ -1,527 +1,527 @@
 [
- {
-  "id": "INC-2300",
-  "source": "pylon",
-  "title": "Cannot log in after SSO enforcement enabled",
-  "description": "Customer's whole org locked out after enabling Require SSO; OTP fallback also failing.",
-  "surfaceId": "enterprise",
-  "nodeId": "login",
-  "severity": "S1",
-  "status": "open",
-  "customer": "Customer A•••",
-  "createdAt": "2026-06-18T06:18:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.71,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2300",
+    "source": "pylon",
+    "title": "Cannot log in after SSO enforcement enabled",
+    "description": "Customer's whole org locked out after enabling Require SSO; OTP fallback also failing.",
+    "surfaceId": "enterprise",
+    "nodeId": "login",
+    "severity": "S1",
+    "status": "open",
+    "customer": "Customer A•••",
+    "createdAt": "2026-06-18T06:18:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.71,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": "customer-doubt",
+    "overriddenBy": "u-maya",
+    "linkedBugId": null,
+    "linkedCaseId": "LOGIN-SAN01"
   },
-  "humanCategory": "customer-doubt",
-  "overriddenBy": "u-maya",
-  "linkedBugId": null,
-  "linkedCaseId": "LOGIN-SAN01"
- },
- {
-  "id": "INC-2303",
-  "source": "pylon",
-  "title": "OTP email arrives after 10+ minutes",
-  "description": "Multiple users report one-time codes arriving too late to use; resend loops.",
-  "surfaceId": "enterprise",
-  "nodeId": "auth",
-  "severity": "S2",
-  "status": "resolved",
-  "customer": "Customer B•••",
-  "createdAt": "2026-06-19T07:17:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.93,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2303",
+    "source": "pylon",
+    "title": "OTP email arrives after 10+ minutes",
+    "description": "Multiple users report one-time codes arriving too late to use; resend loops.",
+    "surfaceId": "enterprise",
+    "nodeId": "auth",
+    "severity": "S2",
+    "status": "resolved",
+    "customer": "Customer B•••",
+    "createdAt": "2026-06-19T07:17:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.93,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": "AUTH-SAN01"
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": "AUTH-SAN01"
- },
- {
-  "id": "INC-2306",
-  "source": "datadog",
-  "title": "How do I add a new sub-organization?",
-  "description": "Admin asking where the create org flow lives; found Membership but not Organizations.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-orgs",
-  "severity": "S4",
-  "status": "open",
-  "customer": "Customer C•••",
-  "createdAt": "2026-06-20T08:33:00.000Z",
-  "ai": {
-   "category": "customer-doubt",
-   "confidence": 0.8,
-   "rationale": "Classified from title/description signals: informational question, no defect signal."
+  {
+    "id": "INC-2306",
+    "source": "datadog",
+    "title": "How do I add a new sub-organization?",
+    "description": "Admin asking where the create org flow lives; found Membership but not Organizations.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-orgs",
+    "severity": "S4",
+    "status": "open",
+    "customer": "Customer C•••",
+    "createdAt": "2026-06-20T08:33:00.000Z",
+    "ai": {
+      "category": "customer-doubt",
+      "confidence": 0.8,
+      "rationale": "Classified from title/description signals: informational question, no defect signal."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2309",
-  "source": "pylon",
-  "title": "Session list not loading — spinner forever",
-  "description": "Enterprise sessions page hangs on load for orgs with 5k+ sessions; console shows 504s.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-sessions",
-  "severity": "S2",
-  "status": "open",
-  "customer": "Customer D•••",
-  "createdAt": "2026-06-21T09:55:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.7,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2309",
+    "source": "pylon",
+    "title": "Session list not loading — spinner forever",
+    "description": "Enterprise sessions page hangs on load for orgs with 5k+ sessions; console shows 504s.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-sessions",
+    "severity": "S2",
+    "status": "open",
+    "customer": "Customer D•••",
+    "createdAt": "2026-06-21T09:55:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.7,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": "SESS-SMK01"
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": "SESS-SMK01"
- },
- {
-  "id": "INC-2312",
-  "source": "pylon",
-  "title": "Devin model picker reverts to Lite",
-  "description": "Setting Ultra and saving reverts on reload. Matches internal BUG-015 signature.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-devin",
-  "severity": "S2",
-  "status": "investigating",
-  "customer": "Customer E•••",
-  "createdAt": "2026-06-22T10:25:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.94,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2312",
+    "source": "pylon",
+    "title": "Devin model picker reverts to Lite",
+    "description": "Setting Ultra and saving reverts on reload. Matches internal BUG-015 signature.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-devin",
+    "severity": "S2",
+    "status": "investigating",
+    "customer": "Customer E•••",
+    "createdAt": "2026-06-22T10:25:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.94,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": "BUG-015",
+    "linkedCaseId": "DEVIN-SMK01"
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": "BUG-015",
-  "linkedCaseId": "DEVIN-SMK01"
- },
- {
-  "id": "INC-2315",
-  "source": "datadog",
-  "title": "Request: dark mode for Analytics exports",
-  "description": "Customer wants PDF exports of usage analytics with dark theme branding.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-analytics",
-  "severity": "S4",
-  "status": "resolved",
-  "customer": "Customer F•••",
-  "createdAt": "2026-06-23T11:17:00.000Z",
-  "ai": {
-   "category": "feature-request",
-   "confidence": 0.94,
-   "rationale": "Classified from title/description signals: request for new capability."
+  {
+    "id": "INC-2315",
+    "source": "datadog",
+    "title": "Request: dark mode for Analytics exports",
+    "description": "Customer wants PDF exports of usage analytics with dark theme branding.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-analytics",
+    "severity": "S4",
+    "status": "resolved",
+    "customer": "Customer F•••",
+    "createdAt": "2026-06-23T11:17:00.000Z",
+    "ai": {
+      "category": "feature-request",
+      "confidence": 0.94,
+      "rationale": "Classified from title/description signals: request for new capability."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2318",
-  "source": "pylon",
-  "title": "Webhook secret rotation unclear",
-  "description": "Customer asking whether rotating an org secret invalidates running sessions.",
-  "surfaceId": "enterprise",
-  "nodeId": "s-secrets",
-  "severity": "S3",
-  "status": "open",
-  "customer": "Customer G•••",
-  "createdAt": "2026-06-24T12:32:00.000Z",
-  "ai": {
-   "category": "customer-doubt",
-   "confidence": 0.8,
-   "rationale": "Classified from title/description signals: informational question, no defect signal."
+  {
+    "id": "INC-2318",
+    "source": "pylon",
+    "title": "Webhook secret rotation unclear",
+    "description": "Customer asking whether rotating an org secret invalidates running sessions.",
+    "surfaceId": "enterprise",
+    "nodeId": "s-secrets",
+    "severity": "S3",
+    "status": "open",
+    "customer": "Customer G•••",
+    "createdAt": "2026-06-24T12:32:00.000Z",
+    "ai": {
+      "category": "customer-doubt",
+      "confidence": 0.8,
+      "rationale": "Classified from title/description signals: informational question, no defect signal."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2321",
-  "source": "pylon",
-  "title": "GitHub app disconnects nightly",
-  "description": "Datadog monitor: github connection health check flapping every night 02:00 UTC.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-conn",
-  "severity": "S2",
-  "status": "open",
-  "customer": "Customer H•••",
-  "createdAt": "2026-06-26T13:04:00.000Z",
-  "ai": {
-   "category": "config-issue",
-   "confidence": 0.72,
-   "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+  {
+    "id": "INC-2321",
+    "source": "pylon",
+    "title": "GitHub app disconnects nightly",
+    "description": "Datadog monitor: github connection health check flapping every night 02:00 UTC.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-conn",
+    "severity": "S2",
+    "status": "open",
+    "customer": "Customer H•••",
+    "createdAt": "2026-06-26T13:04:00.000Z",
+    "ai": {
+      "category": "config-issue",
+      "confidence": 0.72,
+      "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+    },
+    "humanCategory": "app-bug",
+    "overriddenBy": "u-priya",
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": "app-bug",
-  "overriddenBy": "u-priya",
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2324",
-  "source": "datadog",
-  "title": "Guardrail violations page 500s for auditor role",
-  "description": "Users with auditor-scoped role get server error opening violations tab.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-guardrails",
-  "severity": "S2",
-  "status": "open",
-  "customer": "Customer I•••",
-  "createdAt": "2026-06-27T14:41:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.73,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2324",
+    "source": "datadog",
+    "title": "Guardrail violations page 500s for auditor role",
+    "description": "Users with auditor-scoped role get server error opening violations tab.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-guardrails",
+    "severity": "S2",
+    "status": "open",
+    "customer": "Customer I•••",
+    "createdAt": "2026-06-27T14:41:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.73,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": "GUARD-SMK01"
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": "GUARD-SMK01"
- },
- {
-  "id": "INC-2327",
-  "source": "pylon",
-  "title": "Repo access revoked but sessions still start",
-  "description": "Security-sensitive: removed repo permission still usable in new composer sessions for ~1h.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-repos",
-  "severity": "S1",
-  "status": "open",
-  "customer": "Customer A•••",
-  "createdAt": "2026-06-28T15:42:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.7,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2327",
+    "source": "pylon",
+    "title": "Repo access revoked but sessions still start",
+    "description": "Security-sensitive: removed repo permission still usable in new composer sessions for ~1h.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-repos",
+    "severity": "S1",
+    "status": "open",
+    "customer": "Customer A•••",
+    "createdAt": "2026-06-28T15:42:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.7,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": "feature-request",
+    "overriddenBy": "u-arjun",
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": "feature-request",
-  "overriddenBy": "u-arjun",
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2330",
-  "source": "pylon",
-  "title": "Playbook editor loses unsaved changes",
-  "description": "Switching tabs mid-edit silently drops playbook draft content.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-playbooks",
-  "severity": "S3",
-  "status": "resolved",
-  "customer": "Customer B•••",
-  "createdAt": "2026-06-29T16:53:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.93,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2330",
+    "source": "pylon",
+    "title": "Playbook editor loses unsaved changes",
+    "description": "Switching tabs mid-edit silently drops playbook draft content.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-playbooks",
+    "severity": "S3",
+    "status": "resolved",
+    "customer": "Customer B•••",
+    "createdAt": "2026-06-29T16:53:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.93,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": "unknown",
+    "overriddenBy": "u-priya",
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": "unknown",
-  "overriddenBy": "u-priya",
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2333",
-  "source": "datadog",
-  "title": "Can we bulk-invite members via CSV?",
-  "description": "Enterprise admin wants CSV import; currently inviting 200 members one by one.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-membership",
-  "severity": "S4",
-  "status": "open",
-  "customer": "Customer C•••",
-  "createdAt": "2026-06-30T17:53:00.000Z",
-  "ai": {
-   "category": "feature-request",
-   "confidence": 0.79,
-   "rationale": "Classified from title/description signals: request for new capability."
+  {
+    "id": "INC-2333",
+    "source": "datadog",
+    "title": "Can we bulk-invite members via CSV?",
+    "description": "Enterprise admin wants CSV import; currently inviting 200 members one by one.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-membership",
+    "severity": "S4",
+    "status": "open",
+    "customer": "Customer C•••",
+    "createdAt": "2026-06-30T17:53:00.000Z",
+    "ai": {
+      "category": "feature-request",
+      "confidence": 0.79,
+      "rationale": "Classified from title/description signals: request for new capability."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2336",
-  "source": "pylon",
-  "title": "Environment blueprint stuck in Provisioning",
-  "description": "Datadog: blueprint provisioning exceeds 30m for eu-west tenants.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-env",
-  "severity": "S2",
-  "status": "open",
-  "customer": "Customer D•••",
-  "createdAt": "2026-07-01T06:34:00.000Z",
-  "ai": {
-   "category": "config-issue",
-   "confidence": 0.68,
-   "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+  {
+    "id": "INC-2336",
+    "source": "pylon",
+    "title": "Environment blueprint stuck in Provisioning",
+    "description": "Datadog: blueprint provisioning exceeds 30m for eu-west tenants.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-env",
+    "severity": "S2",
+    "status": "open",
+    "customer": "Customer D•••",
+    "createdAt": "2026-07-01T06:34:00.000Z",
+    "ai": {
+      "category": "config-issue",
+      "confidence": 0.68,
+      "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2339",
-  "source": "pylon",
-  "title": "Wiki page renders raw HTML",
-  "description": "Repo wiki pages with embedded HTML show escaped markup instead of content.",
-  "surfaceId": "enterprise",
-  "nodeId": "wiki",
-  "severity": "S3",
-  "status": "investigating",
-  "customer": "Customer E•••",
-  "createdAt": "2026-07-02T07:39:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.88,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2339",
+    "source": "pylon",
+    "title": "Wiki page renders raw HTML",
+    "description": "Repo wiki pages with embedded HTML show escaped markup instead of content.",
+    "surfaceId": "enterprise",
+    "nodeId": "wiki",
+    "severity": "S3",
+    "status": "investigating",
+    "customer": "Customer E•••",
+    "createdAt": "2026-07-02T07:39:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.88,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2342",
-  "source": "datadog",
-  "title": "Review comments posted to wrong PR",
-  "description": "Devin Review posted comments on an unrelated open PR in the same repo.",
-  "surfaceId": "enterprise",
-  "nodeId": "review",
-  "severity": "S1",
-  "status": "open",
-  "customer": "Customer F•••",
-  "createdAt": "2026-07-04T08:56:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.76,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2342",
+    "source": "datadog",
+    "title": "Review comments posted to wrong PR",
+    "description": "Devin Review posted comments on an unrelated open PR in the same repo.",
+    "surfaceId": "enterprise",
+    "nodeId": "review",
+    "severity": "S1",
+    "status": "open",
+    "customer": "Customer F•••",
+    "createdAt": "2026-07-04T08:56:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.76,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2345",
-  "source": "pylon",
-  "title": "Where to find personal API usage?",
-  "description": "User can't find per-user consumption; pointed to My Analytics.",
-  "surfaceId": "enterprise",
-  "nodeId": "my-analytics",
-  "severity": "S4",
-  "status": "open",
-  "customer": "Customer G•••",
-  "createdAt": "2026-07-05T09:22:00.000Z",
-  "ai": {
-   "category": "customer-doubt",
-   "confidence": 0.77,
-   "rationale": "Classified from title/description signals: informational question, no defect signal."
+  {
+    "id": "INC-2345",
+    "source": "pylon",
+    "title": "Where to find personal API usage?",
+    "description": "User can't find per-user consumption; pointed to My Analytics.",
+    "surfaceId": "enterprise",
+    "nodeId": "my-analytics",
+    "severity": "S4",
+    "status": "open",
+    "customer": "Customer G•••",
+    "createdAt": "2026-07-05T09:22:00.000Z",
+    "ai": {
+      "category": "customer-doubt",
+      "confidence": 0.77,
+      "rationale": "Classified from title/description signals: informational question, no defect signal."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2348",
-  "source": "pylon",
-  "title": "Code scan profile can't exclude vendored dirs",
-  "description": "Wants glob-based exclusions for /vendor and generated code in scan profiles.",
-  "surfaceId": "enterprise",
-  "nodeId": "security",
-  "severity": "S3",
-  "status": "open",
-  "customer": "Customer H•••",
-  "createdAt": "2026-07-06T10:13:00.000Z",
-  "ai": {
-   "category": "feature-request",
-   "confidence": 0.75,
-   "rationale": "Classified from title/description signals: request for new capability."
+  {
+    "id": "INC-2348",
+    "source": "pylon",
+    "title": "Code scan profile can't exclude vendored dirs",
+    "description": "Wants glob-based exclusions for /vendor and generated code in scan profiles.",
+    "surfaceId": "enterprise",
+    "nodeId": "security",
+    "severity": "S3",
+    "status": "open",
+    "customer": "Customer H•••",
+    "createdAt": "2026-07-06T10:13:00.000Z",
+    "ai": {
+      "category": "feature-request",
+      "confidence": 0.75,
+      "rationale": "Classified from title/description signals: request for new capability."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2351",
-  "source": "datadog",
-  "title": "Infra capacity alert: hypervisor pool 92%",
-  "description": "Datadog monitor breach on tenant capacity; needs rebalancing runbook.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-infra",
-  "severity": "S2",
-  "status": "open",
-  "customer": "Customer I•••",
-  "createdAt": "2026-07-07T11:26:00.000Z",
-  "ai": {
-   "category": "config-issue",
-   "confidence": 0.82,
-   "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+  {
+    "id": "INC-2351",
+    "source": "datadog",
+    "title": "Infra capacity alert: hypervisor pool 92%",
+    "description": "Datadog monitor breach on tenant capacity; needs rebalancing runbook.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-infra",
+    "severity": "S2",
+    "status": "open",
+    "customer": "Customer I•••",
+    "createdAt": "2026-07-07T11:26:00.000Z",
+    "ai": {
+      "category": "config-issue",
+      "confidence": 0.82,
+      "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2354",
-  "source": "pylon",
-  "title": "Automation schedule fires twice",
-  "description": "Legacy schedule + new automation both trigger the same nightly job.",
-  "surfaceId": "enterprise",
-  "nodeId": "automations",
-  "severity": "S2",
-  "status": "investigating",
-  "customer": "Customer A•••",
-  "createdAt": "2026-07-08T12:12:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.88,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2354",
+    "source": "pylon",
+    "title": "Automation schedule fires twice",
+    "description": "Legacy schedule + new automation both trigger the same nightly job.",
+    "surfaceId": "enterprise",
+    "nodeId": "automations",
+    "severity": "S2",
+    "status": "investigating",
+    "customer": "Customer A•••",
+    "createdAt": "2026-07-08T12:12:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.88,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2357",
-  "source": "pylon",
-  "title": "Composer repo selector missing new repos",
-  "description": "Repos granted today don't appear until logout/login; cache suspected.",
-  "surfaceId": "enterprise",
-  "nodeId": "composer",
-  "severity": "S3",
-  "status": "open",
-  "customer": "Customer B•••",
-  "createdAt": "2026-07-09T13:06:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.74,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2357",
+    "source": "pylon",
+    "title": "Composer repo selector missing new repos",
+    "description": "Repos granted today don't appear until logout/login; cache suspected.",
+    "surfaceId": "enterprise",
+    "nodeId": "composer",
+    "severity": "S3",
+    "status": "open",
+    "customer": "Customer B•••",
+    "createdAt": "2026-07-09T13:06:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.74,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": "app-bug",
+    "overriddenBy": "u-jeet",
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": "app-bug",
-  "overriddenBy": "u-jeet",
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2360",
-  "source": "datadog",
-  "title": "Skills usage drill-down shows 0 sessions",
-  "description": "Skill usage counts populated but session drill-down list always empty.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-skills",
-  "severity": "S3",
-  "status": "resolved",
-  "customer": "Customer C•••",
-  "createdAt": "2026-07-11T14:27:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.91,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2360",
+    "source": "datadog",
+    "title": "Skills usage drill-down shows 0 sessions",
+    "description": "Skill usage counts populated but session drill-down list always empty.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-skills",
+    "severity": "S3",
+    "status": "resolved",
+    "customer": "Customer C•••",
+    "createdAt": "2026-07-11T14:27:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.91,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": "config-issue",
+    "overriddenBy": "u-arjun",
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": "config-issue",
-  "overriddenBy": "u-arjun",
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2363",
-  "source": "pylon",
-  "title": "Clarify ACU limits for sub-orgs",
-  "description": "Customer confused whether ACU limit is monthly or total.",
-  "surfaceId": "enterprise",
-  "nodeId": "org-create",
-  "severity": "S4",
-  "status": "open",
-  "customer": "Customer D•••",
-  "createdAt": "2026-07-12T15:13:00.000Z",
-  "ai": {
-   "category": "customer-doubt",
-   "confidence": 0.76,
-   "rationale": "Classified from title/description signals: informational question, no defect signal."
+  {
+    "id": "INC-2363",
+    "source": "pylon",
+    "title": "Clarify ACU limits for sub-orgs",
+    "description": "Customer confused whether ACU limit is monthly or total.",
+    "surfaceId": "enterprise",
+    "nodeId": "org-create",
+    "severity": "S4",
+    "status": "open",
+    "customer": "Customer D•••",
+    "createdAt": "2026-07-12T15:13:00.000Z",
+    "ai": {
+      "category": "customer-doubt",
+      "confidence": 0.76,
+      "rationale": "Classified from title/description signals: informational question, no defect signal."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2366",
-  "source": "pylon",
-  "title": "IdP group mapping drops nested groups",
-  "description": "Okta nested groups not flattened; members lose role mapping on sync.",
-  "surfaceId": "enterprise",
-  "nodeId": "groups-idp",
-  "severity": "S2",
-  "status": "open",
-  "customer": "Customer E•••",
-  "createdAt": "2026-07-13T16:13:00.000Z",
-  "ai": {
-   "category": "config-issue",
-   "confidence": 0.75,
-   "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+  {
+    "id": "INC-2366",
+    "source": "pylon",
+    "title": "IdP group mapping drops nested groups",
+    "description": "Okta nested groups not flattened; members lose role mapping on sync.",
+    "surfaceId": "enterprise",
+    "nodeId": "groups-idp",
+    "severity": "S2",
+    "status": "open",
+    "customer": "Customer E•••",
+    "createdAt": "2026-07-13T16:13:00.000Z",
+    "ai": {
+      "category": "config-issue",
+      "confidence": 0.75,
+      "rationale": "Classified from title/description signals: environment/monitor origin, not app code."
+    },
+    "humanCategory": "customer-doubt",
+    "overriddenBy": "u-maya",
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": "customer-doubt",
-  "overriddenBy": "u-maya",
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2369",
-  "source": "datadog",
-  "title": "Support page contact form times out",
-  "description": "Submitting the support form intermittently 408s; retry succeeds.",
-  "surfaceId": "enterprise",
-  "nodeId": "support",
-  "severity": "S3",
-  "status": "open",
-  "customer": "Customer F•••",
-  "createdAt": "2026-07-14T17:38:00.000Z",
-  "ai": {
-   "category": "app-bug",
-   "confidence": 0.81,
-   "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+  {
+    "id": "INC-2369",
+    "source": "datadog",
+    "title": "Support page contact form times out",
+    "description": "Submitting the support form intermittently 408s; retry succeeds.",
+    "surfaceId": "enterprise",
+    "nodeId": "support",
+    "severity": "S3",
+    "status": "open",
+    "customer": "Customer F•••",
+    "createdAt": "2026-07-14T17:38:00.000Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.81,
+      "rationale": "Classified from title/description signals: reproducible product behavior mismatch."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
   },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- },
- {
-  "id": "INC-2372",
-  "source": "pylon",
-  "title": "Analytics category totals don't match org sum",
-  "description": "Category view total differs from per-org sums by ~4%; unclear if rounding or bug.",
-  "surfaceId": "enterprise",
-  "nodeId": "e-analytics",
-  "severity": "S3",
-  "status": "open",
-  "customer": "Customer G•••",
-  "createdAt": "2026-07-15T06:09:00.000Z",
-  "ai": {
-   "category": "unknown",
-   "confidence": 0.44,
-   "rationale": "Classified from title/description signals: ambiguous signals, needs human review."
-  },
-  "humanCategory": null,
-  "overriddenBy": null,
-  "linkedBugId": null,
-  "linkedCaseId": null
- }
+  {
+    "id": "INC-2372",
+    "source": "pylon",
+    "title": "Analytics category totals don't match org sum",
+    "description": "Category view total differs from per-org sums by ~4%; unclear if rounding or bug.",
+    "surfaceId": "enterprise",
+    "nodeId": "e-analytics",
+    "severity": "S3",
+    "status": "open",
+    "customer": "Customer G•••",
+    "createdAt": "2026-07-15T06:09:00.000Z",
+    "ai": {
+      "category": "unknown",
+      "confidence": 0.44,
+      "rationale": "Classified from title/description signals: ambiguous signals, needs human review."
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
+  }
 ]

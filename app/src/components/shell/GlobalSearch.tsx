@@ -21,16 +21,32 @@ function search(q: string): Hit[] {
   const match = (s: string) => s.toLowerCase().includes(needle);
   const hits: Hit[] = [];
   for (const n of getNodes()) {
-    if (match(n.label) || match(n.id)) hits.push({ kind: "node", id: n.id, title: n.label, sub: n.route, to: `/map?node=${n.id}` });
+    if (match(n.label) || match(n.id))
+      hits.push({ kind: "node", id: n.id, title: n.label, sub: n.route, to: `/map?node=${n.id}` });
   }
   for (const c of getTestCases()) {
-    if (match(c.id) || match(c.title)) hits.push({ kind: "testcase", id: c.id, title: c.id, sub: c.title, to: `/automation?case=${c.id}` });
+    if (match(c.id) || match(c.title))
+      hits.push({
+        kind: "testcase",
+        id: c.id,
+        title: c.id,
+        sub: c.title,
+        to: `/automation?case=${c.id}`,
+      });
   }
   for (const b of getBugs()) {
-    if (match(b.id) || match(b.title)) hits.push({ kind: "bug", id: b.id, title: b.id, sub: b.title, to: `/bugs/${b.id}` });
+    if (match(b.id) || match(b.title))
+      hits.push({ kind: "bug", id: b.id, title: b.id, sub: b.title, to: `/bugs/${b.id}` });
   }
   for (const i of getIncidents()) {
-    if (match(i.id) || match(i.title)) hits.push({ kind: "incident", id: i.id, title: i.id, sub: i.title, to: `/incidents/${i.id}` });
+    if (match(i.id) || match(i.title))
+      hits.push({
+        kind: "incident",
+        id: i.id,
+        title: i.id,
+        sub: i.title,
+        to: `/incidents/${i.id}`,
+      });
   }
   return hits.slice(0, 12);
 }
@@ -90,8 +106,14 @@ export function GlobalSearch() {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") setSearchOpen(false);
-                  if (e.key === "ArrowDown") { e.preventDefault(); setSel((s) => Math.min(s + 1, hits.length - 1)); }
-                  if (e.key === "ArrowUp") { e.preventDefault(); setSel((s) => Math.max(s - 1, 0)); }
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setSel((s) => Math.min(s + 1, hits.length - 1));
+                  }
+                  if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setSel((s) => Math.max(s - 1, 0));
+                  }
                   if (e.key === "Enter" && hits[sel]) go(hits[sel]);
                 }}
               />

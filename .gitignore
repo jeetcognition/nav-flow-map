@@ -1,1 +1,4 @@
 worker/.wrangler/
+node_modules/
+.claude/
+.DS_Store

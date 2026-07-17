@@ -19,13 +19,13 @@ npm run dev        # http://localhost:5173
 
 ## Modules
 
-| Route | Module |
-|---|---|
-| `/` | Dashboard — coverage, runs, bugs, incident charts, escaped defects |
-| `/map` | Graph coverage map — React Flow + dagre, progress rings, coverage/risk heat toggle, node panel with AI testcase suggestions (`?node=<id>` deep links) |
-| `/runs`, `/runs/:id` | Run history + detail with AI summary, failure clustering, flaky flags |
-| `/bugs`, `/bugs/:id` | Issues — table + kanban, AI bug drafting with duplicate detection |
-| `/incidents`, `/incidents/:id` | AI triage feed (category + confidence + human override), create-testcase-from-incident, escaped-defect traceability |
-| `/automation` | Coverage by node, testcase explorer (`?case=<id>`), live mock Devin sessions, AI coverage-gap report |
+| Route                          | Module                                                                                                                                                |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                            | Dashboard — coverage, runs, bugs, incident charts, escaped defects                                                                                    |
+| `/map`                         | Graph coverage map — React Flow + dagre, progress rings, coverage/risk heat toggle, node panel with AI testcase suggestions (`?node=<id>` deep links) |
+| `/runs`, `/runs/:id`           | Run history + detail with AI summary, failure clustering, flaky flags                                                                                 |
+| `/bugs`, `/bugs/:id`           | Issues — table + kanban, AI bug drafting with duplicate detection                                                                                     |
+| `/incidents`, `/incidents/:id` | AI triage feed (category + confidence + human override), create-testcase-from-incident, escaped-defect traceability                                   |
+| `/automation`                  | Coverage by node, testcase explorer (`?case=<id>`), live mock Devin sessions, AI coverage-gap report                                                  |
 
 The legacy single-file app remains untouched at the repo root (`index.html`).

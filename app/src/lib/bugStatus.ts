@@ -15,5 +15,5 @@ export const BUG_STATUS_COLOR: Record<BugStatus, string> = {
   "in-progress": "var(--warning)",
   fixed: "var(--info)",
   verified: "var(--accent)",
-  "closed": "var(--gray-strong)",
+  closed: "var(--gray-strong)",
 };

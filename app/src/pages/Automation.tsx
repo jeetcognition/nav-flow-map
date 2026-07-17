@@ -63,7 +63,11 @@ function SessionsPanel({ sessions, index }: { sessions: DevinSession[]; index: n
         </span>
       </div>
       {sessions.length === 0 ? (
-        <EmptyState icon={<Robot size={28} weight="duotone" />} title="No sessions yet" hint="Trigger a run to spin up a Devin session." />
+        <EmptyState
+          icon={<Robot size={28} weight="duotone" />}
+          title="No sessions yet"
+          hint="Trigger a run to spin up a Devin session."
+        />
       ) : (
         <div className="sessions-list">
           {shown.map((s) => (
@@ -75,10 +79,16 @@ function SessionsPanel({ sessions, index }: { sessions: DevinSession[]; index: n
               transition={{ duration: 0.25, ease: EASE }}
             >
               <span className="session-id">{s.id}</span>
-              <span className="session-scope" title={s.scope}>{s.scope}</span>
+              <span className="session-scope" title={s.scope}>
+                {s.scope}
+              </span>
               <SessionBadge status={s.status} />
               <span className="session-time">{timeAgo(s.startedAt)}</span>
-              <ExternalLink className="session-link" href={s.url} aria-label={`Open session ${s.id} in Devin`}>
+              <ExternalLink
+                className="session-link"
+                href={s.url}
+                aria-label={`Open session ${s.id} in Devin`}
+              >
                 <ArrowSquareOut size={15} weight="duotone" />
               </ExternalLink>
             </motion.div>
@@ -88,9 +98,13 @@ function SessionsPanel({ sessions, index }: { sessions: DevinSession[]; index: n
       {sessions.length > 6 && (
         <button className="btn sessions-expander" onClick={() => setShowAll((v) => !v)}>
           {showAll ? (
-            <>Show recent <CaretUp size={13} /></>
+            <>
+              Show recent <CaretUp size={13} />
+            </>
           ) : (
-            <>Show all ({sessions.length}) <CaretDown size={13} /></>
+            <>
+              Show all ({sessions.length}) <CaretDown size={13} />
+            </>
           )}
         </button>
       )}
@@ -135,9 +149,13 @@ function CoverageTable({ rows, index }: { rows: CovRow[]; index: number }) {
               {rows.map(({ node, stats, autoPct }) => (
                 <tr key={node.id}>
                   <td>
-                    <Link className="cov-node-link" to={`/map?node=${node.id}`}>{node.label}</Link>
+                    <Link className="cov-node-link" to={`/map?node=${node.id}`}>
+                      {node.label}
+                    </Link>
                   </td>
-                  <td><span className="badge badge-outline">{node.group}</span></td>
+                  <td>
+                    <span className="badge badge-outline">{node.group}</span>
+                  </td>
                   <td className="num">{stats.total}</td>
                   <td className="num">{stats.automated}</td>
                   <td>
@@ -148,7 +166,9 @@ function CoverageTable({ rows, index }: { rows: CovRow[]; index: number }) {
                   <td className="num">
                     <span className="pass-num">{stats.passing}</span>
                     <span className="dim-num"> / </span>
-                    <span className={stats.failing > 0 ? "fail-num" : "dim-num"}>{stats.failing}</span>
+                    <span className={stats.failing > 0 ? "fail-num" : "dim-num"}>
+                      {stats.failing}
+                    </span>
                   </td>
                   <td>
                     <button
@@ -203,7 +223,7 @@ function CaseExplorer({
         (auto === "all" || c.automation === auto) &&
         (prio === "all" || c.priority === prio) &&
         (nodeId === "all" || c.nodeId === nodeId) &&
-        (!term || c.id.toLowerCase().includes(term) || c.title.toLowerCase().includes(term))
+        (!term || c.id.toLowerCase().includes(term) || c.title.toLowerCase().includes(term)),
     );
   }, [cases, suite, auto, prio, nodeId, q]);
 
@@ -239,7 +259,9 @@ function CaseExplorer({
           <h2 className="auto-card-title">
             <Flask size={19} weight="duotone" /> Testcase Explorer
           </h2>
-          <div className="auto-card-sub">{filtered.length} of {cases.length} cases</div>
+          <div className="auto-card-sub">
+            {filtered.length} of {cases.length} cases
+          </div>
         </div>
         {selected.size > 0 && (
           <motion.button
@@ -260,33 +282,66 @@ function CaseExplorer({
             type="search"
             placeholder="Search by case ID or title…"
             value={q}
-            onChange={(e) => { setQ(e.target.value); resetPage(); }}
+            onChange={(e) => {
+              setQ(e.target.value);
+              resetPage();
+            }}
             aria-label="Search testcases"
           />
         </div>
-        <select value={suite} onChange={(e) => { setSuite(e.target.value); resetPage(); }} aria-label="Filter by suite">
+        <select
+          value={suite}
+          onChange={(e) => {
+            setSuite(e.target.value);
+            resetPage();
+          }}
+          aria-label="Filter by suite"
+        >
           <option value="all">All suites</option>
           <option value="Sanity">Sanity</option>
           <option value="Regression">Regression</option>
           <option value="Draft">Draft</option>
         </select>
-        <select value={auto} onChange={(e) => { setAuto(e.target.value); resetPage(); }} aria-label="Filter by automation status">
+        <select
+          value={auto}
+          onChange={(e) => {
+            setAuto(e.target.value);
+            resetPage();
+          }}
+          aria-label="Filter by automation status"
+        >
           <option value="all">All automation</option>
           <option value="automated">Automated</option>
           <option value="manual">Manual</option>
           <option value="in-progress">In Progress</option>
           <option value="not-automatable">Not Automatable</option>
         </select>
-        <select value={prio} onChange={(e) => { setPrio(e.target.value); resetPage(); }} aria-label="Filter by priority">
+        <select
+          value={prio}
+          onChange={(e) => {
+            setPrio(e.target.value);
+            resetPage();
+          }}
+          aria-label="Filter by priority"
+        >
           <option value="all">All priorities</option>
           <option value="P1">P1</option>
           <option value="P2">P2</option>
           <option value="P3">P3</option>
         </select>
-        <select value={nodeId} onChange={(e) => { setNodeId(e.target.value); resetPage(); }} aria-label="Filter by node">
+        <select
+          value={nodeId}
+          onChange={(e) => {
+            setNodeId(e.target.value);
+            resetPage();
+          }}
+          aria-label="Filter by node"
+        >
           <option value="all">All nodes</option>
           {nodes.map((n) => (
-            <option key={n.id} value={n.id}>{n.label}</option>
+            <option key={n.id} value={n.id}>
+              {n.label}
+            </option>
           ))}
         </select>
       </div>
@@ -333,12 +388,24 @@ function CaseExplorer({
                       aria-label={`Select ${c.id}`}
                     />
                   </td>
-                  <td className="mono" style={{ whiteSpace: "nowrap" }}>{c.id}</td>
-                  <td><span className="tc-title" title={c.title}>{c.title}</span></td>
+                  <td className="mono" style={{ whiteSpace: "nowrap" }}>
+                    {c.id}
+                  </td>
+                  <td>
+                    <span className="tc-title" title={c.title}>
+                      {c.title}
+                    </span>
+                  </td>
                   <td style={{ whiteSpace: "nowrap" }}>{nodeLabel.get(c.nodeId) ?? c.nodeId}</td>
-                  <td><span className={`badge ${SUITE_CLS[c.suite]}`}>{c.suite}</span></td>
-                  <td><PriorityBadge priority={c.priority} /></td>
-                  <td><AutomationBadge status={c.automation} /></td>
+                  <td>
+                    <span className={`badge ${SUITE_CLS[c.suite]}`}>{c.suite}</span>
+                  </td>
+                  <td>
+                    <PriorityBadge priority={c.priority} />
+                  </td>
+                  <td>
+                    <AutomationBadge status={c.automation} />
+                  </td>
                   <td>
                     <span className="tc-badges">
                       {c.flaky && <span className="badge badge-amber">Flaky</span>}
@@ -362,7 +429,9 @@ function CaseExplorer({
             </tbody>
           </table>
           <div className="table-foot">
-            <span className="num">Showing {shown.length} of {filtered.length}</span>
+            <span className="num">
+              Showing {shown.length} of {filtered.length}
+            </span>
             {filtered.length > limit && (
               <button className="btn" onClick={() => setLimit((l) => l + PAGE_SIZE)}>
                 <CaretDown size={13} /> Load more
@@ -400,7 +469,9 @@ function CoverageGapCard() {
           <h2 className="auto-card-title ai">
             <Sparkle size={19} weight="duotone" /> Where is coverage lagging?
           </h2>
-          <div className="auto-card-sub">Risk-ranked nodes from bugs, incidents, and automation gaps</div>
+          <div className="auto-card-sub">
+            Risk-ranked nodes from bugs, incidents, and automation gaps
+          </div>
         </div>
         <button className="btn btn-ai" onClick={generate} disabled={loading}>
           <Sparkle size={15} weight="duotone" /> {gaps ? "Regenerate" : "Generate"}
@@ -415,14 +486,19 @@ function CoverageGapCard() {
           hint="Generate to rank the riskiest under-covered flows."
         />
       ) : gaps.length === 0 ? (
-        <EmptyState icon={<CheckCircle size={26} weight="duotone" />} title="No significant gaps found" />
+        <EmptyState
+          icon={<CheckCircle size={26} weight="duotone" />}
+          title="No significant gaps found"
+        />
       ) : (
         <div className="gap-list">
           {gaps.map((g, i) => (
             <motion.div key={g.nodeId} className="gap-item" {...rowFadeUp(i, 0.05)}>
               <span className="gap-rank">{i + 1}</span>
               <div style={{ minWidth: 0 }}>
-                <Link className="cov-node-link gap-label" to={`/map?node=${g.nodeId}`}>{g.label}</Link>
+                <Link className="cov-node-link gap-label" to={`/map?node=${g.nodeId}`}>
+                  {g.label}
+                </Link>
                 <div className="gap-reason">{g.reason}</div>
               </div>
               <span className={`risk-chip ${riskCls(g.risk)}`}>{g.risk.toFixed(1)}</span>
@@ -466,7 +542,10 @@ function CandidatesCard() {
           hint="Generate to surface the best automation targets."
         />
       ) : candidates.length === 0 ? (
-        <EmptyState icon={<CheckCircle size={26} weight="duotone" />} title="Nothing left to automate" />
+        <EmptyState
+          icon={<CheckCircle size={26} weight="duotone" />}
+          title="Nothing left to automate"
+        />
       ) : (
         <>
           <div className="ai-hint">High-value, frequently run, stable flows</div>
@@ -474,7 +553,9 @@ function CandidatesCard() {
             {candidates.map((c, i) => (
               <motion.div key={c.id} className="cand-item" {...rowFadeUp(i, 0.05)}>
                 <span className="cand-id">{c.id}</span>
-                <span className="cand-title" title={c.title}>{c.title}</span>
+                <span className="cand-title" title={c.title}>
+                  {c.title}
+                </span>
                 <PriorityBadge priority={c.priority} />
                 <button
                   className="run-btn"
@@ -505,25 +586,31 @@ export default function Automation() {
 
   const { counts, covRows, nodesWithCases, nodeLabel } = useMemo(() => {
     const all = getTestCases();
-    const counts = {
+    const caseCounts = {
       total: all.length,
       automated: all.filter((c) => c.automation === "automated").length,
       inProgress: all.filter((c) => c.automation === "in-progress").length,
       notAutomatable: all.filter((c) => c.automation === "not-automatable").length,
     };
-    const nodeLabel = new Map<string, string>();
-    const covRows: CovRow[] = [];
+    const labelByNode = new Map<string, string>();
+    const coverageRows: CovRow[] = [];
     for (const node of getNodes()) {
-      nodeLabel.set(node.id, node.label);
+      labelByNode.set(node.id, node.label);
       const stats = nodeStats(node.id);
-      if (stats.total > 0) covRows.push({ node, stats, autoPct: pct(stats.automated, stats.total) });
+      if (stats.total > 0)
+        coverageRows.push({ node, stats, autoPct: pct(stats.automated, stats.total) });
     }
-    covRows.sort((a, b) => a.autoPct - b.autoPct || b.stats.total - a.stats.total);
-    const nodesWithCases = covRows
+    coverageRows.sort((a, b) => a.autoPct - b.autoPct || b.stats.total - a.stats.total);
+    const sortedNodes = coverageRows
       .map((r) => r.node)
       .slice()
       .sort((a, b) => a.label.localeCompare(b.label));
-    return { counts, covRows, nodesWithCases, nodeLabel };
+    return {
+      counts: caseCounts,
+      covRows: coverageRows,
+      nodesWithCases: sortedNodes,
+      nodeLabel: labelByNode,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version]);
 

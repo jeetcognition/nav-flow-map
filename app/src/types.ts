@@ -84,7 +84,12 @@ export interface CaseResult {
   durationSec: number;
 }
 
-export type IncidentCategory = "app-bug" | "customer-doubt" | "config-issue" | "feature-request" | "unknown";
+export type IncidentCategory =
+  | "app-bug"
+  | "customer-doubt"
+  | "config-issue"
+  | "feature-request"
+  | "unknown";
 
 export interface Incident {
   id: string;
@@ -129,7 +134,7 @@ export interface NodeStats {
   nodeId: string;
   total: number;
   automated: number;
-  passing: number;   // cases passing in their most recent run appearance
+  passing: number; // cases passing in their most recent run appearance
   failing: number;
   openBugs: number;
   incidents: number;

@@ -133,13 +133,10 @@ function GraphInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positions, setCenter]);
 
-  const minimapColor = useCallback(
-    (n: { data?: unknown }) => {
-      const data = n.data as PageNodeData | undefined;
-      return data ? heatFor(data.stats, data.mode).color : "rgba(148,163,184,0.3)";
-    },
-    [],
-  );
+  const minimapColor = useCallback((n: { data?: unknown }) => {
+    const data = n.data as PageNodeData | undefined;
+    return data ? heatFor(data.stats, data.mode).color : "rgba(148,163,184,0.3)";
+  }, []);
 
   const surf = useMemo(
     () => surfaceStats("enterprise"),
@@ -166,7 +163,12 @@ function GraphInner() {
         elementsSelectable={false}
         proOptions={{ hideAttribution: false }}
       >
-        <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="rgba(148, 163, 184, 0.12)" />
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={24}
+          size={1.5}
+          color="rgba(148, 163, 184, 0.12)"
+        />
         <Controls showInteractive={false} position="bottom-left" />
         <MiniMap
           position="bottom-right"

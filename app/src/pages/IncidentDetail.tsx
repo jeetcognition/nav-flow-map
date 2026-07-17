@@ -151,7 +151,14 @@ export default function IncidentDetail() {
             index={1}
             className="ai-triage-card"
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--sp-3)", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "var(--sp-3)",
+                flexWrap: "wrap",
+              }}
+            >
               <CategoryBadge category={effective} />
               <ConfidenceMeter value={incident.ai.confidence} />
             </div>
@@ -173,7 +180,11 @@ export default function IncidentDetail() {
             </div>
           </WidgetCard>
 
-          <WidgetCard title="Timeline" icon={<ClockCounterClockwise size={14} weight="duotone" />} index={2}>
+          <WidgetCard
+            title="Timeline"
+            icon={<ClockCounterClockwise size={14} weight="duotone" />}
+            index={2}
+          >
             <div className="timeline">
               {timeline.map((item, idx) => (
                 <div className="tl-item" key={idx}>
@@ -194,7 +205,11 @@ export default function IncidentDetail() {
             <div className="inc-masked-note">Customer info is masked in Phase 1.</div>
           </WidgetCard>
 
-          <WidgetCard title="Traceability" icon={<LinkSimple size={14} weight="duotone" />} index={2}>
+          <WidgetCard
+            title="Traceability"
+            icon={<LinkSimple size={14} weight="duotone" />}
+            index={2}
+          >
             <div className="trace-list">
               <div className="trace-row">
                 <span className="trace-label">

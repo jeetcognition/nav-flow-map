@@ -21,9 +21,12 @@ export default function Settings() {
         <section className="card">
           <h3 className="settings-card-title">AI layer</h3>
           <div className="settings-inline">
-            <span className="badge badge-purple"><Sparkle size={12} /> AI_MOCK = {String(AI_MOCK)}</span>
+            <span className="badge badge-purple">
+              <Sparkle size={12} /> AI_MOCK = {String(AI_MOCK)}
+            </span>
             <span className="settings-note">
-              All AI features return canned responses. Swap the aiService internals for the Anthropic API in Phase 2.
+              All AI features return canned responses. Swap the aiService internals for the
+              Anthropic API in Phase 2.
             </span>
           </div>
         </section>
@@ -35,8 +38,12 @@ export default function Settings() {
               <div key={s.id} className="settings-row">
                 <span className="settings-row-label">{s.label}</span>
                 <span className="badge badge-outline">{s.kind}</span>
-                <span className={`badge ${s.status === "active" ? "badge-green" : "badge-gray"}`}>{s.status}</span>
-                {s.dimensions && <span className="settings-dim">matrix: {s.dimensions.join(" · ")}</span>}
+                <span className={`badge ${s.status === "active" ? "badge-green" : "badge-gray"}`}>
+                  {s.status}
+                </span>
+                {s.dimensions && (
+                  <span className="settings-dim">matrix: {s.dimensions.join(" · ")}</span>
+                )}
               </div>
             ))}
           </div>
@@ -50,7 +57,9 @@ export default function Settings() {
           <div className="settings-list">
             {getUsers().map((u) => (
               <div key={u.id} className="settings-row">
-                <span className="avatar sm" style={{ background: u.color }}>{u.initials}</span>
+                <span className="avatar sm" style={{ background: u.color }}>
+                  {u.initials}
+                </span>
                 <span className="settings-row-name">{u.name}</span>
                 <span className="badge badge-outline">{u.role}</span>
                 {u.id === user.id && <span className="badge badge-green">you</span>}

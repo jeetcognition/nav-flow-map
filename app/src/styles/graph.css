@@ -85,7 +85,9 @@
   border-radius: var(--radius);
   padding: 10px 12px;
   cursor: pointer;
-  box-shadow: 0 0 12px var(--pn-glow, transparent), var(--shadow-1);
+  box-shadow:
+    0 0 12px var(--pn-glow, transparent),
+    var(--shadow-1);
   transition:
     border-color 400ms var(--ease-out),
     box-shadow 400ms var(--ease-out),
@@ -101,7 +103,9 @@
 }
 
 .page-node.is-hot {
-  box-shadow: 0 0 22px var(--pn-glow), var(--shadow-1);
+  box-shadow:
+    0 0 22px var(--pn-glow),
+    var(--shadow-1);
 }
 
 .page-node.is-selected {
@@ -143,10 +147,22 @@
   border-radius: 4px;
   padding: 0 5px;
 }
-.pn-group-entry { color: var(--blue-soft); background: var(--info-tint); }
-.pn-group-suborg { color: var(--purple-soft); background: var(--ai-tint); }
-.pn-group-personal { color: var(--amber-soft); background: var(--warning-tint); }
-.pn-group-enterprise { color: var(--accent-strong); background: var(--accent-tint); }
+.pn-group-entry {
+  color: var(--blue-soft);
+  background: var(--info-tint);
+}
+.pn-group-suborg {
+  color: var(--purple-soft);
+  background: var(--ai-tint);
+}
+.pn-group-personal {
+  color: var(--amber-soft);
+  background: var(--warning-tint);
+}
+.pn-group-enterprise {
+  color: var(--accent-strong);
+  background: var(--accent-tint);
+}
 
 .pn-ring {
   flex-shrink: 0;
@@ -255,7 +271,9 @@
   font-weight: 500;
   color: var(--text-3);
   cursor: pointer;
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 .gts-mode-btn:hover {
   color: var(--text-2);
@@ -334,10 +352,18 @@
 .np-group-badge {
   text-transform: capitalize;
 }
-.np-group-entry { color: var(--blue-soft); }
-.np-group-suborg { color: var(--purple-soft); }
-.np-group-personal { color: var(--amber-soft); }
-.np-group-enterprise { color: var(--accent-strong); }
+.np-group-entry {
+  color: var(--blue-soft);
+}
+.np-group-suborg {
+  color: var(--purple-soft);
+}
+.np-group-personal {
+  color: var(--amber-soft);
+}
+.np-group-enterprise {
+  color: var(--accent-strong);
+}
 
 .np-route {
   margin-top: 3px;
@@ -368,7 +394,9 @@
   justify-content: center;
   border-radius: var(--radius-sm);
   color: var(--text-3);
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 .np-close:hover {
   background: var(--surface-3);
@@ -571,7 +599,9 @@
   border: 1px dashed rgba(167, 139, 250, 0.35);
   background: rgba(167, 139, 250, 0.06);
   border-radius: var(--radius-sm);
-  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
 }
 .np-draft.is-added {
   border-style: solid;

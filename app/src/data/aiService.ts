@@ -1,12 +1,20 @@
 // All AI features route through here. Phase 1: canned mock responses behind
 // simulated latency (AI_MOCK). Swap `mockDelay` bodies for Anthropic API calls later.
 // Every output is a *draft* — UI must let the human edit before saving.
-import { getBugs, getRun, getRunResults, getTestCases, getNode, nodeRisk, nodeStats } from "./dataService";
+import {
+  getBugs,
+  getRun,
+  getRunResults,
+  getTestCases,
+  getNode,
+  nodeRisk,
+  nodeStats,
+} from "./dataService";
 import type { Incident, TestCase } from "../types";
 
 export const AI_MOCK = true;
 
-const mockDelay = <T,>(value: T, ms = 900): Promise<T> =>
+const mockDelay = <T>(value: T, ms = 900): Promise<T> =>
   new Promise((res) => setTimeout(() => res(value), ms));
 
 export interface DraftTestCase {
@@ -20,14 +28,17 @@ export interface DraftTestCase {
 
 export function draftTestCaseFromIncident(incident: Incident): Promise<DraftTestCase> {
   const node = getNode(incident.nodeId);
-  return mockDelay({
-    title: `Regression: ${incident.title}`,
-    nodeId: incident.nodeId,
-    priority: incident.severity === "S1" ? "P1" : incident.severity === "S2" ? "P1" : "P2",
-    preconditions: `Signed in with an account matching the affected customer profile. Navigate: ${node?.via ?? node?.route ?? "surface root"}.`,
-    steps: `Reproduce the reported scenario: ${incident.description}`,
-    expected: `The reported failure no longer occurs; behavior matches spec and no console/network errors are logged.`,
-  }, 1200);
+  return mockDelay(
+    {
+      title: `Regression: ${incident.title}`,
+      nodeId: incident.nodeId,
+      priority: incident.severity === "S1" ? "P1" : incident.severity === "S2" ? "P1" : "P2",
+      preconditions: `Signed in with an account matching the affected customer profile. Navigate: ${node?.via ?? node?.route ?? "surface root"}.`,
+      steps: `Reproduce the reported scenario: ${incident.description}`,
+      expected: `The reported failure no longer occurs; behavior matches spec and no console/network errors are logged.`,
+    },
+    1200,
+  );
 }
 
 export function suggestMissingCases(nodeId: string): Promise<string[]> {
@@ -65,14 +76,22 @@ export function summarizeRun(runId: string): Promise<RunSummary> {
   const flaky = failed
     .filter((f) => getTestCases().find((c) => c.id === f.caseId)?.flaky)
     .map((f) => f.caseId);
-  const headline = failed.length === 0
-    ? `All ${run?.total ?? 0} cases passed. No action needed.`
-    : `${failed.length} failure${failed.length > 1 ? "s" : ""} across ${byNode.size} flow${byNode.size > 1 ? "s" : ""}${flaky.length ? `; ${flaky.length} match known-flaky signatures` : ""}.`;
+  const headline =
+    failed.length === 0
+      ? `All ${run?.total ?? 0} cases passed. No action needed.`
+      : `${failed.length} failure${failed.length > 1 ? "s" : ""} across ${byNode.size} flow${byNode.size > 1 ? "s" : ""}${flaky.length ? `; ${flaky.length} match known-flaky signatures` : ""}.`;
   return mockDelay({ headline, clusters, flaky }, 1000);
 }
 
-export function findDuplicateBugs(title: string): Promise<{ id: string; title: string; score: number }[]> {
-  const words = new Set(title.toLowerCase().split(/\W+/).filter((w) => w.length > 3));
+export function findDuplicateBugs(
+  title: string,
+): Promise<{ id: string; title: string; score: number }[]> {
+  const words = new Set(
+    title
+      .toLowerCase()
+      .split(/\W+/)
+      .filter((w) => w.length > 3),
+  );
   const scored = getBugs()
     .map((b) => {
       const bw = b.title.toLowerCase().split(/\W+/);
@@ -95,13 +114,16 @@ export interface DraftBug {
 
 export function draftBugFromNotes(notes: string): Promise<DraftBug> {
   const firstLine = notes.split(/[.\n]/)[0].trim();
-  return mockDelay({
-    title: firstLine.length > 8 ? firstLine : "Unexpected behavior observed",
-    reproSteps: `1. Navigate to the affected page\n2. ${notes.trim()}\n3. Observe the result`,
-    expected: "The action completes successfully with correct state persisted.",
-    actual: firstLine,
-    severity: /crash|lock|blocked|cannot|500|fail/i.test(notes) ? "S2" : "S3",
-  }, 1100);
+  return mockDelay(
+    {
+      title: firstLine.length > 8 ? firstLine : "Unexpected behavior observed",
+      reproSteps: `1. Navigate to the affected page\n2. ${notes.trim()}\n3. Observe the result`,
+      expected: "The action completes successfully with correct state persisted.",
+      actual: firstLine,
+      severity: /crash|lock|blocked|cannot|500|fail/i.test(notes) ? "S2" : "S3",
+    },
+    1100,
+  );
 }
 
 export interface CoverageGap {
