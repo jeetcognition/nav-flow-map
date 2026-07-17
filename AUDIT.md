@@ -71,15 +71,19 @@ React SPA: Dashboard, Bugs (table + kanban), Incidents, Runs, Automation, GraphM
 
 ### 2.4 God files / functions
 
-| File / function                     | Lines | Jobs                                                                                                     |
-| ----------------------------------- | ----- | -------------------------------------------------------------------------------------------------------- |
-| `index.html`                        | 1,391 | markup + all CSS + all app JS in one file                                                                |
-| `buildGraph()` `index.html:640-757` | 118   | merge edits, visibility, Cytoscape init, layout, edge routing, event wiring, fit                         |
-| `layoutTree()` `:761-846`           | 86    | hierarchy, measuring, 1–3-column trials, placement                                                       |
-| `showPage()` `:962-1031`            | 70    | reveal/highlight node + render panel HTML + wire 6+ handlers                                             |
-| `app/src/pages/Automation.tsx`      | 593   | sessions panel, coverage table, case explorer (filters + pagination + bulk run), 2 AI cards, page layout |
-| `app/src/pages/Bugs.tsx`            | 554   | list page, table view, kanban board, 200-line AI draft modal                                             |
-| `app/src/pages/Incidents.tsx`       | 386   | feed + filters, inline `IncidentCard`, 4-widget breakdown panel                                          |
+| File / function                     | Lines | Jobs                                                                                             |
+| ----------------------------------- | ----- | ------------------------------------------------------------------------------------------------ |
+| `index.html`                        | 1,391 | markup + all CSS + all app JS in one file                                                        |
+| `buildGraph()` `index.html:640-757` | 118   | merge edits, visibility, Cytoscape init, layout, edge routing, event wiring, fit                 |
+| `layoutTree()` `:761-846`           | 86    | hierarchy, measuring, 1–3-column trials, placement                                               |
+| `showPage()` `:962-1031`            | 70    | reveal/highlight node + render panel HTML + wire 6+ handlers                                     |
+| ~~`app/src/pages/Automation.tsx`~~  | 593   | **split** into `components/automation/` (SessionsPanel, CoverageTable, CaseExplorer, AiInsights) |
+| ~~`app/src/pages/Bugs.tsx`~~        | 554   | **split** into `components/bugs/` (BugTable, BugBoard, DraftBugModal)                            |
+| ~~`app/src/pages/Incidents.tsx`~~   | 386   | **split** into `components/incidents/` (IncidentCard, IncidentBreakdown)                         |
+
+Also split under the ~300-line ceiling: `RunDetail.tsx` → `components/runs/`
+(RunSummaryCard, RunResultsTable); `flow/dialogs.tsx` → `flow/dialogs/`;
+`FlowPanel.tsx` → `FlowPanelCaseTable`; `FlowMap.tsx` → `useFlowGraph`.
 
 ### 2.5 Duplication
 

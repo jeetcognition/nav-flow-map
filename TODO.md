@@ -13,7 +13,8 @@ Living list — update when debt is added or paid down. Larger context in
 
 ## Engineering debt
 
-- [ ] Split the remaining god pages: `Automation.tsx` (~620), `Bugs.tsx` (~590), `Incidents.tsx` (~390)
+- [x] Split the god pages under the ~300-line ceiling: `Automation.tsx` → `components/automation/`, `Bugs.tsx` → `components/bugs/`, `Incidents.tsx` → `components/incidents/`, `RunDetail.tsx` → `components/runs/`; and the flow files `flow/dialogs.tsx` → `flow/dialogs/`, `FlowPanel.tsx` → `FlowPanelCaseTable`, `FlowMap.tsx` → `useFlowGraph`
+- [x] Centralize the hard-coded Devin session URL in `lib/config.ts` (`DEVIN_SESSION_BASE_URL` / `devinSessionUrl`)
 - [ ] Consolidate the duplicated filter-bar pattern (Automation / Runs / Incidents)
 - [ ] `badges.tsx` duplicates `lib/bugStatus.ts` status→label/color mapping
 - [ ] Bundle is one ~1.4 MB chunk — dynamic-import the graph (`@xyflow/react`, dagre) and charts (recharts)
