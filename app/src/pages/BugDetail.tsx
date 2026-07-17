@@ -146,7 +146,11 @@ export default function BugDetail() {
                   <div className="attach-row">
                     <Camera size={16} weight="duotone" className="attach-icon" />
                     <input readOnly value={bug.links.jam} aria-label="Jam link" />
-                    <ExternalLink href={bug.links.jam} className="link-chip" aria-label="Open Jam recording">
+                    <ExternalLink
+                      href={bug.links.jam}
+                      className="link-chip"
+                      aria-label="Open Jam recording"
+                    >
                       <ArrowSquareOut size={13} weight="duotone" /> Open
                     </ExternalLink>
                   </div>

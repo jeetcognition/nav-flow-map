@@ -2,12 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowSquareOut, Bug as BugIcon, Check, ClockCounterClockwise,
-  Fire, ListChecks, Path, Play, Plus, Sparkle, X,
+  ArrowSquareOut,
+  Bug as BugIcon,
+  Check,
+  ClockCounterClockwise,
+  Fire,
+  ListChecks,
+  Path,
+  Play,
+  Plus,
+  Sparkle,
+  X,
 } from "@phosphor-icons/react";
 import {
-  addTestCase, getBugs, getIncidents, getRunResults, getRuns, getSessions, getTestCases,
-  newId, triggerDevinSession,
+  addTestCase,
+  getBugs,
+  getIncidents,
+  getRunResults,
+  getRuns,
+  getSessions,
+  getTestCases,
+  newId,
+  triggerDevinSession,
 } from "../../data/dataService";
 import { suggestMissingCases } from "../../data/aiService";
 import { useDataVersion } from "../../hooks/useData";
@@ -152,7 +168,9 @@ function PanelBody({ node, stats, onClose }: Props) {
         <div className="np-head-text">
           <div className="np-title-row">
             <h2 className="np-title">{node.label}</h2>
-            <span className={`badge badge-outline np-group-badge np-group-${node.group}`}>{node.group}</span>
+            <span className={`badge badge-outline np-group-badge np-group-${node.group}`}>
+              {node.group}
+            </span>
           </div>
           <div className="np-route mono">{node.route}</div>
           {node.via && (
@@ -171,7 +189,10 @@ function PanelBody({ node, stats, onClose }: Props) {
         <div className="np-stats-row">
           <span className={`badge ${covCls}`}>{covLabel}</span>
           <span className="np-stat mono">
-            <span className="np-stat-num">{stats.passing}/{stats.total}</span> passing
+            <span className="np-stat-num">
+              {stats.passing}/{stats.total}
+            </span>{" "}
+            passing
           </span>
           <span className="np-stat-ring" title={`${autoPct}% automated`}>
             <ProgressRing
@@ -214,7 +235,9 @@ function PanelBody({ node, stats, onClose }: Props) {
               {cases.map((c) => (
                 <li key={c.id} className="np-row">
                   <span className="np-row-id mono">{c.id}</span>
-                  <span className="np-row-title" title={c.title}>{c.title}</span>
+                  <span className="np-row-title" title={c.title}>
+                    {c.title}
+                  </span>
                   <span className="np-row-badges">
                     <AutomationBadge status={c.automation} />
                     <PriorityBadge priority={c.priority} />

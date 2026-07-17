@@ -1,6 +1,10 @@
 const REPO = "jeetcognition/nav-flow-map";
 const FILE = "navmap-edits.json";
-const ALLOWED_ORIGINS = ["https://jeetcognition.github.io", "http://localhost:8898", "http://localhost:8899"];
+const ALLOWED_ORIGINS = [
+  "https://jeetcognition.github.io",
+  "http://localhost:8898",
+  "http://localhost:8899",
+];
 const MAX_BYTES = 512 * 1024;
 
 function cors(origin) {
@@ -49,14 +53,20 @@ function hasPromotable(edits) {
 }
 
 async function startRewriteSession(env) {
-  const res = await fetch("https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.DEVIN_API_KEY}`,
-      "Content-Type": "application/json",
+  const res = await fetch(
+    "https://api.beta.devin.ai/v3/organizations/org-4de08d443a4847d983a12e5a26c2bab0/sessions",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.DEVIN_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: REWRITE_PROMPT,
+        title: "Rewrite & promote navmap edits to source files",
+      }),
     },
-    body: JSON.stringify({ prompt: REWRITE_PROMPT, title: "Rewrite & promote navmap edits to source files" }),
-  });
+  );
   const data = await res.json().catch(() => ({}));
   if (!res.ok) return { error: "Devin API " + res.status };
   return { session_id: data.session_id, url: data.url };
@@ -69,7 +79,10 @@ async function handleRewrite(env, headers) {
   if (cur.ok) {
     const edits = await cur.json().catch(() => null);
     if (!hasPromotable(edits))
-      return new Response(JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }), { status: 400, headers });
+      return new Response(
+        JSON.stringify({ error: "no edits found — add drafts or edits and Save to repo first" }),
+        { status: 400, headers },
+      );
   }
   const result = await startRewriteSession(env);
   if (result.error) return new Response(JSON.stringify(result), { status: 502, headers });
@@ -81,9 +94,13 @@ export default {
     const origin = request.headers.get("Origin") || "";
     const headers = { ...cors(origin), "Content-Type": "application/json" };
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
-    if (request.method !== "POST") return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
+    if (request.method !== "POST")
+      return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
     if (!ALLOWED_ORIGINS.includes(origin))
-      return new Response(JSON.stringify({ error: "origin not allowed" }), { status: 403, headers });
+      return new Response(JSON.stringify({ error: "origin not allowed" }), {
+        status: 403,
+        headers,
+      });
 
     if (new URL(request.url).pathname === "/rewrite") return handleRewrite(env, headers);
 
@@ -93,10 +110,17 @@ export default {
       if (text.length > MAX_BYTES) throw new Error("payload too large");
       edits = JSON.parse(text);
     } catch (e) {
-      return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), { status: 400, headers });
+      return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), {
+        status: 400,
+        headers,
+      });
     }
     for (const k of ["addedPages", "pageOverrides", "caseOverrides", "addedCases"]) {
-      if (!(k in edits)) return new Response(JSON.stringify({ error: "missing key " + k }), { status: 400, headers });
+      if (!(k in edits))
+        return new Response(JSON.stringify({ error: "missing key " + k }), {
+          status: 400,
+          headers,
+        });
     }
 
     const api = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
@@ -118,7 +142,10 @@ export default {
     const res = await fetch(api, { method: "PUT", headers: gh, body: JSON.stringify(body) });
     if (!res.ok) {
       const detail = (await res.text()).slice(0, 300);
-      return new Response(JSON.stringify({ error: "GitHub API " + res.status, detail }), { status: 502, headers });
+      return new Response(JSON.stringify({ error: "GitHub API " + res.status, detail }), {
+        status: 502,
+        headers,
+      });
     }
     const out = { ok: true };
     if (hasPromotable(edits)) out.rewrite = await startRewriteSession(env);

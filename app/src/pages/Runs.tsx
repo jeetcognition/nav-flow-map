@@ -62,7 +62,7 @@ export default function Runs() {
     const passedCases = runs.reduce((s, r) => s + r.passed, 0);
     const latest = runs.reduce<Run | null>(
       (acc, r) => (acc === null || r.startedAt > acc.startedAt ? r : acc),
-      null
+      null,
     );
     const avgSec = runs.length
       ? Math.round(runs.reduce((s, r) => s + r.durationSec, 0) / runs.length)
@@ -105,7 +105,9 @@ export default function Runs() {
           <label htmlFor="f-suite">Suite</label>
           <select id="f-suite" value={suite} onChange={(e) => setSuite(e.target.value)}>
             {SUITES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -113,7 +115,9 @@ export default function Runs() {
           <label htmlFor="f-env">Env</label>
           <select id="f-env" value={env} onChange={(e) => setEnv(e.target.value)}>
             {ENVS.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -121,7 +125,9 @@ export default function Runs() {
           <label htmlFor="f-status">Status</label>
           <select id="f-status" value={status} onChange={(e) => setStatus(e.target.value)}>
             {STATUSES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -129,7 +135,9 @@ export default function Runs() {
           <label htmlFor="f-trigger">Trigger</label>
           <select id="f-trigger" value={trigger} onChange={(e) => setTrigger(e.target.value)}>
             {TRIGGERS.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -137,7 +145,9 @@ export default function Runs() {
           <label htmlFor="f-range">Date range</label>
           <select id="f-range" value={range} onChange={(e) => setRange(e.target.value)}>
             {RANGES.map((r) => (
-              <option key={r.value} value={r.value}>{r.label}</option>
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
             ))}
           </select>
         </div>

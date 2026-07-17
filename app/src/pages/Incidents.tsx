@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  ArrowsClockwise,
-  Bug,
-  CaretDown,
-  CheckCircle,
-  Fire,
-  Sparkle,
-} from "@phosphor-icons/react";
+import { ArrowsClockwise, Bug, CaretDown, CheckCircle, Fire, Sparkle } from "@phosphor-icons/react";
 import {
   Bar,
   BarChart,
@@ -153,7 +146,10 @@ function IncidentCard({
         </button>
         <OverrideDropdown incident={incident} />
         {incident.linkedCaseId && (
-          <Link className="link-chip link-chip-green" to={`/automation?case=${incident.linkedCaseId}`}>
+          <Link
+            className="link-chip link-chip-green"
+            to={`/automation?case=${incident.linkedCaseId}`}
+          >
             <CheckCircle size={13} weight="duotone" />
             testcase linked <span className="mono">{incident.linkedCaseId}</span>
           </Link>
@@ -238,7 +234,10 @@ export default function Incidents() {
             <span className="num">{conversionPct}%</span>
           </div>
           <div className="progress-track">
-            <div className="progress-fill" style={{ width: `${conversionPct}%`, background: "var(--ai)" }} />
+            <div
+              className="progress-fill"
+              style={{ width: `${conversionPct}%`, background: "var(--ai)" }}
+            />
           </div>
         </div>
       </motion.div>
@@ -339,7 +338,12 @@ export default function Incidents() {
                   <BarChart data={bySeverity} margin={{ top: 8, right: 4, left: -28, bottom: 0 }}>
                     <CartesianGrid stroke="var(--grid-line)" vertical={false} />
                     <XAxis dataKey="sev" tick={AXIS_TICK} axisLine={false} tickLine={false} />
-                    <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <YAxis
+                      tick={AXIS_TICK}
+                      axisLine={false}
+                      tickLine={false}
+                      allowDecimals={false}
+                    />
                     <Tooltip
                       contentStyle={CHART_TOOLTIP}
                       itemStyle={{ color: "var(--text)" }}

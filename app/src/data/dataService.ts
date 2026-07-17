@@ -9,8 +9,19 @@ import incidentsJson from "./fixtures/incidents.json";
 import sessionsJson from "./fixtures/sessions.json";
 import { SURFACES, USERS } from "./fixtures/static";
 import type {
-  Bug, CaseResult, DevinSession, Incident, IncidentCategory, NavNode,
-  NodeStats, Run, SessionStatus, Surface, SurfaceId, TestCase, User,
+  Bug,
+  CaseResult,
+  DevinSession,
+  Incident,
+  IncidentCategory,
+  NavNode,
+  NodeStats,
+  Run,
+  SessionStatus,
+  Surface,
+  SurfaceId,
+  TestCase,
+  User,
 } from "../types";
 
 type Listener = () => void;
@@ -41,14 +52,16 @@ export const getUser = (id: string): User | undefined => USERS.find((u) => u.id 
 export const getNodes = (): NavNode[] => store.nodes;
 export const getNode = (id: string): NavNode | undefined => store.nodes.find((n) => n.id === id);
 export const getTestCases = (): TestCase[] => store.testcases;
-export const getTestCase = (id: string): TestCase | undefined => store.testcases.find((c) => c.id === id);
+export const getTestCase = (id: string): TestCase | undefined =>
+  store.testcases.find((c) => c.id === id);
 export const getBugs = (): Bug[] => store.bugs;
 export const getBug = (id: string): Bug | undefined => store.bugs.find((b) => b.id === id);
 export const getRuns = (): Run[] => store.runs;
 export const getRun = (id: string): Run | undefined => store.runs.find((r) => r.id === id);
 export const getRunResults = (runId: string): CaseResult[] => store.runResults[runId] ?? [];
 export const getIncidents = (): Incident[] => store.incidents;
-export const getIncident = (id: string): Incident | undefined => store.incidents.find((i) => i.id === id);
+export const getIncident = (id: string): Incident | undefined =>
+  store.incidents.find((i) => i.id === id);
 export const getSessions = (): DevinSession[] => store.sessions;
 
 export const incidentCategory = (i: Incident): IncidentCategory => i.humanCategory ?? i.ai.category;
@@ -86,7 +99,8 @@ function latestResults(): Map<string, CaseResult> {
 export function nodeStats(nodeId: string): NodeStats {
   const cases = store.testcases.filter((c) => c.nodeId === nodeId);
   const latest = latestResults();
-  let passing = 0, failing = 0;
+  let passing = 0,
+    failing = 0;
   for (const c of cases) {
     const r = latest.get(c.id);
     if (r?.status === "passed") passing++;
@@ -94,9 +108,11 @@ export function nodeStats(nodeId: string): NodeStats {
   }
   const automated = cases.filter((c) => c.automation === "automated").length;
   const openBugs = store.bugs.filter(
-    (b) => b.nodeId === nodeId && b.status !== "closed" && b.status !== "verified"
+    (b) => b.nodeId === nodeId && b.status !== "closed" && b.status !== "verified",
   ).length;
-  const incidents = store.incidents.filter((i) => i.nodeId === nodeId && i.status !== "resolved").length;
+  const incidents = store.incidents.filter(
+    (i) => i.nodeId === nodeId && i.status !== "resolved",
+  ).length;
   const ratio = cases.length ? automated / cases.length : 0;
   return {
     nodeId,
@@ -145,12 +161,18 @@ export function addTestCase(tc: TestCase) {
 
 export function linkIncidentToCase(incidentId: string, caseId: string) {
   const inc = store.incidents.find((i) => i.id === incidentId);
-  if (inc) { inc.linkedCaseId = caseId; notify(); }
+  if (inc) {
+    inc.linkedCaseId = caseId;
+    notify();
+  }
 }
 
 export function updateBugStatus(id: string, status: Bug["status"]) {
   const bug = store.bugs.find((b) => b.id === id);
-  if (bug) { bug.status = status; notify(); }
+  if (bug) {
+    bug.status = status;
+    notify();
+  }
 }
 
 export function addBug(bug: Bug) {
@@ -163,14 +185,21 @@ let sessionCounter = 100;
 export function triggerDevinSession(scope: string, surfaceId: SurfaceId): DevinSession {
   const id = `dvn-live-${++sessionCounter}`;
   const session: DevinSession = {
-    id, runId: null, surfaceId, scope, status: "queued",
+    id,
+    runId: null,
+    surfaceId,
+    scope,
+    status: "queued",
     startedAt: new Date().toISOString(),
     url: `https://app.devin.ai/sessions/${id}`,
   };
   store.sessions.unshift(session);
   notify();
   const advance = (status: SessionStatus, delay: number) =>
-    setTimeout(() => { session.status = status; notify(); }, delay);
+    setTimeout(() => {
+      session.status = status;
+      notify();
+    }, delay);
   advance("running", 2500);
   advance("done", 11000);
   return session;

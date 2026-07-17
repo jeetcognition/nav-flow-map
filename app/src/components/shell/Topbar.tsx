@@ -1,5 +1,12 @@
 import { useEffect, useState, type CSSProperties } from "react";
-import { CaretDown, MagnifyingGlass, Check, Monitor, Desktop, Terminal } from "@phosphor-icons/react";
+import {
+  CaretDown,
+  MagnifyingGlass,
+  Check,
+  Monitor,
+  Desktop,
+  Terminal,
+} from "@phosphor-icons/react";
 import { useApp } from "../../hooks/useApp";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getSurfaces, getUsers } from "../../data/dataService";
@@ -68,7 +75,9 @@ function UserMenu() {
         aria-expanded={open}
         aria-label={`Current user: ${user.name}. Switch user`}
       >
-        <span className="avatar" style={{ background: user.color }}>{user.initials}</span>
+        <span className="avatar" style={{ background: user.color }}>
+          {user.initials}
+        </span>
       </button>
       {open && (
         <div className="dropdown-menu right" role="listbox">
@@ -84,7 +93,9 @@ function UserMenu() {
                 setOpen(false);
               }}
             >
-              <span className="avatar sm" style={{ background: u.color }}>{u.initials}</span>
+              <span className="avatar sm" style={{ background: u.color }}>
+                {u.initials}
+              </span>
               <span>
                 {u.name}
                 <span className="dropdown-sub">{u.role}</span>
@@ -114,7 +125,11 @@ export function Topbar() {
   return (
     <header className="topbar">
       <SurfaceSwitcher />
-      <button className="search-trigger" onClick={() => setSearchOpen(true)} aria-label="Open global search">
+      <button
+        className="search-trigger"
+        onClick={() => setSearchOpen(true)}
+        aria-label="Open global search"
+      >
         <MagnifyingGlass size={15} />
         <span>Search testcases, bugs, incidents…</span>
         <kbd className="mono">⌘K</kbd>

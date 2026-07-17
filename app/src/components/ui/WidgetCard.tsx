@@ -15,7 +15,15 @@ interface Props {
 }
 
 /** Standard section card: small-caps title, optional trailing link, staggered entrance. */
-export function WidgetCard({ title, icon, linkTo, linkLabel = "View all", index = 0, className = "", children }: Props) {
+export function WidgetCard({
+  title,
+  icon,
+  linkTo,
+  linkLabel = "View all",
+  index = 0,
+  className = "",
+  children,
+}: Props) {
   return (
     <motion.section className={`card widget-card ${className}`} {...fadeUp(index * 0.06)}>
       <div className="widget-card-head">

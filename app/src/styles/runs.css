@@ -67,10 +67,18 @@
   gap: 6px;
   white-space: nowrap;
 }
-.run-pass { color: var(--accent-strong); }
-.run-fail { color: var(--red-soft); }
-.run-skip { color: var(--text-3); }
-.run-result-sep { color: var(--text-3); }
+.run-pass {
+  color: var(--accent-strong);
+}
+.run-fail {
+  color: var(--red-soft);
+}
+.run-skip {
+  color: var(--text-3);
+}
+.run-result-sep {
+  color: var(--text-3);
+}
 
 .run-passrate {
   min-width: 108px;
@@ -107,7 +115,10 @@
   font-size: var(--fs-sm);
   margin-top: var(--sp-1);
 }
-.run-subline .sep { color: var(--text-3); opacity: 0.6; }
+.run-subline .sep {
+  color: var(--text-3);
+  opacity: 0.6;
+}
 
 .run-head-actions {
   display: flex;
@@ -126,7 +137,8 @@
   border-radius: var(--radius-sm);
   color: var(--text-2);
   font-size: var(--fs-sm);
-  transition: border-color var(--dur-fast) var(--ease-out),
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
     background var(--dur-fast) var(--ease-out);
   cursor: pointer;
 }

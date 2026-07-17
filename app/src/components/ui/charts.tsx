@@ -2,8 +2,16 @@
 // axes, and bucketing math stay identical across pages.
 import { useId } from "react";
 import {
-  Area, AreaChart, CartesianGrid, Cell, Pie, PieChart,
-  ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 import { bucketByWeek } from "../../lib/dates";
 import { CATEGORIES, CATEGORY_META } from "../../lib/categoryMeta";
@@ -16,7 +24,13 @@ export function ChartTooltip() {
 }
 
 /** Incidents-by-category donut with center total and side legend. */
-export function CategoryDonut({ incidents, height = 172 }: { incidents: Incident[]; height?: number }) {
+export function CategoryDonut({
+  incidents,
+  height = 172,
+}: {
+  incidents: Incident[];
+  height?: number;
+}) {
   const data = CATEGORIES.map((cat) => ({
     name: CATEGORY_META[cat].label,
     color: CATEGORY_META[cat].color,
@@ -28,7 +42,15 @@ export function CategoryDonut({ incidents, height = 172 }: { incidents: Incident
       <div className="chart-donut-wrap">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="name" innerRadius="66%" outerRadius="95%" paddingAngle={2} stroke="none">
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              innerRadius="66%"
+              outerRadius="95%"
+              paddingAngle={2}
+              stroke="none"
+            >
               {data.map((d) => (
                 <Cell key={d.name} fill={d.color} />
               ))}
@@ -81,7 +103,13 @@ export function TrendAreaChart({
           <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
           <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
           <ChartTooltip />
-          <Area type="monotone" dataKey="count" stroke={color} strokeWidth={2} fill={`url(#${gradientId})`} />
+          <Area
+            type="monotone"
+            dataKey="count"
+            stroke={color}
+            strokeWidth={2}
+            fill={`url(#${gradientId})`}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

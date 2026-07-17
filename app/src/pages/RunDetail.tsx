@@ -97,7 +97,7 @@ export default function RunDetail() {
 
   const results = getRunResults(run.id);
   const sorted = [...results].sort(
-    (a, b) => (a.status === "failed" ? 0 : 1) - (b.status === "failed" ? 0 : 1)
+    (a, b) => (a.status === "failed" ? 0 : 1) - (b.status === "failed" ? 0 : 1),
   );
   const session = run.devinSessionId
     ? getSessions().find((s) => s.id === run.devinSessionId)
@@ -148,7 +148,10 @@ export default function RunDetail() {
           </div>
           <div className="run-head-actions">
             {run.devinSessionId && (
-              <ExternalLink className="devin-pill" href={`https://app.devin.ai/sessions/${run.devinSessionId}`}>
+              <ExternalLink
+                className="devin-pill"
+                href={`https://app.devin.ai/sessions/${run.devinSessionId}`}
+              >
                 <Robot size={16} weight="duotone" />
                 <span className="mono">{run.devinSessionId}</span>
                 {session && <SessionBadge status={session.status} />}
@@ -189,7 +192,9 @@ export default function RunDetail() {
                 <span className="ai-cluster-cause">{cluster.cause}</span>
                 <span className="ai-chip-row">
                   {cluster.caseIds.map((id) => (
-                    <span className="ai-chip" key={id}>{id}</span>
+                    <span className="ai-chip" key={id}>
+                      {id}
+                    </span>
                   ))}
                 </span>
               </div>
@@ -200,7 +205,9 @@ export default function RunDetail() {
                 <span>Known-flaky signatures:</span>
                 <span className="ai-chip-row">
                   {summary.flaky.map((id) => (
-                    <span className="ai-chip" key={id}>{id}</span>
+                    <span className="ai-chip" key={id}>
+                      {id}
+                    </span>
                   ))}
                 </span>
               </div>
@@ -257,10 +264,7 @@ export default function RunDetail() {
                         </span>
                       </td>
                       <td>
-                        <Link
-                          to={`/map?node=${res.nodeId}`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <Link to={`/map?node=${res.nodeId}`} onClick={(e) => e.stopPropagation()}>
                           {node?.label ?? res.nodeId}
                         </Link>
                       </td>

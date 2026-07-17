@@ -54,7 +54,7 @@ export default function Bugs() {
     (b) =>
       (severity === "all" || b.severity === severity) &&
       (status === "all" || b.status === status) &&
-      (q === "" || b.title.toLowerCase().includes(q) || b.id.toLowerCase().includes(q))
+      (q === "" || b.title.toLowerCase().includes(q) || b.id.toLowerCase().includes(q)),
   );
 
   return (
@@ -90,16 +90,24 @@ export default function Bugs() {
       </motion.div>
 
       <motion.div className="bugs-filters" {...fadeUp(0.05)}>
-        <select value={severity} onChange={(e) => setSeverity(e.target.value)} aria-label="Severity">
+        <select
+          value={severity}
+          onChange={(e) => setSeverity(e.target.value)}
+          aria-label="Severity"
+        >
           <option value="all">All severities</option>
           {SEVERITIES.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
         <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
           <option value="all">All statuses</option>
           {BUG_STATUS_ORDER.map((s) => (
-            <option key={s} value={s}>{BUG_STATUS_LABEL[s]}</option>
+            <option key={s} value={s}>
+              {BUG_STATUS_LABEL[s]}
+            </option>
           ))}
         </select>
         <div className="bugs-search">
@@ -175,8 +183,12 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
               >
                 <td className="mono">{b.id}</td>
                 <td>{b.title}</td>
-                <td><SeverityBadge severity={b.severity} /></td>
-                <td><BugStatusBadge status={b.status} /></td>
+                <td>
+                  <SeverityBadge severity={b.severity} />
+                </td>
+                <td>
+                  <BugStatusBadge status={b.status} />
+                </td>
                 <td>
                   <Link to={`/map?node=${b.nodeId}`} onClick={(e) => e.stopPropagation()}>
                     {node?.label ?? b.nodeId}
@@ -188,12 +200,20 @@ function BugTable({ bugs }: { bugs: Bug[] }) {
                 <td>
                   <span className="bug-links-cell">
                     {b.links.linear && (
-                      <ExternalLink className="link-chip" href={b.links.linear} onClick={(e) => e.stopPropagation()}>
+                      <ExternalLink
+                        className="link-chip"
+                        href={b.links.linear}
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <LinkSimple size={12} weight="duotone" /> Linear
                       </ExternalLink>
                     )}
                     {b.links.jam && (
-                      <ExternalLink className="link-chip" href={b.links.jam} onClick={(e) => e.stopPropagation()}>
+                      <ExternalLink
+                        className="link-chip"
+                        href={b.links.jam}
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <Camera size={12} weight="duotone" /> Jam
                       </ExternalLink>
                     )}
@@ -494,7 +514,9 @@ function DraftBugModal({ open, onClose }: { open: boolean; onClose: () => void }
                   onChange={(e) => set("severity", e.target.value as Severity)}
                 >
                   {SEVERITIES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -506,7 +528,9 @@ function DraftBugModal({ open, onClose }: { open: boolean; onClose: () => void }
                   onChange={(e) => set("nodeId", e.target.value)}
                 >
                   {nodes.map((n) => (
-                    <option key={n.id} value={n.id}>{n.label}</option>
+                    <option key={n.id} value={n.id}>
+                      {n.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -541,7 +565,9 @@ function DraftBugModal({ open, onClose }: { open: boolean; onClose: () => void }
               />
             </div>
             <div className="draft-actions">
-              <button className="btn" onClick={close}>Cancel</button>
+              <button className="btn" onClick={close}>
+                Cancel
+              </button>
               <button className="btn btn-primary" onClick={save} disabled={!form.title.trim()}>
                 Save bug
               </button>

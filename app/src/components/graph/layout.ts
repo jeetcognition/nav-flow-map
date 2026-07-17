@@ -1,5 +1,5 @@
 // dagre-driven layout + heat coloring helpers for the coverage map
-import dagre from "@dagrejs/dagre";
+import { graphlib, layout } from "@dagrejs/dagre";
 import { nodeRisk } from "../../data/dataService";
 import type { NavNode, NodeStats } from "../../types";
 
@@ -15,7 +15,7 @@ export interface XY {
 
 /** dagre top-bottom tree layout; returns top-left position per node id */
 export function layoutNodes(navNodes: NavNode[]): Map<string, XY> {
-  const g = new dagre.graphlib.Graph();
+  const g = new graphlib.Graph();
   g.setGraph({ rankdir: "TB", ranksep: 70, nodesep: 30 });
   g.setDefaultEdgeLabel(() => ({}));
 
@@ -24,7 +24,7 @@ export function layoutNodes(navNodes: NavNode[]): Map<string, XY> {
     if (n.parent && navNodes.some((p) => p.id === n.parent)) g.setEdge(n.parent, n.id);
   }
 
-  dagre.layout(g);
+  layout(g);
 
   const positions = new Map<string, XY>();
   for (const n of navNodes) {

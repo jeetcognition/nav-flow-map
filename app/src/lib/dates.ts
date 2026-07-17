@@ -14,10 +14,7 @@ export interface WeekBucket {
 
 /** Buckets items into the trailing `weeks` ISO weeks (oldest first). */
 export function bucketByWeek(items: { createdAt: string }[], weeks = 5): WeekBucket[] {
-  const newest = items.reduce(
-    (max, i) => Math.max(max, new Date(i.createdAt).getTime()),
-    0
-  );
+  const newest = items.reduce((max, i) => Math.max(max, new Date(i.createdAt).getTime()), 0);
   const anchor = weekStart(newest ? new Date(newest) : new Date());
   const buckets: { start: number; label: string; count: number }[] = [];
   for (let w = weeks - 1; w >= 0; w--) {

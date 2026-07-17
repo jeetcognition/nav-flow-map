@@ -15,7 +15,11 @@ export function Disclosure({
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="disclosure">
-      <button className="disclosure-trigger" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <button
+        className="disclosure-trigger"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+      >
         <CaretRight size={14} className={`disclosure-caret${open ? " open" : ""}`} />
         {label}
       </button>

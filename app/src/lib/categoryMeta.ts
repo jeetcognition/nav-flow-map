@@ -8,7 +8,10 @@ export const CATEGORIES: IncidentCategory[] = [
   "unknown",
 ];
 
-export const CATEGORY_META: Record<IncidentCategory, { label: string; cls: string; color: string }> = {
+export const CATEGORY_META: Record<
+  IncidentCategory,
+  { label: string; cls: string; color: string }
+> = {
   "app-bug": { label: "App Bug", cls: "badge-red", color: "var(--danger)" },
   "customer-doubt": { label: "Customer Doubt", cls: "badge-blue", color: "var(--info)" },
   "config-issue": { label: "Config Issue", cls: "badge-amber", color: "var(--warning)" },
