@@ -1,0 +1,2816 @@
+{
+ "RUN-1040": [
+  {
+   "caseId": "REVUI-SMK01",
+   "nodeId": "review",
+   "status": "failed",
+   "durationSec": 43
+  },
+  {
+   "caseId": "KNOW-SMK01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 104
+  },
+  {
+   "caseId": "KNOW-SAN01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 223
+  },
+  {
+   "caseId": "KNOW-SAN03",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 62
+  },
+  {
+   "caseId": "KNOW-SAN05",
+   "nodeId": "e-knowledge",
+   "status": "failed",
+   "durationSec": 37
+  },
+  {
+   "caseId": "KNOW-SAN07",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 214
+  },
+  {
+   "caseId": "KNOW-SAN09",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 147
+  },
+  {
+   "caseId": "PLAY-SAN01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 161
+  },
+  {
+   "caseId": "PLAY-SAN02",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 215
+  },
+  {
+   "caseId": "ENV-SAN01",
+   "nodeId": "e-env",
+   "status": "failed",
+   "durationSec": 65
+  },
+  {
+   "caseId": "MEMB-SAN01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 176
+  },
+  {
+   "caseId": "MEMB-SAN03",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 119
+  },
+  {
+   "caseId": "ROLE-SAN02",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 220
+  },
+  {
+   "caseId": "ORG-SAN02",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 175
+  },
+  {
+   "caseId": "ORG-SAN03",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 222
+  },
+  {
+   "caseId": "ORGCRT-SAN02",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 37
+  },
+  {
+   "caseId": "REPO-SAN01",
+   "nodeId": "e-repos",
+   "status": "passed",
+   "durationSec": 162
+  },
+  {
+   "caseId": "REPO-SAN02",
+   "nodeId": "e-repos",
+   "status": "passed",
+   "durationSec": 73
+  },
+  {
+   "caseId": "GUARD-SAN01",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 220
+  },
+  {
+   "caseId": "SECM-SMK01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 105
+  },
+  {
+   "caseId": "SKILL-SAN02",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 145
+  },
+  {
+   "caseId": "SUB-SAN02",
+   "nodeId": "suborg",
+   "status": "passed",
+   "durationSec": 177
+  },
+  {
+   "caseId": "SUB-AU-SMK01",
+   "nodeId": "automations",
+   "status": "failed",
+   "durationSec": 42
+  },
+  {
+   "caseId": "SUB-IM-SAN01",
+   "nodeId": "logomenu",
+   "status": "passed",
+   "durationSec": 172
+  },
+  {
+   "caseId": "AUTO-SMK01",
+   "nodeId": "automations",
+   "status": "failed",
+   "durationSec": 184
+  },
+  {
+   "caseId": "SUP-SAN03",
+   "nodeId": "support",
+   "status": "passed",
+   "durationSec": 73
+  },
+  {
+   "caseId": "AUTH-SAN01",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 166
+  },
+  {
+   "caseId": "AUTH-SAN02",
+   "nodeId": "auth",
+   "status": "failed",
+   "durationSec": 156
+  },
+  {
+   "caseId": "AUTH-SAN03",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 204
+  }
+ ],
+ "RUN-1033": [
+  {
+   "caseId": "PREF-E2E01",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 61
+  },
+  {
+   "caseId": "STOOL-E2E01",
+   "nodeId": "composer",
+   "status": "skipped",
+   "durationSec": 174
+  },
+  {
+   "caseId": "DEVIN-E2E01",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 149
+  },
+  {
+   "caseId": "REVUI-E2E01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 191
+  },
+  {
+   "caseId": "KNOW-REG07",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 151
+  },
+  {
+   "caseId": "KNOW-E2E01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 111
+  },
+  {
+   "caseId": "PLAY-REG01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 32
+  },
+  {
+   "caseId": "PLAY-REG03",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 173
+  },
+  {
+   "caseId": "PLAY-REG11",
+   "nodeId": "e-playbooks",
+   "status": "failed",
+   "durationSec": 179
+  },
+  {
+   "caseId": "ENV-REG01",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 58
+  },
+  {
+   "caseId": "ENV-REG03",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 101
+  },
+  {
+   "caseId": "ENV-REG04",
+   "nodeId": "e-env",
+   "status": "failed",
+   "durationSec": 105
+  },
+  {
+   "caseId": "MEMB-REG01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 184
+  },
+  {
+   "caseId": "MEMB-REG05",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 173
+  },
+  {
+   "caseId": "MEMB-REG07",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 208
+  },
+  {
+   "caseId": "ROLE-REG01",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 159
+  },
+  {
+   "caseId": "ROLE-REG02",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 193
+  },
+  {
+   "caseId": "ROLE-REG04",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 218
+  },
+  {
+   "caseId": "ROLE-REG06",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 182
+  },
+  {
+   "caseId": "ROLE-REG07",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 86
+  },
+  {
+   "caseId": "ROLE-REG08",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 147
+  },
+  {
+   "caseId": "ORG-REG01",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 102
+  },
+  {
+   "caseId": "ORG-REG03",
+   "nodeId": "e-orgs",
+   "status": "failed",
+   "durationSec": 64
+  },
+  {
+   "caseId": "ORG-REG04",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 210
+  },
+  {
+   "caseId": "ORG-REG06",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 47
+  },
+  {
+   "caseId": "ORG-REG07",
+   "nodeId": "e-orgs",
+   "status": "failed",
+   "durationSec": 203
+  },
+  {
+   "caseId": "ORG-REG09",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 157
+  },
+  {
+   "caseId": "ORG-REG10",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 28
+  },
+  {
+   "caseId": "ORG-REG12",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 158
+  },
+  {
+   "caseId": "ANAL-REG04",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 191
+  },
+  {
+   "caseId": "ANAL-REG06",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 220
+  },
+  {
+   "caseId": "SECM-REG01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 237
+  },
+  {
+   "caseId": "SCAN-E2E01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 115
+  },
+  {
+   "caseId": "SKILL-REG02",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 199
+  },
+  {
+   "caseId": "SKILL-REG04",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 22
+  },
+  {
+   "caseId": "SUB-AU-REG01",
+   "nodeId": "automations",
+   "status": "skipped",
+   "durationSec": 177
+  },
+  {
+   "caseId": "SUB-AU-REG02",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 48
+  },
+  {
+   "caseId": "SUB-OS-REG01",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 237
+  },
+  {
+   "caseId": "SUB-OS-REG02",
+   "nodeId": "s-settings",
+   "status": "failed",
+   "durationSec": 35
+  },
+  {
+   "caseId": "SUB-OS-REG04",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 180
+  },
+  {
+   "caseId": "SUB-OS-E2E01",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 30
+  },
+  {
+   "caseId": "SCHED-REG01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 99
+  },
+  {
+   "caseId": "SCHED-E2E01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 171
+  },
+  {
+   "caseId": "SUP-REG01",
+   "nodeId": "support",
+   "status": "failed",
+   "durationSec": 53
+  }
+ ],
+ "RUN-1026": [
+  {
+   "caseId": "REV-SMK01",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 98
+  },
+  {
+   "caseId": "PLAY-SAN01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 81
+  },
+  {
+   "caseId": "PLAY-SAN02",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 44
+  },
+  {
+   "caseId": "ENV-SMK01",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 103
+  },
+  {
+   "caseId": "ROLE-SAN02",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 225
+  },
+  {
+   "caseId": "ORGCRT-SAN02",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 80
+  },
+  {
+   "caseId": "ECON-SAN02",
+   "nodeId": "e-conn",
+   "status": "passed",
+   "durationSec": 207
+  },
+  {
+   "caseId": "REPO-SMK01",
+   "nodeId": "e-repos",
+   "status": "passed",
+   "durationSec": 48
+  },
+  {
+   "caseId": "API-SAN01",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 135
+  },
+  {
+   "caseId": "API-SAN02",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 44
+  },
+  {
+   "caseId": "SKILL-SMK01",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 225
+  },
+  {
+   "caseId": "SUB-SAN02",
+   "nodeId": "suborg",
+   "status": "passed",
+   "durationSec": 93
+  },
+  {
+   "caseId": "SUB-RV-SMK01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 201
+  },
+  {
+   "caseId": "AUTO-SMK01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 120
+  },
+  {
+   "caseId": "SCHED-SAN01",
+   "nodeId": "automations",
+   "status": "skipped",
+   "durationSec": 41
+  },
+  {
+   "caseId": "LOGIN-SAN01",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 51
+  },
+  {
+   "caseId": "LOGIN-SAN02",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 70
+  },
+  {
+   "caseId": "ORGSEL-SAN01",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 75
+  },
+  {
+   "caseId": "ORGSEL-SAN02",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 82
+  },
+  {
+   "caseId": "ORGSEL-SAN04",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 155
+  },
+  {
+   "caseId": "ORGSEL-SAN06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 96
+  },
+  {
+   "caseId": "ENTSET-SAN04",
+   "nodeId": "ent",
+   "status": "failed",
+   "durationSec": 174
+  },
+  {
+   "caseId": "ENTSET-SAN06",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 136
+  },
+  {
+   "caseId": "SECRET-SAN02",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 81
+  }
+ ],
+ "RUN-1019": [
+  {
+   "caseId": "PREF-REG04",
+   "nodeId": "prefs",
+   "status": "failed",
+   "durationSec": 41
+  },
+  {
+   "caseId": "PREF-E2E01",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 76
+  },
+  {
+   "caseId": "GEN-REG04",
+   "nodeId": "e-general",
+   "status": "passed",
+   "durationSec": 87
+  },
+  {
+   "caseId": "DEVIN-E2E01",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 84
+  },
+  {
+   "caseId": "REV-REG03",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 165
+  },
+  {
+   "caseId": "REV-REG05",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 113
+  },
+  {
+   "caseId": "REV-E2E01",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 87
+  },
+  {
+   "caseId": "REVUI-E2E01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 71
+  },
+  {
+   "caseId": "KNOW-E2E01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 89
+  },
+  {
+   "caseId": "MEMB-REG01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 98
+  },
+  {
+   "caseId": "MEMB-REG05",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 87
+  },
+  {
+   "caseId": "MEMB-REG07",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 122
+  },
+  {
+   "caseId": "IDP-REG01",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 126
+  },
+  {
+   "caseId": "IDP-REG02",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 192
+  },
+  {
+   "caseId": "ORG-REG10",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 189
+  },
+  {
+   "caseId": "ORG-REG12",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 51
+  },
+  {
+   "caseId": "ORGCRT-REG02",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 215
+  },
+  {
+   "caseId": "ORGCRT-REG06",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 55
+  },
+  {
+   "caseId": "ORGCRT-REG08",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 221
+  },
+  {
+   "caseId": "ANAL-REG04",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 110
+  },
+  {
+   "caseId": "ANAL-REG06",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 89
+  },
+  {
+   "caseId": "ECON-MCP-REG02",
+   "nodeId": "e-conn",
+   "status": "passed",
+   "durationSec": 119
+  },
+  {
+   "caseId": "SCAN-E2E01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 40
+  },
+  {
+   "caseId": "API-REG01",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 127
+  },
+  {
+   "caseId": "API-REG02",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 67
+  },
+  {
+   "caseId": "API-REG05",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 46
+  },
+  {
+   "caseId": "INFRA-REG02",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 184
+  },
+  {
+   "caseId": "INFRA-REG03",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 187
+  },
+  {
+   "caseId": "SUB-AU-REG02",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 90
+  },
+  {
+   "caseId": "SUB-AU-E2E01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 72
+  },
+  {
+   "caseId": "SUB-OS-REG01",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 62
+  },
+  {
+   "caseId": "SUB-OS-REG02",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 151
+  },
+  {
+   "caseId": "SUB-OS-REG04",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 224
+  },
+  {
+   "caseId": "SCHED-REG01",
+   "nodeId": "automations",
+   "status": "failed",
+   "durationSec": 179
+  },
+  {
+   "caseId": "SCHED-E2E01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 73
+  },
+  {
+   "caseId": "LOGIN-REG01",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 45
+  },
+  {
+   "caseId": "LOGIN-REG02",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 231
+  },
+  {
+   "caseId": "SUP-REG01",
+   "nodeId": "support",
+   "status": "passed",
+   "durationSec": 22
+  },
+  {
+   "caseId": "ENTSET-REG08",
+   "nodeId": "ent",
+   "status": "failed",
+   "durationSec": 131
+  },
+  {
+   "caseId": "SECRET-REG04",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 43
+  },
+  {
+   "caseId": "SECRET-REG07",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 112
+  },
+  {
+   "caseId": "SECRET-REG08",
+   "nodeId": "s-secrets",
+   "status": "failed",
+   "durationSec": 173
+  },
+  {
+   "caseId": "SECRET-REG09",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 158
+  },
+  {
+   "caseId": "SECRET-REG11",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 236
+  },
+  {
+   "caseId": "SECRET-REG12",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 205
+  }
+ ],
+ "RUN-1012": [
+  {
+   "caseId": "STOOL-SAN02",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 75
+  },
+  {
+   "caseId": "REVUI-SMK01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 169
+  },
+  {
+   "caseId": "KNOW-SMK01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 185
+  },
+  {
+   "caseId": "KNOW-SAN01",
+   "nodeId": "e-knowledge",
+   "status": "failed",
+   "durationSec": 64
+  },
+  {
+   "caseId": "KNOW-SAN03",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 133
+  },
+  {
+   "caseId": "KNOW-SAN05",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 59
+  },
+  {
+   "caseId": "KNOW-SAN07",
+   "nodeId": "e-knowledge",
+   "status": "failed",
+   "durationSec": 21
+  },
+  {
+   "caseId": "KNOW-SAN09",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 208
+  },
+  {
+   "caseId": "PLAY-SAN01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 230
+  },
+  {
+   "caseId": "PLAY-SAN02",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 77
+  },
+  {
+   "caseId": "REPO-SMK01",
+   "nodeId": "e-repos",
+   "status": "failed",
+   "durationSec": 156
+  },
+  {
+   "caseId": "GUARD-SAN01",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 101
+  },
+  {
+   "caseId": "SKILL-SMK01",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 129
+  },
+  {
+   "caseId": "SUB-RV-SMK01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 21
+  },
+  {
+   "caseId": "SUB-IM-SAN01",
+   "nodeId": "logomenu",
+   "status": "passed",
+   "durationSec": 20
+  },
+  {
+   "caseId": "AUTO-SMK01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 51
+  },
+  {
+   "caseId": "AUTH-SAN01",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 171
+  },
+  {
+   "caseId": "AUTH-SAN02",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 39
+  },
+  {
+   "caseId": "AUTH-SAN03",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 135
+  },
+  {
+   "caseId": "ENTSET-SAN04",
+   "nodeId": "ent",
+   "status": "failed",
+   "durationSec": 139
+  },
+  {
+   "caseId": "ENTSET-SAN06",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 196
+  },
+  {
+   "caseId": "SECRET-SAN02",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 22
+  }
+ ],
+ "RUN-1005": [
+  {
+   "caseId": "PREF-REG04",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 190
+  },
+  {
+   "caseId": "PREF-E2E01",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 59
+  },
+  {
+   "caseId": "PCON-REG01",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 63
+  },
+  {
+   "caseId": "PCON-REG03",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 120
+  },
+  {
+   "caseId": "PCON-E2E01",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 225
+  },
+  {
+   "caseId": "COMP-REG04",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 208
+  },
+  {
+   "caseId": "SESS-REG03",
+   "nodeId": "e-sessions",
+   "status": "failed",
+   "durationSec": 89
+  },
+  {
+   "caseId": "SESS-REG05",
+   "nodeId": "e-sessions",
+   "status": "passed",
+   "durationSec": 141
+  },
+  {
+   "caseId": "SESS-E2E01",
+   "nodeId": "e-sessions",
+   "status": "passed",
+   "durationSec": 40
+  },
+  {
+   "caseId": "STOOL-E2E01",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 57
+  },
+  {
+   "caseId": "DEVIN-REG03",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 40
+  },
+  {
+   "caseId": "DEVIN-REG04",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 93
+  },
+  {
+   "caseId": "REV-REG03",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 152
+  },
+  {
+   "caseId": "REV-REG05",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 28
+  },
+  {
+   "caseId": "REV-E2E01",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 174
+  },
+  {
+   "caseId": "REVUI-E2E01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 184
+  },
+  {
+   "caseId": "KNOW-REG07",
+   "nodeId": "e-knowledge",
+   "status": "failed",
+   "durationSec": 199
+  },
+  {
+   "caseId": "KNOW-REG18",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 218
+  },
+  {
+   "caseId": "KNOW-E2E01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 116
+  },
+  {
+   "caseId": "ENV-REG01",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 108
+  },
+  {
+   "caseId": "ENV-REG03",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 146
+  },
+  {
+   "caseId": "ENV-REG04",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 63
+  },
+  {
+   "caseId": "IDP-REG01",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 213
+  },
+  {
+   "caseId": "IDP-REG02",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 48
+  },
+  {
+   "caseId": "ORG-REG01",
+   "nodeId": "e-orgs",
+   "status": "failed",
+   "durationSec": 125
+  },
+  {
+   "caseId": "ORG-REG03",
+   "nodeId": "e-orgs",
+   "status": "failed",
+   "durationSec": 133
+  },
+  {
+   "caseId": "ORG-REG04",
+   "nodeId": "e-orgs",
+   "status": "skipped",
+   "durationSec": 218
+  },
+  {
+   "caseId": "ORG-REG06",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 180
+  },
+  {
+   "caseId": "ORG-REG07",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 149
+  },
+  {
+   "caseId": "ORG-REG09",
+   "nodeId": "e-orgs",
+   "status": "skipped",
+   "durationSec": 220
+  },
+  {
+   "caseId": "ORG-REG10",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 137
+  },
+  {
+   "caseId": "ORG-REG12",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 156
+  },
+  {
+   "caseId": "SCAN-E2E01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 140
+  },
+  {
+   "caseId": "INFRA-REG02",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 206
+  },
+  {
+   "caseId": "INFRA-REG03",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 205
+  },
+  {
+   "caseId": "SUB-AU-REG01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 221
+  },
+  {
+   "caseId": "SUB-AU-REG02",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 152
+  },
+  {
+   "caseId": "LOGIN-REG01",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 104
+  },
+  {
+   "caseId": "LOGIN-REG02",
+   "nodeId": "login",
+   "status": "failed",
+   "durationSec": 41
+  },
+  {
+   "caseId": "ORGSEL-REG04",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 138
+  },
+  {
+   "caseId": "ORGSEL-REG06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 177
+  },
+  {
+   "caseId": "ORGSEL-REG13",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 64
+  },
+  {
+   "caseId": "ORGSEL-REG15",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 137
+  },
+  {
+   "caseId": "ORGSEL-REG17",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 55
+  },
+  {
+   "caseId": "SECRET-REG04",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 21
+  },
+  {
+   "caseId": "SECRET-REG07",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 151
+  },
+  {
+   "caseId": "SECRET-REG08",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 92
+  },
+  {
+   "caseId": "SECRET-REG09",
+   "nodeId": "s-secrets",
+   "status": "failed",
+   "durationSec": 186
+  },
+  {
+   "caseId": "SECRET-REG11",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 202
+  },
+  {
+   "caseId": "SECRET-REG12",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 141
+  }
+ ],
+ "RUN-998": [
+  {
+   "caseId": "STOOL-SAN02",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 134
+  },
+  {
+   "caseId": "PLAY-SAN01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 164
+  },
+  {
+   "caseId": "PLAY-SAN02",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 222
+  },
+  {
+   "caseId": "ENV-SMK01",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 34
+  },
+  {
+   "caseId": "MEMB-SAN01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 36
+  },
+  {
+   "caseId": "ROLE-SMK01",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 156
+  },
+  {
+   "caseId": "ROLE-SAN02",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 195
+  },
+  {
+   "caseId": "ORGCRT-SAN02",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 88
+  },
+  {
+   "caseId": "ECON-SAN02",
+   "nodeId": "e-conn",
+   "status": "passed",
+   "durationSec": 145
+  },
+  {
+   "caseId": "REPO-SMK01",
+   "nodeId": "e-repos",
+   "status": "passed",
+   "durationSec": 53
+  },
+  {
+   "caseId": "SECM-SMK01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 220
+  },
+  {
+   "caseId": "API-SAN01",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 214
+  },
+  {
+   "caseId": "API-SAN02",
+   "nodeId": "e-api",
+   "status": "failed",
+   "durationSec": 182
+  },
+  {
+   "caseId": "SKILL-SMK01",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 29
+  },
+  {
+   "caseId": "SKILL-SAN02",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 133
+  },
+  {
+   "caseId": "SUB-SAN02",
+   "nodeId": "suborg",
+   "status": "passed",
+   "durationSec": 232
+  },
+  {
+   "caseId": "SUB-AU-SMK01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 22
+  },
+  {
+   "caseId": "SUB-IM-SAN01",
+   "nodeId": "logomenu",
+   "status": "passed",
+   "durationSec": 28
+  },
+  {
+   "caseId": "SCHED-SAN01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 95
+  },
+  {
+   "caseId": "AUTH-SAN01",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 56
+  },
+  {
+   "caseId": "AUTH-SAN02",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 101
+  },
+  {
+   "caseId": "AUTH-SAN03",
+   "nodeId": "auth",
+   "status": "passed",
+   "durationSec": 113
+  },
+  {
+   "caseId": "ORGSEL-SAN01",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 146
+  },
+  {
+   "caseId": "ORGSEL-SAN02",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 114
+  },
+  {
+   "caseId": "ORGSEL-SAN04",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 189
+  },
+  {
+   "caseId": "ORGSEL-SAN06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 150
+  },
+  {
+   "caseId": "ENTSET-SAN04",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 190
+  },
+  {
+   "caseId": "ENTSET-SAN06",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 133
+  },
+  {
+   "caseId": "SECRET-SAN02",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 150
+  }
+ ],
+ "RUN-991": [
+  {
+   "caseId": "PCON-REG01",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 108
+  },
+  {
+   "caseId": "PCON-REG03",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 189
+  },
+  {
+   "caseId": "COMP-REG04",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 139
+  },
+  {
+   "caseId": "SESS-REG03",
+   "nodeId": "e-sessions",
+   "status": "passed",
+   "durationSec": 211
+  },
+  {
+   "caseId": "SESS-REG05",
+   "nodeId": "e-sessions",
+   "status": "passed",
+   "durationSec": 35
+  },
+  {
+   "caseId": "STOOL-E2E01",
+   "nodeId": "composer",
+   "status": "failed",
+   "durationSec": 23
+  },
+  {
+   "caseId": "GEN-REG04",
+   "nodeId": "e-general",
+   "status": "passed",
+   "durationSec": 81
+  },
+  {
+   "caseId": "DEVIN-E2E01",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 146
+  },
+  {
+   "caseId": "KNOW-REG07",
+   "nodeId": "e-knowledge",
+   "status": "failed",
+   "durationSec": 102
+  },
+  {
+   "caseId": "KNOW-REG18",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 84
+  },
+  {
+   "caseId": "KNOW-E2E01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 167
+  },
+  {
+   "caseId": "ROLE-REG01",
+   "nodeId": "roles",
+   "status": "failed",
+   "durationSec": 193
+  },
+  {
+   "caseId": "ROLE-REG02",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 225
+  },
+  {
+   "caseId": "ROLE-REG04",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 51
+  },
+  {
+   "caseId": "ROLE-REG06",
+   "nodeId": "roles",
+   "status": "failed",
+   "durationSec": 214
+  },
+  {
+   "caseId": "ROLE-REG07",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 120
+  },
+  {
+   "caseId": "ROLE-REG08",
+   "nodeId": "roles",
+   "status": "failed",
+   "durationSec": 181
+  },
+  {
+   "caseId": "IDP-REG01",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 66
+  },
+  {
+   "caseId": "IDP-REG02",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 84
+  },
+  {
+   "caseId": "ORGCRT-REG02",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 21
+  },
+  {
+   "caseId": "ORGCRT-REG06",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 129
+  },
+  {
+   "caseId": "ORGCRT-REG08",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 75
+  },
+  {
+   "caseId": "ORGCRT-REG10",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 65
+  },
+  {
+   "caseId": "ANAL-REG04",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 231
+  },
+  {
+   "caseId": "ANAL-REG06",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 43
+  },
+  {
+   "caseId": "GUARD-REG01",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 234
+  },
+  {
+   "caseId": "GUARD-REG02",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 75
+  },
+  {
+   "caseId": "GUARD-REG05",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 240
+  },
+  {
+   "caseId": "SECM-REG01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 239
+  },
+  {
+   "caseId": "SCAN-E2E01",
+   "nodeId": "security",
+   "status": "skipped",
+   "durationSec": 112
+  },
+  {
+   "caseId": "API-REG01",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 130
+  },
+  {
+   "caseId": "API-REG02",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 142
+  },
+  {
+   "caseId": "API-REG05",
+   "nodeId": "e-api",
+   "status": "failed",
+   "durationSec": 121
+  },
+  {
+   "caseId": "INFRA-REG02",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 51
+  },
+  {
+   "caseId": "INFRA-REG03",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 74
+  },
+  {
+   "caseId": "SUB-AU-E2E01",
+   "nodeId": "automations",
+   "status": "failed",
+   "durationSec": 48
+  },
+  {
+   "caseId": "SUB-RV-REG01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 26
+  },
+  {
+   "caseId": "SUB-OS-REG01",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 58
+  },
+  {
+   "caseId": "SUB-OS-REG02",
+   "nodeId": "s-settings",
+   "status": "passed",
+   "durationSec": 76
+  },
+  {
+   "caseId": "SCHED-REG01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 148
+  },
+  {
+   "caseId": "SUP-REG01",
+   "nodeId": "support",
+   "status": "passed",
+   "durationSec": 142
+  },
+  {
+   "caseId": "ORGSEL-REG15",
+   "nodeId": "landing",
+   "status": "failed",
+   "durationSec": 191
+  },
+  {
+   "caseId": "ORGSEL-REG17",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 134
+  },
+  {
+   "caseId": "SECRET-REG04",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 238
+  },
+  {
+   "caseId": "SECRET-REG07",
+   "nodeId": "s-secrets",
+   "status": "failed",
+   "durationSec": 36
+  },
+  {
+   "caseId": "SECRET-REG08",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 145
+  },
+  {
+   "caseId": "SECRET-REG09",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 82
+  },
+  {
+   "caseId": "SECRET-REG11",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 160
+  },
+  {
+   "caseId": "SECRET-REG12",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 126
+  }
+ ],
+ "RUN-984": [
+  {
+   "caseId": "STOOL-SAN02",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 165
+  },
+  {
+   "caseId": "GEN-SMK01",
+   "nodeId": "e-general",
+   "status": "passed",
+   "durationSec": 238
+  },
+  {
+   "caseId": "REV-SMK01",
+   "nodeId": "e-review",
+   "status": "failed",
+   "durationSec": 219
+  },
+  {
+   "caseId": "KNOW-SMK01",
+   "nodeId": "e-knowledge",
+   "status": "failed",
+   "durationSec": 39
+  },
+  {
+   "caseId": "KNOW-SAN01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 64
+  },
+  {
+   "caseId": "KNOW-SAN03",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 121
+  },
+  {
+   "caseId": "KNOW-SAN05",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 97
+  },
+  {
+   "caseId": "KNOW-SAN07",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 126
+  },
+  {
+   "caseId": "KNOW-SAN09",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 37
+  },
+  {
+   "caseId": "ENV-SAN01",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 227
+  },
+  {
+   "caseId": "MEMB-SAN03",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 126
+  },
+  {
+   "caseId": "ROLE-SMK01",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 143
+  },
+  {
+   "caseId": "ORG-SAN02",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 141
+  },
+  {
+   "caseId": "ORG-SAN03",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 239
+  },
+  {
+   "caseId": "REPO-SMK01",
+   "nodeId": "e-repos",
+   "status": "passed",
+   "durationSec": 115
+  },
+  {
+   "caseId": "GUARD-SAN01",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 63
+  },
+  {
+   "caseId": "SECM-SMK01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 233
+  },
+  {
+   "caseId": "API-SAN01",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 136
+  },
+  {
+   "caseId": "API-SAN02",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 118
+  },
+  {
+   "caseId": "SUB-RV-SMK01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 179
+  },
+  {
+   "caseId": "AUTO-SMK01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 198
+  },
+  {
+   "caseId": "SCHED-SAN01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 44
+  },
+  {
+   "caseId": "LOGIN-SAN01",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 235
+  },
+  {
+   "caseId": "LOGIN-SAN02",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 105
+  },
+  {
+   "caseId": "ORGSEL-SAN01",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 239
+  },
+  {
+   "caseId": "ORGSEL-SAN02",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 31
+  },
+  {
+   "caseId": "ORGSEL-SAN04",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 23
+  },
+  {
+   "caseId": "ORGSEL-SAN06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 186
+  },
+  {
+   "caseId": "ENTSET-SAN04",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 31
+  },
+  {
+   "caseId": "ENTSET-SAN06",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 147
+  }
+ ],
+ "RUN-977": [
+  {
+   "caseId": "PREF-REG04",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 81
+  },
+  {
+   "caseId": "PREF-E2E01",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 118
+  },
+  {
+   "caseId": "PCON-REG01",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 100
+  },
+  {
+   "caseId": "PCON-REG03",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 231
+  },
+  {
+   "caseId": "PCON-E2E01",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 222
+  },
+  {
+   "caseId": "SESS-E2E01",
+   "nodeId": "e-sessions",
+   "status": "passed",
+   "durationSec": 223
+  },
+  {
+   "caseId": "STOOL-E2E01",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 42
+  },
+  {
+   "caseId": "DEVIN-REG03",
+   "nodeId": "e-devin",
+   "status": "failed",
+   "durationSec": 79
+  },
+  {
+   "caseId": "DEVIN-REG04",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 227
+  },
+  {
+   "caseId": "DEVIN-E2E01",
+   "nodeId": "e-devin",
+   "status": "failed",
+   "durationSec": 70
+  },
+  {
+   "caseId": "REV-E2E01",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 39
+  },
+  {
+   "caseId": "REVUI-E2E01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 74
+  },
+  {
+   "caseId": "PLAY-REG01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 215
+  },
+  {
+   "caseId": "PLAY-REG03",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 63
+  },
+  {
+   "caseId": "PLAY-REG05",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 210
+  },
+  {
+   "caseId": "PLAY-REG06",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 141
+  },
+  {
+   "caseId": "PLAY-REG08",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 212
+  },
+  {
+   "caseId": "ENV-REG01",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 69
+  },
+  {
+   "caseId": "ENV-REG03",
+   "nodeId": "e-env",
+   "status": "skipped",
+   "durationSec": 230
+  },
+  {
+   "caseId": "ENV-REG04",
+   "nodeId": "e-env",
+   "status": "passed",
+   "durationSec": 87
+  },
+  {
+   "caseId": "MEMB-REG01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 35
+  },
+  {
+   "caseId": "MEMB-REG05",
+   "nodeId": "e-membership",
+   "status": "failed",
+   "durationSec": 103
+  },
+  {
+   "caseId": "MEMB-REG07",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 87
+  },
+  {
+   "caseId": "IDP-REG01",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 232
+  },
+  {
+   "caseId": "IDP-REG02",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 81
+  },
+  {
+   "caseId": "ORG-REG01",
+   "nodeId": "e-orgs",
+   "status": "failed",
+   "durationSec": 43
+  },
+  {
+   "caseId": "ORG-REG03",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 203
+  },
+  {
+   "caseId": "ORG-REG04",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 199
+  },
+  {
+   "caseId": "ORG-REG06",
+   "nodeId": "e-orgs",
+   "status": "failed",
+   "durationSec": 180
+  },
+  {
+   "caseId": "ORG-REG07",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 167
+  },
+  {
+   "caseId": "ORG-REG09",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 210
+  },
+  {
+   "caseId": "ORGCRT-REG02",
+   "nodeId": "org-create",
+   "status": "failed",
+   "durationSec": 134
+  },
+  {
+   "caseId": "ORGCRT-REG06",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 142
+  },
+  {
+   "caseId": "ORGCRT-REG10",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 178
+  },
+  {
+   "caseId": "ANAL-REG04",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 201
+  },
+  {
+   "caseId": "ANAL-REG06",
+   "nodeId": "e-analytics",
+   "status": "passed",
+   "durationSec": 38
+  },
+  {
+   "caseId": "GUARD-REG01",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 58
+  },
+  {
+   "caseId": "GUARD-REG02",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 143
+  },
+  {
+   "caseId": "GUARD-REG05",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 90
+  },
+  {
+   "caseId": "SECM-REG01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 176
+  },
+  {
+   "caseId": "API-REG01",
+   "nodeId": "e-api",
+   "status": "passed",
+   "durationSec": 70
+  },
+  {
+   "caseId": "API-REG02",
+   "nodeId": "e-api",
+   "status": "failed",
+   "durationSec": 202
+  },
+  {
+   "caseId": "API-REG05",
+   "nodeId": "e-api",
+   "status": "failed",
+   "durationSec": 181
+  },
+  {
+   "caseId": "SKILL-REG02",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 48
+  },
+  {
+   "caseId": "SKILL-REG04",
+   "nodeId": "e-skills",
+   "status": "passed",
+   "durationSec": 49
+  },
+  {
+   "caseId": "SUB-AU-E2E01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 106
+  },
+  {
+   "caseId": "SUP-REG01",
+   "nodeId": "support",
+   "status": "passed",
+   "durationSec": 155
+  },
+  {
+   "caseId": "ORGSEL-REG04",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 226
+  },
+  {
+   "caseId": "ORGSEL-REG06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 65
+  },
+  {
+   "caseId": "ORGSEL-REG13",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 128
+  },
+  {
+   "caseId": "ORGSEL-REG15",
+   "nodeId": "landing",
+   "status": "failed",
+   "durationSec": 153
+  },
+  {
+   "caseId": "ORGSEL-REG17",
+   "nodeId": "landing",
+   "status": "failed",
+   "durationSec": 118
+  },
+  {
+   "caseId": "ENTSET-REG02",
+   "nodeId": "ent",
+   "status": "failed",
+   "durationSec": 195
+  },
+  {
+   "caseId": "ENTSET-REG04",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 194
+  },
+  {
+   "caseId": "ENTSET-REG05",
+   "nodeId": "ent",
+   "status": "failed",
+   "durationSec": 194
+  },
+  {
+   "caseId": "ENTSET-REG06",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 232
+  },
+  {
+   "caseId": "ENTSET-REG08",
+   "nodeId": "ent",
+   "status": "passed",
+   "durationSec": 189
+  },
+  {
+   "caseId": "SECRET-REG04",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 104
+  },
+  {
+   "caseId": "SECRET-REG07",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 145
+  },
+  {
+   "caseId": "SECRET-REG08",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 163
+  },
+  {
+   "caseId": "SECRET-REG09",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 102
+  }
+ ],
+ "RUN-970": [
+  {
+   "caseId": "REVUI-SMK01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 77
+  },
+  {
+   "caseId": "KNOW-SMK01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 86
+  },
+  {
+   "caseId": "KNOW-SAN01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 127
+  },
+  {
+   "caseId": "KNOW-SAN03",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 89
+  },
+  {
+   "caseId": "KNOW-SAN05",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 90
+  },
+  {
+   "caseId": "KNOW-SAN07",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 228
+  },
+  {
+   "caseId": "KNOW-SAN09",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 183
+  },
+  {
+   "caseId": "PLAY-SAN01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 238
+  },
+  {
+   "caseId": "PLAY-SAN02",
+   "nodeId": "e-playbooks",
+   "status": "failed",
+   "durationSec": 36
+  },
+  {
+   "caseId": "ENV-SMK01",
+   "nodeId": "e-env",
+   "status": "skipped",
+   "durationSec": 224
+  },
+  {
+   "caseId": "MEMB-SAN01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 155
+  },
+  {
+   "caseId": "MEMB-SAN03",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 193
+  },
+  {
+   "caseId": "ROLE-SMK01",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 142
+  },
+  {
+   "caseId": "ORG-SAN02",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 144
+  },
+  {
+   "caseId": "ORG-SAN03",
+   "nodeId": "e-orgs",
+   "status": "passed",
+   "durationSec": 205
+  },
+  {
+   "caseId": "GUARD-SAN01",
+   "nodeId": "e-guardrails",
+   "status": "skipped",
+   "durationSec": 111
+  },
+  {
+   "caseId": "SUB-RV-SMK01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 65
+  },
+  {
+   "caseId": "AUTO-SMK01",
+   "nodeId": "automations",
+   "status": "failed",
+   "durationSec": 196
+  },
+  {
+   "caseId": "SCHED-SAN01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 27
+  },
+  {
+   "caseId": "LOGIN-SAN01",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 82
+  },
+  {
+   "caseId": "LOGIN-SAN02",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 22
+  },
+  {
+   "caseId": "SUP-SAN03",
+   "nodeId": "support",
+   "status": "passed",
+   "durationSec": 68
+  },
+  {
+   "caseId": "ORGSEL-SAN01",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 100
+  },
+  {
+   "caseId": "ORGSEL-SAN02",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 190
+  },
+  {
+   "caseId": "ORGSEL-SAN04",
+   "nodeId": "landing",
+   "status": "failed",
+   "durationSec": 120
+  },
+  {
+   "caseId": "ORGSEL-SAN06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 158
+  }
+ ],
+ "RUN-963": [
+  {
+   "caseId": "PREF-REG04",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 235
+  },
+  {
+   "caseId": "PREF-E2E01",
+   "nodeId": "prefs",
+   "status": "passed",
+   "durationSec": 78
+  },
+  {
+   "caseId": "PCON-E2E01",
+   "nodeId": "pconn",
+   "status": "passed",
+   "durationSec": 152
+  },
+  {
+   "caseId": "COMP-REG04",
+   "nodeId": "composer",
+   "status": "passed",
+   "durationSec": 174
+  },
+  {
+   "caseId": "SESS-E2E01",
+   "nodeId": "e-sessions",
+   "status": "passed",
+   "durationSec": 148
+  },
+  {
+   "caseId": "DEVIN-REG03",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 96
+  },
+  {
+   "caseId": "DEVIN-REG04",
+   "nodeId": "e-devin",
+   "status": "passed",
+   "durationSec": 95
+  },
+  {
+   "caseId": "REV-REG03",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 41
+  },
+  {
+   "caseId": "REV-REG05",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 63
+  },
+  {
+   "caseId": "REV-E2E01",
+   "nodeId": "e-review",
+   "status": "passed",
+   "durationSec": 189
+  },
+  {
+   "caseId": "REVUI-E2E01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 165
+  },
+  {
+   "caseId": "KNOW-REG07",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 109
+  },
+  {
+   "caseId": "KNOW-REG18",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 224
+  },
+  {
+   "caseId": "KNOW-E2E01",
+   "nodeId": "e-knowledge",
+   "status": "passed",
+   "durationSec": 172
+  },
+  {
+   "caseId": "PLAY-REG01",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 20
+  },
+  {
+   "caseId": "PLAY-REG03",
+   "nodeId": "e-playbooks",
+   "status": "skipped",
+   "durationSec": 205
+  },
+  {
+   "caseId": "PLAY-REG05",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 37
+  },
+  {
+   "caseId": "PLAY-REG06",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 78
+  },
+  {
+   "caseId": "PLAY-REG08",
+   "nodeId": "e-playbooks",
+   "status": "passed",
+   "durationSec": 57
+  },
+  {
+   "caseId": "MEMB-REG01",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 183
+  },
+  {
+   "caseId": "MEMB-REG05",
+   "nodeId": "e-membership",
+   "status": "passed",
+   "durationSec": 216
+  },
+  {
+   "caseId": "MEMB-REG07",
+   "nodeId": "e-membership",
+   "status": "failed",
+   "durationSec": 34
+  },
+  {
+   "caseId": "ROLE-REG01",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 155
+  },
+  {
+   "caseId": "ROLE-REG02",
+   "nodeId": "roles",
+   "status": "skipped",
+   "durationSec": 215
+  },
+  {
+   "caseId": "ROLE-REG04",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 215
+  },
+  {
+   "caseId": "ROLE-REG06",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 134
+  },
+  {
+   "caseId": "ROLE-REG07",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 197
+  },
+  {
+   "caseId": "ROLE-REG08",
+   "nodeId": "roles",
+   "status": "passed",
+   "durationSec": 88
+  },
+  {
+   "caseId": "IDP-REG01",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 228
+  },
+  {
+   "caseId": "IDP-REG02",
+   "nodeId": "groups-idp",
+   "status": "passed",
+   "durationSec": 218
+  },
+  {
+   "caseId": "ORGCRT-REG02",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 123
+  },
+  {
+   "caseId": "ORGCRT-REG06",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 128
+  },
+  {
+   "caseId": "ORGCRT-REG08",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 36
+  },
+  {
+   "caseId": "ORGCRT-REG10",
+   "nodeId": "org-create",
+   "status": "passed",
+   "durationSec": 190
+  },
+  {
+   "caseId": "GUARD-REG01",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 34
+  },
+  {
+   "caseId": "GUARD-REG02",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 188
+  },
+  {
+   "caseId": "GUARD-REG05",
+   "nodeId": "e-guardrails",
+   "status": "passed",
+   "durationSec": 23
+  },
+  {
+   "caseId": "SECM-REG01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 225
+  },
+  {
+   "caseId": "SCAN-E2E01",
+   "nodeId": "security",
+   "status": "passed",
+   "durationSec": 34
+  },
+  {
+   "caseId": "INFRA-REG02",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 32
+  },
+  {
+   "caseId": "INFRA-REG03",
+   "nodeId": "e-infra",
+   "status": "passed",
+   "durationSec": 24
+  },
+  {
+   "caseId": "SUB-RV-REG01",
+   "nodeId": "review",
+   "status": "passed",
+   "durationSec": 81
+  },
+  {
+   "caseId": "SCHED-E2E01",
+   "nodeId": "automations",
+   "status": "passed",
+   "durationSec": 36
+  },
+  {
+   "caseId": "LOGIN-REG01",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 181
+  },
+  {
+   "caseId": "LOGIN-REG02",
+   "nodeId": "login",
+   "status": "passed",
+   "durationSec": 114
+  },
+  {
+   "caseId": "ORGSEL-REG04",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 159
+  },
+  {
+   "caseId": "ORGSEL-REG06",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 21
+  },
+  {
+   "caseId": "ORGSEL-REG13",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 209
+  },
+  {
+   "caseId": "ORGSEL-REG15",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 60
+  },
+  {
+   "caseId": "ORGSEL-REG17",
+   "nodeId": "landing",
+   "status": "passed",
+   "durationSec": 22
+  },
+  {
+   "caseId": "SECRET-REG04",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 60
+  },
+  {
+   "caseId": "SECRET-REG07",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 191
+  },
+  {
+   "caseId": "SECRET-REG08",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 187
+  },
+  {
+   "caseId": "SECRET-REG09",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 63
+  },
+  {
+   "caseId": "SECRET-REG11",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 164
+  },
+  {
+   "caseId": "SECRET-REG12",
+   "nodeId": "s-secrets",
+   "status": "passed",
+   "durationSec": 220
+  }
+ ]
+}

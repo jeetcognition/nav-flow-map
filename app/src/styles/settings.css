@@ -1,0 +1,54 @@
+/* ---- Settings page ---- */
+
+.settings-grid {
+  display: grid;
+  gap: var(--sp-4);
+  max-width: 720px;
+}
+
+.settings-card-title {
+  margin-bottom: var(--sp-3);
+}
+
+.settings-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.settings-note {
+  color: var(--text-3);
+  font-size: var(--fs-sm);
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.settings-row-label {
+  width: 110px;
+  font-weight: 500;
+}
+
+.settings-row-name {
+  width: 140px;
+}
+
+.settings-dim {
+  color: var(--text-3);
+}
+
+.settings-footnote {
+  margin-top: var(--sp-3);
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
