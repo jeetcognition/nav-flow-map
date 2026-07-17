@@ -2,6 +2,10 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-18 — Legacy site removed; QA Command Center deployed to Pages
+- **What:** Deleted the legacy no-build site (root `index.html`, `testcases.js`, `bugs.js`) and the one-shot `app/scripts/seed.mjs`. GitHub Pages now builds and serves `app/` via `.github/workflows/deploy.yml` (Vite base `/nav-flow-map/`, router basename, `404.html` SPA fallback). The Devin promotion pipeline and `scripts/validate-data.js` were retargeted at the canonical fixtures (`app/src/data/fixtures/nodes.json`/`testcases.json`/`bugs.json` + `qa-testing/*.md`). Fixed stale fixture references left over from seeding (five promoted `user-*` pages had been renamed; two bug `caseIds` pointed at cases that never existed).
+- **Why:** The React app fully replaced the legacy site, so serving the old UI and keeping two canonical data stores (legacy files vs fixtures) meant promotions never reached what users actually see. One canonical store + build-on-push closes that loop.
+
 ## 2026-07-16 — Remove QA files imported from the empty repo
 - **What:** Deleted `qa-testing/nav_graph.md` and `qa-testing/testcases/01–17_*.md` (the area files imported from jeetcognition/empty's QA suite); kept files 18–23, which were created via this app's promotion flow. Updated README and the testcases README accordingly.
 - **Why:** The site never reads these files at runtime — all cases were already parsed into `testcases.js` and the topology lives in `BASE_PAGES` — so they were redundant duplicates of content maintained elsewhere.

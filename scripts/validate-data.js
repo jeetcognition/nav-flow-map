@@ -1,22 +1,15 @@
 #!/usr/bin/env node
-// Cross-checks BASE_PAGES (index.html), testcases.js, bugs.js, and navmap-edits.json.
-const fs = require("fs");
-const vm = require("vm");
-const path = require("path");
+// Cross-checks the app fixtures (nodes, testcases, bugs) and navmap-edits.json.
+import fs from "node:fs";
+import path from "node:path";
 
-const root = path.join(__dirname, "..");
-const read = (f) => fs.readFileSync(path.join(root, f), "utf8");
+const root = path.join(import.meta.dirname, "..");
+const readJson = (f) => JSON.parse(fs.readFileSync(path.join(root, f), "utf8"));
 
-const html = read("index.html");
-const m = html.match(/const BASE_PAGES = (\[[\s\S]*?\n\]);/);
-if (!m) {
-  console.error("BASE_PAGES not found in index.html");
-  process.exit(1);
-}
-const pages = vm.runInNewContext(m[1]);
-const testcases = vm.runInNewContext(read("testcases.js") + "\nTESTCASES");
-const bugs = vm.runInNewContext(read("bugs.js") + "\nBUGS");
-const edits = JSON.parse(read("navmap-edits.json"));
+const pages = readJson("app/src/data/fixtures/nodes.json");
+const testcases = readJson("app/src/data/fixtures/testcases.json");
+const bugs = readJson("app/src/data/fixtures/bugs.json");
+const edits = readJson("navmap-edits.json");
 
 const errors = [];
 const pageIds = new Set(pages.map((p) => p.id));
@@ -33,11 +26,12 @@ for (const p of pages)
   if (p.parent && !pageIds.has(p.parent))
     errors.push(`page ${p.id} has unknown parent ${p.parent}`);
 for (const t of testcases) {
+  if (!pageIds.has(t.nodeId)) errors.push(`test case ${t.id} references unknown page ${t.nodeId}`);
   if (!prefixes.some((px) => new RegExp("^" + px + "-(SMK|SAN|REG|E2E)\\d").test(t.id)))
     errors.push(`test case ${t.id} matches no page prefix`);
 }
 for (const b of bugs) {
-  if (!pageIds.has(b.pageId)) errors.push(`bug ${b.id} references unknown page ${b.pageId}`);
+  if (!pageIds.has(b.nodeId)) errors.push(`bug ${b.id} references unknown page ${b.nodeId}`);
   for (const cid of b.caseIds || [])
     if (!caseIds.has(cid)) errors.push(`bug ${b.id} references unknown test case ${cid}`);
 }

@@ -17,8 +17,6 @@ Living list — update when debt is added or paid down. Larger context in
 - [ ] Consolidate the duplicated filter-bar pattern (Automation / Runs / Incidents)
 - [ ] `badges.tsx` duplicates `lib/bugStatus.ts` status→label/color mapping
 - [ ] Bundle is one ~1.4 MB chunk — dynamic-import the graph (`@xyflow/react`, dagre) and charts (recharts)
-- [ ] Legacy `index.html` silent localStorage-corruption recovery (warn the user)
-- [ ] SRI hash for the legacy site's Cytoscape CDN script
 
 ## Process (Phase 4 of AUDIT.md)
 

@@ -5,12 +5,12 @@ rest is enforced by review.
 
 ## Repository layout
 
-| Path                                                         | What                                                           | Status                                                                                                                                                  |
-| ------------------------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app/`                                                       | QA Command Center — React 19 + Vite + TS strict                | Active development                                                                                                                                      |
-| `index.html`, `testcases.js`, `bugs.js`, `navmap-edits.json` | Legacy no-build NavFlow site                                   | **Frozen** — safety-net fixes only; being replaced by `app/`. The Devin promotion pipeline edits these files directly; they are excluded from Prettier. |
-| `worker/`                                                    | Cloudflare Worker: commits edits, starts Devin sessions        | Active; deploy with `wrangler deploy`                                                                                                                   |
-| `qa-testing/`                                                | Markdown test-case sources maintained by the AI promotion pass | Pipeline-owned                                                                                                                                          |
+| Path                | What                                                           | Status                                                                                                                         |
+| ------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `app/`              | QA Command Center — React 19 + Vite + TS strict                | Active development                                                                                                             |
+| `navmap-edits.json` | Pending website edits (overlay merged over the fixtures)       | Pipeline-owned — written by the save worker, promoted into `app/src/data/fixtures/` by the Devin pass; excluded from Prettier. |
+| `worker/`           | Cloudflare Worker: commits edits, starts Devin sessions        | Active; deploy with `wrangler deploy`                                                                                          |
+| `qa-testing/`       | Markdown test-case sources maintained by the AI promotion pass | Pipeline-owned                                                                                                                 |
 
 ## Rules
 

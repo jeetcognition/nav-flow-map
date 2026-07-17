@@ -36,7 +36,7 @@
     "status": "open",
     "surfaceId": "enterprise",
     "nodeId": "e-devin",
-    "caseIds": ["DEVIN-REG01", "DEVIN-REG02", "DEVIN-REG03", "DEVIN-REG07"],
+    "caseIds": ["DEVIN-REG01", "DEVIN-REG02", "DEVIN-REG03"],
     "links": {
       "linear": "https://linear.app/cognition/issue/ENG-45170",
       "jam": "https://jam.dev/c/demo-bug-015"
@@ -86,7 +86,7 @@
     "status": "open",
     "surfaceId": "enterprise",
     "nodeId": "prefs",
-    "caseIds": ["PREF-REG05"],
+    "caseIds": [],
     "links": {},
     "reproSteps": "No client-side size limit or error toast on avatar upload.",
     "environment": "beta",
@@ -192,7 +192,7 @@
     "severity": "S4",
     "status": "open",
     "surfaceId": "enterprise",
-    "nodeId": "user-groups-mrlw5j7x",
+    "nodeId": "groups-idp",
     "caseIds": ["IDP-SMK01"],
     "links": {},
     "reproSteps": "\"provider.Please contact…\" concatenated; <br> without space.",
