@@ -6,6 +6,8 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "catalog:validate": "node scripts/validate-catalog.mjs",
+    "check": "npm run format:check && npm run catalog:validate",
     "prepare": "husky"
   },
   "devDependencies": {

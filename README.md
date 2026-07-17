@@ -12,18 +12,22 @@ views.
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app/`                               | **QA Command Center** — the React app served at the URL above (Dashboard, NavFlow graph, Runs, Issues, Incidents, Automation). See [`app/README.md`](app/README.md). |
 | `app/src/data/fixtures/`             | Canonical data: `nodes.json` (graph pages), `testcases.json`, `bugs.json`, plus runs/incidents/sessions fixtures.                                                    |
+| `catalog/`                           | Canonical page/testcase catalog foundation (schema + empty `pages/`).                                                                                                |
+| `docs/`                              | Architecture, durable decisions, and work-log.                                                                                                                       |
+| `scripts/validate-catalog.mjs`       | Validates `catalog/pages/*.json` against `catalog/schema/page-catalog.schema.json`.                                                                                  |
+| `scripts/validate-data.js`           | Cross-checks the fixtures and `navmap-edits.json` (run by the Validate CI workflow).                                                                                 |
 | `worker/`                            | Cloudflare Worker: commits `navmap-edits.json`, starts Devin promotion/suggestion sessions (`wrangler deploy`).                                                      |
 | `qa-testing/`                        | Markdown test-case sources maintained by the AI promotion pass.                                                                                                      |
-| `scripts/validate-data.js`           | Cross-checks the fixtures and `navmap-edits.json` (run by the Validate CI workflow).                                                                                 |
 | `AUDIT.md` / `TODO.md` / `AGENTS.md` | Engineering audit, living backlog, and contributor/agent conventions.                                                                                                |
 
 The legacy no-build site (root `index.html` + `testcases.js` + `bugs.js`) was
 removed on 2026-07-18 once the React app replaced it; its data lives on as the
 app's fixtures.
 
-Tooling: repo-wide Prettier (`npm run format`), pre-commit hooks via husky +
-lint-staged, and CI (lint · strict typecheck · build · data validation) on
-every PR — see `AGENTS.md` for the rules.
+Tooling: repo-wide Prettier (`npm run format`, `npm run format:check`), catalog
+validation (`npm run catalog:validate`), pre-commit hooks via husky + lint-staged,
+and CI (lint · strict typecheck · build · data validation · catalog validation)
+on every PR — see `AGENTS.md` for the rules.
 
 ## Deployment
 
@@ -78,5 +82,21 @@ npm run dev
   load; written by the save Worker.
 - `qa-testing/testcases/*.md` — markdown source for cases added or promoted
   through the website.
+- `catalog/pages/*.json` — future canonical page + testcase catalog, currently
+  empty while the schema and validator are being proven.
 - `CHANGELOG.md` — record of every feature/behaviour change and why it was
   made.
+- `docs/decisions.md` and `docs/work-log.md` — durable project memory.
+
+## Catalog (foundation)
+
+The `catalog/` directory will become the source of truth for pages, test cases,
+and bugs. It is currently empty (`catalog/pages/.gitkeep`) so the schema and
+validator can be hardened before re-authoring cases page by page.
+
+```bash
+npm run catalog:validate
+```
+
+The long-term target architecture is in
+[`docs/qa-platform-architecture-plan.md`](docs/qa-platform-architecture-plan.md).
