@@ -17,13 +17,13 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.logo = page.getByRole("img", { name: /devin/i });
-    this.heading = page.getByRole("heading", { name: /welcome/i });
+    this.logo = page.locator("#prompt-logo-center");
+    this.heading = page.getByRole("heading", { name: "Welcome" });
     this.emailInput = page
-      .getByLabel(/email/i)
-      .or(page.getByRole("textbox", { name: /email/i }))
+      .getByLabel(/work email/i)
+      .or(page.getByRole("textbox", { name: /work email/i }))
       .first();
-    this.continueButton = page.getByRole("button", { name: /continue/i });
+    this.continueButton = page.getByRole("button", { name: "Continue", exact: true });
     this.loginButton = page.getByRole("button", { name: /log in|sign in/i }).first();
   }
 
