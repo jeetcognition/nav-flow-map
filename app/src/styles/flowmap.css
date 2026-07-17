@@ -315,6 +315,21 @@
   pointer-events: none;
 }
 
+/* Zoom/fit controls: React Flow ships light-only defaults unless it owns the
+   theme. We drive its control tokens off our semantic tokens so the +/-/fit
+   buttons stay legible in both dark and light mode. */
+.fm-graph .react-flow__controls {
+  --xy-controls-button-background-color: var(--surface-2);
+  --xy-controls-button-background-color-hover: var(--surface-3);
+  --xy-controls-button-color: var(--text-2);
+  --xy-controls-button-color-hover: var(--text);
+  --xy-controls-button-border-color: var(--border);
+  --xy-controls-box-shadow: var(--shadow-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
 /* ---- side panel ---- */
 .fp-root {
   display: flex;
