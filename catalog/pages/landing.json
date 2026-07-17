@@ -37,11 +37,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -84,11 +83,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -131,11 +129,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -178,11 +175,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -223,11 +219,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -270,11 +265,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -317,11 +311,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -362,11 +355,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -409,11 +401,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -456,11 +447,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -501,11 +491,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -546,11 +535,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -591,11 +579,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -636,11 +623,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -681,11 +667,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -728,11 +713,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
@@ -775,11 +759,10 @@
       },
       "executors": {
         "devinBrowser": "eligible",
-        "playwright": "blocked",
-        "blockedReason": "Playwright spec not yet authored"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
+        "status": "candidate",
         "specPath": null
       },
       "source": {
