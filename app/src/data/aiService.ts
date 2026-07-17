@@ -113,7 +113,7 @@ export interface DraftBug {
 }
 
 export function draftBugFromNotes(notes: string): Promise<DraftBug> {
-  const firstLine = notes.split(/[.\n]/)[0].trim();
+  const firstLine = (notes.split(/[.\n]/)[0] ?? "").trim();
   return mockDelay(
     {
       title: firstLine.length > 8 ? firstLine : "Unexpected behavior observed",

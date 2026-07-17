@@ -1,6 +1,6 @@
 import type { Surface, User } from "../../types";
 
-export const SURFACES: Surface[] = [
+export const SURFACES: [Surface, ...Surface[]] = [
   { id: "enterprise", label: "Enterprise", kind: "webapp", status: "active" },
   {
     id: "retail",
@@ -13,7 +13,7 @@ export const SURFACES: Surface[] = [
   { id: "devin-cli", label: "Devin CLI", kind: "cli", status: "coming-soon" },
 ];
 
-export const USERS: User[] = [
+export const USERS: [User, ...User[]] = [
   { id: "u-jeet", name: "Jeet Bangoria", role: "Admin", color: "#22C55E", initials: "JB" },
   { id: "u-maya", name: "Maya Chen", role: "QA", color: "#38BDF8", initials: "MC" },
   { id: "u-arjun", name: "Arjun Rao", role: "QA", color: "#A78BFA", initials: "AR" },
