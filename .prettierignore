@@ -8,4 +8,11 @@ app/dist/
 node_modules/
 package-lock.json
 app/package-lock.json
+tests/playwright/package-lock.json
 .claude/
+
+# Playwright runtime artifacts
+tests/playwright/playwright-report/
+tests/playwright/test-results/
+tests/playwright/.auth/
+tests/playwright/.env

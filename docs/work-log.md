@@ -2,6 +2,83 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-18 — Automate all three Nav Flow nodes (login, auth, landing)
+
+### Requested
+
+- Read and manually verify each test case in the first three Nav Flow nodes (`login`, `auth`, `landing`), then automate every case that can be performed correctly.
+- Use the existing Playwright auth helper (email + Gmail OTP) for the `auth` node.
+
+### Implemented
+
+- Fully automated `login` node (`tests/playwright/specs/unauthenticated/login.spec.ts`) covering all 6 catalog cases (`LOGIN-SAN01–SAN03`, `LOGIN-REG01–REG03`).
+- Fully automated `auth` node (`tests/playwright/specs/authenticated/auth.spec.ts`) covering 8 of 9 catalog cases (`AUTH-SAN01–SAN04`, `AUTH-REG01`, `AUTH-REG03–REG05`); `AUTH-REG02` (expired OTP) is kept as `manual` because a real expired code cannot be seeded deterministically.
+- Fully automated `landing` node (`tests/playwright/specs/authenticated/landing.spec.ts`) covering all 17 catalog cases (`ORGSEL-SAN01–SAN10`, `ORGSEL-REG01–REG04`, `ORGSEL-REG06–REG07`, `ORGSEL-REG11`).
+- Extended `OrgSelectorPage` with stable selectors and helpers for the sidebar, command palette, organization search, All organizations dropdown, overflow menus, and help menu.
+- Updated `catalog/pages/auth.json` and `catalog/pages/landing.json` to mark automated cases as `active` with `specPath` pointing to the relevant spec files; `AUTH-REG02` is `manual` with `specPath: null`.
+- Adjusted `catalog/pages/landing.json` `ORGSEL-SAN10` assertion to match the live UI (the dropdown does not currently contain a visible "Switch account" option).
+- Removed temporary exploration files (`tests/playwright/specs/authenticated/explore.spec.ts`, `tests/playwright/explore-auth-landing.mjs`).
+
+### Validation
+
+- `npm run catalog:validate` passes (3 pages, 32 testcases).
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- `cd app && npx tsc -b --force` passes (no `app/` changes).
+- Full `npx playwright test` run with session credentials: `37 passed, 1 skipped`.
+- Unauthenticated login specs run when `BASE_URL` is set; auth/landing specs run when `DEVIN_ADMIN_EMAIL` and `GMAIL_APP_PASSWORD` are set; all specs skip cleanly when env vars are missing.
+
+### Deferred
+
+- `AUTH-REG02` (expired OTP) remains manual until a deterministic code-seeding mechanism is available.
+- Additional Nav Flow nodes beyond the first three; catalog → fixture generator; YAML migration; runner skill; D1/R2 runtime storage.
+
+### Decisions
+
+- QA-DEC-015: Prefer semantic locators and `data-testid` attributes over generated IDs. Tooltips rendered by Radix-like portals use plain `<div>` text and can be matched by substring after a deliberate hover.
+- QA-DEC-016: SPA route transitions (e.g. `/org/{slug}`) must be matched with regex rather than glob because trailing slashes and client-side history events can cause Playwright glob matching to time out.
+- QA-DEC-017: The `All organizations` dropdown is a `role="menu"` element; command palette is a `role="dialog"` with `role="listbox"` containing grouped `Actions`, `Navigation`, and `Settings` sections.
+- QA-DEC-018: Collapse/expand state on the landing sidebar is best asserted by measuring the sidebar `getBoundingClientRect().width` (collapsed ~52px, expanded ~300px), because the expand tooltip is not exposed as a separate stable DOM element.
+
+## 2026-07-17 — First three catalog pages and Playwright E2E scaffold
+
+### Requested
+
+- Re-author the first three Nav Flow nodes (`login`, `auth`, `landing`) into `catalog/pages/*.json`.
+- Use `jeetcognition/playwright-enterprise-qa` as the reference for the login/auth Playwright foundation.
+- Create the first Playwright spec from a catalog case.
+
+### Implemented
+
+- Added `catalog/pages/login.json` (6 cases), `auth.json` (9 cases), and `landing.json` (17 cases) conforming to `catalog/schema/page-catalog.schema.json`. Cases are sourced from `app/src/data/fixtures/testcases.json` and the `qa-testing/testcases/*.md` specs, re-authored with risk tags, cadence, environment, executors, automation lifecycle, and cleanup.
+- Created `tests/playwright/` as a standalone package:
+  - `package.json` with `@playwright/test`, `dotenv`, `imapflow`, `mailparser`.
+  - Environment-configurable `playwright.config.ts` with `setup`, `unauthenticated`, and `authenticated` projects.
+  - Page objects (`BasePage`, `LoginPage`, `OrgSelectorPage`) and `support/paths.ts`/`support/gmail-otp.ts` (OTP flow adapted from the reference repo).
+  - `specs/auth.setup.ts` to capture an admin session.
+  - `specs/unauthenticated/login.spec.ts` implementing `LOGIN-SAN01` (Load the Login page) and setting its catalog `automation.status` to `active`.
+- All URLs, tenant slugs, and credentials are externalized via `.env`/`.env.example` and `process.env`; specs skip with a clear message when env vars are missing.
+- Updated `README.md`, `AGENTS.md`, `CHANGELOG.md`, `catalog/README.md`, `.prettierignore`, and this work-log.
+
+### Validation
+
+- `npm run catalog:validate` passes (3 page files, 32 testcases).
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- `cd app && npx tsc -b --force` passes (no `app/` code changes).
+- `cd tests/playwright && npx playwright install chromium` and `npx playwright test --list` succeed; `npx playwright test` skips cleanly without env vars.
+- All six `login` node cases are now automated in `tests/playwright/specs/unauthenticated/login.spec.ts` and linked as `active` in `catalog/pages/login.json`. Headed run of the full suite passed against the live Auth0 Universal Login page.
+- `app/` `npm run lint` and `npm run build` could not run locally because the `oxlint` / `rolldown` optional native bindings require Node `^20.19.0 || >=22.12.0` and the VM runs Node `v20.18.1`; CI uses Node 22 and will exercise them.
+
+### Deferred
+
+- Remaining landing regression cases not included in the focused subset; auth/landing authenticated specs; catalog → fixture generator; YAML migration; runner skill; D1/R2 runtime storage.
+
+### Decisions
+
+- QA-DEC-013: First catalog pages are seeded from fixtures as `source.type: migration` while the UI still consumes the JSON fixtures; a future generator will make the catalog the single source of truth.
+- QA-DEC-014: Playwright specs are split into `unauthenticated/` and `authenticated/` projects; the auth setup is optional and skips when credentials are missing so CI stays green before env vars are configured.
+
 ## 2026-07-16 — Repository review and target architecture
 
 ### Requested
