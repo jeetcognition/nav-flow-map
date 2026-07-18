@@ -2,6 +2,15 @@
 
 This file is append-only. It records durable questions, answers, rationale, status, and implementation references. New decisions that replace old ones must identify the superseded decision.
 
+## QA-DEC-023 — Source of truth for test-case automation status
+
+- **Date:** 2026-07-19
+- **Status:** Accepted
+- **Question:** Which repository artifact is the source of truth for whether a test case is currently automated, and how does the UI fixture stay in sync?
+- **Answer:** `catalog/pages/*.json` is the source of truth for automation status (`automation.status: active` for cases with a passing Playwright spec). The UI fixture `app/src/data/fixtures/testcases.json` is a downstream snapshot: `automation` is set to `"automated"` only when the matching catalog case is `active`; all other cases are `"manual"` or `"not-automatable"`. An `in-progress` automation value must not be persisted in fixtures.
+- **Rationale:** The Navflow UI visualizes coverage and risk based on `automation` and `runResults`. Showing cases as `automated` or `in-progress` when no spec exists makes the dashboard unreliable.
+- **Implementation:** `app/src/data/fixtures/testcases.json` (automation flags recalculated from `catalog/pages/login.json`, `auth.json`, and `landing.json`).
+
 ## QA-DEC-015 — Selector strategy for E2E specs
 
 - **Date:** 2026-07-18

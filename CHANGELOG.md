@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-19 — Correct automation status in UI fixtures
+- **What:** Synced `app/src/data/fixtures/testcases.json` so only the 41 currently automated catalog cases (`login`, `auth`, `landing`) have `automation: "automated"`. All other cases that were previously marked `automated` or `in-progress` were reset to `manual` to match reality.
+- **Why:** The Navflow UI showed many test cases as automated even though only the first three nodes have Playwright specs. This made the coverage/risk visualization misleading.
+- **Decisions:** QA-DEC-023 — keep fixture `automation` flags in lock-step with the Playwright catalog status; `in-progress` is not a valid automation state unless a PR is actively being written.
+
+# Changelog
+
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
 ## 2026-07-18 — Complete landing node (27 cases) across the full markdown spec
