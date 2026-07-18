@@ -65,14 +65,25 @@ export class OrgSelectorPage extends BasePage {
     return this.page.getByText(new RegExp(name, "i")).first();
   }
 
-  /** The first org row containing the given name and member count text. */
+  /** The org row element containing the given name and member count. */
   orgRow(name: string): Locator {
-    const card = this.orgCard(name);
-    return this.page
-      .locator("div")
-      .filter({ hasText: new RegExp(name, "i") })
-      .filter({ hasText: /members?/i })
-      .first();
+    return this.page.getByText(new RegExp(name, "i")).first().locator("..");
+  }
+
+  /** The overflow button inside a named org row. */
+  overflowFor(name: string): Locator {
+    return this.orgRow(name).getByRole("button", { name: "More options" });
+  }
+
+  /** The currently open org row overflow menu. */
+  overflowMenu(): Locator {
+    return this.page.locator('[role="menu"]').filter({ hasText: /Manage settings/ });
+  }
+
+  /** Open a named org row's overflow menu. */
+  async openOverflowFor(name: string) {
+    await this.overflowFor(name).click();
+    await this.overflowMenu().waitFor({ state: "visible", timeout: 10_000 });
   }
 
   /** Open the global command palette. */
@@ -90,7 +101,7 @@ export class OrgSelectorPage extends BasePage {
   /** Open the first org row overflow menu. */
   async openFirstOverflowMenu() {
     await this.firstOverflowButton.click();
-    await this.page.getByText("Pin organization").waitFor({ state: "visible", timeout: 10_000 });
+    await this.overflowMenu().waitFor({ state: "visible", timeout: 10_000 });
   }
 
   /** Open the bottom-left help menu. */

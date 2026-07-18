@@ -9,6 +9,781 @@
   },
   "testcases": [
     {
+      "id": "ORGSEL-REG01",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Search for a valid organization.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search for a valid organization."
+        }
+      ],
+      "assertions": ["Matching organizations are filtered and remain clickable"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG02",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Search with non-matching text.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search with non-matching text."
+        }
+      ],
+      "assertions": ["A clear empty state appears without stale results"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG03",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Search using special, whitespace, emoji, and long inputs.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "input-validation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search using special, whitespace, emoji, and long inputs."
+        }
+      ],
+      "assertions": ["Input is handled safely without script execution or page failure"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG04",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click an organization row.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click an organization row."
+        }
+      ],
+      "assertions": ["User navigates to the selected organization successfully"],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG05",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click an organization overflow menu.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click an organization overflow menu."
+        }
+      ],
+      "assertions": ["The correct row's context menu opens without overlap"],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG06",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Refresh or use browser back/forward.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "session-management"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Refresh or use browser back/forward."
+        }
+      ],
+      "assertions": ["The selector page reloads with its core UI intact"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG07",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Inspect the URL, UI, and console while loading, searching, and selecting.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "security"],
+      "cadence": ["nightly"],
+      "owner": "jeet",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the URL, UI, and console while loading, searching, and selecting."
+        }
+      ],
+      "assertions": [
+        "No credentials, sensitive tokens, org secrets, or internal errors are exposed"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG08",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click **Pin organization** from a row overflow menu.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Pin organization** from a row overflow menu."
+        }
+      ],
+      "assertions": [
+        "Selected organization is pinned or shows pinned state without navigating away unexpectedly"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG09",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click **Manage settings** from a row overflow menu.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Manage settings** from a row overflow menu."
+        }
+      ],
+      "assertions": [
+        "User navigates to settings for the selected organization or sees a safe permission-aware block"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG10",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click each help menu item.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click each help menu item."
+        }
+      ],
+      "assertions": [
+        "Contact support opens support flow",
+        "Documentation and Contact sales open the correct destinations safely"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG11",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Toggle sidebar collapse and expand using the button and shortcut.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Toggle sidebar collapse and expand using the button and shortcut."
+        }
+      ],
+      "assertions": [
+        "Sidebar state changes correctly and main content remains usable without clipping"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG12",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Use the command palette to search for navigation items.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Use the command palette to search for navigation items."
+        }
+      ],
+      "assertions": [
+        "Matching commands filter correctly and can be selected without stale or broken results"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG13",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Select **Switch organization** from the command palette.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Select **Switch organization** from the command palette."
+        }
+      ],
+      "assertions": ["Organization switch flow opens and the user remains on a valid page state"],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG14",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Use the **All organizations** dropdown search/list controls.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Use the **All organizations** dropdown search/list controls."
+        }
+      ],
+      "assertions": [
+        "Organizations filter/select correctly, and the current organization remains clearly indicated"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG15",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click **Enterprise settings** and **Invite members** in the dropdown.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Enterprise settings** and **Invite members** in the dropdown."
+        }
+      ],
+      "assertions": [
+        "Each button navigates to the expected page or shows a permission-safe message"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG16",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Click **Switch account** and **Log out** in the dropdown.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Switch account** and **Log out** in the dropdown."
+        }
+      ],
+      "assertions": [
+        "Switch account is present and opens account selection when available; otherwise the UI exposes Log out",
+        "Log out signs out and prevents protected content from remaining accessible"
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment / visual verification"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
+      "id": "ORGSEL-REG17",
+      "pageId": "landing",
+      "surface": "webapp",
+      "title": "Inspect URL, UI, and console while opening menus, command palette, and org dropdown.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "security"],
+      "cadence": ["nightly"],
+      "owner": "priya",
+      "navigation": "On the Landing Search page",
+      "preconditions": ["User is authenticated and on the organization selector page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect URL, UI, and console while opening menus, command palette, and org dropdown."
+        }
+      ],
+      "assertions": ["No credentials, tokens, org secrets, or internal errors are exposed"],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-17"
+    },
+    {
       "id": "ORGSEL-SAN01",
       "pageId": "landing",
       "surface": "webapp",
@@ -163,7 +938,7 @@
         }
       ],
       "assertions": [
-        "Menu is visible beside the selected row with Pin organization and Manage settings options"
+        "Menu is visible beside the selected row with Pin organization or Unpin organization and Manage settings options"
       ],
       "cleanup": {
         "required": true,
@@ -436,318 +1211,6 @@
       ],
       "assertions": [
         "Enterprise card, Enterprise settings, Invite members, organization list, and Log out are visible"
-      ],
-      "cleanup": {
-        "required": true,
-        "steps": ["Return to the starting page and reset to a clean state"]
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG01",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Search for a valid organization.",
-      "type": "Regression",
-      "priority": "P1",
-      "riskTags": ["navigation"],
-      "cadence": ["nightly", "weekly"],
-      "owner": "arjun",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Search for a valid organization."
-        }
-      ],
-      "assertions": ["Matching organizations are filtered and remain clickable"],
-      "cleanup": {
-        "required": false,
-        "steps": []
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG02",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Search with non-matching text.",
-      "type": "Regression",
-      "priority": "P1",
-      "riskTags": ["navigation"],
-      "cadence": ["nightly", "weekly"],
-      "owner": "maya",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Search with non-matching text."
-        }
-      ],
-      "assertions": ["A clear empty state appears without stale results"],
-      "cleanup": {
-        "required": false,
-        "steps": []
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG03",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Search using special, whitespace, emoji, and long inputs.",
-      "type": "Regression",
-      "priority": "P1",
-      "riskTags": ["navigation", "input-validation"],
-      "cadence": ["nightly", "weekly"],
-      "owner": "arjun",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Search using special, whitespace, emoji, and long inputs."
-        }
-      ],
-      "assertions": ["Input is handled safely without script execution or page failure"],
-      "cleanup": {
-        "required": false,
-        "steps": []
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG04",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Click an organization row.",
-      "type": "Regression",
-      "priority": "P1",
-      "riskTags": ["navigation"],
-      "cadence": ["nightly", "weekly"],
-      "owner": "arjun",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Click an organization row."
-        }
-      ],
-      "assertions": ["User navigates to the selected organization successfully"],
-      "cleanup": {
-        "required": true,
-        "steps": ["Return to the starting page and reset to a clean state"]
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG06",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Refresh or use browser back/forward.",
-      "type": "Regression",
-      "priority": "P1",
-      "riskTags": ["navigation", "session-management"],
-      "cadence": ["nightly", "weekly"],
-      "owner": "arjun",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Refresh or use browser back/forward."
-        }
-      ],
-      "assertions": ["The selector page reloads with its core UI intact"],
-      "cleanup": {
-        "required": false,
-        "steps": []
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG07",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Inspect the URL, UI, and console while loading, searching, and selecting.",
-      "type": "Regression",
-      "priority": "P0",
-      "riskTags": ["navigation", "security"],
-      "cadence": ["nightly"],
-      "owner": "jeet",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Inspect the URL, UI, and console while loading, searching, and selecting."
-        }
-      ],
-      "assertions": [
-        "No credentials, sensitive tokens, org secrets, or internal errors are exposed"
-      ],
-      "cleanup": {
-        "required": true,
-        "steps": ["Return to the starting page and reset to a clean state"]
-      },
-      "environment": {
-        "targets": ["desktop-chrome"],
-        "roles": ["enterprise-admin"]
-      },
-      "executors": {
-        "devinBrowser": "eligible",
-        "playwright": "eligible"
-      },
-      "automation": {
-        "status": "active",
-        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
-      },
-      "source": {
-        "type": "migration",
-        "reference": "app/src/data/fixtures/testcases.json"
-      },
-      "linkedBugIds": [],
-      "externalReferences": [],
-      "version": 1,
-      "lastReviewed": "2026-07-17"
-    },
-    {
-      "id": "ORGSEL-REG11",
-      "pageId": "landing",
-      "surface": "webapp",
-      "title": "Toggle sidebar collapse and expand using the button and shortcut.",
-      "type": "Regression",
-      "priority": "P1",
-      "riskTags": ["navigation"],
-      "cadence": ["nightly", "weekly"],
-      "owner": "arjun",
-      "navigation": "On the Landing Search page",
-      "preconditions": ["User is authenticated and on the organization selector page"],
-      "steps": [
-        {
-          "number": 1,
-          "action": "Toggle sidebar collapse and expand using the button and shortcut."
-        }
-      ],
-      "assertions": [
-        "Sidebar state changes correctly and main content remains usable without clipping"
       ],
       "cleanup": {
         "required": true,
