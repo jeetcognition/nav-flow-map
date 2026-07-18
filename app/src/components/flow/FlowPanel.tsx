@@ -3,7 +3,15 @@
 // table (+ automation status), bugs table, inline edit mode, draft testcases,
 // report bug, and the new "Run automation for this node" action.
 import { useMemo, useState } from "react";
-import { Bug as BugIcon, Path, PencilSimple, Play, Plus, X } from "@phosphor-icons/react";
+import {
+  ArrowSquareOut,
+  Bug as BugIcon,
+  Path,
+  PencilSimple,
+  Play,
+  Plus,
+  X,
+} from "@phosphor-icons/react";
 import { getBugs, getSessions, getTestCases, triggerDevinSession } from "../../data/dataService";
 import {
   addDraftCase,
@@ -20,6 +28,7 @@ import { useDataVersion } from "../../hooks/useData";
 import { useEditsVersion } from "../../hooks/useEdits";
 import { DEFAULT_SURFACE } from "../../lib/config";
 import { SessionBadge } from "../ui/badges";
+import { ExternalLink } from "../ui/ExternalLink";
 import { BugsTable } from "./BugsTable";
 import { EditableText } from "./editable";
 import { FlowPanelCaseTable } from "./FlowPanelCaseTable";
@@ -149,6 +158,7 @@ export function FlowPanel({ page, highlightCase, onClose, onReportBug }: Props) 
             className="btn btn-primary fp-btn"
             onClick={runAutomation}
             disabled={!!session && (session.status === "queued" || session.status === "running")}
+            title="Starts a Devin session that runs this page's automated cases (simulated in this Phase 1 demo)."
           >
             <Play size={13} weight="duotone" /> Run automation
           </button>
@@ -156,7 +166,14 @@ export function FlowPanel({ page, highlightCase, onClose, onReportBug }: Props) 
         {session && (
           <div className="fp-session">
             <SessionBadge status={session.status} />
-            <span className="mono fp-session-id">{session.id}</span>
+            <ExternalLink
+              className="mono fp-session-id"
+              href={session.url}
+              aria-label={`Open session ${session.id} in Devin`}
+            >
+              {session.id} <ArrowSquareOut size={12} weight="duotone" />
+            </ExternalLink>
+            <span className="fp-session-note">simulated Phase 1 run</span>
           </div>
         )}
 
