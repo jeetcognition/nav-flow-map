@@ -99,7 +99,7 @@
     "reach": "Preferences → Git/PR settings",
     "steps": "Change commit author/email, PR draft behavior, PR-open mode, and review trigger with valid/invalid email inputs.",
     "expected": "Valid selections persist; invalid email is rejected; enterprise locks/overrides are shown instead of silently ignored.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -114,7 +114,7 @@
     "reach": "Preferences → new session/PR flow",
     "steps": "With approval, set a disposable preference combination, reload, open composer/PR-related flow, then restore.",
     "expected": "Preferences are reflected consistently in downstream UI; cleanup restores all original values.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -129,7 +129,7 @@
     "reach": "Settings → Personal Connections",
     "steps": "Load cold.",
     "expected": "Integrations and MCP sections render; GitHub, GitLab, self-hosted GitLab, Slack, Linear, and team-enabled MCP rows show linked/unlinked state without exposing tokens.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -159,7 +159,7 @@
     "reach": "Personal Connections → Link provider",
     "steps": "Start OAuth/link flow for each unlinked provider and cancel before authorizing.",
     "expected": "Redirect uses the correct provider, scoped callback, valid state, and no open redirect or scriptable parameter echo.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -189,7 +189,7 @@
     "reach": "Personal Connections → Unlink",
     "steps": "With approval, unlink a disposable/personal provider account, reload, then re-link.",
     "expected": "UI and server state stay synchronized; no orphaned token remains; cleanup restores the link.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -219,7 +219,7 @@
     "reach": "Personal Connections → new session",
     "steps": "With approval, connect a disposable provider/MCP, start a session that uses it, then disconnect and retest.",
     "expected": "Connected credentials are available only as documented; disconnect prevents new use without leaking credential values.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -249,7 +249,7 @@
     "reach": "Home",
     "steps": "Type a prompt → Send",
     "expected": "Session is created and opens; navigates to session page.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -264,7 +264,7 @@
     "reach": "Home",
     "steps": "Click Send with empty box, then whitespace-only",
     "expected": "Send disabled/blocked for empty AND whitespace-only (contenteditable).",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -339,7 +339,7 @@
     "reach": "Home",
     "steps": "Send options → \"Start session in background\"",
     "expected": "Option present; background start works.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -459,7 +459,7 @@
     "reach": "Sessions",
     "steps": "Open a session row, then use Back/Forward.",
     "expected": "Navigation opens the correct session; returning restores prior filters, scroll, and list state.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -489,7 +489,7 @@
     "reach": "Sessions",
     "steps": "Force list/search/filter API 403/404/500 or slow responses.",
     "expected": "Loading and error states are scoped to the list; stale results are not presented as current.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -504,7 +504,7 @@
     "reach": "Sessions",
     "steps": "Filter to a known creator/date, open a session, return, then clear filters.",
     "expected": "End-to-end session discovery and return navigation work without losing state.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -549,7 +549,7 @@
     "reach": "Session → Browser",
     "steps": "\"Live Desktop\" take-over",
     "expected": "Can control Devin's Chrome (login/2FA).",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -564,7 +564,7 @@
     "reach": "Session lifecycle",
     "steps": "Prompt → plan → code → PR → offered test/video",
     "expected": "PR created; end-to-end test + video recording offered/attached.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -579,7 +579,7 @@
     "reach": "Settings → General",
     "steps": "Load cold.",
     "expected": "General and Authentication sections render, including Require SSO for member access, without page errors.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -654,7 +654,7 @@
     "reach": "General",
     "steps": "Rapidly toggle SSO in a disposable/staging enterprise or mocked environment.",
     "expected": "Final persisted state is deterministic; concurrent saves cannot leave client/server disagreement.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -714,7 +714,7 @@
     "reach": "Devin → model/mode settings",
     "steps": "With approval, toggle Ultra/Fast/SWE/GPT/Fusion settings one at a time, reload, then restore.",
     "expected": "Each accepted change persists; rejected changes show actionable errors and leave prior state intact.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -744,7 +744,7 @@
     "reach": "Devin → Git commit attribution",
     "steps": "Open/select each commit-author option and reload, then restore.",
     "expected": "Selection persists; descriptions match effective git metadata behavior; enterprise policy overrides are explicit.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -759,7 +759,7 @@
     "reach": "Devin → Commit email",
     "steps": "Test default/custom email, blank, malformed, long, Unicode, and injection-like values.",
     "expected": "Valid email persists; invalid values are rejected server-side and unsafe text stays inert.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-maya",
     "source": "authored"
@@ -804,7 +804,7 @@
     "reach": "Devin → new session → PR",
     "steps": "With approval, set disposable git/PR behavior, create a session that opens a PR, then restore.",
     "expected": "PR author/commit metadata follows settings; cleanup restores original enterprise configuration.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-priya",
     "source": "authored"
@@ -819,7 +819,7 @@
     "reach": "Settings → Review",
     "steps": "Load cold.",
     "expected": "Devin Review settings, PR descriptions, security scan, PR comments, automatic review, rules, files, repositories, and self-enrolled users render without page errors.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -834,7 +834,7 @@
     "reach": "Review",
     "steps": "Switch Repositories and Self-enrolled users tabs.",
     "expected": "Tab counts and lists render; URL/deep link preserves the selected tab.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -894,7 +894,7 @@
     "reach": "Review → auto-review limits",
     "steps": "Test blank, zero, negative, decimal, huge, and valid ACU limits, then restore.",
     "expected": "Only supported values save; validation is clear and no partial update occurs.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -909,7 +909,7 @@
     "reach": "Review → rules/files",
     "steps": "Add invalid, duplicate, long, Unicode, and HTML-like rule/file patterns without saving or in disposable scope.",
     "expected": "Invalid patterns are rejected; unsafe text is inert; valid patterns are scoped to the intended repository/enterprise.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -924,7 +924,7 @@
     "reach": "Review",
     "steps": "As non-admin or with tampered repo/user/enterprise IDs, attempt to enroll repos/users or update Review settings.",
     "expected": "Server-side authorization denies unauthorized changes and cross-enterprise access.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -939,7 +939,7 @@
     "reach": "Review → Git provider PR",
     "steps": "With approval, enroll a disposable repo/user and open a disposable PR.",
     "expected": "Devin Review behavior follows saved settings; cleanup removes enrollment and restores original configuration.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -954,7 +954,7 @@
     "reach": "Sub-org sidebar → Review, or `/review`",
     "steps": "Load",
     "expected": "Review landing renders; PR URL input present.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -999,7 +999,7 @@
     "reach": "Review UI",
     "steps": "Open a real reviewed PR → view findings → \"fix with Devin\"",
     "expected": "Findings list renders; fix spawns a session.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1014,7 +1014,7 @@
     "reach": "Enterprise settings → Knowledge",
     "steps": "Load the page cold.",
     "expected": "Knowledge heading, documentation link, search, Create knowledge, Name/Author/Created at columns, and System/Enterprise folders render without a page or console error.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1029,7 +1029,7 @@
     "reach": "Knowledge",
     "steps": "Expand and collapse System knowledge and Enterprise knowledge.",
     "expected": "Each folder changes state independently; its rows appear or hide without overlap, duplication, or losing the current search.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1044,7 +1044,7 @@
     "reach": "Knowledge",
     "steps": "Inspect the list page.",
     "expected": "Knowledge heading, documentation link, Create knowledge, search, Name/Author/Created at columns, and System/Enterprise knowledge rows are visible and readable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1059,7 +1059,7 @@
     "reach": "Knowledge",
     "steps": "Click **Create knowledge** without saving.",
     "expected": "Creation panel shows Notice, Contents, Macro, Folder, Pin to repository, Next, and Cancel controls.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1074,7 +1074,7 @@
     "reach": "Knowledge → Enterprise knowledge",
     "steps": "Select multiple Enterprise knowledge entries.",
     "expected": "Selected rows are highlighted; checkboxes, selected-count toolbar, clear-selection control, and Take action are visible.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1104,7 +1104,7 @@
     "reach": "Knowledge → open an entry",
     "steps": "Inspect the entry header.",
     "expected": "Back to knowledge, knowledge name, author, creation date, and Details/Usage tabs are visible and readable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1119,7 +1119,7 @@
     "reach": "Knowledge entry → Details",
     "steps": "Inspect all controls.",
     "expected": "Content, Trigger, Pin to repository, Folder, Macro, Save, and Delete controls are visible with their current values.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1134,7 +1134,7 @@
     "reach": "Knowledge entry → Usage",
     "steps": "Inspect usage information.",
     "expected": "Session usage by day chart, Retrieved/Used legend, Last 30 days range, Sessions list, and View session controls are visible.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1149,7 +1149,7 @@
     "reach": "Knowledge → disposable entry",
     "steps": "Pin the entry to a disposable repository → run matching and non-matching repository sessions → restore the original pin.",
     "expected": "Pin persists; knowledge is available only in its intended repository scope; cleanup restores the original repository selection.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1179,7 +1179,7 @@
     "reach": "Knowledge → Create knowledge",
     "steps": "Create `qa-temp-knowledge-<timestamp>` → verify it in list/search → edit its content, trigger, macro, folder, and repository pin → verify update → delete it.",
     "expected": "Create/read/update/delete succeeds; cleanup verifies the disposable knowledge no longer appears. Delete it even if an intermediate assertion fails.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1209,7 +1209,7 @@
     "reach": "Knowledge → disposable entry",
     "steps": "Create or edit fields with HTML-like, Unicode, and RTL text; inspect the UI, URL, console, and requests; then delete the entry.",
     "expected": "Text is escaped and rendered inert; no script executes, sensitive token appears, or unauthorized knowledge is returned.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1224,7 +1224,7 @@
     "reach": "Knowledge → Enterprise knowledge",
     "steps": "Select multiple disposable entries → Take action → Delete → confirm.",
     "expected": "Confirmation identifies the selection; all selected disposable entries are deleted, unselected entries remain, and the selection toolbar closes.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1254,7 +1254,7 @@
     "reach": "Disposable knowledge entry → Details",
     "steps": "Enter blank, duplicate, long, Unicode, and HTML-like values in editable fields.",
     "expected": "Required-field and macro validation is clear; HTML-like content remains inert; invalid changes are not saved.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1284,7 +1284,7 @@
     "reach": "Knowledge entry → Usage",
     "steps": "Compare the chart, Retrieved/Used legend, and displayed session records for the same period.",
     "expected": "Chart, legend, and session list represent the same knowledge entry and time range without stale or contradictory data.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1344,7 +1344,7 @@
     "reach": "Disposable knowledge entry → Details",
     "steps": "Click Delete → cancel once → repeat and confirm.",
     "expected": "Cancel leaves the entry unchanged; confirmation deletes it, returns to Knowledge, and the entry no longer appears.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1359,7 +1359,7 @@
     "reach": "Knowledge → Create knowledge → New session → Knowledge Usage",
     "steps": "Create disposable knowledge with unique Content and Trigger → start a session whose prompt matches the Trigger → verify Devin follows the unique instruction → locate the session in Usage and open it → delete the knowledge.",
     "expected": "Relevant knowledge is retrieved and applied only in the matching session; the correct session appears with accurate Retrieved/Used data; View session opens it; cleanup removes the disposable knowledge.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1389,7 +1389,7 @@
     "reach": "Playbooks → Enterprise",
     "steps": "Inspect the Enterprise list.",
     "expected": "Create playbook, Name/Macro/Created by/Last updated columns, and Enterprise rows are visible and readable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1404,7 +1404,7 @@
     "reach": "Playbooks → System",
     "steps": "Inspect the System list.",
     "expected": "System count and Cognition Team playbooks are visible; Create playbook is unavailable for the read-only System collection.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1419,7 +1419,7 @@
     "reach": "Playbooks → Enterprise",
     "steps": "Click **Create playbook**.",
     "expected": "Breadcrumb, Back to playbooks, name, author, Edit/Preview, editor, macro, Devin mode, Cancel, Save, and fullscreen controls are visible.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1449,7 +1449,7 @@
     "reach": "Playbooks",
     "steps": "Search with matching, no-match, whitespace, emoji, long, HTML-like, and injection-like input; then clear.",
     "expected": "Results filter safely; no-match state is clear; input remains inert; clearing restores the full list.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1479,7 +1479,7 @@
     "reach": "Playbooks",
     "steps": "Sort each supported column repeatedly.",
     "expected": "Sorting toggles ascending/descending, remains stable, and does not duplicate or omit rows.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1509,7 +1509,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Attempt creation with blank name/body, duplicate name, excessive-length values, and HTML-like text.",
     "expected": "Required validation is clear; unsafe text remains inert; no incomplete playbook is created.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1524,7 +1524,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Try macros without `!`, with spaces, duplicates, unsupported characters, and excessive length.",
     "expected": "Invalid or duplicate macros are rejected clearly; a valid unique macro is accepted.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1539,7 +1539,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Create `qa-temp-playbook-<timestamp>` → verify in Enterprise/search → edit name/body/macro/mode → reload and verify → delete.",
     "expected": "Create/read/update/delete persists correctly; cleanup confirms the disposable playbook is absent.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1554,7 +1554,7 @@
     "reach": "Playbooks → New or disposable playbook",
     "steps": "Enter Markdown → switch Edit/Preview → enter and exit fullscreen.",
     "expected": "Preview renders headings and lists safely; editor text is retained; fullscreen preserves content and controls.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1599,7 +1599,7 @@
     "reach": "Playbooks → New or disposable playbook",
     "steps": "Make unsaved changes, then use Back, Cancel, or another page.",
     "expected": "A warning or documented discard behavior occurs; changes are not silently saved or lost.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1659,7 +1659,7 @@
     "reach": "Settings → Environment",
     "steps": "Load cold.",
     "expected": "Configuration, Blueprint, Outposts, Golden snapshot, Snapshots, and Steering knowledge surfaces render without page errors.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1674,7 +1674,7 @@
     "reach": "Environment",
     "steps": "Switch each tab and deep-link/refresh it.",
     "expected": "Selected tab content and URL state are consistent; invalid tab falls back safely.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1704,7 +1704,7 @@
     "reach": "Environment → Configuration",
     "steps": "Test organization/repository selection and required configuration controls without saving.",
     "expected": "Save/start actions are gated until valid selections exist; helper text identifies what will be affected.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1734,7 +1734,7 @@
     "reach": "Environment → Outposts",
     "steps": "Inspect outpost configuration/list/empty states and available actions.",
     "expected": "Outpost state, ownership, and disabled controls are clear; no unrelated tenant data appears.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1749,7 +1749,7 @@
     "reach": "Environment → Golden snapshot",
     "steps": "Inspect legacy snapshot controls and warnings without changing state.",
     "expected": "Legacy status and migration/usage guidance are clear; unavailable actions are safely disabled.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1839,7 +1839,7 @@
     "reach": "Membership → Members",
     "steps": "Inspect the member table.",
     "expected": "Selection, Name, Email, Organizations, and Enterprise role columns are visible; names, emails, avatars, and role values are readable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1869,7 +1869,7 @@
     "reach": "Membership → Members",
     "steps": "Open **All organizations**.",
     "expected": "Search, All organizations, organization names, current selection, and scrolling are usable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1899,7 +1899,7 @@
     "reach": "Membership → Members",
     "steps": "Search by matching/non-matching name or email, whitespace, Unicode, long, HTML-like, and injection-like text; then clear.",
     "expected": "Filtering is literal and safe; no-match state is clear; clearing restores the member list.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1959,7 +1959,7 @@
     "reach": "Membership → Members",
     "steps": "Expand members with zero, one, and many organizations.",
     "expected": "Correct organization memberships display for that member only; zero state is clear; expansion stays within the viewport.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1974,7 +1974,7 @@
     "reach": "Membership → disposable member",
     "steps": "Record the original role → assign a different role → reload → restore the original role.",
     "expected": "Role persists and effective access changes accordingly; cleanup restores the exact original role.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1989,7 +1989,7 @@
     "reach": "Membership → Members",
     "steps": "As an unauthorized user or with a tampered member ID, attempt invite, role change, removal, and self-demotion.",
     "expected": "Unauthorized changes are denied; the last required admin cannot remove their own administrative access; cross-enterprise data is not exposed.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2004,7 +2004,7 @@
     "reach": "Membership → Members",
     "steps": "Inspect URLs, UI, console, and requests while searching, filtering, expanding memberships, and opening Invite members.",
     "expected": "No invitation token, credential, private profile data, or internal error is exposed.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2019,7 +2019,7 @@
     "reach": "Membership → Members",
     "steps": "Invite a disposable account with Member role → accept → assign a disposable role and organization → verify allowed/denied actions → remove or revoke it.",
     "expected": "Membership and permissions match the assignment; cleanup removes enterprise and organization access plus the disposable invite/member.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2034,7 +2034,7 @@
     "reach": "Membership → Roles",
     "steps": "Load the page cold.",
     "expected": "Role count, search, scope filter, Create role, and Role/Permissions/Scope/Type columns render without a page or console error.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2049,7 +2049,7 @@
     "reach": "Membership → Roles",
     "steps": "Inspect role rows.",
     "expected": "Enterprise/Organization scope and Built-in/Default/Custom badges are visible with permission counts.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2064,7 +2064,7 @@
     "reach": "Membership → Roles",
     "steps": "Open the scope filter and **Create role** menu.",
     "expected": "All/Enterprise/Organization filters and Create for enterprise/Create for organizations actions are visible.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2079,7 +2079,7 @@
     "reach": "Roles → Create for enterprise",
     "steps": "Open the form without saving.",
     "expected": "Role name, Cancel, disabled Save changes, permission descriptions, checkboxes, and enterprise permission groups are visible.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2109,7 +2109,7 @@
     "reach": "Membership → Roles",
     "steps": "Search with matching/no-match, whitespace, Unicode, long, HTML-like, and injection-like values; then clear.",
     "expected": "Results filter safely; no-match state is clear; clearing restores the list.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2124,7 +2124,7 @@
     "reach": "Membership → Roles",
     "steps": "Filter All, Enterprise, and Organization while searching.",
     "expected": "Rows match the selected scope; same-named roles remain distinguishable by scope; counts and results do not become stale.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2154,7 +2154,7 @@
     "reach": "Roles → Create role",
     "steps": "Attempt creation with blank, duplicate-within-scope, long, whitespace-only, Unicode, emoji, and HTML-like names, with zero permissions.",
     "expected": "Clear validation appears; unsafe text stays inert; no invalid role is created; same names in different scopes remain unambiguous if supported.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2169,7 +2169,7 @@
     "reach": "Roles → Create role",
     "steps": "Expand/collapse permission groups and select/deselect permissions across groups.",
     "expected": "Group state and checkbox selection remain accurate; descriptions stay aligned; implied or dependent permissions are handled clearly.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2184,7 +2184,7 @@
     "reach": "Roles → Create for enterprise",
     "steps": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions → verify → edit name/permissions → reload → delete.",
     "expected": "Enterprise role create/read/update/delete persists correctly; cleanup confirms the role is absent.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2199,7 +2199,7 @@
     "reach": "Roles → Create for organizations",
     "steps": "Create `qa-temp-org-role-<timestamp>` → assign to a disposable organization/member → edit → unassign → delete.",
     "expected": "Organization role applies only in the assigned organization; cleanup removes all assignments and the role.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2214,7 +2214,7 @@
     "reach": "Roles → Create or edit role",
     "steps": "Make unsaved changes, then use Cancel, Back, or another page.",
     "expected": "A warning or documented discard behavior occurs; changes are not silently saved or lost.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2229,7 +2229,7 @@
     "reach": "Disposable role",
     "steps": "Delete an unassigned role, then attempt deletion while another disposable role is assigned.",
     "expected": "Confirmation is required; assigned-role handling is clear and safe; unrelated roles and assignments remain unchanged.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2274,7 +2274,7 @@
     "reach": "Membership → Groups (IdP)",
     "steps": "Load the page cold.",
     "expected": "Groups tab activates with count zero; No groups found and IdP/SSO setup guidance are visible.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2289,7 +2289,7 @@
     "reach": "Membership → Groups (IdP)",
     "steps": "Deep-link, refresh, and use Back/Forward on `?tab=groups`.",
     "expected": "Groups remains selected; the empty state does not show stale members, roles, or groups from another tenant.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2304,7 +2304,7 @@
     "reach": "Membership → Groups (IdP)",
     "steps": "Open Groups as a non-admin or with a tampered enterprise context.",
     "expected": "Access follows authorization rules and no cross-enterprise IdP configuration or group data is exposed.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2349,7 +2349,7 @@
     "reach": "Organizations",
     "steps": "Open a row's edit control without saving.",
     "expected": "**Manage organization** modal shows the selected organization name, Billing cycle ACU limit, helper text, and Save changes; current values match the selected row.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2364,7 +2364,7 @@
     "reach": "Organizations",
     "steps": "Inspect the first and last pages.",
     "expected": "Previous and Next controls are visible and correctly enabled or disabled for the current page.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2379,7 +2379,7 @@
     "reach": "Organizations",
     "steps": "Search with full/partial name, no-match, whitespace, case variants, Unicode, long, HTML-like, and injection-like text; then clear.",
     "expected": "Filtering is literal and safe; no-match state is clear; clearing restores the organization list.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2409,7 +2409,7 @@
     "reach": "Organizations",
     "steps": "Navigate Previous and Next while search is active, then clear search.",
     "expected": "No rows are duplicated or omitted; page state remains valid when filtering reduces the result count.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2424,7 +2424,7 @@
     "reach": "Organizations",
     "steps": "Select and deselect one row and the header checkbox across pages.",
     "expected": "Selection state and counts are accurate; selection never triggers edit or delete; hidden-page rows are not modified unexpectedly.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2439,7 +2439,7 @@
     "reach": "Organizations → disposable organization",
     "steps": "Record original values → change the name and ACU limit to a valid positive integer → save → reload → restore the originals.",
     "expected": "Save succeeds; the table and modal show persisted values; cleanup restores the exact original state.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2454,7 +2454,7 @@
     "reach": "Organizations → Manage organization",
     "steps": "Enter blank, whitespace-only, duplicate, long, Unicode, emoji, HTML-like, and leading/trailing-space names.",
     "expected": "Clear validation appears; unsafe text remains inert; invalid names are not saved; whitespace is handled consistently.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2469,7 +2469,7 @@
     "reach": "Organizations → Manage organization",
     "steps": "Enter No limit or blank, zero, negative, decimal, text, exponent notation, and leading-zero ACU values.",
     "expected": "Supported values save consistently; invalid values show actionable validation and never partially update the organization.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2499,7 +2499,7 @@
     "reach": "Organizations → Manage organization",
     "steps": "Make unsaved changes, then click outside, press Escape, use Back, or navigate away.",
     "expected": "A warning or documented discard behavior occurs; changes are not silently saved or lost.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2514,7 +2514,7 @@
     "reach": "Organizations → disposable organization",
     "steps": "Click delete → cancel → repeat and confirm.",
     "expected": "Confirmation identifies the exact organization; cancel changes nothing; confirm removes only the disposable organization and handles dependencies safely.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2544,7 +2544,7 @@
     "reach": "Organizations",
     "steps": "Inspect URL, UI, console, and requests during search, edit, and delete workflows.",
     "expected": "No credentials, tenant secrets, private member data, stack traces, or unnecessary internal identifiers are exposed.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2589,7 +2589,7 @@
     "reach": "Create organization → Members",
     "steps": "Inspect the default member state.",
     "expected": "Add me as a member, member search, Name and Email columns, pagination, and selected count are visible; the current user is selected by default.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2634,7 +2634,7 @@
     "reach": "Create organization",
     "steps": "Enter blank or No limit, zero, a valid positive integer, negative, decimal, text, exponent notation, and leading-zero ACU values.",
     "expected": "Only supported values enable Create; invalid values show actionable validation and no organization is partially created.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2649,7 +2649,7 @@
     "reach": "Create organization",
     "steps": "Enter boundary and extremely large ACU values such as `100000000000000`.",
     "expected": "The supported range is shown and out-of-range values are rejected before submission.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2679,7 +2679,7 @@
     "reach": "Create organization → Members",
     "steps": "Select and deselect members across several pages and searches.",
     "expected": "Selected count and checkboxes remain accurate; no intended selection is lost and no unrelated member is added.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2694,7 +2694,7 @@
     "reach": "Create organization → Members",
     "steps": "Toggle Add me as a member while selecting other members.",
     "expected": "Current-user selection and the corresponding table row remain consistent; duplicate membership is impossible.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2724,7 +2724,7 @@
     "reach": "Create organization → Repository permissions",
     "steps": "Follow the repository-permissions link, then return.",
     "expected": "The correct settings page opens; incomplete organization data is not submitted or retained unexpectedly.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2754,7 +2754,7 @@
     "reach": "Create organization",
     "steps": "Inspect URL, UI, console, and requests while entering names, ACU limits, and member searches.",
     "expected": "No credentials, private member data, tenant secrets, stack traces, or unnecessary identifiers are exposed.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2784,7 +2784,7 @@
     "reach": "Settings → Analytics",
     "steps": "Load cold.",
     "expected": "Usage, Consumption, Categories, date range, organization filter, Overall/Organizations/Users/Repositories views, refresh, export, charts, and KPIs render without page errors.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2814,7 +2814,7 @@
     "reach": "Analytics",
     "steps": "Open date range, organization, view, and grouping dropdowns.",
     "expected": "Options are readable, current selections are marked, and closing without selection leaves charts unchanged.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2829,7 +2829,7 @@
     "reach": "Analytics → Date range",
     "steps": "Select current/previous/custom ranges including start>end, same-day, future, and very large range.",
     "expected": "Invalid ranges are rejected or clamped clearly; valid ranges refetch all widgets without stale data.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2859,7 +2859,7 @@
     "reach": "Analytics → charts",
     "steps": "Switch by size/origin/grouping and daily/weekly/monthly where available.",
     "expected": "Chart labels, totals, legends, and empty states update consistently; no NaN or broken axis labels appear.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2874,7 +2874,7 @@
     "reach": "Analytics → Export/refresh",
     "steps": "Refresh data and export each supported view/range.",
     "expected": "Refresh timestamp updates correctly; export file matches active filters and contains no unauthorized user/session detail.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2904,7 +2904,7 @@
     "reach": "Analytics",
     "steps": "As restricted user or with tampered org/user/repo IDs, request analytics outside the enterprise.",
     "expected": "Server denies unauthorized metrics and does not expose private usage, cost, or session metadata.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2934,7 +2934,7 @@
     "reach": "Settings → Connections",
     "steps": "Load Integrations cold.",
     "expected": "Git providers, communication, and task-management providers render with counts/status and no page errors.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2949,7 +2949,7 @@
     "reach": "Connections",
     "steps": "Inspect GitHub, GitLab, Bitbucket, Azure DevOps, Slack, Teams, Linear, and Jira cards.",
     "expected": "Each provider shows a clear connected/not-connected/user-linked state and the correct Configure action.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2964,7 +2964,7 @@
     "reach": "Connections → MCP servers",
     "steps": "Switch to MCP servers.",
     "expected": "MCP count/list renders; tab state is reflected in URL/deep link; returning to Integrations restores its content.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3024,7 +3024,7 @@
     "reach": "Connections → MCP servers",
     "steps": "With approval, allow/deny or connect/disconnect a disposable MCP server, reload, then restore.",
     "expected": "Policy persists, affects new sessions as documented, and cleanup returns the server to its original state.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3069,7 +3069,7 @@
     "reach": "Settings → Repositories",
     "steps": "Load cold.",
     "expected": "Organization selector renders first with no page errors; repository controls are gated until an organization is selected.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3084,7 +3084,7 @@
     "reach": "Repositories",
     "steps": "Open organization selector and choose `jeet-test-org` without mutating permissions.",
     "expected": "Selected organization is shown; repository list/permissions state loads only for that organization.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3099,7 +3099,7 @@
     "reach": "Repositories → selected org",
     "steps": "Inspect repo list, provider/status/permission columns, filters, and available actions.",
     "expected": "Rows are associated with the selected org; permissions/actions are clearly labeled.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3159,7 +3159,7 @@
     "reach": "Repositories",
     "steps": "As restricted user or with tampered org/repo IDs, request or mutate repository permissions.",
     "expected": "Server denies unauthorized/cross-tenant access and does not expose private repo metadata.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3189,7 +3189,7 @@
     "reach": "`/settings/deepwiki` or left nav DeepWiki",
     "steps": "Load",
     "expected": "DeepWiki renders for an indexed repo (architecture wiki + diagrams).",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3234,7 +3234,7 @@
     "reach": "Guardrails",
     "steps": "Inspect available guardrails and current action settings.",
     "expected": "Real-time request analysis, threat detection, action execution, privacy controls, and each guardrail action are clearly labeled.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3249,7 +3249,7 @@
     "reach": "Guardrails → Violations",
     "steps": "Switch to Violations and inspect empty/list state without opening sensitive values.",
     "expected": "Violation list, filters/details, and empty state render without displaying secret values unnecessarily.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3264,7 +3264,7 @@
     "reach": "Guardrails → action selectors",
     "steps": "With approval, change a disposable/non-production guardrail action, reload, then restore.",
     "expected": "Saved action persists and applies only to intended scope; cleanup restores original policy.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3279,7 +3279,7 @@
     "reach": "Guardrails → inputs/selectors",
     "steps": "Test search/filter/action controls with no-match, Unicode, long, HTML-like, and injection-like text.",
     "expected": "Filtering and labels are literal and safe; unsafe text remains inert.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3309,7 +3309,7 @@
     "reach": "Guardrails",
     "steps": "Trigger or simulate warn/block/terminate outcomes in a disposable session.",
     "expected": "User-facing outcome matches configured action; violation record contains enough metadata without sensitive payload leakage.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3324,7 +3324,7 @@
     "reach": "Guardrails",
     "steps": "As non-admin or with tampered enterprise/violation IDs, attempt to read violations or update policy.",
     "expected": "Authorization prevents cross-enterprise violation access and unauthorized policy changes.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3354,7 +3354,7 @@
     "reach": "`/settings/secure-mode-profiles`",
     "steps": "Load",
     "expected": "**Access-gated** — correctly shows \"Access denied\" for non-authorized (AUTO-057). With permission: profile list renders.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3369,7 +3369,7 @@
     "reach": "Secure mode (authorized)",
     "steps": "Create profile with network allowlist; assign to org/user",
     "expected": "Profile persists; in-session `get_network_allowlist` reflects it; request-access flow works. **N/E**.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3399,7 +3399,7 @@
     "reach": "Code-scan",
     "steps": "Open **Start Scan** dialog",
     "expected": "Repo / profile / auto-scan / interactive-mode options render; Start gated without a repo.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3429,7 +3429,7 @@
     "reach": "Code-scan → PR",
     "steps": "Start scan on a repo → review findings → open fix PR",
     "expected": "Threat-model-based findings; fix PR opened; results also via `/v3/code-scans`.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3459,7 +3459,7 @@
     "reach": "Devin API → Service users",
     "steps": "Inspect table rows.",
     "expected": "Name, scope, organization, role, created/expires timestamps, and actions are readable without displaying API token values.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3474,7 +3474,7 @@
     "reach": "Devin API → Legacy API",
     "steps": "Switch to Legacy API tab.",
     "expected": "Legacy token list/state renders; token values are masked or only shown according to documented one-time behavior.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3504,7 +3504,7 @@
     "reach": "Devin API → Search/filter",
     "steps": "Search and filter by organization/role with no-match, whitespace, Unicode, long, duplicate-name, and HTML-like text.",
     "expected": "Filtering is literal and safe; duplicate display names remain distinguishable by metadata.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3519,7 +3519,7 @@
     "reach": "Devin API → Provision",
     "steps": "With approval, test blank, duplicate, long, Unicode, HTML-like names; invalid scope/role/expiration; then cancel or delete disposable user.",
     "expected": "Validation is clear; unsafe text is inert; invalid service users are not created.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3564,7 +3564,7 @@
     "reach": "Devin API",
     "steps": "As non-admin or with tampered service-user/enterprise IDs, attempt list/create/delete/legacy-token operations.",
     "expected": "Server-side authorization prevents unauthorized key access, IDOR, and privilege escalation.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3579,7 +3579,7 @@
     "reach": "Settings → Infrastructure",
     "steps": "Load cold.",
     "expected": "Infrastructure heading, hypervisor/capacity health copy, Refresh action, and empty/list state render without page errors.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3594,7 +3594,7 @@
     "reach": "Infrastructure",
     "steps": "Inspect current VPC/tenant/hypervisor state.",
     "expected": "Empty state such as “No VPC data available” is clear, or populated rows show tenant/hypervisor/capacity status accurately.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3624,7 +3624,7 @@
     "reach": "Infrastructure",
     "steps": "If list/search/filter controls are present, test no-match, Unicode, long, HTML-like, and injection-like values.",
     "expected": "Filters are literal and safe; no cross-tenant infrastructure identifiers appear.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3639,7 +3639,7 @@
     "reach": "Infrastructure",
     "steps": "As restricted user or with tampered tenant/hypervisor IDs, request infrastructure health data.",
     "expected": "Server denies unauthorized/cross-tenant infra visibility and does not expose internal host details unnecessarily.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3654,7 +3654,7 @@
     "reach": "Settings → Skills & Rules",
     "steps": "Load cold.",
     "expected": "Skills analytics, runtime filter, date filter, usage over time, most invoked skills, task types, search, and table render without page errors.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3684,7 +3684,7 @@
     "reach": "Skills & Rules",
     "steps": "Open runtime and date-range filters.",
     "expected": "Current selections and available ranges are clear; closing filters without selection leaves data unchanged.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3714,7 +3714,7 @@
     "reach": "Skills & Rules",
     "steps": "Switch Cloud/local runtime and date ranges.",
     "expected": "Charts/table refetch consistently; stale data is not shown as current; empty ranges render cleanly.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3729,7 +3729,7 @@
     "reach": "Skills & Rules",
     "steps": "Click View sessions or skill detail for a row, then return.",
     "expected": "Navigation opens the correct filtered sessions/details view and Back restores filters/search.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3744,7 +3744,7 @@
     "reach": "Skills & Rules",
     "steps": "As restricted user or with tampered skill/source/session IDs, request analytics/details.",
     "expected": "Server denies unauthorized data access and does not expose private session prompts or repository metadata.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3774,7 +3774,7 @@
     "reach": "Sub-org home",
     "steps": "Inspect the **Recent** section.",
     "expected": "Recent heading, search control, and overflow menu are visible and properly aligned.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3789,7 +3789,7 @@
     "reach": "Sub-org home",
     "steps": "Inspect the left sidebar navigation.",
     "expected": "**New session**, **Automations**, **Security**, **Review**, and **Wiki** options are visible with the correct icons and readable labels.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3804,7 +3804,7 @@
     "reach": "Sidebar → Automations",
     "steps": "Load",
     "expected": "Automations list + Create render.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3834,7 +3834,7 @@
     "reach": "Create → Advanced",
     "steps": "Expand Advanced (agent mode, child sessions, run-as-creator, network policy, metadata, ACU/rate limits)",
     "expected": "All controls render.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3849,7 +3849,7 @@
     "reach": "Create → Advanced → Network policy",
     "steps": "Add domain `javascript:alert(1)`, `<script>`, `http://`, whitespace",
     "expected": "**BUG-006**: accepted unvalidated. Expected: reject malformed/non-allowlisted.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3879,7 +3879,7 @@
     "reach": "Automations",
     "steps": "Create schedule/webhook automation → trigger → session spawns",
     "expected": "Event spawns a session; delivery target (Slack) receives result. **N/E** unless approved.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3894,7 +3894,7 @@
     "reach": "Sidebar → Review",
     "steps": "Load",
     "expected": "Review renders; PR URL input (dismiss intro modal — BL-043).",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3909,7 +3909,7 @@
     "reach": "Review",
     "steps": "Paste valid PR URL → click \"Go to pull request\"",
     "expected": "**BUG-017**: button never enables; Enter submits (then works incl. graceful \"PR Not Found\").",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3924,7 +3924,7 @@
     "reach": "Sidebar → Wiki",
     "steps": "Load",
     "expected": "Wiki renders; search present.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3954,7 +3954,7 @@
     "reach": "Top-left organization menu",
     "steps": "Open the organization dropdown.",
     "expected": "Enterprise name/member count, **Enterprise settings**, **Invite members**, organization list, **Switch account**, and **Log out** are visible and readable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4029,7 +4029,7 @@
     "reach": "Top-left organization menu",
     "steps": "Click **Switch account**.",
     "expected": "Account-selection flow opens safely and protected organization data is not exposed.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4119,7 +4119,7 @@
     "reach": "Sub-orgs and Settings",
     "steps": "Click each visible child link and Back to the root without saving.",
     "expected": "Each route opens the correct sub-org settings page and Back/return restores the root.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4134,7 +4134,7 @@
     "reach": "Sub-orgs and Settings",
     "steps": "Deep-link, refresh, and browser Back/Forward on the root and child routes.",
     "expected": "The selected sub-org remains `jeet-test-org`; navigation does not jump to enterprise-level pages unexpectedly.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4149,7 +4149,7 @@
     "reach": "Sub-orgs and Settings",
     "steps": "Use global settings search with child-page labels, no-match, Unicode, long, HTML-like, and injection-like text.",
     "expected": "Matching settings are found literally; unsafe text is inert; no unrelated tenant routes appear.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4164,7 +4164,7 @@
     "reach": "Sub-orgs and Settings",
     "steps": "As a user without access or with tampered org slug, request the root and child settings pages.",
     "expected": "Server denies unauthorized/cross-org access and does not expose settings metadata from another sub-org.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4179,7 +4179,7 @@
     "reach": "Enterprise Organizations → Sub-orgs and Settings",
     "steps": "Navigate from Organizations to `jeet-test-org`, open several child settings pages, then return to Organizations.",
     "expected": "Cross-level navigation preserves enterprise/sub-org context and does not lose the selected organization.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4194,7 +4194,7 @@
     "reach": "Left nav → Automations",
     "steps": "Load",
     "expected": "Automations list + Create button render.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4299,7 +4299,7 @@
     "reach": "Automations",
     "steps": "Create webhook automation → POST to webhook with secret → session spawns",
     "expected": "Valid secret → session created; invalid/missing secret → rejected. **N/E** unless approved.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4329,7 +4329,7 @@
     "reach": "Schedules → Create",
     "steps": "Set cron/recurrence + prompt",
     "expected": "Valid cron accepted; invalid cron rejected.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4344,7 +4344,7 @@
     "reach": "Schedules",
     "steps": "Create one-time + recurring; edit; delete",
     "expected": "CRUD persists; next-run time correct. **N/E** on live / delete after.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4359,7 +4359,7 @@
     "reach": "Schedules",
     "steps": "Create near-term schedule → wait for fire",
     "expected": "Session spawns at scheduled time; appears in Sessions list. **N/E** unless approved.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4404,7 +4404,7 @@
     "reach": "On the Login page",
     "steps": "Inspect the account registration prompt",
     "expected": "\"Don't have an account? Sign up\" is visible and readable.",
-    "automation": "in-progress",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4449,7 +4449,7 @@
     "reach": "On the Login page",
     "steps": "Inspect the URL, visible UI, and browser console before and after submitting an invalid email",
     "expected": "No credentials, OTPs, sensitive tokens, or internal error details appear in the URL, UI, or browser console.",
-    "automation": "in-progress",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4494,7 +4494,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Read the description text under the Documentation card.",
     "expected": "The text \"Find answers to common questions and comprehensive guides\" is visible under the Documentation card.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4509,7 +4509,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Confirm the Documentation button is visible and enabled. 3. Click the Documentation button.",
     "expected": "The Documentation button is clickable and navigates to the Documentation page; the target route loads without error.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4599,7 +4599,7 @@
     "reach": "On the OTP step",
     "steps": "Inspect the resend option",
     "expected": "A \"resend code\" control is visible; clicking it confirms a new code was sent.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4614,7 +4614,7 @@
     "reach": "On the OTP step",
     "steps": "Enter a wrong OTP code and submit",
     "expected": "The code is rejected with a clear error; the user stays on the OTP step and is NOT logged in.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4644,7 +4644,7 @@
     "reach": "While logged out",
     "steps": "Open a protected route directly (e.g. the org selector or a settings URL)",
     "expected": "The user is redirected to the Login page, not shown any protected content.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4659,7 +4659,7 @@
     "reach": "After a successful login",
     "steps": "Log out from the account menu",
     "expected": "The session ends and the user is returned to the Login page; going Back does not restore protected content.",
-    "automation": "in-progress",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4674,7 +4674,7 @@
     "reach": "On the OTP step",
     "steps": "Inspect the URL, UI, and browser console during the whole email → OTP → success flow",
     "expected": "No OTP codes, tokens, or sensitive session data are exposed in the URL, page source, or console.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4719,7 +4719,7 @@
     "reach": "On the Landing Search page",
     "steps": "Inspect organization rows.",
     "expected": "Each row shows the organization name, member count, and overflow menu without overlap.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4749,7 +4749,7 @@
     "reach": "On the Landing Search page",
     "steps": "Open the bottom help menu from the `?` icon.",
     "expected": "**Contact support**, **Documentation**, and **Contact sales** are visible and readable.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4779,7 +4779,7 @@
     "reach": "On the Landing Search page",
     "steps": "Collapse the sidebar and hover the expand control.",
     "expected": "Compact sidebar is visible, and tooltip shows **Expand sidebar** with the keyboard shortcut.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4794,7 +4794,7 @@
     "reach": "On the Landing Search page",
     "steps": "Hover the search icon in the sidebar.",
     "expected": "Tooltip shows **Search** with the keyboard shortcut.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4809,7 +4809,7 @@
     "reach": "On the Landing Search page",
     "steps": "Open the global command/search palette.",
     "expected": "Search input, Actions, Navigation, and Settings sections are visible and readable.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4824,7 +4824,7 @@
     "reach": "On the Landing Search page",
     "steps": "Open the **All organizations** dropdown.",
     "expected": "Enterprise card, Enterprise settings, Invite members, organization list, Switch account, and Log out are visible.",
-    "automation": "in-progress",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4839,7 +4839,7 @@
     "reach": "On the Landing Search page",
     "steps": "Search for a valid organization.",
     "expected": "Matching organizations are filtered and remain clickable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4854,7 +4854,7 @@
     "reach": "On the Landing Search page",
     "steps": "Search with non-matching text.",
     "expected": "A clear empty state appears without stale results.",
-    "automation": "in-progress",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4869,7 +4869,7 @@
     "reach": "On the Landing Search page",
     "steps": "Search using special, whitespace, emoji, and long inputs.",
     "expected": "Input is handled safely without script execution or page failure.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4899,7 +4899,7 @@
     "reach": "On the Landing Search page",
     "steps": "Click an organization overflow menu.",
     "expected": "The correct row's context menu opens without overlap.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4929,7 +4929,7 @@
     "reach": "On the Landing Search page",
     "steps": "Inspect the URL, UI, and console while loading, searching, and selecting.",
     "expected": "No credentials, sensitive tokens, org secrets, or internal errors are exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4944,7 +4944,7 @@
     "reach": "On the Landing Search page",
     "steps": "Click **Pin organization** from a row overflow menu.",
     "expected": "Selected organization is pinned or shows pinned state without navigating away unexpectedly.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4959,7 +4959,7 @@
     "reach": "On the Landing Search page",
     "steps": "Click **Manage settings** from a row overflow menu.",
     "expected": "User navigates to settings for the selected organization or sees a safe permission-aware block.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4974,7 +4974,7 @@
     "reach": "On the Landing Search page",
     "steps": "Click each help menu item.",
     "expected": "Contact support opens support flow; Documentation and Contact sales open the correct destinations safely.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4989,7 +4989,7 @@
     "reach": "On the Landing Search page",
     "steps": "Toggle sidebar collapse and expand using the button and shortcut.",
     "expected": "Sidebar state changes correctly and main content remains usable without clipping.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5004,7 +5004,7 @@
     "reach": "On the Landing Search page",
     "steps": "Use the command palette to search for navigation items.",
     "expected": "Matching commands filter correctly and can be selected without stale or broken results.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5034,7 +5034,7 @@
     "reach": "On the Landing Search page",
     "steps": "Use the **All organizations** dropdown search/list controls.",
     "expected": "Organizations filter/select correctly, and the current organization remains clearly indicated.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5064,7 +5064,7 @@
     "reach": "On the Landing Search page",
     "steps": "Click **Switch account** and **Log out** in the dropdown.",
     "expected": "Switch account opens account selection; Log out signs out and prevents protected content from remaining accessible.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5094,7 +5094,7 @@
     "reach": "Top Left Menu → Enterprise settings",
     "steps": "Open Enterprise Settings.",
     "expected": "**Settings › Enterprise** breadcrumb, **Enterprise Settings** heading, and description are visible and readable.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5124,7 +5124,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Enterprise preferences and settings**.",
     "expected": "**General**, **Connections**, and **Sessions** cards are visible with icons and navigation arrows.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5139,7 +5139,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Products**.",
     "expected": "**Devin** and **Review** cards are visible and readable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": true,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5169,7 +5169,7 @@
     "reach": "Enterprise Settings",
     "steps": "Scroll to **Administration**.",
     "expected": "**Repositories**, **Membership**, **Organizations**, **Devin API**, **Guardrails** with Beta badge, **Infrastructure**, and **Analytics** are visible.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5199,7 +5199,7 @@
     "reach": "Enterprise Settings",
     "steps": "Search settings using matching, non-matching, special-character, and long text.",
     "expected": "Matching settings filter correctly; no-match state is clear; input remains inert and the page stays usable.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5229,7 +5229,7 @@
     "reach": "Enterprise Settings",
     "steps": "Select another organization from the sidebar organization list.",
     "expected": "The selected organization's settings open and the enterprise context does not leak into the organization page.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5244,7 +5244,7 @@
     "reach": "Enterprise Settings",
     "steps": "Scroll the sidebar organization list and click **Load more** when available.",
     "expected": "More organizations load without duplicates, layout shifts, or losing the current settings page.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5259,7 +5259,7 @@
     "reach": "Enterprise Settings",
     "steps": "Open Enterprise Settings as a user without enterprise-admin access.",
     "expected": "Restricted settings are hidden or access-denied; no unauthorized enterprise data or actions are exposed.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5289,7 +5289,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect the URL, UI, network responses, and console while using the page.",
     "expected": "No credentials, tokens, private configuration values, or internal errors are exposed.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5334,7 +5334,7 @@
     "reach": "Secrets → empty scope",
     "steps": "Inspect the empty state.",
     "expected": "No secrets found and Add your first secret appear; controls remain usable and no row from the other scope leaks into the view.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5349,7 +5349,7 @@
     "reach": "Secrets → Add secret",
     "steps": "Open the dialog without submitting.",
     "expected": "Scope, type, name, value, note, Redact value, close, and Store secret controls appear; the title reflects the selected scope.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5364,7 +5364,7 @@
     "reach": "Secrets → Add secret / Bulk add secrets",
     "steps": "Inspect Raw secret, Cookie, TOTP, and bulk-import forms.",
     "expected": "Raw, Cookie JSON or base64, TOTP and QR, upload-file, pasted `.env`, scope, and gated Store controls match the selected workflow.",
-    "automation": "in-progress",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5424,7 +5424,7 @@
     "reach": "Secrets → Add secret → Cookie",
     "steps": "Test valid JSON or base64 and malformed JSON, invalid base64, missing fields, unsupported domains or paths, duplicates, and oversized payloads.",
     "expected": "Only valid Chromium-format cookies are accepted; errors identify the problem without logging cookie contents.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5469,7 +5469,7 @@
     "reach": "Secrets → Add or Bulk add",
     "steps": "Switch Organization and Personal scopes and secret types after entering unsaved data; close, press Escape, go Back, refresh, and revisit.",
     "expected": "Scope, title, and fields remain consistent; warning or documented discard behavior occurs; no secret is silently stored or moved between scopes.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5484,7 +5484,7 @@
     "reach": "Secrets → disposable secret",
     "steps": "With approval, create a disposable secret → verify metadata → edit name, value, note, and redaction → reload → delete it.",
     "expected": "CRUD persists correctly; editing never reveals the previous value unnecessarily; only the selected secret changes; cleanup removes it.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5499,7 +5499,7 @@
     "reach": "Secrets → disposable secret → Actions → Delete",
     "steps": "With approval, cancel once, then confirm; repeat with similarly named rows.",
     "expected": "Confirmation identifies the exact secret and scope; cancel changes nothing; confirm removes only the selected secret and leaves no usable residual value.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5529,7 +5529,7 @@
     "reach": "Secrets and existing sessions",
     "steps": "With approval, add, update, and delete a disposable secret while old and new sessions exist.",
     "expected": "Changes follow documented session timing: new secrets become available to newly created sessions, and stale sessions do not gain unexpected access.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5544,7 +5544,7 @@
     "reach": "Secrets → Add secret → Redact value",
     "steps": "With approval, enable redaction, use a disposable marker in a new session, and inspect the UI, DOM, console, requests, transcript, logs, and errors.",
     "expected": "The value remains usable where intended but is masked from user-visible and diagnostic surfaces; copying, editing, and failures do not reveal it.",
-    "automation": "automated",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"

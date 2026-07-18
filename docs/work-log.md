@@ -2,6 +2,30 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-19 — Correct automation status in UI fixtures
+
+### Requested
+
+- Fix the Navflow page dummy data: only the first three nodes (`login`, `auth`, `landing`) have Playwright specs, so no other test case should appear as automated.
+
+### Implemented
+
+- Recalculated `app/src/data/fixtures/testcases.json` `automation` flags from `catalog/pages/login.json`, `auth.json`, and `landing.json`.
+- 41 cases are now `automated` (catalog `active` status, including the one `manual` catalog case in `auth`).
+- All other cases that were `automated` or `in-progress` were reset to `manual`; `not-automatable` cases were preserved.
+- Updated `CHANGELOG.md` and `docs/decisions.md` with `QA-DEC-023`.
+
+### Validation
+
+- `npm run format:check` passes.
+- `npm run catalog:validate` passes.
+- `node scripts/validate-data.js` passes.
+- `app` `oxlint` and `vite build` pass under Node 22.
+
+### Deferred
+
+- Keeping `runResults.json` and `runs.json` aligned with actual Playwright runs; the user only asked to fix `automation` flags.
+
 ## 2026-07-18 — Complete landing node (27 cases)
 
 ### Requested
