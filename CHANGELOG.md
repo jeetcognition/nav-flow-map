@@ -2,6 +2,11 @@
 
 Record of what changed and **why**. Newest first. Keep this updated for every feature/behaviour change (routine `navmap-edits.json` saves and AI promotions of website edits don't need entries).
 
+## 2026-07-18 — Automate all three Nav Flow nodes (login, auth, landing)
+- **What:** Completed Playwright coverage for the first three Nav Flow nodes. `login.spec.ts` now covers all 6 `LOGIN-*` catalog cases. `auth.spec.ts` covers 8 of 9 `AUTH-*` cases (`AUTH-REG02` stays `manual` because expired OTPs cannot be seeded deterministically). `landing.spec.ts` covers all 17 `ORGSEL-*` catalog cases. Extended `OrgSelectorPage` with stable helpers for the sidebar, command palette (`role="dialog"` + `listbox` with `Actions`/`Navigation`/`Settings`), organization search, All organizations dropdown (`role="menu"`), overflow menus, and help menu. Updated `catalog/pages/auth.json` and `landing.json` `automation.status` to `active` with correct `specPath` values. Removed temporary `explore.spec.ts` and `explore-auth-landing.mjs` scripts.
+- **Why:** Proves the catalog-to-Playwright loop for an entire Nav Flow slice, including authenticated OTP flows and landing interactions.
+- **Decisions:** QA-DEC-015 through QA-DEC-019.
+
 ## 2026-07-17 — First catalog pages and Playwright E2E scaffold
 - **What:** Added `catalog/pages/login.json`, `auth.json`, and `landing.json` (first three Nav Flow nodes) with 32 re-authored testcase entries mapped to `catalog/schema/page-catalog.schema.json`. Created `tests/playwright/` with a standalone package (`@playwright/test`, `dotenv`, `imapflow`, `mailparser`), env-configurable `playwright.config.ts`, page objects (`BasePage`, `LoginPage`, `OrgSelectorPage`), a Gmail-OTP helper, `specs/auth.setup.ts`, and the first catalog-driven spec `specs/unauthenticated/login.spec.ts` covering `LOGIN-SAN01`. All credentials and tunables are externalized in `.env`/`.env.example`; specs skip gracefully when `BASE_URL` or auth env vars are missing.
 - **Why:** Proves the schema end-to-end with real pages and links the catalog directly to a runnable Playwright test. The OTP/login scaffolding is adapted from `jeetcognition/playwright-enterprise-qa` as the reference foundation for the full email+OTP Enterprise flow, while the first spec targets the public login page so it can run without real credentials.

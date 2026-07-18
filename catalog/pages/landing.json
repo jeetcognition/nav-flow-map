@@ -40,8 +40,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -86,8 +86,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -132,8 +132,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -178,8 +178,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -222,8 +222,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -268,8 +268,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -314,8 +314,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -358,8 +358,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -404,8 +404,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -435,7 +435,7 @@
         }
       ],
       "assertions": [
-        "Enterprise card, Enterprise settings, Invite members, organization list, Switch account, and Log out are visible"
+        "Enterprise card, Enterprise settings, Invite members, organization list, and Log out are visible"
       ],
       "cleanup": {
         "required": true,
@@ -450,8 +450,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -494,8 +494,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -538,8 +538,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -582,8 +582,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -626,8 +626,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -670,8 +670,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -716,8 +716,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -762,8 +762,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "candidate",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/landing.spec.ts"
       },
       "source": {
         "type": "migration",

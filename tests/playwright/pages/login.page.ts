@@ -20,6 +20,13 @@ export class LoginPage extends BasePage {
   readonly signUpPrompt: Locator;
   readonly errorMessage: Locator;
 
+  // OTP step locators
+  readonly otpHeading: Locator;
+  readonly otpInput: Locator;
+  readonly otpSentMessage: Locator;
+  readonly resendButton: Locator;
+  readonly otpError: Locator;
+
   constructor(page: Page) {
     super(page);
     this.logo = page.locator("#prompt-logo-center");
@@ -35,6 +42,15 @@ export class LoginPage extends BasePage {
     this.signUpLink = page.getByRole("link", { name: /sign up/i }).first();
     this.signUpPrompt = page.getByText(/don't have an account\?/i);
     this.errorMessage = page.getByText(/email is not valid/i);
+
+    this.otpHeading = page.getByRole("heading", { name: /verify your identity/i });
+    this.otpInput = page
+      .getByLabel(/code/i)
+      .or(page.getByRole("textbox", { name: /code/i }))
+      .first();
+    this.otpSentMessage = page.getByText(/sent.*email|code was sent|verification code/i);
+    this.resendButton = page.getByRole("button", { name: /resend/i });
+    this.otpError = page.getByText(/wrong|invalid|incorrect|expired/i).first();
   }
 
   /** Fill the email field and submit to request a code. */

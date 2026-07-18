@@ -13,13 +13,34 @@ export class OrgSelectorPage extends BasePage {
   readonly heading: Locator;
   /** Breadcrumb button on the enterprise landing (reads "All organizations"). */
   readonly allOrganizationsButton: Locator;
+  /** Main organization search field. */
+  readonly searchInput: Locator;
+  /** First organization row overflow trigger. */
+  readonly firstOverflowButton: Locator;
+  /** Sidebar collapse/expand trigger. */
+  readonly sidebarToggle: Locator;
+  /** Sidebar search / command palette trigger. */
+  readonly searchButton: Locator;
+  /** Bottom-left help trigger. */
+  readonly helpButton: Locator;
+  /** Organizations nav link in the sidebar. */
+  readonly organizationsLink: Locator;
+  /** Settings nav link in the sidebar. */
+  readonly settingsLink: Locator;
 
   constructor(page: Page) {
     super(page);
     this.heading = page.getByText("Choose an organization to continue");
-    this.allOrganizationsButton = page.getByRole("button", {
-      name: "All organizations",
-    });
+    this.allOrganizationsButton = page.getByRole("button", { name: /All organizations/ }).first();
+    this.searchInput = page.locator('input[placeholder*="Search for an organization"]').first();
+    this.firstOverflowButton = page.getByRole("button", { name: "More options" }).first();
+    this.sidebarToggle = page
+      .locator('[data-testid="sidebar"] button[data-slot="sidebar-trigger"]')
+      .first();
+    this.searchButton = page.getByRole("button", { name: "Search" }).first();
+    this.helpButton = page.getByRole("button", { name: "Help" }).first();
+    this.organizationsLink = page.getByRole("link", { name: "Organizations" });
+    this.settingsLink = page.getByRole("link", { name: "Settings" });
   }
 
   async goto() {
@@ -44,8 +65,53 @@ export class OrgSelectorPage extends BasePage {
     return this.page.getByText(new RegExp(name, "i")).first();
   }
 
-  /** Click into a sub-org from the landing page. */
-  async openOrg(name: string) {
-    await this.orgCard(name).click();
+  /** The first org row containing the given name and member count text. */
+  orgRow(name: string): Locator {
+    const card = this.orgCard(name);
+    return this.page
+      .locator("div")
+      .filter({ hasText: new RegExp(name, "i") })
+      .filter({ hasText: /members?/i })
+      .first();
+  }
+
+  /** Open the global command palette. */
+  async openCommandPalette() {
+    await this.searchButton.click();
+    await this.page.locator('[role="dialog"]').waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Open the All organizations dropdown. */
+  async openAllOrganizationsMenu() {
+    await this.allOrganizationsButton.click();
+    await this.page.getByRole("menu").waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Open the first org row overflow menu. */
+  async openFirstOverflowMenu() {
+    await this.firstOverflowButton.click();
+    await this.page.getByText("Pin organization").waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Open the bottom-left help menu. */
+  async openHelpMenu() {
+    await this.helpButton.click();
+    await this.page.getByText("Contact support").waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Search for an organization by name. */
+  async searchFor(query: string) {
+    await this.searchInput.fill(query);
+    await this.searchInput.press("Enter");
+  }
+
+  /** Hover the sidebar collapse/expand trigger. */
+  async hoverSidebarToggle() {
+    await this.sidebarToggle.hover();
+  }
+
+  /** Click the sidebar collapse/expand trigger. */
+  async toggleSidebar() {
+    await this.sidebarToggle.click();
   }
 }

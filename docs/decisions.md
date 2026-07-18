@@ -2,6 +2,51 @@
 
 This file is append-only. It records durable questions, answers, rationale, status, and implementation references. New decisions that replace old ones must identify the superseded decision.
 
+## QA-DEC-015 — Selector strategy for E2E specs
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** What locators should Playwright specs use for the Devin Enterprise webapp?
+- **Answer:** Prefer semantic locators (`role`, accessible names) and stable `data-testid` attributes (`data-testid="sidebar"`, `data-testid="content"`) over generated IDs or CSS classes. For Radix-like portal tooltips, match the plain `<div>` tooltip text after a deliberate hover.
+- **Rationale:** Generated IDs (`radix-_r_*`) change between sessions, while `data-testid` and accessible names survive refactors. Tooltip portals have no stable role, so text matching is the only reliable option.
+- **Implementation:** `tests/playwright/pages/org-selector.page.ts`; `tests/playwright/specs/authenticated/landing.spec.ts`.
+
+## QA-DEC-016 — SPA URL matching in Playwright
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** How should client-side route transitions be asserted in Playwright?
+- **Answer:** Use regex assertions (`page.waitForURL(/\/org\/fri-5/)`) instead of glob patterns, because client-side history events and trailing slashes can cause glob matching to time out while the UI has already navigated.
+- **Rationale:** Globs such as `**/org/fri-5` do not match `/org/fri-5/` and may also fail to trigger on history push state; regex handles both.
+- **Implementation:** `tests/playwright/specs/authenticated/landing.spec.ts`.
+
+## QA-DEC-017 — Command palette and All organizations menu structure
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** What are the stable ARIA landmarks for the landing command palette and organization switcher?
+- **Answer:** The command palette is a `role="dialog"` containing a `role="combobox"` and a `role="listbox"` grouped under `Actions`, `Navigation`, and `Settings`. The All organizations dropdown is a `role="menu"` containing `Cog Enterprise QA`, `Enterprise settings`, `Invite members`, `Organizations`, `All organizations`, and `Log out`.
+- **Rationale:** The command palette and dropdown are rendered by Radix-like components and expose standard ARIA roles rather than `data-testid`s, so specs should rely on role + text.
+- **Implementation:** `tests/playwright/pages/org-selector.page.ts`.
+
+## QA-DEC-018 — Sidebar collapse/expand assertions
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** How should the landing sidebar collapse/expand state be verified in Playwright?
+- **Answer:** Assert the sidebar width (`getBoundingClientRect().width`) and keyboard shortcut behavior (`Control+b`). The collapse trigger is `button[data-slot="sidebar-trigger"]` inside `data-testid="sidebar"`; the expand control is not exposed as a separate visible button, so measuring width is the deterministic check.
+- **Rationale:** Hovering for an "Expand sidebar" tooltip was unreliable because the tooltip is not rendered for a stable DOM element after collapse.
+- **Implementation:** `tests/playwright/specs/authenticated/landing.spec.ts`.
+
+## QA-DEC-019 — Manual versus automated cases
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** When should a catalog case remain `manual`?
+- **Answer:** Keep a case `manual` when it requires an uncontrollable external state (e.g. an expired OTP) or a visual/state assertion that the current UI does not expose deterministically (e.g. a hover-only expand tooltip with no stable DOM target). Update the catalog assertion if the live UI diverges from the original requirement.
+- **Rationale:** The catalog is the source of truth; Playwright should not fake assertions. Marking `manual` preserves traceability.
+- **Implementation:** `catalog/pages/auth.json` (`AUTH-REG02`); `catalog/pages/landing.json` (`ORGSEL-SAN10` assertion updated to omit absent "Switch account" option).
+
 Status values:
 
 - **Accepted** — approved and safe to implement.
