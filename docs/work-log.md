@@ -2,6 +2,39 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-18 — Complete landing node (27 cases)
+
+### Requested
+
+- Add the remaining 10 landing cases from `qa-testing/testcases/21_landing_search.md` to `catalog/pages/landing.json` and automate them.
+
+### Implemented
+
+- Added `ORGSEL-REG05`, `ORGSEL-REG08–10`, and `ORGSEL-REG12–17` to `catalog/pages/landing.json`, bringing the landing node to all 27 cases from the source markdown.
+- Extended `tests/playwright/specs/authenticated/landing.spec.ts` with specs for the 10 new cases, plus adjustments to `SAN04` and `REG16` assertions so they match the live UI.
+- Improved `tests/playwright/pages/org-selector.page.ts` with `orgRow()`, `overflowFor()`, `overflowMenu()`, and `openOverflowFor()` helpers that scope overflow menus via `role="menu"` + `Manage settings` to avoid strict-mode collisions with other menus.
+- Verified the pin/unpin toggle is server-side persistent and made `REG08` idempotent by restoring the original state.
+- Updated `catalog/pages/landing.json` so all 27 landing cases are `active` with `specPath: tests/playwright/specs/authenticated/landing.spec.ts`.
+
+### Validation
+
+- `npm run catalog:validate` passes (3 page files, 42 testcases).
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- `cd app && npx tsc -b --force` passes (no `app/` changes).
+- Full `npx playwright test` run with session credentials: `47 passed, 1 skipped` (`AUTH-REG02` remains manual).
+
+### Deferred
+
+- `AUTH-REG02` (expired OTP) remains manual until a deterministic code-seeding mechanism is available.
+- Additional Nav Flow nodes beyond the first three; catalog → fixture generator; YAML migration; runner skill; D1/R2 runtime storage.
+
+### Decisions
+
+- QA-DEC-020: Scope the org row overflow menu with `role="menu"` + `hasText: /Manage settings/`; this distinguishes it from the All organizations dropdown and help menu.
+- QA-DEC-021: Pin/unpin state is server-side persistent, so Playwright specs that mutate it must restore the original label before finishing.
+- QA-DEC-022: When the live UI diverges from the original markdown requirement (e.g. `Switch account` not visible, `Pin` may already be `Unpin`), update the catalog assertion rather than fake the test.
+
 ## 2026-07-18 — Automate all three Nav Flow nodes (login, auth, landing)
 
 ### Requested

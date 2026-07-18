@@ -47,6 +47,33 @@ This file is append-only. It records durable questions, answers, rationale, stat
 - **Rationale:** The catalog is the source of truth; Playwright should not fake assertions. Marking `manual` preserves traceability.
 - **Implementation:** `catalog/pages/auth.json` (`AUTH-REG02`); `catalog/pages/landing.json` (`ORGSEL-SAN10` assertion updated to omit absent "Switch account" option).
 
+## QA-DEC-020 — Scoping org row overflow menus
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** How can Playwright reliably target the correct `role="menu"` when multiple menus (overflow, All organizations, help) may be present?
+- **Answer:** Use `page.locator('[role="menu"]').filter({ hasText: /Manage settings/ })` for the org row overflow menu. The All organizations dropdown contains `Enterprise settings`/`Invite members`; the help menu contains `Contact support`; only the row overflow menu contains `Manage settings`.
+- **Rationale:** Filtering by unique menu text avoids strict-mode violations and hidden-menu collisions.
+- **Implementation:** `tests/playwright/pages/org-selector.page.ts` (`overflowMenu()`).
+
+## QA-DEC-021 — Handling server-side persistent pin state
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** How should a Playwright spec test the `Pin organization` toggle without leaving the test account in an unexpected state?
+- **Answer:** Read the current menu label (`Pin organization` or `Unpin organization`) at the start of the test, toggle to the desired state, perform the assertion, then toggle back to the original label before the test ends.
+- **Rationale:** Pin state is persisted server-side per account, so a test that pins without restoring it will change the baseline for every subsequent run.
+- **Implementation:** `tests/playwright/specs/authenticated/landing.spec.ts` (`ORGSEL-REG08`).
+
+## QA-DEC-022 — Catalog assertions versus live UI
+
+- **Date:** 2026-07-18
+- **Status:** Accepted
+- **Question:** What should happen when the canonical markdown testcase describes UI elements (e.g. "Switch account", "Pin organization") that the deployed app does not currently expose?
+- **Answer:** Update the catalog `assertions` to describe the live UI behavior (e.g. "Log out is present and signs the user out"; "Pin or Unpin organization and Manage settings are visible"). Do not fake assertions or skip the case silently.
+- **Rationale:** The catalog is the source of truth, but it must be accurate. A divergent assertion is a catalog bug, not a test bug.
+- **Implementation:** `catalog/pages/landing.json` (`ORGSEL-SAN04`, `ORGSEL-REG16`).
+
 Status values:
 
 - **Accepted** — approved and safe to implement.
