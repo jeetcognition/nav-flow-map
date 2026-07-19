@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-19 — Fix NavFlow panel close (cross) button
+- **What:** Rewrote `selectNode` in `app/src/pages/FlowMap.tsx` to clear the `node` and `case` search params in a single `setSearchParams` update instead of two sequential calls.
+- **Why:** The panel/pane deselect path fired `setParam("node", null)` then `setParam("case", null)` back-to-back; both read the same stale search params, so the second call re-added `node` and clobbered the first deletion. The result was that the panel's cross (Close panel) button — and clicking empty graph canvas — never actually closed the details panel.
+
 ## 2026-07-19 — Correct automation status in UI fixtures
 - **What:** Synced `app/src/data/fixtures/testcases.json` so only the 41 currently automated catalog cases (`login`, `auth`, `landing`) have `automation: "automated"`. All other cases that were previously marked `automated` or `in-progress` were reset to `manual` to match reality.
 - **Why:** The Navflow UI showed many test cases as automated even though only the first three nodes have Playwright specs. This made the coverage/risk visualization misleading.
