@@ -5,14 +5,16 @@ import { readStorage, writeStorage } from "../lib/storage";
 
 const PANEL_W_KEY = "navmap-panel-width";
 const PANEL_MIN = 260;
-const PANEL_DEFAULT = 460;
 
 const clamp = (w: number) => Math.min(Math.max(w, PANEL_MIN), window.innerWidth - 200);
+
+// Default split keeps graph:panel at roughly 3:1.
+const getDefaultPanelW = () => clamp(Math.round(window.innerWidth / 4));
 
 export function usePanelWidth() {
   const [panelW, setPanelW] = useState(() => {
     const saved = parseInt(readStorage(PANEL_W_KEY) ?? "", 10);
-    return Number.isFinite(saved) && saved > 0 ? clamp(saved) : PANEL_DEFAULT;
+    return Number.isFinite(saved) && saved > 0 ? clamp(saved) : getDefaultPanelW();
   });
   const dragState = useRef<{ startX: number; startW: number } | null>(null);
 
@@ -37,8 +39,9 @@ export function usePanelWidth() {
     });
   }, []);
   const resetPanelW = useCallback(() => {
-    setPanelW(PANEL_DEFAULT);
-    writeStorage(PANEL_W_KEY, String(PANEL_DEFAULT));
+    const defaultW = getDefaultPanelW();
+    setPanelW(defaultW);
+    writeStorage(PANEL_W_KEY, String(defaultW));
   }, []);
 
   return { panelW, onResizerDown, onResizerMove, onResizerUp, resetPanelW };
