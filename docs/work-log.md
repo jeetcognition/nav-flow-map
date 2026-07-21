@@ -2,6 +2,31 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-21 — NavFlow Split default ratio (graph:panel = 3:2)
+
+### Requested
+
+- In-app suggestion from `/navflow`: "Split has weird default ratio of graph to
+  panel like 1:7 when i land make it like 3:2".
+
+### Implemented
+
+- The side panel defaulted to a fixed `460px`, so the graph:panel split drifted
+  with viewport width instead of holding a sensible ratio.
+- `app/src/hooks/usePanelWidth.ts`: the default panel width is now `2/5` of the
+  measured `.fm-body` width (graph:panel = 3:2), resolved before first paint via
+  a layout effect and a `bodyRef`; double-click reset uses the same rule. A
+  saved width (once the user drags) still wins; `460px` remains the fallback
+  when the body has not been measured yet.
+- `app/src/pages/FlowMap.tsx`: wired `bodyRef` onto `.fm-body`.
+
+### Validation
+
+- `app`: `npm run lint`, `npm run build` pass.
+- Root `prettier --check` passes on the changed files.
+- Verified in-browser: with no saved width the split resolves to graph:panel ≈
+  1.51 (809px / 537px) on a 1352px body.
+
 ## 2026-07-18 — Clarify the NavFlow "Run automation" button feedback
 
 ### Requested

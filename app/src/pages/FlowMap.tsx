@@ -86,7 +86,8 @@ function FlowMapInner() {
 
   // ---- layout mode + resizable panel ----
   const [layout, setLayout] = useState<LayoutMode>("split");
-  const { panelW, onResizerDown, onResizerMove, onResizerUp, resetPanelW } = usePanelWidth();
+  const { panelW, bodyRef, onResizerDown, onResizerMove, onResizerUp, resetPanelW } =
+    usePanelWidth();
 
   // ---- toolbar actions ----
   const [addPageOpen, setAddPageOpen] = useState(false);
@@ -155,7 +156,7 @@ function FlowMapInner() {
         </div>
       )}
 
-      <div className="fm-body">
+      <div className="fm-body" ref={bodyRef}>
         {graphVisible && (
           <div className="fm-graph">
             <ReactFlow<FlowNodeType, Edge>
