@@ -87,13 +87,12 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires human visual verification of the checkmark, layout overlap, and truncation."
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
       },
       "source": {
         "type": "migration",

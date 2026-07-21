@@ -316,6 +316,60 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUP-SAN06",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Verify the support email message is displayed on the Contact Support page",
+      "type": "Sanity",
+      "priority": "P2",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Left sidebar → bottom-right (?) help control → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner."
+        },
+        {
+          "number": 2,
+          "action": "Click Support to open the Support page."
+        },
+        {
+          "number": 3,
+          "action": "Locate the Contact Support section and the support email message."
+        }
+      ],
+      "assertions": [
+        "The message \"Please email support@cognition.ai and we'll get back to you.\" is visible on the Support page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/support.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
     }
   ]
 }

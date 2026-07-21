@@ -2,6 +2,7 @@
 // All environment-specific values are read from env vars with safe QA defaults.
 
 export const ENTERPRISE_SLUG = process.env.ENTERPRISE_SLUG ?? "cog-enterprise-qa";
+export const ENTERPRISE_NAME = process.env.ENTERPRISE_NAME ?? "Cog Enterprise QA";
 export const TEST_SUBORG = process.env.TEST_SUBORG ?? "jeet-devin-qa";
 export const TEST_SUBORG_DISPLAY = process.env.TEST_SUBORG_DISPLAY ?? "jeet-test-org";
 export const ALT_SUBORG = process.env.ALT_SUBORG ?? "fri-5";

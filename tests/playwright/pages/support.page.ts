@@ -17,6 +17,8 @@ export class SupportPage extends BasePage {
   readonly chatHeading: Locator;
   /** "Support chat is unavailable" notice. */
   readonly chatUnavailableNotice: Locator;
+  /** Contact-support email message. */
+  readonly contactSupportMessage: Locator;
   /** Support email link. */
   readonly supportEmailLink: Locator;
 
@@ -30,6 +32,9 @@ export class SupportPage extends BasePage {
     this.documentationButton = page.getByRole("button", { name: "Documentation" });
     this.chatHeading = page.getByRole("heading", { name: "Need more help? Chat with support" });
     this.chatUnavailableNotice = page.getByText("Support chat is unavailable");
+    this.contactSupportMessage = page.getByText(
+      "Please email support@cognition.ai and we'll get back to you.",
+    );
     this.supportEmailLink = page.getByRole("link", { name: "support@cognition.ai" });
   }
 }
