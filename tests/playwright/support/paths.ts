@@ -30,4 +30,11 @@ export const routes = {
 
   /** Personal connections page. */
   personalConnections: "/settings/connections",
+
+  /** Enterprise sessions page. */
+  enterpriseSessions: (slug: string = ENTERPRISE_SLUG) =>
+    `/org/${slug}/settings/enterprise-sessions`,
+
+  /** Enterprise analytics page. */
+  analytics: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/analytics`,
 } as const;
