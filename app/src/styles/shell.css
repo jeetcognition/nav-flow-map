@@ -58,8 +58,7 @@
   margin-left: 0;
 }
 .sidebar.collapsed .sidebar-title,
-.sidebar.collapsed .sidebar-link-label,
-.sidebar.collapsed .sidebar-foot {
+.sidebar.collapsed .sidebar-link-label {
   display: none;
 }
 .sidebar.collapsed .sidebar-items {
@@ -127,13 +126,6 @@
   width: 3px;
   border-radius: 2px;
   background: var(--accent);
-}
-
-.sidebar-foot {
-  margin-top: auto;
-  padding: 0 var(--sp-2);
-  color: var(--text-3);
-  font-size: var(--fs-xs);
 }
 
 /* ---- topbar ---- */
