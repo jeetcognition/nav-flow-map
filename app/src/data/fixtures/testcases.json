@@ -3759,7 +3759,7 @@
     "reach": "Sub-org home",
     "steps": "Open the Landing Repo Page after selecting `jeet-test-org`.",
     "expected": "Top-left header shows the Devin logo, selected organization name `jeet-test-org`, and organization-menu control.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3774,7 +3774,7 @@
     "reach": "Sub-org home",
     "steps": "Inspect the **Recent** section.",
     "expected": "Recent heading, search control, and overflow menu are visible and properly aligned.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3789,7 +3789,7 @@
     "reach": "Sub-org home",
     "steps": "Inspect the left sidebar navigation.",
     "expected": "**New session**, **Automations**, **Security**, **Review**, and **Wiki** options are visible with the correct icons and readable labels.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3969,7 +3969,7 @@
     "reach": "Top-left organization menu",
     "steps": "Inspect the organization list and current selection.",
     "expected": "**All organizations** is clearly selected with a checkmark; organization names and add/search controls are visible without overlap or truncation.",
-    "automation": "not-automatable",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3984,7 +3984,7 @@
     "reach": "Top-left organization menu",
     "steps": "Select another organization from the list.",
     "expected": "The selected organization opens and its name/context replaces the previous organization throughout the page.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3999,7 +3999,7 @@
     "reach": "Top-left organization menu",
     "steps": "Click the `+` control beside **Organizations**.",
     "expected": "User is navigated to the **Create organization** page.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4014,7 +4014,7 @@
     "reach": "Top-left organization menu",
     "steps": "Click **Enterprise settings** and **Invite members**.",
     "expected": "Each action opens the correct enterprise page or dialog without losing the current organization context.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4044,7 +4044,7 @@
     "reach": "Top-left organization menu",
     "steps": "Click **Log out**, then use browser Back.",
     "expected": "The user is signed out and protected organization content cannot be reopened from browser history.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4059,7 +4059,7 @@
     "reach": "Top-left organization menu",
     "steps": "Open and close the dropdown using its trigger, outside click, and Escape.",
     "expected": "The menu opens/closes reliably, remains inside the viewport, and restores focus to its trigger.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4479,7 +4479,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the Documentation card/heading on the page.",
     "expected": "The \"Documentation\" card heading is rendered and visible on the Support page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4494,7 +4494,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Read the description text under the Documentation card.",
     "expected": "The text \"Find answers to common questions and comprehensive guides\" is visible under the Documentation card.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4509,7 +4509,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Confirm the Documentation button is visible and enabled. 3. Click the Documentation button.",
     "expected": "The Documentation button is clickable and navigates to the Documentation page; the target route loads without error.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4524,7 +4524,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Reload the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the Documentation section title after the page loads.",
     "expected": "The \"Documentation\" title is present and visible on the Support page after load.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4539,7 +4539,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Verify the Documentation description text is presented to the user.",
     "expected": "The user can see the text \"Find answers to common questions and comprehensive guides\" on the Support page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4629,7 +4629,7 @@
     "reach": "On the OTP step",
     "steps": "Wait for the code to expire (or use an old code) and submit",
     "expected": "The expired code is rejected with a clear error; requesting a fresh code allows login.",
-    "automation": "not-automatable",
+    "automation": "manual",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"

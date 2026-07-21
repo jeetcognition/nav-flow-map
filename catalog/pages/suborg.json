@@ -1,0 +1,150 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "suborg",
+    "name": "Landing Repo Page",
+    "route": "/org/{suborg}/",
+    "prefixes": ["SUB", "SUB-NS"]
+  },
+  "testcases": [
+    {
+      "id": "SUB-SAN01",
+      "pageId": "suborg",
+      "surface": "webapp",
+      "title": "Open the Landing Repo Page after selecting jeet-test-org",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Sub-org home",
+      "preconditions": ["User is authenticated and has selected the jeet-test-org context"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Landing Repo Page after selecting `jeet-test-org`."
+        }
+      ],
+      "assertions": [
+        "Top-left header shows the Devin logo, selected organization name `jeet-test-org`, and organization-menu control."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/suborg.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-SAN02",
+      "pageId": "suborg",
+      "surface": "webapp",
+      "title": "Inspect the Recent section",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Sub-org home",
+      "preconditions": ["User is authenticated and on the Landing Repo Page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the **Recent** section."
+        }
+      ],
+      "assertions": [
+        "Recent heading, search control, and overflow menu are visible and properly aligned."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/suborg.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-SAN03",
+      "pageId": "suborg",
+      "surface": "webapp",
+      "title": "Inspect the left sidebar navigation",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Sub-org home",
+      "preconditions": ["User is authenticated and on the Landing Repo Page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the left sidebar navigation."
+        }
+      ],
+      "assertions": [
+        "**New session**, **Automations**, **Security**, **Review**, and **Wiki** options are visible with the correct icons and readable labels."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/suborg.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}

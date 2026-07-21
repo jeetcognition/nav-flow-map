@@ -1,0 +1,466 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "logomenu",
+    "name": "Top Left Menu",
+    "route": "(dropdown)",
+    "prefixes": ["SUB-IM"]
+  },
+  "testcases": [
+    {
+      "id": "SUB-IM-SAN01",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Open the organization dropdown",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Top-left organization menu",
+      "preconditions": [
+        "User is authenticated and on a page that exposes the top-left organization menu"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the organization dropdown."
+        }
+      ],
+      "assertions": [
+        "Enterprise name/member count, **Enterprise settings**, **Invite members**, organization list, **Switch account**, and **Log out** are visible and readable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Switch account is not exposed in the current top-left menu; only Log out appears."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-SAN02",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Inspect the organization list and current selection",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["The top-left organization menu is open"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the organization list and current selection."
+        }
+      ],
+      "assertions": [
+        "**All organizations** is clearly selected with a checkmark; organization names and add/search controls are visible without overlap or truncation."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human visual verification of the checkmark, layout overlap, and truncation."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG01",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Select another organization from the list",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated and inside a sub-organization context"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the top-left organization menu."
+        },
+        {
+          "number": 2,
+          "action": "Select another organization from the list."
+        }
+      ],
+      "assertions": [
+        "The selected organization opens and its name/context replaces the previous organization throughout the page."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Re-select the original organization context"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG03",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Click the + control beside Organizations",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated and the top-left organization menu is open"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click the `+` control beside **Organizations**."
+        }
+      ],
+      "assertions": ["User is navigated to the **Create organization** page."],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG04",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Click Enterprise settings and Invite members",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated and inside a sub-organization context"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the top-left organization menu."
+        },
+        {
+          "number": 2,
+          "action": "Click **Enterprise settings**."
+        },
+        {
+          "number": 3,
+          "action": "Return and click **Invite members**."
+        }
+      ],
+      "assertions": [
+        "Each action opens the correct enterprise page or dialog without losing the current organization context."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting sub-organization context"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG05",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Click Switch account",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "security"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated and the top-left organization menu is open"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Switch account**."
+        }
+      ],
+      "assertions": [
+        "Account-selection flow opens safely and protected organization data is not exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Switch account is not exposed in the current top-left menu; the case requires that option."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG06",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Click Log out, then use browser Back",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "security", "session-management"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated inside a sub-organization context"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the top-left organization menu."
+        },
+        {
+          "number": 2,
+          "action": "Click **Log out**."
+        },
+        {
+          "number": 3,
+          "action": "Use the browser Back button."
+        }
+      ],
+      "assertions": [
+        "The user is signed out and protected organization content cannot be reopened from browser history."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG07",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Open and close the dropdown using its trigger, outside click, and Escape",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated and the top-left organization menu is present"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the dropdown with its trigger."
+        },
+        {
+          "number": 2,
+          "action": "Close the dropdown by clicking outside."
+        },
+        {
+          "number": 3,
+          "action": "Re-open the dropdown."
+        },
+        {
+          "number": 4,
+          "action": "Close the dropdown with the Escape key."
+        }
+      ],
+      "assertions": [
+        "The menu opens/closes reliably, remains inside the viewport, and restores focus to its trigger."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-IM-REG08",
+      "pageId": "logomenu",
+      "surface": "webapp",
+      "title": "Inspect the dropdown UI, URL, and console while switching organizations/accounts",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "security"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Top-left organization menu",
+      "preconditions": ["User is authenticated and the top-left organization menu is open"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the top-left organization menu."
+        },
+        {
+          "number": 2,
+          "action": "Switch organizations and accounts through the dropdown."
+        }
+      ],
+      "assertions": [
+        "No credentials, tokens, private organization data, or internal errors are exposed."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the original organization context"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Switch account is not exposed in the current top-left menu, and the case explicitly requires switching both organizations and accounts."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
