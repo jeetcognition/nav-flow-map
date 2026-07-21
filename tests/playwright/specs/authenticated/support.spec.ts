@@ -9,6 +9,15 @@ test.describe("Support Page", () => {
     await expect(support.documentationHeading).toBeVisible();
   });
 
+  test("SUP-SAN06 — Verify the support email message is displayed", async ({ page }) => {
+    const support = new SupportPage(page);
+    await support.goto();
+    await support.heading.waitFor({ state: "visible" });
+    await expect(support.contactSupportMessage).toBeVisible();
+    await expect(support.supportEmailLink).toBeVisible();
+    await expect(support.supportEmailLink).toHaveAttribute("href", "mailto:support@cognition.ai");
+  });
+
   test("SUP-SAN03 — Read the Documentation description", async ({ page }) => {
     const support = new SupportPage(page);
     await support.goto();

@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import {
   ALT_SUBORG,
   ALT_SUBORG_NAME,
+  ENTERPRISE_NAME,
   ENTERPRISE_SLUG,
   OrgSelectorPage,
   TEST_SUBORG,
@@ -9,6 +10,48 @@ import {
 } from "../../pages";
 
 test.describe("Top Left Menu", () => {
+  test("SUB-IM-SAN02 — Inspect the organization list and current selection", async ({ page }) => {
+    const org = new OrgSelectorPage(page);
+    await org.goto();
+    await org.openAllOrganizationsMenu();
+
+    const menu = org.topLeftMenu();
+    await expect(menu).toBeVisible();
+
+    // Enterprise header with name and member count.
+    await expect(menu.getByText(ENTERPRISE_NAME)).toBeVisible();
+    await expect(menu.getByText(/\d+\s+members/)).toBeVisible();
+
+    // Primary actions and organization controls.
+    await expect(menu.getByRole("button", { name: "Enterprise settings" })).toBeVisible();
+    await expect(menu.getByRole("button", { name: "Invite members" })).toBeVisible();
+    await expect(menu.getByRole("button", { name: "Create organization" })).toBeVisible();
+    await expect(menu.getByRole("button", { name: "Search organizations" })).toBeVisible();
+
+    // Current selection (All organizations) shows a checkmark.
+    const allOrganizations = menu.getByRole("menuitem", { name: "All organizations" });
+    await expect(allOrganizations).toBeVisible();
+    await expect(allOrganizations.locator("svg")).toBeVisible();
+
+    // Organization list contains known organizations.
+    await expect(menu.getByRole("menuitem", { name: ALT_SUBORG_NAME }).first()).toBeVisible();
+    await expect(menu.getByRole("menuitem", { name: TEST_SUBORG_DISPLAY }).first()).toBeVisible();
+
+    // None of the visible organization-name text is truncated.
+    const menuItems = await menu.getByRole("menuitem").all();
+    for (const item of menuItems) {
+      const textSpan = item.locator("span").first();
+      if ((await textSpan.count()) === 0) continue;
+      const isTruncated = await textSpan.evaluate(
+        (el: HTMLElement) => el.scrollWidth > el.clientWidth + 1,
+      );
+      expect(isTruncated, "organization name should not be truncated").toBe(false);
+    }
+
+    await org.closeTopLeftMenuWithEscape();
+    await expect(menu).toBeHidden();
+  });
+
   test("SUB-IM-REG01 — Select another organization from the list", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();

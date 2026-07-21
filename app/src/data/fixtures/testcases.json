@@ -3969,7 +3969,7 @@
     "reach": "Top-left organization menu",
     "steps": "Inspect the organization list and current selection.",
     "expected": "**All organizations** is clearly selected with a checkmark; organization names and add/search controls are visible without overlap or truncation.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4554,7 +4554,7 @@
     "reach": "Left sidebar → bottom-right (?) help control → Support",
     "steps": "1. From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner. 2. Click Support to open /org/cog-enterprise-qa/settings/support. 3. Locate the Contact Support section and the support email message.",
     "expected": "The message \"Please email support@cognition.ai and we'll get back to you.\" is visible on the Support page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
