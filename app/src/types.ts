@@ -107,6 +107,19 @@ export interface Incident {
   overriddenBy: string | null;
   linkedBugId: string | null;
   linkedCaseId: string | null;
+  /** classifier band from the Pylon intake pipeline (absent on legacy data) */
+  verdict?: "definite-bug" | "possible-bug";
+  /** original ticket URL in the support tool */
+  sourceLink?: string | null;
+  /** pre-drafted regression case, present when verdict is definite-bug */
+  draftCase?: {
+    title: string;
+    nodeId: string;
+    priority: TestCase["priority"];
+    preconditions: string;
+    steps: string;
+    expected: string;
+  } | null;
 }
 
 export interface User {

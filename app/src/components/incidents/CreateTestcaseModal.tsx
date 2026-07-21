@@ -3,6 +3,7 @@ import { Sparkle } from "@phosphor-icons/react";
 import { Modal } from "../ui/Modal";
 import { SkeletonLines } from "../ui/SkeletonLines";
 import { addTestCase, getNodes, linkIncidentToCase, newId } from "../../data/dataService";
+import { addDraftCase } from "../../data/editsService";
 import { draftTestCaseFromIncident } from "../../data/aiService";
 import { useApp } from "../../hooks/useApp";
 import type { Incident, TestCase } from "../../types";
@@ -36,6 +37,11 @@ export function CreateTestcaseModal({ incident, onClose }: Props) {
     setForm(null);
     setDraftError(null);
     if (!incident) return;
+    if (incident.draftCase) {
+      // pre-drafted by the intake classifier — no AI round-trip needed
+      setForm({ ...incident.draftCase });
+      return;
+    }
     let alive = true;
     draftTestCaseFromIncident(incident)
       .catch(() => {
@@ -80,6 +86,12 @@ export function CreateTestcaseModal({ incident, onClose }: Props) {
       source: "ai-from-incident",
     });
     linkIncidentToCase(incident.id, caseId);
+    // Also stage the case as a draft in the edits payload so "Save to repo"
+    // promotes it into the canonical fixtures (permanent, for everyone).
+    addDraftCase(
+      form.nodeId,
+      `${form.title.trim()} — Steps: ${form.steps} Expected: ${form.expected}`,
+    );
     onClose();
   };
 
@@ -87,7 +99,9 @@ export function CreateTestcaseModal({ incident, onClose }: Props) {
     <Modal open={!!incident} onClose={onClose} title="Create testcase from incident" width={640}>
       <div className="ai-note">
         <Sparkle size={16} weight="duotone" />
-        AI draft — review before saving
+        {incident?.draftCase
+          ? "Drafted from the support ticket — review before saving"
+          : "AI draft — review before saving"}
       </div>
 
       {draftError ? (

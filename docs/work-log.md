@@ -344,3 +344,41 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Deferred
 
 - Add unit tests for the validator once a test runner is selected; integrate catalog generation with `app/` fixtures.
+
+## 2026-07-22 — Pylon intake: 60-day corpus + deterministic ticket classifier
+
+### Requested
+
+- Pull all Pylon tickets (~60 days), build a no-LLM `ticket_classifier.py` that decides app-issue vs not, authored by reviewing the corpus; design the loop where an LLM periodically improves the rules with minimal ongoing LLM use (QA-DEC-025). Backend platform decided as Cloudflare stack (QA-DEC-024).
+
+### Implemented
+
+- `pylon-test` pipeline (currently at `~/Downloads/pylon-test`, to be imported): retention/backfill 14→60 days; fetched 11,514 issues (2026-05-22 → 2026-07-21); modules patched for Python 3.9 (`from __future__ import annotations`).
+- Stratified review of 215 tickets across six strata (bug-typed, question-typed, other, untyped, error-ish non-bug, quiet bug) → hand-labeled `labels/eval_set.json` (54 bug / 134 not / 26 unsure).
+- `ticket_classifier.py`: ~40 weighted regex rules + Pylon-metadata priors → definite-bug / possible-bug / not-app-issue with confidence, fired rules, surface (brand→surfaceId) and severity hints. Rules are a data table so the refiner edits patterns, never control flow.
+- `eval_classifier.py` harness (gate for all future rule edits) + `REFINER.md` refinement-loop spec.
+
+### Validation
+
+- Eval (in-sample, excl. unsure): precision 98%, recall 98%, F1 0.98; definite-band precision 14/14. Full-corpus distribution: 6% definite (664), 20% possible (2,356), 74% not (8,494); top definite examples verified as genuine bug reports.
+- Known limits: numbers are in-sample (tuned on the same set); stratification over-weights hard cases; multilingual coverage is partial (two known misses).
+
+### Deferred
+
+- Exporter → `app/src/data/fixtures/incidents.json` (sanitized) + Incidents UI verification flow (possible-bug → verify → convert-to-testcase; definite-bug → pre-drafted case).
+- Import pipeline into this repo; scheduled GitHub Actions run; verification labels → D1.
+
+## 2026-07-22 (later) — Incidents exporter + verification UI landed
+
+### Implemented
+
+- `export_incidents.py` (pipeline side): classify → sanitize (emails/org URLs/sessions/phones masked, agent turns stripped) → keyword-map to NavFlow nodes (unmapped fall back to `landing`, flagged in rationale) → 200 curated incidents written to `app/src/data/fixtures/incidents.json`; definite-bugs carry a pre-drafted regression case.
+- App: `Incident.verdict/sourceLink/draftCase` types; IncidentCard "Needs verification" + "Confirm bug" (via existing `overrideIncidentCategory`); drafted-case prefill in CreateTestcaseModal; converted cases also staged via `editsService.addDraftCase` so Save-to-repo promotes them; Pylon backlink on detail page.
+
+### Validation
+
+- `node scripts/validate-data.js`, oxlint, `vite build`, `prettier --check .` all pass; no email leaks in the exported fixture (regex audit).
+
+### Deferred
+
+- Import the pipeline into this repo (`pipelines/pylon/`) + scheduled GitHub Actions run (needs `PYLON_API_KEY` secret); verification labels → D1 (QA-DEC-024); worker redeploy still pending.

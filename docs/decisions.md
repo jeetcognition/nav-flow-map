@@ -208,7 +208,7 @@ Status values:
 
 ### QA-OPEN-001 — Runtime data platform
 
-- **Status:** Open
+- **Status:** Answered — see QA-DEC-024
 - **Question:** Confirm Cloudflare D1/R2 as the runtime store and define retention, access control, and backup requirements.
 
 ### QA-OPEN-002 — Catalog authoring flow
@@ -243,3 +243,22 @@ Status values:
 - **Answer:** Separate `setup`, `unauthenticated`, and `authenticated` projects. The first catalog spec (`LOGIN-SAN01`) lives in `tests/playwright/specs/unauthenticated/` and only needs `BASE_URL`. `specs/auth.setup.ts` captures an admin session for authenticated specs and skips cleanly when `DEVIN_ADMIN_EMAIL` / `GMAIL_APP_PASSWORD` are absent.
 - **Rationale:** Keeps CI green before credentials are provisioned, while still importing the email+OTP login flow from `playwright-enterprise-qa` as reusable infrastructure.
 - **Implementation:** `tests/playwright/playwright.config.ts`, `tests/playwright/specs/auth.setup.ts`, `tests/playwright/specs/unauthenticated/login.spec.ts`.
+
+## QA-DEC-024 — Backend platform: standardize on the Cloudflare stack
+
+- **Date:** 2026-07-22
+- **Status:** Accepted
+- **Question:** What backend technology should nav-flow-map use for runtime capabilities (run results, incident intake, verification labels, auth, artifacts)? Answers QA-OPEN-001.
+- **Answer:** Standardize on the Cloudflare developer platform around the already-deployed save worker: TypeScript Workers for all HTTP APIs (adopt Hono once routes multiply beyond the current handful), D1 (SQLite) for mutable runtime records (run results, incident verification labels, coverage feedback, rate-limit state), R2 for large evidence artifacts (screenshots, videos, traces), KV only for simple counters/flags, and Cron Triggers or GitHub Actions for scheduled jobs. Git remains canonical for catalog, fixtures, and config per QA-DEC-006, whose storage split is hereby elevated to Accepted. Auth: worker-side email OTP (e.g. Resend free tier) issuing HMAC-signed session tokens, with roles in a D1 table — no separate auth vendor (Supabase/Firebase/Auth0) and no always-on Node server unless a concrete blocker appears. Batch/analytical jobs that don't fit Workers (e.g. the Python Pylon pipeline) run in GitHub Actions and either commit derived JSON to git or POST to a worker API.
+- **Rationale:** The worker is already in production with wrangler auth and CORS wired to the Pages origin; D1 shares the SQLite mental model with the local Pylon pipeline DB; R2 has free egress for evidence; the whole stack has zero fixed cost at this scale; and a solo maintainer with agent-driven development is best served by one boring platform instead of a second vendor. The static GitHub Pages frontend continues unchanged.
+- **Consequences:** Future server-side capabilities default to "a Workers route + a D1 table"; artifacts default to R2; secrets live as wrangler secrets or GitHub Actions secrets, never in the repo or browser. Classifier gold labels (human verifications) belong in D1, not committed to the public repo.
+- **Implementation:** `worker/worker.js` (existing); future `wrangler.toml` D1/R2 bindings as each capability lands.
+
+## QA-DEC-025 — Deterministic ticket classifier, LLM-refined
+
+- **Date:** 2026-07-22
+- **Status:** Accepted
+- **Question:** How are Pylon tickets classified as application issues for the Incidents feed (concretizing QA-DEC-007's intake)?
+- **Answer:** A deterministic, pure-code rule classifier (`ticket_classifier.py`: weighted signals — error signatures, phrase patterns, Pylon `question_type`/`priority`/`tags`/`brand`) with NO LLM in the inference path. Verdicts: `definite-bug` / `possible-bug` / `not-app-issue`, each with confidence and the list of fired rules. The LLM's role is authoring: build the initial ruleset by reviewing the 60-day corpus, then periodically refine the rules from human verification labels (gold, from the UI flow) and low-confidence disagreements — every rule change gated by a labeled eval harness (precision/recall must not regress). Intake is batch pull (60-day backfill + daily incremental) for v1; QA-DEC-007's authenticated webhook remains the later target and its guardrail (no Devin session per raw message) stands. UI flow: `possible-bug` → "needs verification" → human confirms → convert to test case; `definite-bug` → pre-drafted test case ready to accept; accepted drafts ride the existing Save-to-repo → Devin promotion pipeline into the canonical fixtures.
+- **Rationale:** Ticket classification is high-volume, latency-insensitive, and largely separable with surface patterns; deterministic rules are free to run, auditable, and diffable in git. Concentrating LLM use in the refinement loop (where labeled disagreements carry real information) minimizes ongoing LLM cost while letting accuracy improve over time.
+- **Implementation:** `ticket_classifier.py`, `labels/eval_set.json`, `eval_classifier.py` (initial versions in the pylon pipeline; to be imported into this repo).

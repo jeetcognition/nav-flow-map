@@ -30,6 +30,7 @@ import { formatDate } from "../lib/format";
 import { fadeUp } from "../lib/motion";
 import { SourceChip } from "../components/ui/SourceChip";
 import { ConfidenceMeter } from "../components/ui/ConfidenceMeter";
+import { ExternalLink } from "../components/ui/ExternalLink";
 import type { Incident } from "../types";
 import "../styles/incidents.css";
 
@@ -128,6 +129,17 @@ export default function IncidentDetail() {
             <SeverityBadge severity={incident.severity} />
             <span className={`badge ${statusCls}`}>{statusLabel}</span>
             <SourceChip source={incident.source} />
+            {incident.verdict === "possible-bug" && !incident.humanCategory && (
+              <span className="badge badge-amber">Needs verification</span>
+            )}
+            {incident.verdict === "definite-bug" && (
+              <span className="badge badge-red">Definite bug</span>
+            )}
+            {incident.sourceLink && (
+              <ExternalLink href={incident.sourceLink} className="link-chip">
+                View in Pylon
+              </ExternalLink>
+            )}
           </div>
         </div>
         <button
@@ -135,7 +147,9 @@ export default function IncidentDetail() {
           onClick={() => setModalOpen(true)}
         >
           <Sparkle size={15} weight="duotone" />
-          Create testcase from this incident
+          {incident.draftCase && !incident.linkedCaseId
+            ? "Review drafted testcase"
+            : "Create testcase from this incident"}
         </button>
       </motion.div>
 

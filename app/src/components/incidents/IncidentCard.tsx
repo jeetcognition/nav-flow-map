@@ -66,11 +66,14 @@ export function IncidentCard({
   index: number;
   onCreateTestcase: (i: Incident) => void;
 }) {
+  const { user } = useApp();
   const navigate = useNavigate();
   const node = getNode(incident.nodeId);
   const effective = incidentCategory(incident);
   const overriddenBy = incident.overriddenBy ? getUser(incident.overriddenBy) : undefined;
   const isAppBug = effective === "app-bug";
+  const needsVerification = incident.verdict === "possible-bug" && !incident.humanCategory;
+  const hasDraft = !!incident.draftCase && !incident.linkedCaseId;
 
   return (
     <motion.article className="card inc-card" {...rowFadeUp(index, 0.045)}>
@@ -84,6 +87,10 @@ export function IncidentCard({
         <SeverityBadge severity={incident.severity} />
         <span className="inc-card-title">{incident.title}</span>
         <SourceChip source={incident.source} />
+        {needsVerification && <span className="badge badge-amber">Needs verification</span>}
+        {incident.verdict === "definite-bug" && (
+          <span className="badge badge-red">Definite bug</span>
+        )}
         <span className="inc-card-meta" onClick={(e) => e.stopPropagation()}>
           <span className="inc-customer mono">{incident.customer}</span>
           <span className="inc-ago">{timeAgo(incident.createdAt)}</span>
@@ -113,12 +120,22 @@ export function IncidentCard({
       </div>
 
       <div className="inc-actions">
+        {needsVerification && (
+          <button
+            className="btn btn-mini btn-ai-strong"
+            onClick={() => overrideIncidentCategory(incident.id, "app-bug", user.id)}
+            title="Confirm this is an application bug"
+          >
+            <CheckCircle size={13} weight="duotone" />
+            Confirm bug
+          </button>
+        )}
         <button
           className={`btn btn-mini ${isAppBug ? "btn-ai-strong" : "btn-ai"}`}
           onClick={() => onCreateTestcase(incident)}
         >
           <Sparkle size={13} weight="duotone" />
-          Create testcase
+          {hasDraft ? "Review drafted testcase" : "Create testcase"}
         </button>
         <OverrideDropdown incident={incident} />
         {incident.linkedCaseId && (
