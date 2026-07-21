@@ -1,0 +1,321 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "support",
+    "name": "Support Page",
+    "route": "/org/{tenant}/settings/support",
+    "prefixes": ["SUP"]
+  },
+  "testcases": [
+    {
+      "id": "SUP-SAN01",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Open the support chat widget from the Support page",
+      "type": "Sanity",
+      "priority": "P2",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Left sidebar → bottom-right (?) help → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner."
+        },
+        {
+          "number": 2,
+          "action": "Click Support to open the Support page."
+        },
+        {
+          "number": 3,
+          "action": "Click the support-chat launcher on the Support page."
+        }
+      ],
+      "assertions": [
+        "Support chat widget opens and is ready to accept a message; no console errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Pylon chat widget is not loaded in the QA tenant; the page shows \"Support chat is unavailable\" instead of a launcher."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUP-SAN02",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Locate the Documentation card heading",
+      "type": "Sanity",
+      "priority": "P3",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Left sidebar → bottom-right (?) help → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Support page (left sidebar → bottom-right (?) help control → Support)."
+        },
+        {
+          "number": 2,
+          "action": "Locate the Documentation card/heading on the page."
+        }
+      ],
+      "assertions": [
+        "The \"Documentation\" card heading is rendered and visible on the Support page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/support.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUP-SAN03",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Read the Documentation description",
+      "type": "Sanity",
+      "priority": "P3",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Left sidebar → bottom-right (?) help → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Support page (left sidebar → bottom-right (?) help control → Support)."
+        },
+        {
+          "number": 2,
+          "action": "Read the description text under the Documentation card."
+        }
+      ],
+      "assertions": [
+        "The text \"Find answers to common questions and comprehensive guides\" is visible under the Documentation card."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/support.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUP-REG01",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Click the Documentation button",
+      "type": "Regression",
+      "priority": "P2",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Left sidebar → bottom-right (?) help → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Support page (left sidebar → bottom-right (?) help control → Support)."
+        },
+        {
+          "number": 2,
+          "action": "Confirm the Documentation button is visible and enabled."
+        },
+        {
+          "number": 3,
+          "action": "Click the Documentation button."
+        }
+      ],
+      "assertions": [
+        "The Documentation button is clickable and navigates to the Documentation page; the target route loads without error."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the Support page"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/support.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUP-SAN04",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Reload the Support page and verify Documentation heading",
+      "type": "Sanity",
+      "priority": "P3",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Left sidebar → bottom-right (?) help → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Reload the Support page (left sidebar → bottom-right (?) help control → Support)."
+        },
+        {
+          "number": 2,
+          "action": "Locate the Documentation section title after the page loads."
+        }
+      ],
+      "assertions": [
+        "The \"Documentation\" title is present and visible on the Support page after load."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/support.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUP-SAN05",
+      "pageId": "support",
+      "surface": "webapp",
+      "title": "Verify the Documentation description is presented",
+      "type": "Sanity",
+      "priority": "P3",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Left sidebar → bottom-right (?) help → Support",
+      "preconditions": ["User is authenticated and on the Support page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Support page (left sidebar → bottom-right (?) help control → Support)."
+        },
+        {
+          "number": 2,
+          "action": "Verify the Documentation description text is presented to the user."
+        }
+      ],
+      "assertions": [
+        "The user can see the text \"Find answers to common questions and comprehensive guides\" on the Support page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/support.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
