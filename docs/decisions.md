@@ -2,6 +2,24 @@
 
 This file is append-only. It records durable questions, answers, rationale, status, and implementation references. New decisions that replace old ones must identify the superseded decision.
 
+## QA-DEC-025 — Scope of the next Playwright automation pass
+
+- **Date:** 2026-07-21
+- **Status:** Accepted
+- **Question:** Which remaining `qa-testing/testcases` area files should be automated in Playwright, and which cases should stay manual/blocked?
+- **Answer:** Automate `19_support.md`, `22_enterprise_settings.md`, and the safe subset of `23_suborg_secrets.md` (smoke/sanity checks, search/filter, navigation, no-leak assertions, and disposable CRUD with cleanup). Leave `ENTSET-REG06` (non-admin access) and `SECRET-REG05/06/10/11/12/13/E2E01` (multi-user, multi-session, QR camera, IDOR, redaction-in-session, and full E2E) as `manual`/`blocked` until the test infrastructure can safely isolate users, sessions, and secrets.
+- **Rationale:** Discretionary secrets creation and permission checks require explicit isolation and cleanup; automating them without controlled users/sessions risks leaking or retaining sensitive test data.
+- **Implementation:** `catalog/pages/support.json`, `ent.json`, `s-secrets.json`; `tests/playwright/specs/authenticated/support.spec.ts`, `enterprise-settings.spec.ts`, `secrets.spec.ts`.
+
+## QA-DEC-024 — Shared Playwright leak-assertion helper
+
+- **Date:** 2026-07-21
+- **Status:** Accepted
+- **Question:** Should the duplicated `SENSITIVE_PATTERNS` / `assertNoLeaks` code in each spec be extracted into a shared helper?
+- **Answer:** Yes. Move the patterns and the page/URL/console assertion into `tests/playwright/support/leaks.ts` and import it from new specs. Existing specs may be refactored later to use the helper; the new specs use it immediately.
+- **Rationale:** Duplicating the pattern list and assertion logic across every spec invites drift and makes security-check changes error-prone.
+- **Implementation:** `tests/playwright/support/leaks.ts`; `tests/playwright/specs/authenticated/enterprise-settings.spec.ts`, `secrets.spec.ts`, `support.spec.ts`.
+
 ## QA-DEC-023 — Source of truth for test-case automation status
 
 - **Date:** 2026-07-19

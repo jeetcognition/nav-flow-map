@@ -14,4 +14,13 @@ export const routes = {
 
   /** Sub-org home. Pass a slug to target a specific sub-org. */
   subOrg: (slug: string = TEST_SUBORG) => `/org/${slug}`,
+
+  /** Enterprise-level support page. */
+  support: `/org/${ENTERPRISE_SLUG}/settings/support`,
+
+  /** Enterprise settings root. */
+  enterpriseSettings: `/org/${ENTERPRISE_SLUG}/settings`,
+
+  /** Sub-org secrets page. */
+  secrets: (slug: string = TEST_SUBORG) => `/org/${slug}/settings/secrets`,
 } as const;

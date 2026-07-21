@@ -4464,7 +4464,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner. 2. Click Support to open /org/cog-enterprise-qa/settings/support. 3. Click the support-chat launcher on the Support page.",
     "expected": "Support chat widget opens and is ready to accept a message; no console errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4479,7 +4479,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the Documentation card/heading on the page.",
     "expected": "The \"Documentation\" card heading is rendered and visible on the Support page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4494,7 +4494,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Read the description text under the Documentation card.",
     "expected": "The text \"Find answers to common questions and comprehensive guides\" is visible under the Documentation card.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4509,7 +4509,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Confirm the Documentation button is visible and enabled. 3. Click the Documentation button.",
     "expected": "The Documentation button is clickable and navigates to the Documentation page; the target route loads without error.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4524,7 +4524,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Reload the Support page (left sidebar → bottom-right (?) help control → Support). 2. Locate the Documentation section title after the page loads.",
     "expected": "The \"Documentation\" title is present and visible on the Support page after load.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4539,7 +4539,7 @@
     "reach": "Left sidebar → bottom-right (?) help → Support",
     "steps": "1. Open the Support page (left sidebar → bottom-right (?) help control → Support). 2. Verify the Documentation description text is presented to the user.",
     "expected": "The user can see the text \"Find answers to common questions and comprehensive guides\" on the Support page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5094,7 +5094,7 @@
     "reach": "Top Left Menu → Enterprise settings",
     "steps": "Open Enterprise Settings.",
     "expected": "**Settings › Enterprise** breadcrumb, **Enterprise Settings** heading, and description are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5109,7 +5109,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect the left sidebar.",
     "expected": "Back to app, settings search, Personal links, enterprise name, enterprise navigation, organization list, and help control are visible without overlap.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5124,7 +5124,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Enterprise preferences and settings**.",
     "expected": "**General**, **Connections**, and **Sessions** cards are visible with icons and navigation arrows.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5139,7 +5139,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Products**.",
     "expected": "**Devin** and **Review** cards are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5154,7 +5154,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Resources**.",
     "expected": "**Knowledge**, **Environment**, **Playbooks**, and **Skills & Rules** cards are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5169,7 +5169,7 @@
     "reach": "Enterprise Settings",
     "steps": "Scroll to **Administration**.",
     "expected": "**Repositories**, **Membership**, **Organizations**, **Devin API**, **Guardrails** with Beta badge, **Infrastructure**, and **Analytics** are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5184,7 +5184,7 @@
     "reach": "Enterprise Settings",
     "steps": "Open each card from the main panel, then return.",
     "expected": "Every card opens its matching enterprise settings page and retains the `Cog Enterprise QA` context.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5199,7 +5199,7 @@
     "reach": "Enterprise Settings",
     "steps": "Search settings using matching, non-matching, special-character, and long text.",
     "expected": "Matching settings filter correctly; no-match state is clear; input remains inert and the page stays usable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5214,7 +5214,7 @@
     "reach": "Enterprise Settings",
     "steps": "Click **Back to app**, then return with browser Back.",
     "expected": "User returns to the app safely; browser Back restores Enterprise Settings without a blank or broken state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5229,7 +5229,7 @@
     "reach": "Enterprise Settings",
     "steps": "Select another organization from the sidebar organization list.",
     "expected": "The selected organization's settings open and the enterprise context does not leak into the organization page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5244,7 +5244,7 @@
     "reach": "Enterprise Settings",
     "steps": "Scroll the sidebar organization list and click **Load more** when available.",
     "expected": "More organizations load without duplicates, layout shifts, or losing the current settings page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5274,7 +5274,7 @@
     "reach": "Enterprise Settings",
     "steps": "Refresh and use browser Back/Forward on the root page.",
     "expected": "The same enterprise context and usable layout are restored without navigation loops.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5289,7 +5289,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect the URL, UI, network responses, and console while using the page.",
     "expected": "No credentials, tokens, private configuration values, or internal errors are exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5299,12 +5299,12 @@
     "title": "Load the page cold.",
     "surfaceId": "enterprise",
     "nodeId": "s-secrets",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "jeet-test-org → Settings → Secrets",
     "steps": "Load the page cold.",
     "expected": "Breadcrumb and back navigation, help text, Organization and Personal counts, search, Bulk add secrets, Add secret, table, and empty or list state render without page or console errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5319,7 +5319,7 @@
     "reach": "Secrets",
     "steps": "Inspect both scopes.",
     "expected": "Organization and Personal tabs show independent counts; Name, Type, Note, Updated by, and Updated at columns are readable without displaying secret values.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5334,7 +5334,7 @@
     "reach": "Secrets → empty scope",
     "steps": "Inspect the empty state.",
     "expected": "No secrets found and Add your first secret appear; controls remain usable and no row from the other scope leaks into the view.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5349,7 +5349,7 @@
     "reach": "Secrets → Add secret",
     "steps": "Open the dialog without submitting.",
     "expected": "Scope, type, name, value, note, Redact value, close, and Store secret controls appear; the title reflects the selected scope.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5364,7 +5364,7 @@
     "reach": "Secrets → Add secret / Bulk add secrets",
     "steps": "Inspect Raw secret, Cookie, TOTP, and bulk-import forms.",
     "expected": "Raw, Cookie JSON or base64, TOTP and QR, upload-file, pasted `.env`, scope, and gated Store controls match the selected workflow.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5379,7 +5379,7 @@
     "reach": "Secrets",
     "steps": "Search each scope using full or partial name, no-match, whitespace, case variants, Unicode, long, HTML-like, and injection-like input; clear it.",
     "expected": "Filtering is literal and safe; no-match is clear; clearing restores only the active scope's rows.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5394,7 +5394,7 @@
     "reach": "Secrets → Add secret",
     "steps": "Test blank, whitespace, punctuation, leading-digit, very long, Unicode, HTML-like, and duplicate names.",
     "expected": "Required validation is clear; unsafe text remains inert; documented environment-variable normalization and duplicate suffixing are deterministic and collision-safe.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5409,7 +5409,7 @@
     "reach": "Secrets → Add secret → Raw secret",
     "steps": "With approval, create disposable Raw secrets with blank, whitespace, multiline, Unicode, very long, and special-character values plus long or HTML-like notes.",
     "expected": "Required value validation is actionable; supported values persist exactly; notes render inertly; plaintext is never exposed after saving.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5424,7 +5424,7 @@
     "reach": "Secrets → Add secret → Cookie",
     "steps": "Test valid JSON or base64 and malformed JSON, invalid base64, missing fields, unsupported domains or paths, duplicates, and oversized payloads.",
     "expected": "Only valid Chromium-format cookies are accepted; errors identify the problem without logging cookie contents.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5469,7 +5469,7 @@
     "reach": "Secrets → Add or Bulk add",
     "steps": "Switch Organization and Personal scopes and secret types after entering unsaved data; close, press Escape, go Back, refresh, and revisit.",
     "expected": "Scope, title, and fields remain consistent; warning or documented discard behavior occurs; no secret is silently stored or moved between scopes.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5484,7 +5484,7 @@
     "reach": "Secrets → disposable secret",
     "steps": "With approval, create a disposable secret → verify metadata → edit name, value, note, and redaction → reload → delete it.",
     "expected": "CRUD persists correctly; editing never reveals the previous value unnecessarily; only the selected secret changes; cleanup removes it.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5499,7 +5499,7 @@
     "reach": "Secrets → disposable secret → Actions → Delete",
     "steps": "With approval, cancel once, then confirm; repeat with similarly named rows.",
     "expected": "Confirmation identifies the exact secret and scope; cancel changes nothing; confirm removes only the selected secret and leaves no usable residual value.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5569,7 +5569,7 @@
     "title": "With approval, create unique disposable Personal and Organization Raw secrets → start n…",
     "surfaceId": "enterprise",
     "nodeId": "s-secrets",
-    "suite": "Regression",
+    "suite": "E2E",
     "priority": "P0",
     "reach": "Secrets and new sessions",
     "steps": "With approval, create unique disposable Personal and Organization Raw secrets → start new creator and member sessions that reference `$SECRET_NAME` → verify scope and value use without printing sensitive data → edit and retest in new sessions → delete both.",

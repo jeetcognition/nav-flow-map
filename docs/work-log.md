@@ -2,6 +2,36 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-21 — Automate remaining Nav Flow nodes (support, enterprise settings, secrets)
+
+### Requested
+
+- Automate the remaining `qa-testing/testcases` area files: `19_support.md`, `22_enterprise_settings.md`, and `23_suborg_secrets.md`.
+
+### Implemented
+
+- Added `catalog/pages/support.json` (6 cases), `ent.json` (14 cases), and `s-secrets.json` (19 cases) against `catalog/schema/page-catalog.schema.json`, mirroring the existing `login`/`auth`/`landing` catalog style.
+- Marked automatable cases as `active` with `specPath` pointing to new Playwright specs; left role-dependent or multi-session secrets cases as `manual`/`blocked`.
+- Synced `app/src/data/fixtures/testcases.json` `automation` flags to `automated` for the newly active cases (per QA-DEC-023).
+- Added `tests/playwright/pages/support.page.ts`, `enterprise-settings.page.ts`, and `secrets.page.ts` with accessible locators and helpers for navigation, cards, dialogs, and CRUD cleanup.
+- Added `tests/playwright/specs/authenticated/support.spec.ts` (6 specs), `enterprise-settings.spec.ts` (13 specs), and `secrets.spec.ts` (12 specs) covering smoke/sanity checks, search/filter, navigation, no-leak assertions, and disposable secret CRUD.
+- Centralized the duplicated `SENSITIVE_PATTERNS` / `assertNoLeaks` helpers into `tests/playwright/support/leaks.ts` and reused them in the new specs.
+- Extended `tests/playwright/support/paths.ts` with `support`, `enterpriseSettings`, and `secrets` route builders; exported the new page objects from `tests/playwright/pages/index.ts`.
+- Updated `tests/playwright/README.md` to reflect the new page objects, specs, and shared helpers.
+
+### Validation
+
+- `npm run catalog:validate` passes (6 page files, 81 testcases).
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- `cd app && npx tsc -b --force` passes (no `app/` changes).
+- `cd tests/playwright && BASE_URL=... npx playwright test --project=unauthenticated` passes (8/8 existing login specs).
+- `app/` `npm run lint` and `npm run build` could not run locally because the `oxlint` / `rolldown` optional native bindings did not install under the VM's Node 20; CI runs Node 22 and will exercise them.
+
+### Deferred
+
+- Live execution of the new authenticated specs requires `DEVIN_ADMIN_EMAIL` and `GMAIL_APP_PASSWORD`; the selectors should be validated against the real UI once credentials are available.
+
 ## 2026-07-18 — Clarify the NavFlow "Run automation" button feedback
 
 ### Requested

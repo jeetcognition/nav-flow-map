@@ -6,12 +6,18 @@ End-to-end tests for the Devin Enterprise web app, driven by the canonical catal
 
 ```text
 tests/playwright/
-├── pages/          # Page objects (BasePage, LoginPage, OrgSelectorPage)
-├── support/        # Environment routes (paths.ts) and Gmail-OTP helper (gmail-otp.ts)
+├── pages/          # Page objects (BasePage, LoginPage, OrgSelectorPage, SupportPage, EnterpriseSettingsPage, SecretsPage)
+├── support/        # Environment routes (paths.ts), Gmail-OTP helper (gmail-otp.ts), and leak assertions (leaks.ts)
 ├── specs/          # Test specs and auth setup
 │   ├── auth.setup.ts
-│   └── unauthenticated/
-│       └── login.spec.ts   # LOGIN-SAN01 — Load the Login page
+│   ├── unauthenticated/
+│   │   └── login.spec.ts
+│   └── authenticated/
+│       ├── auth.spec.ts
+│       ├── landing.spec.ts
+│       ├── support.spec.ts
+│       ├── enterprise-settings.spec.ts
+│       └── secrets.spec.ts
 ├── playwright.config.ts
 ├── .env.example
 └── package.json

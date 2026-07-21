@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-21 — Automate remaining Nav Flow nodes (support, enterprise settings, secrets)
+- **What:** Added `catalog/pages/support.json`, `ent.json`, and `s-secrets.json` for the three remaining `qa-testing/testcases` area files (`19_support.md`, `22_enterprise_settings.md`, `23_suborg_secrets.md`), and added matching Playwright specs under `tests/playwright/specs/authenticated/` (`support.spec.ts`, `enterprise-settings.spec.ts`, `secrets.spec.ts`). Added `SupportPage`, `EnterpriseSettingsPage`, and `SecretsPage` page objects plus route helpers; centralized `SENSITIVE_PATTERNS`/`assertNoLeaks` into `tests/playwright/support/leaks.ts`. Updated `app/src/data/fixtures/testcases.json` automation flags to reflect the newly automated cases.
+- **Why:** The first three Nav Flow nodes were already automated; this PR completes the catalog-to-Playwright loop for the remaining nodes in the current testcases folder.
+- **Decisions:** QA-DEC-024 — keep fixture `automation` flags in lock-step with the catalog; QA-DEC-025 — multi-user/multi-session secrets cases and role-dependent enterprise settings cases remain `manual`/`blocked` until test infrastructure can safely isolate users and sessions.
+
 ## 2026-07-19 — Correct automation status in UI fixtures
 - **What:** Synced `app/src/data/fixtures/testcases.json` so only the 41 currently automated catalog cases (`login`, `auth`, `landing`) have `automation: "automated"`. All other cases that were previously marked `automated` or `in-progress` were reset to `manual` to match reality.
 - **Why:** The Navflow UI showed many test cases as automated even though only the first three nodes have Playwright specs. This made the coverage/risk visualization misleading.

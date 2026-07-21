@@ -1,0 +1,655 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "ent",
+    "name": "Enterprise Settings",
+    "route": "/org/{tenant}/settings",
+    "prefixes": ["ENTSET"]
+  },
+  "testcases": [
+    {
+      "id": "ENTSET-SAN01",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Open Enterprise Settings.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Top Left Menu \u2192 Enterprise settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Enterprise Settings."
+        }
+      ],
+      "assertions": [
+        "**Settings \u203a Enterprise** breadcrumb, **Enterprise Settings** heading, and description are visible and readable."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-SAN02",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Inspect the left sidebar.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the left sidebar."
+        }
+      ],
+      "assertions": [
+        "Back to app, settings search, Personal links, enterprise name, enterprise navigation, organization list, and help control are visible without overlap."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-SAN03",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Inspect **Enterprise preferences and settings**.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering", "security"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect **Enterprise preferences and settings**."
+        }
+      ],
+      "assertions": [
+        "**General**, **Connections**, and **Sessions** cards are visible with icons and navigation arrows."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-SAN04",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Inspect **Products**.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect **Products**."
+        }
+      ],
+      "assertions": ["**Devin** and **Review** cards are visible and readable."],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-SAN05",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Inspect **Resources**.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect **Resources**."
+        }
+      ],
+      "assertions": [
+        "**Knowledge**, **Environment**, **Playbooks**, and **Skills & Rules** cards are visible and readable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-SAN06",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Scroll to **Administration**.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Scroll to **Administration**."
+        }
+      ],
+      "assertions": [
+        "**Repositories**, **Membership**, **Organizations**, **Devin API**, **Guardrails** with Beta badge, **Infrastructure**, and **Analytics** are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG01",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Open each card from the main panel, then return.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open each card from the main panel, then return."
+        }
+      ],
+      "assertions": [
+        "Every card opens its matching enterprise settings page and retains the `Cog Enterprise QA` context."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG02",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Search settings using matching, non-matching, special-character, and long text.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering", "input-validation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search settings using matching, non-matching, special-character, and long text."
+        }
+      ],
+      "assertions": [
+        "Matching settings filter correctly; no-match state is clear; input remains inert and the page stays usable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG03",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Click **Back to app**, then return with browser Back.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Back to app**, then return with browser Back."
+        }
+      ],
+      "assertions": [
+        "User returns to the app safely; browser Back restores Enterprise Settings without a blank or broken state."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG04",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Select another organization from the sidebar organization list.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Select another organization from the sidebar organization list."
+        }
+      ],
+      "assertions": [
+        "The selected organization's settings open and the enterprise context does not leak into the organization page."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG05",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Scroll the sidebar organization list and click **Load more** when available.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Scroll the sidebar organization list and click **Load more** when available."
+        }
+      ],
+      "assertions": [
+        "More organizations load without duplicates, layout shifts, or losing the current settings page."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Return to the starting page and reset to a clean state"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG06",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Open Enterprise Settings as a user without enterprise-admin access.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "ui-rendering", "security"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Enterprise Settings as a user without enterprise-admin access."
+        }
+      ],
+      "assertions": [
+        "Restricted settings are hidden or access-denied; no unauthorized enterprise data or actions are exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires human judgment or a different user role to execute safely"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG07",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Refresh and use browser Back/Forward on the root page.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Refresh and use browser Back/Forward on the root page."
+        }
+      ],
+      "assertions": [
+        "The same enterprise context and usable layout are restored without navigation loops."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG08",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Inspect the URL, UI, network responses, and console while using the page.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "ui-rendering", "security"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the URL, UI, network responses, and console while using the page."
+        }
+      ],
+      "assertions": [
+        "No credentials, tokens, private configuration values, or internal errors are exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/enterprise-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
