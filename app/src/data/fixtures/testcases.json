@@ -4545,6 +4545,21 @@
     "source": "authored"
   },
   {
+    "id": "SUP-SAN06",
+    "title": "Verify the support email message is displayed on the Contact Support page",
+    "surfaceId": "enterprise",
+    "nodeId": "support",
+    "suite": "Sanity",
+    "priority": "P2",
+    "reach": "Left sidebar → bottom-right (?) help control → Support",
+    "steps": "1. From the Landing search page, open the left sidebar and click the (?) help control in the bottom-right corner. 2. Click Support to open /org/cog-enterprise-qa/settings/support. 3. Locate the Contact Support section and the support email message.",
+    "expected": "The message \"Please email support@cognition.ai and we'll get back to you.\" is visible on the Support page.",
+    "automation": "manual",
+    "flaky": false,
+    "createdBy": "u-jeet",
+    "source": "authored"
+  },
+  {
     "id": "AUTH-SAN01",
     "title": "Enter a valid work email and click Continue",
     "surfaceId": "enterprise",

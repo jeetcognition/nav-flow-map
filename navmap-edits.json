@@ -2,11 +2,7 @@
   "addedPages": [],
   "pageOverrides": {},
   "caseOverrides": {},
-  "addedCases": {
-    "support": [
-      "\"Please email support@cognition.ai and we'll get back to you.\" message is visible at Contact Support page under the (?) help control in the bottom-right corner"
-    ]
-  },
+  "addedCases": {},
   "addedLinks": [
     {
       "source": "landing",
