@@ -420,7 +420,22 @@
 }
 
 .fp-session-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-size: 11px;
+  color: var(--text-3);
+  text-decoration: none;
+}
+
+a.fp-session-id:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+.fp-session-note {
+  font-size: 11px;
+  font-style: italic;
   color: var(--text-3);
 }
 

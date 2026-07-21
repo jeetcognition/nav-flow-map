@@ -2,6 +2,34 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-18 — Clarify the NavFlow "Run automation" button feedback
+
+### Requested
+
+- In-app suggestion from `/navflow`: "is run automation button actually working?"
+
+### Implemented
+
+- The button already fires `triggerDevinSession`, but the panel's feedback was
+  weak (a non-clickable session id), so users could not tell it did anything.
+- `app/src/components/flow/FlowPanel.tsx`: added a descriptive `title` on the
+  Run automation button, made the started session id an `ExternalLink` (opens
+  the Devin session, matching the Automation page's Sessions panel), and added
+  a small "simulated Phase 1 run" note so the feedback is honest — consistent
+  with the sidebar's existing "Phase 1 · mock data" labeling.
+- `app/src/styles/flowmap.css`: link styling for `.fp-session-id` and the note.
+- No data or wire-contract changes; automation stays the Phase 1 mock session.
+
+### Validation
+
+- `app` `oxlint --deny-warnings` and `vite build` (`tsc -b`) pass under Node 22.
+- `npm run format:check`, `npm run catalog:validate`, and
+  `node scripts/validate-data.js` pass.
+
+### Deferred
+
+- Wiring the button to a real Devin run backend is a Phase 2 item (mock only).
+
 ## 2026-07-19 — Correct automation status in UI fixtures
 
 ### Requested
