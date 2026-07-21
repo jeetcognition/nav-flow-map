@@ -21,4 +21,24 @@ export const routes = {
 
   /** Enterprise support page. */
   support: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/support`,
+
+  /** Enterprise infrastructure page. */
+  infrastructure: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/infrastructure`,
+
+  /** Enterprise skills analytics page. */
+  enterpriseSkills: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/enterprise-skills`,
+
+  /** Enterprise sessions page (skill detail drill-down). */
+  enterpriseSessions: (slug: string = ENTERPRISE_SLUG) =>
+    `/org/${slug}/settings/enterprise-sessions`,
+
+  /**
+   * Membership page with optional tab.
+   * The base route is `/settings/membership`; the enterprise-scoped routes use `/org/{slug}/settings/membership`.
+   */
+  membership: (tab?: "members" | "roles" | "groups") =>
+    tab ? `/settings/membership?tab=${tab}` : `/settings/membership`,
+
+  enterpriseMembership: (slug: string = ENTERPRISE_SLUG, tab?: "members" | "roles" | "groups") =>
+    tab ? `/org/${slug}/settings/membership?tab=${tab}` : `/org/${slug}/settings/membership`,
 } as const;

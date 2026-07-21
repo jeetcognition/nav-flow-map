@@ -1,0 +1,247 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-infra",
+    "name": "Infra",
+    "route": "…/settings/infrastructure",
+    "prefixes": ["INFRA"]
+  },
+  "testcases": [
+    {
+      "id": "INFRA-SMK01",
+      "pageId": "e-infra",
+      "surface": "webapp",
+      "title": "Load cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "jeet",
+      "navigation": "Settings → Infrastructure",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load cold."
+        }
+      ],
+      "assertions": [
+        "Infrastructure heading, hypervisor/capacity health copy, Refresh action, and empty/list state render without page errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-infra.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "INFRA-SAN01",
+      "pageId": "e-infra",
+      "surface": "webapp",
+      "title": "Inspect current VPC/tenant/hypervisor state.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Infrastructure",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect current VPC/tenant/hypervisor state."
+        }
+      ],
+      "assertions": [
+        "Empty state such as “No VPC data available” is clear, or populated rows show tenant/hypervisor/capacity status accurately."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-infra.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "INFRA-REG01",
+      "pageId": "e-infra",
+      "surface": "webapp",
+      "title": "Click Refresh repeatedly and during slow/error network conditions.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Infrastructure → Refresh",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click Refresh repeatedly and during slow/error network conditions."
+        }
+      ],
+      "assertions": [
+        "Refresh is idempotent",
+        "loading/error state is clear",
+        "stale health data is not shown as current after failure."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-infra.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "INFRA-REG02",
+      "pageId": "e-infra",
+      "surface": "webapp",
+      "title": "If list/search/filter controls are present, test no-match, Unicode, long, HTML-like, an…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Infrastructure",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "If list/search/filter controls are present, test no-match, Unicode, long, HTML-like, and injection-like values."
+        }
+      ],
+      "assertions": [
+        "Filters are literal and safe",
+        "no cross-tenant infrastructure identifiers appear."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires an additional user role or environment not available in this Playwright project."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "INFRA-REG03",
+      "pageId": "e-infra",
+      "surface": "webapp",
+      "title": "As restricted user or with tampered tenant/hypervisor IDs, request infrastructure healt…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Infrastructure",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As restricted user or with tampered tenant/hypervisor IDs, request infrastructure health data."
+        }
+      ],
+      "assertions": [
+        "Server denies unauthorized/cross-tenant infra visibility and does not expose internal host details unnecessarily."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires an additional user role or environment not available in this Playwright project."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}

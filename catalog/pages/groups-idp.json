@@ -1,0 +1,153 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "groups-idp",
+    "name": "Groups (IdP)",
+    "route": "…/settings/membership?tab=groups",
+    "prefixes": ["IDP"]
+  },
+  "testcases": [
+    {
+      "id": "IDP-SMK01",
+      "pageId": "groups-idp",
+      "surface": "webapp",
+      "title": "Load the page cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "arjun",
+      "navigation": "Membership → Groups (IdP)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page cold."
+        }
+      ],
+      "assertions": [
+        "Groups tab activates with count zero",
+        "No groups found and IdP/SSO setup guidance are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/groups-idp.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "IDP-REG01",
+      "pageId": "groups-idp",
+      "surface": "webapp",
+      "title": "Deep-link, refresh, and use Back/Forward on `?tab=groups`.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Membership → Groups (IdP)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Deep-link, refresh, and use Back/Forward on `?tab=groups`."
+        }
+      ],
+      "assertions": [
+        "Groups remains selected",
+        "the empty state does not show stale members, roles, or groups from another tenant."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/groups-idp.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "IDP-REG02",
+      "pageId": "groups-idp",
+      "surface": "webapp",
+      "title": "Open Groups as a non-admin or with a tampered enterprise context.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Membership → Groups (IdP)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Groups as a non-admin or with a tampered enterprise context."
+        }
+      ],
+      "assertions": [
+        "Access follows authorization rules and no cross-enterprise IdP configuration or group data is exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires an additional user role or environment not available in this Playwright project."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}

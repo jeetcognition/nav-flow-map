@@ -5,6 +5,9 @@ export { LoginPage } from "./login.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { SuborgPage } from "./suborg.page";
 export { SupportPage } from "./support.page";
+export { InfraSettingsPage } from "./infra-settings.page";
+export { SkillsSettingsPage } from "./skills-settings.page";
+export { GroupsIdpPage } from "./membership.page";
 
 export {
   routes,
