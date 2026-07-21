@@ -43,7 +43,6 @@ export function Sidebar() {
           </NavLink>
         ))}
       </div>
-      <div className="sidebar-foot mono">Phase 1 · mock data</div>
     </nav>
   );
 }
