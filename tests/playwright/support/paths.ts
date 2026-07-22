@@ -52,4 +52,7 @@ export const routes = {
 
   /** Enterprise repositories settings page. */
   repositories: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/repositories`,
+
+  /** Enterprise skills & rules analytics page. */
+  enterpriseSkills: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/enterprise-skills`,
 } as const;
