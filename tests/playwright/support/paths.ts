@@ -77,4 +77,7 @@ export const routes = {
 
   /** Enterprise Devin settings page. */
   devinSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/enterprise-devin`,
+
+  /** Enterprise Devin Review settings page. */
+  reviewSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/review`,
 } as const;

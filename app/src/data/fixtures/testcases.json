@@ -814,12 +814,12 @@
     "title": "Load cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-review",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Settings → Review",
     "steps": "Load cold.",
     "expected": "Devin Review settings, PR descriptions, security scan, PR comments, automatic review, rules, files, repositories, and self-enrolled users render without page errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -834,7 +834,7 @@
     "reach": "Review",
     "steps": "Switch Repositories and Self-enrolled users tabs.",
     "expected": "Tab counts and lists render; URL/deep link preserves the selected tab.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -849,7 +849,7 @@
     "reach": "Review",
     "steps": "Open Add repo without submitting.",
     "expected": "Repository search/selection, mode/host filters, Add gating, and close/cancel controls are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -894,7 +894,7 @@
     "reach": "Review → auto-review limits",
     "steps": "Test blank, zero, negative, decimal, huge, and valid ACU limits, then restore.",
     "expected": "Only supported values save; validation is clear and no partial update occurs.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -909,7 +909,7 @@
     "reach": "Review → rules/files",
     "steps": "Add invalid, duplicate, long, Unicode, and HTML-like rule/file patterns without saving or in disposable scope.",
     "expected": "Invalid patterns are rejected; unsafe text is inert; valid patterns are scoped to the intended repository/enterprise.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -924,7 +924,7 @@
     "reach": "Review",
     "steps": "As non-admin or with tampered repo/user/enterprise IDs, attempt to enroll repos/users or update Review settings.",
     "expected": "Server-side authorization denies unauthorized changes and cross-enterprise access.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -934,7 +934,7 @@
     "title": "With approval, enroll a disposable repo/user and open a disposable PR.",
     "surfaceId": "enterprise",
     "nodeId": "e-review",
-    "suite": "Regression",
+    "suite": "E2E",
     "priority": "P1",
     "reach": "Review → Git provider PR",
     "steps": "With approval, enroll a disposable repo/user and open a disposable PR.",
