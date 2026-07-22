@@ -55,4 +55,7 @@ export const routes = {
 
   /** Enterprise skills & rules analytics page. */
   enterpriseSkills: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/enterprise-skills`,
+
+  /** Enterprise knowledge page. */
+  enterpriseKnowledge: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/knowledge`,
 } as const;
