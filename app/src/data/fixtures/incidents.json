@@ -317,7 +317,7 @@
     "title": "Autocomplete not working in a specific project",
     "description": "Hi, I'm experiencing an issue with code autocomplete in one of my projects. The autocomplete does not trigger automatically, and manual invocation (Alt+) does not work either. In other projects, autocomplete works fine. Settings: Completion mode: Supercomplete Aggression: Medium Steps to reproduce: ",
     "surfaceId": "windsurf",
-    "nodeId": "settings",
+    "nodeId": "ent",
     "severity": "S4",
     "status": "open",
     "customer": "Customer 856•••",
@@ -333,7 +333,7 @@
     "linkedCaseId": null,
     "draftCase": {
       "title": "Regression: Autocomplete not working in a specific project",
-      "nodeId": "settings",
+      "nodeId": "ent",
       "priority": "P2",
       "preconditions": "Signed in with an account matching the affected customer profile.",
       "steps": "Reproduce the reported scenario: Hi, I'm experiencing an issue with code autocomplete in one of my projects. The autocomplete does not trigger automatically, and manual invocation (Alt+) does not work either. In other projects, autocomplete works fine. Settings: Completion mode: Supercomplete Aggression: Medium ",
@@ -696,8 +696,8 @@
     "createdAt": "2026-07-08T18:12:52Z",
     "ai": {
       "category": "app-bug",
-      "confidence": 0.86,
-      "rationale": "Rules: +1.4 error-word, +1.8 entitlement-gap, +1.0 says-but, +1.6 pylon-type:bug · node unmapped, defaulted to landing"
+      "confidence": 0.88,
+      "rationale": "Rules: +1.4 error-word, +2.0 entitlement-gap, +1.0 says-but, +1.6 pylon-type:bug · node unmapped, defaulted to landing"
     },
     "humanCategory": null,
     "overriddenBy": null,
@@ -1828,8 +1828,8 @@
     "createdAt": "2026-06-09T13:33:30Z",
     "ai": {
       "category": "app-bug",
-      "confidence": 0.71,
-      "rationale": "Rules: +1.8 entitlement-gap, +1.0 says-but, -0.6 pylon-type:question · node unmapped, defaulted to landing"
+      "confidence": 0.75,
+      "rationale": "Rules: +2.0 entitlement-gap, +1.0 says-but, -0.6 pylon-type:question · node unmapped, defaulted to landing"
     },
     "humanCategory": null,
     "overriddenBy": null,
@@ -3300,8 +3300,8 @@
     "createdAt": "2026-07-08T18:41:40Z",
     "ai": {
       "category": "app-bug",
-      "confidence": 0.71,
-      "rationale": "Rules: +1.0 invalid-state, +1.8 entitlement-gap, -0.6 pylon-type:question · node unmapped, defaulted to landing"
+      "confidence": 0.75,
+      "rationale": "Rules: +1.0 invalid-state, +2.0 entitlement-gap, -0.6 pylon-type:question · node unmapped, defaulted to landing"
     },
     "humanCategory": null,
     "overriddenBy": null,
@@ -4505,6 +4505,29 @@
     "linkedCaseId": null
   },
   {
+    "id": "INC-62624",
+    "source": "pylon",
+    "sourceLink": "https://app.usepylon.com/issues?issueNumber=62624",
+    "verdict": "possible-bug",
+    "title": "I purchased the $20 PRO plan, but WindSurf remains on the free plan in my personal account, both on the website and in the IntelliJ IDEA dev",
+    "description": "I purchased the $20 PRO plan, but WindSurf remains on the free plan in my personal account, both on the website and in the IntelliJ IDEA development environment. The only place it's displayed is on the DevanAi website.",
+    "surfaceId": "windsurf",
+    "nodeId": "landing",
+    "severity": "S4",
+    "status": "open",
+    "customer": "Customer 810•••",
+    "createdAt": "2026-07-21T15:15:16Z",
+    "ai": {
+      "category": "app-bug",
+      "confidence": 0.52,
+      "rationale": "Rules: +2.0 entitlement-gap, -0.6 pylon-type:question · node unmapped, defaulted to landing"
+    },
+    "humanCategory": null,
+    "overriddenBy": null,
+    "linkedBugId": null,
+    "linkedCaseId": null
+  },
+  {
     "id": "INC-62626",
     "source": "pylon",
     "sourceLink": "https://app.usepylon.com/issues?issueNumber=62626",
@@ -4535,7 +4558,7 @@
     "title": "Org screen showing 0 repos for Talaria orgs - what is the repository column supposed to show?",
     "description": "https://aexp.devinenterprise,com/org/amex-prod/settings/organizations (https://aexp.devinenterprise,com/org/amex-prod/settings/organizations) is showing zero in the repository column for Talaria orgs. Some other orgs do have that column populated - can you advise what that column counts? Also I am n",
     "surfaceId": "enterprise",
-    "nodeId": "settings",
+    "nodeId": "ent",
     "severity": "S2",
     "status": "open",
     "customer": "Customer 823•••",
@@ -4650,7 +4673,7 @@
     "title": "Billing issues blocking Devin workflows",
     "description": "@here seeing some billing issues on our side where our Devin workflows aren't working. we rely on it as critical infra now so want to make sure we get unblocked here. could someone help us take a look please? I don't see any errors in settings anymore and paid the most recent invoice",
     "surfaceId": "enterprise",
-    "nodeId": "settings",
+    "nodeId": "ent",
     "severity": "S2",
     "status": "open",
     "customer": "Customer 863•••",
@@ -4941,37 +4964,6 @@
       "priority": "P2",
       "preconditions": "Signed in with an account matching the affected customer profile.",
       "steps": "Reproduce the reported scenario: Hi, I'm reaching out to report an issue we encountered when working with our organization CIB-SANVPW (Org ID: org-d4eab77052a24391ae3e865db01766dc ). When attempting to send a feature to Devin (specifically feature AINATSANVA-603: F2.4 - Program Listing per Issuance ), we receive",
-      "expected": "The reported failure no longer occurs; behavior matches spec with no console or network errors."
-    }
-  },
-  {
-    "id": "INC-57596",
-    "source": "pylon",
-    "sourceLink": "https://app.usepylon.com/issues?issueNumber=57596",
-    "verdict": "definite-bug",
-    "title": "Map connection issue",
-    "description": "Map connection issue",
-    "surfaceId": "windsurf",
-    "nodeId": "landing",
-    "severity": "S1",
-    "status": "investigating",
-    "customer": "Customer 767•••",
-    "createdAt": "2026-06-23T22:03:04Z",
-    "ai": {
-      "category": "app-bug",
-      "confidence": 0.75,
-      "rationale": "Rules: +1.4 error-word, +1.1 failure-verb, +1.6 pylon-type:bug, +1.0 priority:urgent · node unmapped, defaulted to landing"
-    },
-    "humanCategory": null,
-    "overriddenBy": null,
-    "linkedBugId": null,
-    "linkedCaseId": null,
-    "draftCase": {
-      "title": "Regression: Map connection issue",
-      "nodeId": "landing",
-      "priority": "P2",
-      "preconditions": "Signed in with an account matching the affected customer profile.",
-      "steps": "Reproduce the reported scenario: Map connection issue",
       "expected": "The reported failure no longer occurs; behavior matches spec with no console or network errors."
     }
   }

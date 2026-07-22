@@ -382,3 +382,26 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Deferred
 
 - Import the pipeline into this repo (`pipelines/pylon/`) + scheduled GitHub Actions run (needs `PYLON_API_KEY` secret); verification labels → D1 (QA-DEC-024); worker redeploy still pending.
+
+## 2026-07-22 (engineering pass) — Pylon intake hardened per "no vibe coding"
+
+### Requested
+
+- User directive: "No changes should be vibe coded. Make engineered flow."
+
+### Implemented
+
+- Pipeline imported to `pipelines/pylon/` (repo-relative paths, gitignored DB/.env, README with invariants).
+- `test_pipeline.py`: hermetic unit tests (synthetic tickets) for the PII sanitizer, classifier verdict bands, node mapping, and a leak property test — wired into the Validate workflow. First run caught a real threshold gap (entitlement family at 1.2 < 1.3); fixed with an eval-gated weight bump.
+- `eval_classifier.py --gate`: mechanical rule-change gate (precision ≥ 90%, recall ≥ 85%, definite ≥ 95%, ≥ 100 scored).
+- `scripts/validate-data.js`: incidents referential/enum checks + PII leak scan (negative-tested with a planted email) — caught a real exporter bug (`settings` mapped to a nonexistent node; now `ent`).
+- `.github/workflows/pylon-intake.yml`: daily fetch → tests → gate → export → format → validate → **PR** (secret-gated, never pushes main; GITHUB_TOKEN/INTAKE_PAT caveat documented).
+- Worker REWRITE_PROMPT: promotion sessions now branch + auto-merge PR (effective after `wrangler deploy`).
+
+### Validation
+
+- Pipeline tests pass; eval gate passes (98%/98%, definite 14/14); validate-data passes incl. leak scan; full PR CI on this branch.
+
+### Deferred
+
+- `wrangler deploy` (user action) → then branch protection on `main` (command in TODO.md); `PYLON_API_KEY` + optional `INTAKE_PAT` repo secrets (user action); verification labels → D1.
