@@ -3439,7 +3439,7 @@
     "title": "Load Service users cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-api",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Settings → Devin API",
     "steps": "Load Service users cold.",
@@ -3459,7 +3459,7 @@
     "reach": "Devin API → Service users",
     "steps": "Inspect table rows.",
     "expected": "Name, scope, organization, role, created/expires timestamps, and actions are readable without displaying API token values.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3474,7 +3474,7 @@
     "reach": "Devin API → Legacy API",
     "steps": "Switch to Legacy API tab.",
     "expected": "Legacy token list/state renders; token values are masked or only shown according to documented one-time behavior.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3489,7 +3489,7 @@
     "reach": "Devin API → Provision",
     "steps": "Open Provision without submitting.",
     "expected": "Name, scope, organization, role, expiration, create/cancel controls, and gated submission are visible.",
-    "automation": "not-automatable",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3504,7 +3504,7 @@
     "reach": "Devin API → Search/filter",
     "steps": "Search and filter by organization/role with no-match, whitespace, Unicode, long, duplicate-name, and HTML-like text.",
     "expected": "Filtering is literal and safe; duplicate display names remain distinguishable by metadata.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
