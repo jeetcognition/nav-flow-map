@@ -1,0 +1,391 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-repos",
+    "name": "Repositories",
+    "route": "/org/{tenant}/settings/repositories",
+    "prefixes": ["REPO"]
+  },
+  "testcases": [
+    {
+      "id": "REPO-SMK01",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "Load cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "maya",
+      "navigation": "Settings → Repositories",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load cold."
+        }
+      ],
+      "assertions": [
+        "Organization selector renders first with no page errors",
+        "repository controls are gated until an organization is selected."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-SAN01",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "Open organization selector and choose `jeet-test-org` without mutating permissions.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Repositories",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open organization selector and choose `jeet-test-org` without mutating permissions."
+        }
+      ],
+      "assertions": [
+        "Selected organization is shown",
+        "repository list/permissions state loads only for that organization."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-SAN02",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "Inspect repo list, provider/status/permission columns, filters, and available actions.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Repositories → selected org",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect repo list, provider/status/permission columns, filters, and available actions."
+        }
+      ],
+      "assertions": [
+        "Rows are associated with the selected org",
+        "permissions/actions are clearly labeled."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-REG01",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "Search repos with match/no-match, whitespace, Unicode, long, HTML-like, and injection-l…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Repositories",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search repos with match/no-match, whitespace, Unicode, long, HTML-like, and injection-like text."
+        }
+      ],
+      "assertions": [
+        "Filtering is literal and safe",
+        "clearing restores selected organization’s repository list."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-REG02",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "Combine provider/status/permission filters, pagination, and organization switching.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Repositories",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Combine provider/status/permission filters, pagination, and organization switching."
+        }
+      ],
+      "assertions": [
+        "Filters reset or persist only as documented",
+        "no stale rows from another organization appear."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires complex filter combinations, pagination, and multi-organization state that are not deterministic in a shared QA tenant."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-REG03",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "With approval, add/remove or change permission for a disposable repository/member, relo…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Repositories",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "With approval, add/remove or change permission for a disposable repository/member, reload, then restore."
+        }
+      ],
+      "assertions": [
+        "Permission changes persist for the correct repo/org only",
+        "cleanup restores original access."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires adding/removing repository permissions and a disposable repository target; cleanup cannot be guaranteed without approval."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-REG04",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "As restricted user or with tampered org/repo IDs, request or mutate repository permissi…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["security"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Repositories",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As restricted user or with tampered org/repo IDs, request or mutate repository permissions."
+        }
+      ],
+      "assertions": [
+        "Server denies unauthorized/cross-tenant access and does not expose private repo metadata."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires a restricted user or tampered org/repo context that is not available in the shared admin Playwright setup."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REPO-E2E01",
+      "pageId": "e-repos",
+      "surface": "webapp",
+      "title": "With approval, grant disposable repo access, start a session that references it, then r…",
+      "type": "E2E",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["weekly"],
+      "owner": "maya",
+      "navigation": "Repositories → session",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "With approval, grant disposable repo access, start a session that references it, then revoke and retest."
+        }
+      ],
+      "assertions": [
+        "Session access follows repository permissions",
+        "revocation prevents new access after cleanup."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires granting/revoking repo access and starting a session, which is an end-to-end flow not suitable for the shared Playwright tenant."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
