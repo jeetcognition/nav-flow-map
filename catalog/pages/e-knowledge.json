@@ -1,0 +1,1141 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-knowledge",
+    "name": "Knowledge",
+    "route": "/org/{tenant}/settings/knowledge",
+    "prefixes": ["KNOW"]
+  },
+  "testcases": [
+    {
+      "id": "KNOW-SMK01",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Load the page cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "jeet",
+      "navigation": "Enterprise settings → Knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page cold."
+        }
+      ],
+      "assertions": [
+        "Knowledge heading, documentation link, search, Create knowledge, Name/Author/Created at columns, and System/Enterprise folders render without a page or console error."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN01",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Expand and collapse System knowledge and Enterprise knowledge.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Expand and collapse System knowledge and Enterprise knowledge."
+        }
+      ],
+      "assertions": [
+        "Each folder changes state independently",
+        "its rows appear or hide without overlap, duplication, or losing the current search."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN03",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Inspect the list page.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the list page."
+        }
+      ],
+      "assertions": [
+        "Knowledge heading, documentation link, Create knowledge, search, Name/Author/Created at columns, and System/Enterprise knowledge rows are visible and readable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN04",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Click **Create knowledge** without saving.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Create knowledge** without saving."
+        }
+      ],
+      "assertions": [
+        "Creation panel shows Notice, Contents, Macro, Folder, Pin to repository, Next, and Cancel controls."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN05",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Select multiple Enterprise knowledge entries.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Knowledge → Enterprise knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Select multiple Enterprise knowledge entries."
+        }
+      ],
+      "assertions": [
+        "Selected rows are highlighted",
+        "checkboxes, selected-count toolbar, clear-selection control, and Take action are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN06",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Click **Take action**.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Knowledge → select multiple Enterprise entries",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **Take action**."
+        }
+      ],
+      "assertions": [
+        "Search actions, Move to folder, Auto-organize selection, and Delete are visible",
+        "Move and Auto-organize remain disabled with clear reasons",
+        "Delete remains available."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "unsupported"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN07",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Inspect the entry header.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Knowledge → open an entry",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the entry header."
+        }
+      ],
+      "assertions": [
+        "Back to knowledge, knowledge name, author, creation date, and Details/Usage tabs are visible and readable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN08",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Inspect all controls.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Knowledge entry → Details",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect all controls."
+        }
+      ],
+      "assertions": [
+        "Content, Trigger, Pin to repository, Folder, Macro, Save, and Delete controls are visible with their current values."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-SAN09",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Inspect usage information.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Knowledge entry → Usage",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect usage information."
+        }
+      ],
+      "assertions": [
+        "Session usage by day chart, Retrieved/Used legend, Last 30 days range, Sessions list, and View session controls are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG05",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Pin the entry to a disposable repository → run matching and non-matching repository ses…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Knowledge → disposable entry",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Pin the entry to a disposable repository → run matching and non-matching repository sessions → restore the original pin."
+        }
+      ],
+      "assertions": [
+        "Pin persists",
+        "knowledge is available only in its intended repository scope",
+        "cleanup restores the original repository selection."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG06",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Search with matching, non-matching, whitespace, emoji, long, `<script>`, and injection-…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search with matching, non-matching, whitespace, emoji, long, `<script>`, and injection-like input; then clear."
+        }
+      ],
+      "assertions": [
+        "Results filter safely",
+        "no-match state is clear",
+        "special input remains inert",
+        "clearing restores the full list."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG07",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Create `qa-temp-knowledge-<timestamp>` → verify it in list/search → edit its content, t…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Knowledge → Create knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Create `qa-temp-knowledge-<timestamp>` → verify it in list/search → edit its content, trigger, macro, folder, and repository pin → verify update → delete it."
+        }
+      ],
+      "assertions": [
+        "Create/read/update/delete succeeds",
+        "cleanup verifies the disposable knowledge no longer appears",
+        "Delete it even if an intermediate assertion fails."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG08",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Attempt creation with blank name/content/trigger, duplicate name or macro, invalid macr…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Knowledge → Create knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Attempt creation with blank name/content/trigger, duplicate name or macro, invalid macro, and excessive-length values."
+        }
+      ],
+      "assertions": [
+        "Clear validation appears",
+        "no incomplete or duplicate knowledge entry is created."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG09",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Create or edit fields with HTML-like, Unicode, and RTL text; inspect the UI, URL, conso…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Knowledge → disposable entry",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Create or edit fields with HTML-like, Unicode, and RTL text; inspect the UI, URL, console, and requests; then delete the entry."
+        }
+      ],
+      "assertions": [
+        "Text is escaped and rendered inert",
+        "no script executes, sensitive token appears, or unauthorized knowledge is returned."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG10",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Select multiple disposable entries → Take action → Delete → confirm.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Knowledge → Enterprise knowledge",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Select multiple disposable entries → Take action → Delete → confirm."
+        }
+      ],
+      "assertions": [
+        "Confirmation identifies the selection",
+        "all selected disposable entries are deleted, unselected entries remain, and the selection toolbar closes."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG11",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Record original values → update Content, Trigger, repository pin, Folder, and Macro → S…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Disposable knowledge entry → Details",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Record original values → update Content, Trigger, repository pin, Folder, and Macro → Save → reload → restore originals."
+        }
+      ],
+      "assertions": [
+        "Every saved field persists after reload",
+        "cleanup restores the exact original entry state."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG12",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Enter blank, duplicate, long, Unicode, and HTML-like values in editable fields.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Disposable knowledge entry → Details",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Enter blank, duplicate, long, Unicode, and HTML-like values in editable fields."
+        }
+      ],
+      "assertions": [
+        "Required-field and macro validation is clear",
+        "HTML-like content remains inert",
+        "invalid changes are not saved."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG13",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Change a field without saving, then click Back to knowledge or switch to Usage.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Knowledge entry → Details",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Change a field without saving, then click Back to knowledge or switch to Usage."
+        }
+      ],
+      "assertions": [
+        "An unsaved-change warning appears or the documented discard behavior occurs",
+        "changes are not silently persisted or lost."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG14",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Compare the chart, Retrieved/Used legend, and displayed session records for the same pe…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Knowledge entry → Usage",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Compare the chart, Retrieved/Used legend, and displayed session records for the same period."
+        }
+      ],
+      "assertions": [
+        "Chart, legend, and session list represent the same knowledge entry and time range without stale or contradictory data."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG15",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Click **View session** for several rows, then return.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Knowledge entry → Usage",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click **View session** for several rows, then return."
+        }
+      ],
+      "assertions": [
+        "Each control opens the correct session",
+        "returning restores the same knowledge entry, Usage tab, and list position."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG16",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Open Usage before any matching session runs.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Newly created unused knowledge → Usage",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Usage before any matching session runs."
+        }
+      ],
+      "assertions": [
+        "A clear empty state appears",
+        "no chart or session data from another knowledge entry is shown."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG17",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "As an unauthorized user or with tampered knowledge/session IDs, request Usage and View …",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Knowledge entry → Usage",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As an unauthorized user or with tampered knowledge/session IDs, request Usage and View session."
+        }
+      ],
+      "assertions": [
+        "Access is denied",
+        "session names, prompts, users, and cross-organization usage data are not exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-REG18",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Click Delete → cancel once → repeat and confirm.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Disposable knowledge entry → Details",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click Delete → cancel once → repeat and confirm."
+        }
+      ],
+      "assertions": [
+        "Cancel leaves the entry unchanged",
+        "confirmation deletes it, returns to Knowledge, and the entry no longer appears."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "KNOW-E2E01",
+      "pageId": "e-knowledge",
+      "surface": "webapp",
+      "title": "Create disposable knowledge with unique Content and Trigger → start a session whose pro…",
+      "type": "E2E",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["weekly"],
+      "owner": "maya",
+      "navigation": "Knowledge → Create knowledge → New session → Knowledge Usage",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Create disposable knowledge with unique Content and Trigger → start a session whose prompt matches the Trigger → verify Devin follows the unique instruction → locate the session in Usage and open it → delete the knowledge."
+        }
+      ],
+      "assertions": [
+        "Relevant knowledge is retrieved and applied only in the matching session",
+        "the correct session appears with accurate Retrieved/Used data",
+        "View session opens it",
+        "cleanup removes the disposable knowledge."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}

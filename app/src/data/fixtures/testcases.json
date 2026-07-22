@@ -1009,12 +1009,12 @@
     "title": "Load the page cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-knowledge",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Enterprise settings → Knowledge",
     "steps": "Load the page cold.",
     "expected": "Knowledge heading, documentation link, search, Create knowledge, Name/Author/Created at columns, and System/Enterprise folders render without a page or console error.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1029,7 +1029,7 @@
     "reach": "Knowledge",
     "steps": "Expand and collapse System knowledge and Enterprise knowledge.",
     "expected": "Each folder changes state independently; its rows appear or hide without overlap, duplication, or losing the current search.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1044,7 +1044,7 @@
     "reach": "Knowledge",
     "steps": "Inspect the list page.",
     "expected": "Knowledge heading, documentation link, Create knowledge, search, Name/Author/Created at columns, and System/Enterprise knowledge rows are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1059,7 +1059,7 @@
     "reach": "Knowledge",
     "steps": "Click **Create knowledge** without saving.",
     "expected": "Creation panel shows Notice, Contents, Macro, Folder, Pin to repository, Next, and Cancel controls.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1074,7 +1074,7 @@
     "reach": "Knowledge → Enterprise knowledge",
     "steps": "Select multiple Enterprise knowledge entries.",
     "expected": "Selected rows are highlighted; checkboxes, selected-count toolbar, clear-selection control, and Take action are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1104,7 +1104,7 @@
     "reach": "Knowledge → open an entry",
     "steps": "Inspect the entry header.",
     "expected": "Back to knowledge, knowledge name, author, creation date, and Details/Usage tabs are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1119,7 +1119,7 @@
     "reach": "Knowledge entry → Details",
     "steps": "Inspect all controls.",
     "expected": "Content, Trigger, Pin to repository, Folder, Macro, Save, and Delete controls are visible with their current values.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1134,7 +1134,7 @@
     "reach": "Knowledge entry → Usage",
     "steps": "Inspect usage information.",
     "expected": "Session usage by day chart, Retrieved/Used legend, Last 30 days range, Sessions list, and View session controls are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1164,7 +1164,7 @@
     "reach": "Knowledge",
     "steps": "Search with matching, non-matching, whitespace, emoji, long, `<script>`, and injection-like input; then clear.",
     "expected": "Results filter safely; no-match state is clear; special input remains inert; clearing restores the full list.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1314,7 +1314,7 @@
     "reach": "Newly created unused knowledge → Usage",
     "steps": "Open Usage before any matching session runs.",
     "expected": "A clear empty state appears; no chart or session data from another knowledge entry is shown.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1354,7 +1354,7 @@
     "title": "Create disposable knowledge with unique Content and Trigger → start a session whose pro…",
     "surfaceId": "enterprise",
     "nodeId": "e-knowledge",
-    "suite": "Regression",
+    "suite": "E2E",
     "priority": "P0",
     "reach": "Knowledge → Create knowledge → New session → Knowledge Usage",
     "steps": "Create disposable knowledge with unique Content and Trigger → start a session whose prompt matches the Trigger → verify Devin follows the unique instruction → locate the session in Usage and open it → delete the knowledge.",
