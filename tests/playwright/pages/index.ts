@@ -1,6 +1,7 @@
 // Barrel export for page objects and shared route helpers.
 
 export { BasePage } from "./base.page";
+export { GroupsIdpPage } from "./groups-idp.page";
 export { LoginPage } from "./login.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { SuborgPage } from "./suborg.page";

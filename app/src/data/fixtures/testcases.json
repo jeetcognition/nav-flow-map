@@ -2269,12 +2269,12 @@
     "title": "Load the page cold.",
     "surfaceId": "enterprise",
     "nodeId": "groups-idp",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Membership → Groups (IdP)",
     "steps": "Load the page cold.",
     "expected": "Groups tab activates with count zero; No groups found and IdP/SSO setup guidance are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2289,7 +2289,7 @@
     "reach": "Membership → Groups (IdP)",
     "steps": "Deep-link, refresh, and use Back/Forward on `?tab=groups`.",
     "expected": "Groups remains selected; the empty state does not show stale members, roles, or groups from another tenant.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2304,7 +2304,7 @@
     "reach": "Membership → Groups (IdP)",
     "steps": "Open Groups as a non-admin or with a tampered enterprise context.",
     "expected": "Access follows authorization rules and no cross-enterprise IdP configuration or group data is exposed.",
-    "automation": "manual",
+    "automation": "not-automatable",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
