@@ -1179,7 +1179,7 @@
     "reach": "Knowledge → Create knowledge",
     "steps": "Create `qa-temp-knowledge-<timestamp>` → verify it in list/search → edit its content, trigger, macro, folder, and repository pin → verify update → delete it.",
     "expected": "Create/read/update/delete succeeds; cleanup verifies the disposable knowledge no longer appears. Delete it even if an intermediate assertion fails.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1194,7 +1194,7 @@
     "reach": "Knowledge → Create knowledge",
     "steps": "Attempt creation with blank name/content/trigger, duplicate name or macro, invalid macro, and excessive-length values.",
     "expected": "Clear validation appears; no incomplete or duplicate knowledge entry is created.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1209,7 +1209,7 @@
     "reach": "Knowledge → disposable entry",
     "steps": "Create or edit fields with HTML-like, Unicode, and RTL text; inspect the UI, URL, console, and requests; then delete the entry.",
     "expected": "Text is escaped and rendered inert; no script executes, sensitive token appears, or unauthorized knowledge is returned.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1224,7 +1224,7 @@
     "reach": "Knowledge → Enterprise knowledge",
     "steps": "Select multiple disposable entries → Take action → Delete → confirm.",
     "expected": "Confirmation identifies the selection; all selected disposable entries are deleted, unselected entries remain, and the selection toolbar closes.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1239,7 +1239,7 @@
     "reach": "Disposable knowledge entry → Details",
     "steps": "Record original values → update Content, Trigger, repository pin, Folder, and Macro → Save → reload → restore originals.",
     "expected": "Every saved field persists after reload; cleanup restores the exact original entry state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1254,7 +1254,7 @@
     "reach": "Disposable knowledge entry → Details",
     "steps": "Enter blank, duplicate, long, Unicode, and HTML-like values in editable fields.",
     "expected": "Required-field and macro validation is clear; HTML-like content remains inert; invalid changes are not saved.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1269,7 +1269,7 @@
     "reach": "Knowledge entry → Details",
     "steps": "Change a field without saving, then click Back to knowledge or switch to Usage.",
     "expected": "An unsaved-change warning appears or the documented discard behavior occurs; changes are not silently persisted or lost.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1284,10 +1284,11 @@
     "reach": "Knowledge entry → Usage",
     "steps": "Compare the chart, Retrieved/Used legend, and displayed session records for the same period.",
     "expected": "Chart, legend, and session list represent the same knowledge entry and time range without stale or contradictory data.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
   },
   {
     "id": "KNOW-REG15",
@@ -1299,10 +1300,11 @@
     "reach": "Knowledge entry → Usage",
     "steps": "Click **View session** for several rows, then return.",
     "expected": "Each control opens the correct session; returning restores the same knowledge entry, Usage tab, and list position.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
   },
   {
     "id": "KNOW-REG16",
@@ -1329,10 +1331,11 @@
     "reach": "Knowledge entry → Usage",
     "steps": "As an unauthorized user or with tampered knowledge/session IDs, request Usage and View session.",
     "expected": "Access is denied; session names, prompts, users, and cross-organization usage data are not exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
   },
   {
     "id": "KNOW-REG18",
@@ -1344,7 +1347,7 @@
     "reach": "Disposable knowledge entry → Details",
     "steps": "Click Delete → cancel once → repeat and confirm.",
     "expected": "Cancel leaves the entry unchanged; confirmation deletes it, returns to Knowledge, and the entry no longer appears.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"

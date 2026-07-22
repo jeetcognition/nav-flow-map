@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
@@ -40,6 +40,8 @@ export class KnowledgePage extends BasePage {
   readonly createSubmitButton: Locator;
   /** Cancel button in creation panel. */
   readonly cancelButton: Locator;
+  /** Back button in the creation trigger step. */
+  readonly creationBackButton: Locator;
 
   /** Entry page "Back to Knowledge" button. */
   readonly backToKnowledge: Locator;
@@ -47,6 +49,20 @@ export class KnowledgePage extends BasePage {
   readonly detailsTab: Locator;
   /** Usage tab on a knowledge entry. */
   readonly usageTab: Locator;
+  /** Trigger textarea in creation panel and on entry detail. */
+  readonly triggerInput: Locator;
+  /** Folder dropdown on the entry detail. */
+  readonly folderSelect: Locator;
+  /** Pin-to-repository dropdown on the entry detail. */
+  readonly pinSelect: Locator;
+  /** Save button on the entry detail. */
+  readonly saveButton: Locator;
+  /** Delete button on the entry detail. */
+  readonly deleteButton: Locator;
+  /** Take action bulk menu button. */
+  readonly takeActionButton: Locator;
+  /** Confirmation button for bulk delete. */
+  readonly deleteItemsButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -69,11 +85,23 @@ export class KnowledgePage extends BasePage {
     this.macroInput = page.locator('input[placeholder="macro-name"]').first();
     this.nextButton = page.getByRole("button", { name: "Next" });
     this.createSubmitButton = page.getByRole("button", { name: "Create" });
-    this.cancelButton = page.getByRole("button", { name: "Cancel" });
+    this.cancelButton = page.getByRole("button", { name: "Cancel" }).first();
+    this.creationBackButton = page.getByRole("button", { name: "Back", exact: true });
 
     this.backToKnowledge = page.getByRole("button", { name: "Back to Knowledge" });
     this.detailsTab = page.getByRole("tab", { name: "Details" });
     this.usageTab = page.getByRole("tab", { name: "Usage" });
+    this.triggerInput = page.locator('textarea[placeholder*="e.g., developing"]').first();
+    this.folderSelect = page
+      .locator('input[role="combobox"][placeholder="Select a folder..."]')
+      .first();
+    this.pinSelect = page
+      .locator('input[role="combobox"][placeholder="Select a repository..."]')
+      .first();
+    this.saveButton = page.getByRole("button", { name: "Save" });
+    this.deleteButton = page.getByRole("button", { name: "Delete" }).first();
+    this.takeActionButton = page.getByRole("button", { name: "Take action" });
+    this.deleteItemsButton = page.getByRole("button", { name: "Delete items" });
   }
 
   async goto(slug: string = ENTERPRISE_SLUG) {
@@ -92,9 +120,144 @@ export class KnowledgePage extends BasePage {
     await this.page.waitForURL(/\/settings\/knowledge\/.+/);
   }
 
-  /** Click the checkbox for the first row that contains `name`. */
+  /** Use the list search to find and open an entry. */
+  async openEntryByName(name: string) {
+    await this.searchInput.fill(name);
+    await this.page.getByRole("cell", { name, exact: true }).first().click();
+    await this.page.waitForURL(/\/settings\/knowledge\/.+/);
+  }
+
+  /** Create a disposable knowledge entry through the two-step panel. */
+  async createKnowledge(
+    name: string,
+    content: string,
+    trigger: string,
+    opts: { macro?: string } = {},
+  ) {
+    await this.createButton.click();
+    await this.creationPanel.waitFor({ state: "visible" });
+    await this.nameInput.fill(name);
+    await this.contentsEditor.click();
+    await this.contentsEditor.fill(content);
+    if (opts.macro) {
+      await this.macroInput.fill(opts.macro);
+    }
+    await Promise.all([
+      this.page.waitForResponse((r) => /\/api\/[^/]+\/generate-scope$/.test(r.url())),
+      this.nextButton.click(),
+    ]);
+    await this.triggerInput.waitFor({ state: "visible" });
+    await this.triggerInput.fill(trigger);
+    await Promise.all([
+      this.page.waitForResponse(
+        (r) => /\/api\/[^/]+\/learning$/.test(r.url()) && r.request().method() === "POST",
+      ),
+      this.createSubmitButton.click(),
+    ]);
+    await this.searchInput.waitFor({ state: "visible" });
+  }
+
+  /** Save the current open knowledge entry and wait for the PUT to complete. */
+  async saveKnowledge() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (r) => /\/api\/[^/]+\/learning\/[^/]+/.test(r.url()) && r.request().method() === "PUT",
+      ),
+      this.saveButton.click(),
+    ]);
+  }
+
+  /** Open the delete confirmation dialog for the currently open entry. */
+  async openDeleteDialog() {
+    await this.deleteButton.click();
+    await this.page
+      .locator('[role="dialog"]')
+      .getByText(/Delete Knowledge/i)
+      .waitFor({ state: "visible" });
+  }
+
+  /** Confirm the currently open delete dialog and wait for the DELETE request. */
+  async confirmDeleteDialog() {
+    const dialog = this.page.locator('[role="dialog"]');
+    await Promise.all([
+      this.page.waitForResponse(
+        (r) => /\/api\/[^/]+\/learning\b/.test(r.url()) && r.request().method() === "DELETE",
+      ),
+      dialog.getByRole("button", { name: /^Delete$/ }).click(),
+    ]);
+    await this.page.waitForURL(/\/settings\/knowledge$/);
+  }
+
+  /** Cancel the currently open single-delete confirmation dialog. */
+  async cancelDeleteDialog() {
+    const dialog = this.page.locator('[role="dialog"]');
+    await dialog.getByRole("button", { name: "Cancel" }).click();
+    await expect(dialog).not.toBeVisible();
+  }
+
+  /** Delete the currently open entry from the detail page. */
+  async deleteOpenEntry() {
+    await this.openDeleteDialog();
+    await this.confirmDeleteDialog();
+  }
+
+  /** Click the checkbox for the first visible row that contains `name`. */
   async selectRow(name: string) {
     const row = this.tableRows.filter({ hasText: name }).first();
+    await row.locator("span[role='checkbox']").waitFor({ state: "visible" });
     await row.locator("span[role='checkbox']").click();
+  }
+
+  /** Search for `name` and then click the first matching row's checkbox. */
+  async selectRowBySearch(name: string) {
+    await this.searchInput.fill(name);
+    const row = this.tableRows.filter({ hasText: name }).first();
+    await row.locator("span[role='checkbox']").waitFor({ state: "visible" });
+    await row.locator("span[role='checkbox']").click();
+  }
+
+  /** Choose a value from the Folder combobox on the entry detail. */
+  async selectFolder(label: string) {
+    await this.folderSelect.click();
+    await this.page.getByRole("option", { name: label, exact: true }).click();
+  }
+
+  /** Choose a value from the Pin to repository combobox on the entry detail. */
+  async selectPin(label: "None" | "All sessions") {
+    await this.pinSelect.click();
+    await this.page.getByRole("option", { name: label, exact: true }).click();
+  }
+
+  /** Set every editable field on the entry detail to the supplied values. */
+  async fillKnowledgeDetail(content: string, trigger: string, macro: string) {
+    await this.contentsEditor.click();
+    await this.contentsEditor.fill(content);
+    await this.triggerInput.fill(trigger);
+    const macroInput = this.macroInput;
+    await macroInput.fill("");
+    await macroInput.fill(macro);
+  }
+
+  /** Open the bulk Take action menu and click the Delete option. */
+  async chooseBulkDelete() {
+    await this.takeActionButton.click();
+    await this.page.getByRole("option", { name: "Delete" }).click();
+    await this.page
+      .locator('[role="dialog"]')
+      .getByRole("heading", { name: "Delete Items" })
+      .waitFor({ state: "visible" });
+  }
+
+  /** Confirm the bulk delete dialog for selected entries. */
+  async confirmBulkDelete() {
+    const dialog = this.page.locator('[role="dialog"]');
+    await Promise.all([
+      this.page.waitForResponse(
+        (r) =>
+          /\/api\/[^/]+\/learning\/bulk-delete$/.test(r.url()) && r.request().method() === "POST",
+      ),
+      dialog.getByRole("button", { name: "Delete items" }).click(),
+    ]);
+    await expect(dialog).not.toBeVisible();
   }
 }
