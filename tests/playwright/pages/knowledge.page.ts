@@ -248,6 +248,33 @@ export class KnowledgePage extends BasePage {
       .waitFor({ state: "visible" });
   }
 
+  /**
+   * Open the Usage tab for the entry reachable at `detailUrl` and return the
+   * parsed `analytics/sessions` response. Navigates fresh each call so callers
+   * can poll it while the backend catches up (the tab isn't always auto-selected
+   * on back/reload navigations, so we click it explicitly every time).
+   */
+  async fetchUsageSessions(
+    detailUrl: string,
+  ): Promise<{ data?: { devin_id: string; session_title: string }[] }> {
+    await this.page.goto(detailUrl, { waitUntil: "domcontentloaded" });
+    const [sessionsResp] = await Promise.all([
+      this.page.waitForResponse((r) => r.url().endsWith("/analytics/sessions")),
+      this.usageTab.click(),
+    ]);
+    return (await sessionsResp.json()) as {
+      data?: { devin_id: string; session_title: string }[];
+    };
+  }
+
+  /** True when a Usage `analytics/sessions` payload contains the given raw session id. */
+  usageIncludesSession(
+    sessions: { data?: { devin_id: string; session_title: string }[] } | undefined,
+    sessionId: string,
+  ): boolean {
+    return (sessions?.data ?? []).some((s) => s.devin_id.replace("devin-", "") === sessionId);
+  }
+
   /** Confirm the bulk delete dialog for selected entries. */
   async confirmBulkDelete() {
     const dialog = this.page.locator('[role="dialog"]');

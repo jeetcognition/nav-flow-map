@@ -879,11 +879,6 @@ test.describe("Knowledge Page", () => {
     // This prompt contains the trigger word and is phrased to retrieve knowledge.
     const prompt = "Pineapple knowledge";
 
-    const findSessionById = (
-      sessions: { data?: { devin_id: string; session_title: string }[] } | undefined,
-      sessionId: string,
-    ) => (sessions?.data ?? []).some((s) => s.devin_id.replace("devin-", "") === sessionId);
-
     try {
       await knowledge.goto();
       await knowledge.heading.waitFor({ state: "visible" });
@@ -907,34 +902,28 @@ test.describe("Knowledge Page", () => {
       await knowledge.openEntryByName(name);
       const detailUrl = page.url();
 
-      /** Open the Usage tab and return the analytics/sessions response. */
-      const fetchUsageSessions = async (): Promise<{
-        data?: { devin_id: string; session_title: string }[];
-      }> => {
-        await page.goto(detailUrl, { waitUntil: "domcontentloaded" });
-        const [sessionsResp] = await Promise.all([
-          page.waitForResponse((r) => r.url().endsWith("/analytics/sessions")),
-          knowledge.usageTab.click(),
-        ]);
-        return (await sessionsResp.json()) as {
-          data?: { devin_id: string; session_title: string }[];
-        };
-      };
-
       await expect
-        .poll(async () => findSessionById(await fetchUsageSessions(), sessionId), {
-          intervals: [2_000, 5_000, 10_000, 15_000],
-          timeout: 120_000,
-        })
+        .poll(
+          async () =>
+            knowledge.usageIncludesSession(
+              await knowledge.fetchUsageSessions(detailUrl),
+              sessionId,
+            ),
+          { intervals: [2_000, 5_000, 10_000, 15_000], timeout: 120_000 },
+        )
         .toBe(true);
 
       // Refresh the page and confirm the session still appears on Usage.
       await page.reload();
       await expect
-        .poll(async () => findSessionById(await fetchUsageSessions(), sessionId), {
-          intervals: [2_000, 5_000, 10_000, 15_000],
-          timeout: 60_000,
-        })
+        .poll(
+          async () =>
+            knowledge.usageIncludesSession(
+              await knowledge.fetchUsageSessions(detailUrl),
+              sessionId,
+            ),
+          { intervals: [2_000, 5_000, 10_000, 15_000], timeout: 60_000 },
+        )
         .toBe(true);
 
       // Clean up the disposable knowledge entry.

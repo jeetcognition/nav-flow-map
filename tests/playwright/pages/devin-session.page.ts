@@ -4,10 +4,16 @@ import { routes, TEST_SUBORG } from "../support/paths";
 
 // Page object for the sub-org home composer and the resulting /sessions/{id} chat.
 //
-// The composer input is a contenteditable div; the send button has the accessible
-// name "Send". After submission, the app redirects to a session page where the
-// assistant response is rendered inside a message-history--item wrapper with
-// message-item--content.
+// The composer is a Slate rich-text editor: a contenteditable div that exposes
+// `role="textbox"`, so we reach it with getByRole rather than a CSS selector.
+// The Send action is an icon button whose accessible name is "Send".
+//
+// Assistant responses render inside `message-history--item` wrappers, with the
+// rendered markdown in a `.prose-main` block. Those messages carry no ARIA role
+// and only auto-generated (unstable) test ids, so the product CSS classes are the
+// last-resort locator here — matching how the rest of this suite handles the
+// session views (see SessionsPage). Assertions target user-visible text, not the
+// class names themselves.
 export class DevinSessionPage extends BasePage {
   protected readonly path = routes.subOrg(TEST_SUBORG);
 
@@ -17,7 +23,7 @@ export class DevinSessionPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.promptInput = page.locator('[contenteditable="true"]').first();
+    this.promptInput = page.getByRole("textbox").first();
     this.sendButton = page.getByRole("button", { name: "Send", exact: true });
     this.assistantMessages = page.locator('[class*="message-history--item"]');
   }
