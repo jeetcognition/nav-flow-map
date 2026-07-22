@@ -10,6 +10,7 @@ export { OrganizationsPage } from "./organizations.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { ReposPage } from "./repos.page";
 export { SkillsPage } from "./skills.page";
+export { RolesPage } from "./roles.page";
 export { SuborgPage } from "./suborg.page";
 export { SupportPage } from "./support.page";
 export { EnterpriseSettingsPage } from "./ent-settings.page";

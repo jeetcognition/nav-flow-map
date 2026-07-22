@@ -1,0 +1,774 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "roles",
+    "name": "Roles",
+    "route": "/org/{tenant}/settings/membership?tab=roles",
+    "prefixes": ["ROLE"]
+  },
+  "testcases": [
+    {
+      "id": "ROLE-SMK01",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Load the page cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "maya",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page cold."
+        }
+      ],
+      "assertions": [
+        "Role count, search, scope filter, Create role, and Role/Permissions/Scope/Type columns render without a page or console error."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-SAN01",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Inspect role rows.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect role rows."
+        }
+      ],
+      "assertions": [
+        "Enterprise/Organization scope and Built-in/Default/Custom badges are visible with permission counts."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-SAN02",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Open the scope filter and **Create role** menu.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the scope filter and **Create role** menu."
+        }
+      ],
+      "assertions": [
+        "All/Enterprise/Organization filters and Create for enterprise/Create for organizations actions are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-SAN03",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Open the form without saving.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Roles → Create for enterprise",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the form without saving."
+        }
+      ],
+      "assertions": [
+        "Role name, Cancel, disabled Save changes, permission descriptions, checkboxes, and enterprise permission groups are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-SAN04",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Open the form without saving.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Roles → Create for organizations",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the form without saving."
+        }
+      ],
+      "assertions": [
+        "Organization-specific Usage, Membership, Resource, Data, Stats, Code scan, and Session category permission groups are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "unsupported"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG01",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Search with matching/no-match, whitespace, Unicode, long, HTML-like, and injection-like…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search with matching/no-match, whitespace, Unicode, long, HTML-like, and injection-like values; then clear."
+        }
+      ],
+      "assertions": [
+        "Results filter safely",
+        "no-match state is clear",
+        "clearing restores the list."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG02",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Filter All, Enterprise, and Organization while searching.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Filter All, Enterprise, and Organization while searching."
+        }
+      ],
+      "assertions": [
+        "Rows match the selected scope",
+        "same-named roles remain distinguishable by scope",
+        "counts and results do not become stale."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG03",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Open Built-in, Default, and Custom roles.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Built-in, Default, and Custom roles."
+        }
+      ],
+      "assertions": [
+        "Protected roles cannot be modified or deleted",
+        "Custom roles expose only permitted edit controls."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "unsupported"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG04",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Attempt creation with blank, duplicate-within-scope, long, whitespace-only, Unicode, em…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Roles → Create role",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Attempt creation with blank, duplicate-within-scope, long, whitespace-only, Unicode, emoji, and HTML-like names, with zero permissions."
+        }
+      ],
+      "assertions": [
+        "Clear validation appears",
+        "unsafe text stays inert",
+        "no invalid role is created",
+        "same names in different scopes remain unambiguous if supported."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG05",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Expand/collapse permission groups and select/deselect permissions across groups.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Roles → Create role",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Expand/collapse permission groups and select/deselect permissions across groups."
+        }
+      ],
+      "assertions": [
+        "Group state and checkbox selection remain accurate",
+        "descriptions stay aligned",
+        "implied or dependent permissions are handled clearly."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG06",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions → verify → edit n…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Roles → Create for enterprise",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions → verify → edit name/permissions → reload → delete."
+        }
+      ],
+      "assertions": [
+        "Enterprise role create/read/update/delete persists correctly",
+        "cleanup confirms the role is absent."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG07",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Create `qa-temp-org-role-<timestamp>` → assign to a disposable organization/member → ed…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Roles → Create for organizations",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Create `qa-temp-org-role-<timestamp>` → assign to a disposable organization/member → edit → unassign → delete."
+        }
+      ],
+      "assertions": [
+        "Organization role applies only in the assigned organization",
+        "cleanup removes all assignments and the role."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG08",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Make unsaved changes, then use Cancel, Back, or another page.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Roles → Create or edit role",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Make unsaved changes, then use Cancel, Back, or another page."
+        }
+      ],
+      "assertions": [
+        "A warning or documented discard behavior occurs",
+        "changes are not silently saved or lost."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG09",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Delete an unassigned role, then attempt deletion while another disposable role is assig…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Disposable role",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Delete an unassigned role, then attempt deletion while another disposable role is assigned."
+        }
+      ],
+      "assertions": [
+        "Confirmation is required",
+        "assigned-role handling is clear and safe",
+        "unrelated roles and assignments remain unchanged."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG10",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "As a restricted admin or with a tampered role ID, attempt view/create/edit/delete or gr…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Membership → Roles",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a restricted admin or with a tampered role ID, attempt view/create/edit/delete or grant permissions the actor lacks."
+        }
+      ],
+      "assertions": [
+        "Server-side authorization denies privilege escalation and cross-enterprise access."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires a restricted-admin or tampered-role context that is not available in the shared admin Playwright setup."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-E2E01",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Create a minimal disposable role → assign it to a disposable member → verify one allowe…",
+      "type": "E2E",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["weekly"],
+      "owner": "arjun",
+      "navigation": "Roles → Membership",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Create a minimal disposable role → assign it to a disposable member → verify one allowed and one denied operation → edit permissions and retest → unassign and delete."
+        }
+      ],
+      "assertions": [
+        "Effective permissions follow the role exactly",
+        "updates propagate correctly",
+        "cleanup removes the assignment, role, and disposable member."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires creating/disposing of a real member account and verifying permissions end-to-end, which is not supported by the shared admin setup."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
