@@ -17,6 +17,7 @@ export { AnalyticsPage } from "./analytics.page";
 export { KnowledgePage } from "./knowledge.page";
 export { DevinApiPage } from "./devin-api.page";
 export { ConnectionsPage } from "./connections.page";
+export { SettingsRootPage } from "./settings-root.page";
 
 export {
   routes,

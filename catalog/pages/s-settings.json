@@ -1,0 +1,337 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "s-settings",
+    "name": "Sub-orgs and Settings",
+    "route": "/org/{tenant}/settings",
+    "prefixes": ["SUB"]
+  },
+  "testcases": [
+    {
+      "id": "SUB-OS-SMK01",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "Open Sub-orgs and Settings root cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "arjun",
+      "navigation": "Settings → Organizations → `jeet-test-org`",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Sub-orgs and Settings root cold."
+        }
+      ],
+      "assertions": [
+        "Sub-org heading, preferences/settings copy, Products, Resources, Administration sections, and child links render without page errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-OS-SAN01",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "Inspect visible child links.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Sub-orgs and Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect visible child links."
+        }
+      ],
+      "assertions": [
+        "General, Connections, Devin, Knowledge, Environment, Playbooks, Skills & Rules, Secrets, Repositories, Membership, Devin API, and Analytics are grouped under correct headings."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-OS-REG01",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "Click each visible child link and Back to the root without saving.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sub-orgs and Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click each visible child link and Back to the root without saving."
+        }
+      ],
+      "assertions": [
+        "Each route opens the correct sub-org settings page and Back/return restores the root."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-OS-REG02",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "Deep-link, refresh, and browser Back/Forward on the root and child routes.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Sub-orgs and Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Deep-link, refresh, and browser Back/Forward on the root and child routes."
+        }
+      ],
+      "assertions": [
+        "The selected sub-org remains `jeet-test-org`",
+        "navigation does not jump to enterprise-level pages unexpectedly."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-OS-REG03",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "Use global settings search with child-page labels, no-match, Unicode, long, HTML-like, …",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Sub-orgs and Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Use global settings search with child-page labels, no-match, Unicode, long, HTML-like, and injection-like text."
+        }
+      ],
+      "assertions": [
+        "Matching settings are found literally",
+        "unsafe text is inert",
+        "no unrelated tenant routes appear."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-OS-REG04",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "As a user without access or with tampered org slug, request the root and child settings…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sub-orgs and Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a user without access or with tampered org slug, request the root and child settings pages."
+        }
+      ],
+      "assertions": [
+        "Server denies unauthorized/cross-org access and does not expose settings metadata from another sub-org."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "SUB-OS-E2E01",
+      "pageId": "s-settings",
+      "surface": "webapp",
+      "title": "Navigate from Organizations to `jeet-test-org`, open several child settings pages, then…",
+      "type": "E2E",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["weekly"],
+      "owner": "priya",
+      "navigation": "Enterprise Organizations → Sub-orgs and Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Navigate from Organizations to `jeet-test-org`, open several child settings pages, then return to Organizations."
+        }
+      ],
+      "assertions": [
+        "Cross-level navigation preserves enterprise/sub-org context and does not lose the selected organization."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
