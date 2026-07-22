@@ -1125,8 +1125,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -1135,7 +1135,7 @@
       "linkedBugIds": [],
       "externalReferences": [],
       "version": 1,
-      "lastReviewed": "2026-07-21"
+      "lastReviewed": "2026-07-22"
     }
   ]
 }

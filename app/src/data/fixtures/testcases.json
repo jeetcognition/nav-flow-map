@@ -1363,8 +1363,9 @@
     "reach": "Knowledge → Create knowledge → New session → Knowledge Usage",
     "steps": "Create disposable knowledge with unique Content and Trigger → start a session whose prompt matches the Trigger → verify Devin follows the unique instruction → locate the session in Usage and open it → delete the knowledge.",
     "expected": "Relevant knowledge is retrieved and applied only in the matching session; the correct session appears with accurate Retrieved/Used data; View session opens it; cleanup removes the disposable knowledge.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
+    "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts",
     "createdBy": "u-maya",
     "source": "authored"
   },
