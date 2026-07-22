@@ -5,6 +5,7 @@ export { InfraPage } from "./infra.page";
 export { LoginPage } from "./login.page";
 export { MembershipPage, MEMBER_COLUMNS } from "./membership.page";
 export { OrgSelectorPage } from "./org-selector.page";
+export { ReposPage } from "./repos.page";
 export { SuborgPage } from "./suborg.page";
 export { SupportPage } from "./support.page";
 export { EnterpriseSettingsPage } from "./ent-settings.page";

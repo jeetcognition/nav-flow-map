@@ -106,7 +106,7 @@ test.describe("Auth (Email + OTP)", () => {
     await page.close();
   });
 
-  test("AUTH-REG02 — Reject an expired OTP code", async ({ browser }) => {
+  test("AUTH-REG02 — Reject an expired OTP code", async ({ browser: _browser }) => {
     // Waiting for expiration in real time is slow and flaky; keep manual until we can seed an old code.
     test.skip(true, "Expired-code test requires controlled code seeding; keep manual");
   });

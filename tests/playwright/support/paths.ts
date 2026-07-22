@@ -49,4 +49,7 @@ export const routes = {
 
   /** Enterprise infrastructure page. */
   infrastructure: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/infrastructure`,
+
+  /** Enterprise repositories settings page. */
+  repositories: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/repositories`,
 } as const;
