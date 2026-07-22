@@ -1,6 +1,89 @@
-# QA platform work log
+# Work log
 
-This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
+## 2026-07-22 — Pylon intake: 60-day corpus + deterministic ticket classifier
+
+### Requested
+
+- Pull all Pylon tickets (~60 days), build a no-LLM `ticket_classifier.py` that decides app-issue vs not, authored by reviewing the corpus; design the loop where an LLM periodically improves the rules with minimal ongoing LLM use (QA-DEC-025). Backend platform decided as Cloudflare stack (QA-DEC-024).
+
+### Implemented
+
+- `pylon-test` pipeline (currently at `~/Downloads/pylon-test`, to be imported): retention/backfill 14→60 days; fetched 11,514 issues (2026-05-22 → 2026-07-21); modules patched for Python 3.9 (`from __future__ import annotations`).
+- Stratified review of 215 tickets across six strata (bug-typed, question-typed, other, untyped, error-ish non-bug, quiet bug) → hand-labeled `labels/eval_set.json` (54 bug / 134 not / 26 unsure).
+- `ticket_classifier.py`: ~40 weighted regex rules + Pylon-metadata priors → definite-bug / possible-bug / not-app-issue with confidence, fired rules, surface (brand→surfaceId) and severity hints. Rules are a data table so the refiner edits patterns, never control flow.
+- `eval_classifier.py` harness (gate for all future rule edits) + `REFINER.md` refinement-loop spec.
+
+### Validation
+
+- Eval (in-sample, excl. unsure): precision 98%, recall 98%, F1 0.98; definite-band precision 14/14. Full-corpus distribution: 6% definite (664), 20% possible (2,356), 74% not (8,494); top definite examples verified as genuine bug reports.
+- Known limits: numbers are in-sample (tuned on the same set); stratification over-weights hard cases; multilingual coverage is partial (two known misses).
+
+### Deferred
+
+- Exporter → `app/src/data/fixtures/incidents.json` (sanitized) + Incidents UI verification flow (possible-bug → verify → convert-to-testcase; definite-bug → pre-drafted case).
+- Import pipeline into this repo; scheduled GitHub Actions run; verification labels → D1.
+
+## 2026-07-22 — Automate `groups-idp` (Groups IdP) Playwright coverage
+
+### Requested
+
+- Continue node-by-node Playwright automation for non-Landing-Repo pages.
+
+### Implemented
+
+- `tests/playwright/pages/groups-idp.page.ts` + `membership()` route helper.
+- `tests/playwright/specs/authenticated/groups-idp.spec.ts`:
+  - `IDP-SMK01` — cold load `/org/{tenant}/settings/membership?tab=groups`, assert selected tab count zero, empty state, and IdP setup guidance.
+  - `IDP-REG02` — valid sub-org slug normalizes to canonical enterprise URL; invalid slug renders 404.
+- `catalog/pages/groups-idp.json` created; `app/src/data/fixtures/testcases.json` automation + suite metadata synced (`IDP-SMK01` suite corrected to `Smoke`).
+
+### Validation
+
+- `prettier --check .`, `npm run catalog:validate`, `node scripts/validate-data.js` pass.
+- Playwright: 56 passed, 9 skipped.
+- `app` `oxlint --deny-warnings`, `tsc -b`, `vite build` green.
+
+### Deferred / Observed
+
+- `IDP-REG01` (deep-link, refresh, back/forward) remains Playwright-blocked because Membership tab switches use `history.replaceState`, causing browser Back to land on `about:blank` instead of the previous tab. Catalog notes it as `blockedReason`.
+
+## 2026-07-22 (later) — Incidents exporter + verification UI landed
+
+### Implemented
+
+- `export_incidents.py` (pipeline side): classify → sanitize (emails/org URLs/sessions/phones masked, agent turns stripped) → keyword-map to NavFlow nodes (unmapped fall back to `landing`, flagged in rationale) → 200 curated incidents written to `app/src/data/fixtures/incidents.json`; definite-bugs carry a pre-drafted regression case.
+- App: `Incident.verdict/sourceLink/draftCase` types; IncidentCard "Needs verification" + "Confirm bug" (via existing `overrideIncidentCategory`); drafted-case prefill in CreateTestcaseModal; converted cases also staged via `editsService.addDraftCase` so Save-to-repo promotes them; Pylon backlink on detail page.
+
+### Validation
+
+- `node scripts/validate-data.js`, oxlint, `vite build`, `prettier --check .` all pass; no email leaks in the exported fixture (regex audit).
+
+### Deferred
+
+- Import the pipeline into this repo (`pipelines/pylon/`) + scheduled GitHub Actions run (needs `PYLON_API_KEY` secret); verification labels → D1 (QA-DEC-024); worker redeploy still pending.
+
+## 2026-07-22 (engineering pass) — Pylon intake hardened per "no vibe coding"
+
+### Requested
+
+- User directive: "No changes should be vibe coded. Make engineered flow."
+
+### Implemented
+
+- Pipeline imported to `pipelines/pylon/` (repo-relative paths, gitignored DB/.env, README with invariants).
+- `test_pipeline.py`: hermetic unit tests (synthetic tickets) for the PII sanitizer, classifier verdict bands, node mapping, and a leak property test — wired into the Validate workflow. First run caught a real threshold gap (entitlement family at 1.2 < 1.3); fixed with an eval-gated weight bump.
+- `eval_classifier.py --gate`: mechanical rule-change gate (precision ≥ 90%, recall ≥ 85%, definite ≥ 95%, ≥ 100 scored).
+- `scripts/validate-data.js`: incidents referential/enum checks + PII leak scan (negative-tested with a planted email) — caught a real exporter bug (`settings` mapped to a nonexistent node; now `ent`).
+- `.github/workflows/pylon-intake.yml`: daily fetch → tests → gate → export → format → validate → **PR** (secret-gated, never pushes main; GITHUB_TOKEN/INTAKE_PAT caveat documented).
+- Worker REWRITE_PROMPT: promotion sessions now branch + auto-merge PR (effective after `wrangler deploy`).
+
+### Validation
+
+- Pipeline tests pass; eval gate passes (98%/98%, definite 14/14); validate-data passes incl. leak scan; full PR CI on this branch.
+
+### Deferred
+
+- `wrangler deploy` (user action) → then branch protection on `main` (command in TODO.md); `PYLON_API_KEY` + optional `INTAKE_PAT` repo secrets (user action); verification labels → D1.
 
 ## 2026-07-21 — Automate `pconn` (Personal Connections) Playwright coverage
 
@@ -26,34 +109,6 @@ This file is append-only. Each entry summarizes requested work, completed implem
 ### Deferred / Observed
 
 - `PCON-REG02`, `PCON-REG03`, `PCON-REG04`, and `PCON-E2E01` remain Playwright-blocked because they require real external OAuth consent, disposable credentials, or team-enabled MCPs not present in QA.
-
-## 2026-07-18 — Clarify the NavFlow "Run automation" button feedback
-
-### Requested
-
-- In-app suggestion from `/navflow`: "is run automation button actually working?"
-
-### Implemented
-
-- The button already fires `triggerDevinSession`, but the panel's feedback was
-  weak (a non-clickable session id), so users could not tell it did anything.
-- `app/src/components/flow/FlowPanel.tsx`: added a descriptive `title` on the
-  Run automation button, made the started session id an `ExternalLink` (opens
-  the Devin session, matching the Automation page's Sessions panel), and added
-  a small "simulated Phase 1 run" note so the feedback is honest — consistent
-  with the sidebar's existing "Phase 1 · mock data" labeling.
-- `app/src/styles/flowmap.css`: link styling for `.fp-session-id` and the note.
-- No data or wire-contract changes; automation stays the Phase 1 mock session.
-
-### Validation
-
-- `app` `oxlint --deny-warnings` and `vite build` (`tsc -b`) pass under Node 22.
-- `npm run format:check`, `npm run catalog:validate`, and
-  `node scripts/validate-data.js` pass.
-
-### Deferred
-
-- Wiring the button to a real Devin run backend is a Phase 2 item (mock only).
 
 ## 2026-07-19 — Correct automation status in UI fixtures
 
@@ -112,6 +167,34 @@ This file is append-only. Each entry summarizes requested work, completed implem
 - QA-DEC-021: Pin/unpin state is server-side persistent, so Playwright specs that mutate it must restore the original label before finishing.
 - QA-DEC-022: When the live UI diverges from the original markdown requirement (e.g. `Switch account` not visible, `Pin` may already be `Unpin`), update the catalog assertion rather than fake the test.
 
+## 2026-07-18 — Clarify the NavFlow "Run automation" button feedback
+
+### Requested
+
+- In-app suggestion from `/navflow`: "is run automation button actually working?"
+
+### Implemented
+
+- The button already fires `triggerDevinSession`, but the panel's feedback was
+  weak (a non-clickable session id), so users could not tell it did anything.
+- `app/src/components/flow/FlowPanel.tsx`: added a descriptive `title` on the
+  Run automation button, made the started session id an `ExternalLink` (opens
+  the Devin session, matching the Automation page's Sessions panel), and added
+  a small "simulated Phase 1 run" note so the feedback is honest — consistent
+  with the sidebar's existing "Phase 1 · mock data" labeling.
+- `app/src/styles/flowmap.css`: link styling for `.fp-session-id` and the note.
+- No data or wire-contract changes; automation stays the Phase 1 mock session.
+
+### Validation
+
+- `app` `oxlint --deny-warnings` and `vite build` (`tsc -b`) pass under Node 22.
+- `npm run format:check`, `npm run catalog:validate`, and
+  `node scripts/validate-data.js` pass.
+
+### Deferred
+
+- Wiring the button to a real Devin run backend is a Phase 2 item (mock only).
+
 ## 2026-07-18 — Automate all three Nav Flow nodes (login, auth, landing)
 
 ### Requested
@@ -149,6 +232,35 @@ This file is append-only. Each entry summarizes requested work, completed implem
 - QA-DEC-016: SPA route transitions (e.g. `/org/{slug}`) must be matched with regex rather than glob because trailing slashes and client-side history events can cause Playwright glob matching to time out.
 - QA-DEC-017: The `All organizations` dropdown is a `role="menu"` element; command palette is a `role="dialog"` with `role="listbox"` containing grouped `Actions`, `Navigation`, and `Settings` sections.
 - QA-DEC-018: Collapse/expand state on the landing sidebar is best asserted by measuring the sidebar `getBoundingClientRect().width` (collapsed ~52px, expanded ~300px), because the expand tooltip is not exposed as a separate stable DOM element.
+
+## 2026-07-17 — Revive catalog foundation onto current React app
+
+### Requested
+
+- Port the `catalog-foundation-revived` branch onto the latest `main`, which now has a React 19 app under `app/` and JSON fixtures in `app/src/data/fixtures/`.
+- Flow the `qa-platform-architecture-plan.md` target into repository documentation.
+
+### Completed
+
+- Created a new branch from `main` and copied only the non-destructive foundation pieces from `catalog-foundation-revived`:
+  - `catalog/schema/page-catalog.schema.json`, `catalog/README.md`, and empty `catalog/pages/`;
+  - `scripts/validate-catalog.mjs` (adapted to read `app/src/data/fixtures/bugs.json` and `testcases.json` instead of root `bugs.js`/`testcases.js`);
+  - `docs/decisions.md`, `docs/work-log.md`, `docs/architecture.md`, `docs/README.md`, and `docs/qa-platform-architecture-plan.md`;
+  - updated `AGENTS.md`, `README.md`, `CHANGELOG.md`, root `package.json`, and `.github/workflows/validate.yml`.
+- Preserved `app/` and `worker/` unchanged so GitHub Pages and the existing promotion pipeline keep working.
+- Left `catalog/pages/` empty per QA-DEC-012; page catalogs will be re-authored fresh.
+
+### Validation
+
+- `npm run catalog:validate` passes (0 page files, 0 testcases).
+- `npm run format:check` passes after `npm run format`.
+- `node scripts/validate-data.js` passes.
+- `app/` `npx tsc -b --force` passes (no app code changed).
+- `app/` `npm run lint` and `npm run build` could not run locally because the `oxlint` / `rolldown` optional native bindings did not install under the VM's Node 20; CI runs Node 22 and will exercise them.
+
+### Deferred
+
+- Catalog → fixture generator; YAML migration; runner skill; Playwright import; D1/R2 runtime storage; failure triage automation; Pylon intake.
 
 ## 2026-07-17 — First three catalog pages and Playwright E2E scaffold
 
@@ -188,6 +300,99 @@ This file is append-only. Each entry summarizes requested work, completed implem
 
 - QA-DEC-013: First catalog pages are seeded from fixtures as `source.type: migration` while the UI still consumes the JSON fixtures; a future generator will make the catalog the single source of truth.
 - QA-DEC-014: Playwright specs are split into `unauthenticated/` and `authenticated/` projects; the auth setup is optional and skips when credentials are missing so CI stays green before env vars are configured.
+
+## 2026-07-17 — Audit and refactor validator for engineering discipline
+
+### Requested
+
+- Ensure the catalog foundation is not "vibe coded" and follows an engineered structure.
+
+### Implemented
+
+- Audited the validator for god files and hard-coded paths.
+- Split `scripts/validate-catalog.mjs` (353 lines) into focused modules under `scripts/catalog-lib/`:
+  - `config.mjs`: repository and fixture paths.
+  - `schema.mjs`: catalog constants and regex patterns.
+  - `checks.mjs`: generic validation helpers.
+  - `fixtures.mjs`: fixture loading.
+  - `document.mjs`: page and testcase validation logic (under 300 lines).
+- Rewrote `scripts/validate-catalog.mjs` as a 40-line entry point.
+
+### Validation
+
+- `npm run catalog:validate` passes.
+- `npm run format:check` passes.
+- `node scripts/validate-data.js` passes.
+- PR #61 CI passes (lint, typecheck, build, validate).
+
+### Deferred
+
+- Add unit tests for the validator once a test runner is selected; integrate catalog generation with `app/` fixtures.
+
+## 2026-07-16 — devinBrowser terminology normalization
+
+### Requested
+
+- Replace QA-executor references with `devinBrowser` across schema, code, testcases, and documentation.
+
+### Implemented
+
+- Standardized the executor key and `devinBrowser_verified` lifecycle terminology.
+- Removed ambiguous application/device terminology from current QA-platform documentation.
+- Kept `surface: webapp` separate from executor identity.
+- Updated the browser-control testcase wording in both legacy sources.
+
+### Validation
+
+- Repository-wide case-insensitive terminology scan
+- `npm run check`
+- `git diff --check`
+
+### Decision
+
+- QA-DEC-009.
+
+## 2026-07-16 — Strip case data; ship architecture only
+
+### Requested
+
+- Remove the migrated Enterprise Settings → Devin pilot data (and similar data changes) from the foundation PR; case data will be re-authored fresh on the firm architecture (QA-DEC-012).
+
+### Implemented
+
+- Deleted `catalog/pages/enterprise-devin.json`; `catalog/pages/` now ships empty with `.gitkeep`.
+- Validator accepts an empty catalog (removed the at-least-one-page requirement).
+- Reverted `testcases.js` to main (dropped the `STOOL-SAN02` wording edit).
+- Reworded README, `catalog/README.md`, CHANGELOG, and the architecture migration sequence from "migrate" to "re-author fresh".
+
+### Validation
+
+- `npm run check` passes (0 page files, 0 testcases).
+
+### Deferred
+
+- Fresh page-catalog authoring (page by page); catalog → UI generation; runner skill; Playwright pilot specs.
+
+## 2026-07-16 — Revive PR #34 onto current main
+
+### Requested
+
+- Salvage the closed, conflicting PR #34 (canonical catalog foundation): rebase onto main, fix the review finding, and repair references made stale by PR #36.
+
+### Implemented
+
+- Rebased all PR #34 commits onto main (post PR #35/#36); resolved CHANGELOG/README conflicts and kept `qa-testing/testcases/02_sessions_composer.md` deleted as on main.
+- Scoped the validator's legacy `testcases.js` cross-check and the `source.reference` file-existence check to `source.type: migration` only (QA-DEC-010, review finding on PR #34).
+- Updated the nine pilot cases' `source.reference` from the deleted `qa-testing/testcases/04_enterprise_devin.md` to `testcases.js` (QA-DEC-011).
+
+### Validation
+
+- `npm run catalog:validate` passes (1 page, 9 testcases).
+- Verified a synthetic `customer-ticket` case with an external URL reference passes validation (then removed it).
+
+### Deferred
+
+- Catalog generation into the UI dataset; runner skill; Playwright pilot specs (next vertical-slice steps).
 
 ## 2026-07-16 — Repository review and target architecture
 
@@ -248,185 +453,3 @@ This file is append-only. Each entry summarizes requested work, completed implem
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
 
-## 2026-07-16 — devinBrowser terminology normalization
-
-### Requested
-
-- Replace QA-executor references with `devinBrowser` across schema, code, testcases, and documentation.
-
-### Implemented
-
-- Standardized the executor key and `devinBrowser_verified` lifecycle terminology.
-- Removed ambiguous application/device terminology from current QA-platform documentation.
-- Kept `surface: webapp` separate from executor identity.
-- Updated the browser-control testcase wording in both legacy sources.
-
-### Validation
-
-- Repository-wide case-insensitive terminology scan
-- `npm run check`
-- `git diff --check`
-
-### Decision
-
-- QA-DEC-009.
-
-## 2026-07-16 — Revive PR #34 onto current main
-
-### Requested
-
-- Salvage the closed, conflicting PR #34 (canonical catalog foundation): rebase onto main, fix the review finding, and repair references made stale by PR #36.
-
-### Implemented
-
-- Rebased all PR #34 commits onto main (post PR #35/#36); resolved CHANGELOG/README conflicts and kept `qa-testing/testcases/02_sessions_composer.md` deleted as on main.
-- Scoped the validator's legacy `testcases.js` cross-check and the `source.reference` file-existence check to `source.type: migration` only (QA-DEC-010, review finding on PR #34).
-- Updated the nine pilot cases' `source.reference` from the deleted `qa-testing/testcases/04_enterprise_devin.md` to `testcases.js` (QA-DEC-011).
-
-### Validation
-
-- `npm run catalog:validate` passes (1 page, 9 testcases).
-- Verified a synthetic `customer-ticket` case with an external URL reference passes validation (then removed it).
-
-### Deferred
-
-- Catalog generation into the UI dataset; runner skill; Playwright pilot specs (next vertical-slice steps).
-
-## 2026-07-16 — Strip case data; ship architecture only
-
-### Requested
-
-- Remove the migrated Enterprise Settings → Devin pilot data (and similar data changes) from the foundation PR; case data will be re-authored fresh on the firm architecture (QA-DEC-012).
-
-### Implemented
-
-- Deleted `catalog/pages/enterprise-devin.json`; `catalog/pages/` now ships empty with `.gitkeep`.
-- Validator accepts an empty catalog (removed the at-least-one-page requirement).
-- Reverted `testcases.js` to main (dropped the `STOOL-SAN02` wording edit).
-- Reworded README, `catalog/README.md`, CHANGELOG, and the architecture migration sequence from "migrate" to "re-author fresh".
-
-### Validation
-
-- `npm run check` passes (0 page files, 0 testcases).
-
-### Deferred
-
-- Fresh page-catalog authoring (page by page); catalog → UI generation; runner skill; Playwright pilot specs.
-
-## 2026-07-17 — Revive catalog foundation onto current React app
-
-### Requested
-
-- Port the `catalog-foundation-revived` branch onto the latest `main`, which now has a React 19 app under `app/` and JSON fixtures in `app/src/data/fixtures/`.
-- Flow the `qa-platform-architecture-plan.md` target into repository documentation.
-
-### Completed
-
-- Created a new branch from `main` and copied only the non-destructive foundation pieces from `catalog-foundation-revived`:
-  - `catalog/schema/page-catalog.schema.json`, `catalog/README.md`, and empty `catalog/pages/`;
-  - `scripts/validate-catalog.mjs` (adapted to read `app/src/data/fixtures/bugs.json` and `testcases.json` instead of root `bugs.js`/`testcases.js`);
-  - `docs/decisions.md`, `docs/work-log.md`, `docs/architecture.md`, `docs/README.md`, and `docs/qa-platform-architecture-plan.md`;
-  - updated `AGENTS.md`, `README.md`, `CHANGELOG.md`, root `package.json`, and `.github/workflows/validate.yml`.
-- Preserved `app/` and `worker/` unchanged so GitHub Pages and the existing promotion pipeline keep working.
-- Left `catalog/pages/` empty per QA-DEC-012; page catalogs will be re-authored fresh.
-
-### Validation
-
-- `npm run catalog:validate` passes (0 page files, 0 testcases).
-- `npm run format:check` passes after `npm run format`.
-- `node scripts/validate-data.js` passes.
-- `app/` `npx tsc -b --force` passes (no app code changed).
-- `app/` `npm run lint` and `npm run build` could not run locally because the `oxlint` / `rolldown` optional native bindings did not install under the VM's Node 20; CI runs Node 22 and will exercise them.
-
-### Deferred
-
-- Catalog → fixture generator; YAML migration; runner skill; Playwright import; D1/R2 runtime storage; failure triage automation; Pylon intake.
-
-## 2026-07-17 — Audit and refactor validator for engineering discipline
-
-### Requested
-
-- Ensure the catalog foundation is not "vibe coded" and follows an engineered structure.
-
-### Implemented
-
-- Audited the validator for god files and hard-coded paths.
-- Split `scripts/validate-catalog.mjs` (353 lines) into focused modules under `scripts/catalog-lib/`:
-  - `config.mjs`: repository and fixture paths.
-  - `schema.mjs`: catalog constants and regex patterns.
-  - `checks.mjs`: generic validation helpers.
-  - `fixtures.mjs`: fixture loading.
-  - `document.mjs`: page and testcase validation logic (under 300 lines).
-- Rewrote `scripts/validate-catalog.mjs` as a 40-line entry point.
-
-### Validation
-
-- `npm run catalog:validate` passes.
-- `npm run format:check` passes.
-- `node scripts/validate-data.js` passes.
-- PR #61 CI passes (lint, typecheck, build, validate).
-
-### Deferred
-
-- Add unit tests for the validator once a test runner is selected; integrate catalog generation with `app/` fixtures.
-
-## 2026-07-22 — Pylon intake: 60-day corpus + deterministic ticket classifier
-
-### Requested
-
-- Pull all Pylon tickets (~60 days), build a no-LLM `ticket_classifier.py` that decides app-issue vs not, authored by reviewing the corpus; design the loop where an LLM periodically improves the rules with minimal ongoing LLM use (QA-DEC-025). Backend platform decided as Cloudflare stack (QA-DEC-024).
-
-### Implemented
-
-- `pylon-test` pipeline (currently at `~/Downloads/pylon-test`, to be imported): retention/backfill 14→60 days; fetched 11,514 issues (2026-05-22 → 2026-07-21); modules patched for Python 3.9 (`from __future__ import annotations`).
-- Stratified review of 215 tickets across six strata (bug-typed, question-typed, other, untyped, error-ish non-bug, quiet bug) → hand-labeled `labels/eval_set.json` (54 bug / 134 not / 26 unsure).
-- `ticket_classifier.py`: ~40 weighted regex rules + Pylon-metadata priors → definite-bug / possible-bug / not-app-issue with confidence, fired rules, surface (brand→surfaceId) and severity hints. Rules are a data table so the refiner edits patterns, never control flow.
-- `eval_classifier.py` harness (gate for all future rule edits) + `REFINER.md` refinement-loop spec.
-
-### Validation
-
-- Eval (in-sample, excl. unsure): precision 98%, recall 98%, F1 0.98; definite-band precision 14/14. Full-corpus distribution: 6% definite (664), 20% possible (2,356), 74% not (8,494); top definite examples verified as genuine bug reports.
-- Known limits: numbers are in-sample (tuned on the same set); stratification over-weights hard cases; multilingual coverage is partial (two known misses).
-
-### Deferred
-
-- Exporter → `app/src/data/fixtures/incidents.json` (sanitized) + Incidents UI verification flow (possible-bug → verify → convert-to-testcase; definite-bug → pre-drafted case).
-- Import pipeline into this repo; scheduled GitHub Actions run; verification labels → D1.
-
-## 2026-07-22 (later) — Incidents exporter + verification UI landed
-
-### Implemented
-
-- `export_incidents.py` (pipeline side): classify → sanitize (emails/org URLs/sessions/phones masked, agent turns stripped) → keyword-map to NavFlow nodes (unmapped fall back to `landing`, flagged in rationale) → 200 curated incidents written to `app/src/data/fixtures/incidents.json`; definite-bugs carry a pre-drafted regression case.
-- App: `Incident.verdict/sourceLink/draftCase` types; IncidentCard "Needs verification" + "Confirm bug" (via existing `overrideIncidentCategory`); drafted-case prefill in CreateTestcaseModal; converted cases also staged via `editsService.addDraftCase` so Save-to-repo promotes them; Pylon backlink on detail page.
-
-### Validation
-
-- `node scripts/validate-data.js`, oxlint, `vite build`, `prettier --check .` all pass; no email leaks in the exported fixture (regex audit).
-
-### Deferred
-
-- Import the pipeline into this repo (`pipelines/pylon/`) + scheduled GitHub Actions run (needs `PYLON_API_KEY` secret); verification labels → D1 (QA-DEC-024); worker redeploy still pending.
-
-## 2026-07-22 (engineering pass) — Pylon intake hardened per "no vibe coding"
-
-### Requested
-
-- User directive: "No changes should be vibe coded. Make engineered flow."
-
-### Implemented
-
-- Pipeline imported to `pipelines/pylon/` (repo-relative paths, gitignored DB/.env, README with invariants).
-- `test_pipeline.py`: hermetic unit tests (synthetic tickets) for the PII sanitizer, classifier verdict bands, node mapping, and a leak property test — wired into the Validate workflow. First run caught a real threshold gap (entitlement family at 1.2 < 1.3); fixed with an eval-gated weight bump.
-- `eval_classifier.py --gate`: mechanical rule-change gate (precision ≥ 90%, recall ≥ 85%, definite ≥ 95%, ≥ 100 scored).
-- `scripts/validate-data.js`: incidents referential/enum checks + PII leak scan (negative-tested with a planted email) — caught a real exporter bug (`settings` mapped to a nonexistent node; now `ent`).
-- `.github/workflows/pylon-intake.yml`: daily fetch → tests → gate → export → format → validate → **PR** (secret-gated, never pushes main; GITHUB_TOKEN/INTAKE_PAT caveat documented).
-- Worker REWRITE_PROMPT: promotion sessions now branch + auto-merge PR (effective after `wrangler deploy`).
-
-### Validation
-
-- Pipeline tests pass; eval gate passes (98%/98%, definite 14/14); validate-data passes incl. leak scan; full PR CI on this branch.
-
-### Deferred
-
-- `wrangler deploy` (user action) → then branch protection on `main` (command in TODO.md); `PYLON_API_KEY` + optional `INTAKE_PAT` repo secrets (user action); verification labels → D1.
