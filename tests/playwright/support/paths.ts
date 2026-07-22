@@ -80,4 +80,8 @@ export const routes = {
 
   /** Enterprise Devin Review settings page. */
   reviewSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/review`,
+
+  /** Enterprise Membership page, optionally targeting a tab. */
+  membership: (slug: string = ENTERPRISE_SLUG, tab?: "members" | "roles" | "groups") =>
+    `/org/${slug}/settings/membership${tab ? `?tab=${tab}` : ""}`,
 } as const;

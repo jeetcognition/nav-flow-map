@@ -1,0 +1,151 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "groups-idp",
+    "name": "Groups (IdP)",
+    "route": "/org/{tenant}/settings/membership?tab=groups",
+    "prefixes": ["IDP"]
+  },
+  "testcases": [
+    {
+      "id": "IDP-SMK01",
+      "pageId": "groups-idp",
+      "surface": "webapp",
+      "title": "Load cold",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering", "navigation"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Membership → Groups (IdP)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the Groups (IdP) tab deep-linked as the first page entry."
+        }
+      ],
+      "assertions": [
+        "Groups (IdP) tab is selected with count zero; the empty state and IdP/SSO setup guidance render without page errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/groups-idp.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-22"
+    },
+    {
+      "id": "IDP-REG01",
+      "pageId": "groups-idp",
+      "surface": "webapp",
+      "title": "Deep-link, refresh, and use Back/Forward",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "state-management"],
+      "cadence": ["nightly"],
+      "owner": "maya",
+      "navigation": "Membership → Groups (IdP)",
+      "preconditions": ["User is authenticated and on the Groups (IdP) tab"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Deep-link to the Groups (IdP) tab, refresh, switch to another tab, then use Back/Forward."
+        }
+      ],
+      "assertions": [
+        "Groups (IdP) remains selected throughout; the empty state does not show stale members, roles, or groups from another tenant."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Switching Membership tabs uses history.replaceState, so browser Back lands on about:blank instead of the previous tab."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-22"
+    },
+    {
+      "id": "IDP-REG02",
+      "pageId": "groups-idp",
+      "surface": "webapp",
+      "title": "Open Groups with a tampered enterprise context",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["authorization", "data-isolation"],
+      "cadence": ["nightly"],
+      "owner": "priya",
+      "navigation": "Membership → Groups (IdP)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Navigate to the Groups (IdP) tab using a valid sub-org slug and then an invalid enterprise slug."
+        }
+      ],
+      "assertions": [
+        "A valid sub-org slug normalizes to the canonical enterprise URL with no cross-enterprise data; an invalid slug renders the 404 page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/groups-idp.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-22"
+    }
+  ]
+}
