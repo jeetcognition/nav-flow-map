@@ -90,6 +90,53 @@ test.describe("Guardrails", () => {
     }
   });
 
+  test("GUARD-REG01 — Change a guardrail action and restore it", async ({ page }) => {
+    const guardrails = new GuardrailsPage(page);
+    await guardrails.goto();
+    await expect(guardrails.heading).toBeVisible();
+
+    const combo = guardrails.guardrailAction("Public deployment requests");
+    await expect(combo).toBeVisible();
+
+    const original = (await combo.textContent())?.trim() ?? "Off";
+    const available = ["Off", "Log only", "Warn user", "Block message"];
+    const nextValue = available.find((v) => v !== original) ?? "Warn user";
+
+    await Promise.all([
+      page.waitForResponse(
+        (r) =>
+          r.url().includes("/api/enterprise/") &&
+          r.url().includes("/guardrails/") &&
+          ["PUT", "PATCH"].includes(r.request().method()),
+      ),
+      (async () => {
+        await combo.click();
+        await page.getByRole("option", { name: nextValue }).click();
+      })(),
+    ]);
+
+    await page.reload();
+    await guardrails.heading.waitFor({ state: "visible" });
+    await expect(combo).toHaveText(nextValue);
+
+    await Promise.all([
+      page.waitForResponse(
+        (r) =>
+          r.url().includes("/api/enterprise/") &&
+          r.url().includes("/guardrails/") &&
+          ["PUT", "PATCH"].includes(r.request().method()),
+      ),
+      (async () => {
+        await combo.click();
+        await page.getByRole("option", { name: original }).click();
+      })(),
+    ]);
+
+    await page.reload();
+    await guardrails.heading.waitFor({ state: "visible" });
+    await expect(combo).toHaveText(original);
+  });
+
   test("GUARD-REG02 — Search and filter controls handle safe and unsafe inputs", async ({
     page,
   }) => {
