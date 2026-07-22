@@ -2314,12 +2314,12 @@
     "title": "Load the page cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-orgs",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Enterprise settings → Organizations",
     "steps": "Load the page cold.",
     "expected": "Breadcrumb, Back to enterprise, heading and description, search, Create organization, table, row actions, and pagination render without page or console errors.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2349,7 +2349,7 @@
     "reach": "Organizations",
     "steps": "Open a row's edit control without saving.",
     "expected": "**Manage organization** modal shows the selected organization name, Billing cycle ACU limit, helper text, and Save changes; current values match the selected row.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2379,7 +2379,7 @@
     "reach": "Organizations",
     "steps": "Search with full/partial name, no-match, whitespace, case variants, Unicode, long, HTML-like, and injection-like text; then clear.",
     "expected": "Filtering is literal and safe; no-match state is clear; clearing restores the organization list.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2394,7 +2394,7 @@
     "reach": "Organizations",
     "steps": "When multiple existing rows share a display name, search for the name and open each row's edit and delete controls without saving.",
     "expected": "Each organization remains unambiguously identifiable; every action targets only the selected row and never another matching organization.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2409,7 +2409,7 @@
     "reach": "Organizations",
     "steps": "Navigate Previous and Next while search is active, then clear search.",
     "expected": "No rows are duplicated or omitted; page state remains valid when filtering reduces the result count.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2424,7 +2424,7 @@
     "reach": "Organizations",
     "steps": "Select and deselect one row and the header checkbox across pages.",
     "expected": "Selection state and counts are accurate; selection never triggers edit or delete; hidden-page rows are not modified unexpectedly.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2514,7 +2514,7 @@
     "reach": "Organizations → disposable organization",
     "steps": "Click delete → cancel → repeat and confirm.",
     "expected": "Confirmation identifies the exact organization; cancel changes nothing; confirm removes only the disposable organization and handles dependencies safely.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2544,7 +2544,7 @@
     "reach": "Organizations",
     "steps": "Inspect URL, UI, console, and requests during search, edit, and delete workflows.",
     "expected": "No credentials, tenant secrets, private member data, stack traces, or unnecessary internal identifiers are exposed.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
