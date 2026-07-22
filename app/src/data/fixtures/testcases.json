@@ -3264,10 +3264,11 @@
     "reach": "Guardrails → action selectors",
     "steps": "With approval, change a disposable/non-production guardrail action, reload, then restore.",
     "expected": "Saved action persists and applies only to intended scope; cleanup restores original policy.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-guardrails.spec.ts"
   },
   {
     "id": "GUARD-REG02",
