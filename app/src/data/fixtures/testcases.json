@@ -574,12 +574,12 @@
     "title": "Load cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-general",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Settings → General",
     "steps": "Load cold.",
     "expected": "General and Authentication sections render, including Require SSO for member access, without page errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -609,7 +609,7 @@
     "reach": "General → Require SSO",
     "steps": "With explicit approval, toggle Require SSO, reload, then restore.",
     "expected": "State persists exactly; auth behavior follows the saved value; cleanup restores the original setting.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5109,7 +5109,7 @@
     "reach": "Top Left Menu → Enterprise settings",
     "steps": "Open Enterprise Settings.",
     "expected": "**Settings › Enterprise** breadcrumb, **Enterprise Settings** heading, and description are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5124,7 +5124,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect the left sidebar.",
     "expected": "Back to app, settings search, Personal links, enterprise name, enterprise navigation, organization list, and help control are visible without overlap.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5139,7 +5139,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Enterprise preferences and settings**.",
     "expected": "**General**, **Connections**, and **Sessions** cards are visible with icons and navigation arrows.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5154,7 +5154,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Products**.",
     "expected": "**Devin** and **Review** cards are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5169,7 +5169,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect **Resources**.",
     "expected": "**Knowledge**, **Environment**, **Playbooks**, and **Skills & Rules** cards are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5184,7 +5184,7 @@
     "reach": "Enterprise Settings",
     "steps": "Scroll to **Administration**.",
     "expected": "**Repositories**, **Membership**, **Organizations**, **Devin API**, **Guardrails** with Beta badge, **Infrastructure**, and **Analytics** are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5199,7 +5199,7 @@
     "reach": "Enterprise Settings",
     "steps": "Open each card from the main panel, then return.",
     "expected": "Every card opens its matching enterprise settings page and retains the `Cog Enterprise QA` context.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5214,7 +5214,7 @@
     "reach": "Enterprise Settings",
     "steps": "Search settings using matching, non-matching, special-character, and long text.",
     "expected": "Matching settings filter correctly; no-match state is clear; input remains inert and the page stays usable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5229,7 +5229,7 @@
     "reach": "Enterprise Settings",
     "steps": "Click **Back to app**, then return with browser Back.",
     "expected": "User returns to the app safely; browser Back restores Enterprise Settings without a blank or broken state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5244,7 +5244,7 @@
     "reach": "Enterprise Settings",
     "steps": "Select another organization from the sidebar organization list.",
     "expected": "The selected organization's settings open and the enterprise context does not leak into the organization page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -5259,7 +5259,7 @@
     "reach": "Enterprise Settings",
     "steps": "Scroll the sidebar organization list and click **Load more** when available.",
     "expected": "More organizations load without duplicates, layout shifts, or losing the current settings page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5289,7 +5289,7 @@
     "reach": "Enterprise Settings",
     "steps": "Refresh and use browser Back/Forward on the root page.",
     "expected": "The same enterprise context and usable layout are restored without navigation loops.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"

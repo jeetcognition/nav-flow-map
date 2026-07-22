@@ -21,4 +21,10 @@ export const routes = {
 
   /** Enterprise support page. */
   support: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/support`,
+
+  /** Enterprise settings landing page. */
+  entSettings: `/org/${ENTERPRISE_SLUG}/settings`,
+
+  /** Enterprise → General settings. */
+  entGeneral: `/org/${ENTERPRISE_SLUG}/settings/general`,
 } as const;

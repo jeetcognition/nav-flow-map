@@ -5,6 +5,8 @@ export { LoginPage } from "./login.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { SuborgPage } from "./suborg.page";
 export { SupportPage } from "./support.page";
+export { EnterpriseSettingsPage } from "./ent-settings.page";
+export { GeneralSettingsPage } from "./general-settings.page";
 
 export {
   routes,
