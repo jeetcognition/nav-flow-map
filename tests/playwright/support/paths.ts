@@ -68,4 +68,7 @@ export const routes = {
 
   /** Sub-org settings root. */
   settingsRoot: (slug: string = TEST_SUBORG) => `/org/${slug}/settings`,
+
+  /** Enterprise guardrails page. */
+  guardrails: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/guardrails`,
 } as const;
