@@ -61,4 +61,8 @@ export const routes = {
 
   /** Enterprise Devin API page. */
   devinApi: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/devin-api`,
+
+  /** Enterprise connections page. */
+  connections: (slug: string = ENTERPRISE_SLUG) =>
+    `/org/${slug}/settings/connections?tab=integrations`,
 } as const;
