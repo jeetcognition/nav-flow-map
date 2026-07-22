@@ -15,6 +15,7 @@ export { PersonalConnectionsPage } from "./personal-connections.page";
 export { SessionsPage } from "./sessions.page";
 export { AnalyticsPage } from "./analytics.page";
 export { KnowledgePage } from "./knowledge.page";
+export { DevinApiPage } from "./devin-api.page";
 
 export {
   routes,
