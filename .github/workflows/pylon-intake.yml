@@ -1,0 +1,96 @@
+name: Pylon intake
+
+# Daily ticket ingest → classify → export → PR. Engineered flow (QA-DEC-026):
+# every automated write opens a PR; nothing pushes to main. All gates
+# (unit tests, eval regression gate, PII leak scan) run BEFORE the PR is
+# opened, because PRs created with the default GITHUB_TOKEN do not trigger
+# PR-CI workflows. Set an INTAKE_PAT secret (fine-grained, contents+PR write)
+# to have PR-CI run as well; the workflow falls back to GITHUB_TOKEN.
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  intake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check secret
+        id: secret
+        env:
+          PYLON_API_KEY: ${{ secrets.PYLON_API_KEY }}
+        run: |
+          if [ -z "$PYLON_API_KEY" ]; then
+            echo "PYLON_API_KEY secret not set — skipping intake (add it in repo settings)." >> "$GITHUB_STEP_SUMMARY"
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.secret.outputs.present == 'true'
+        with:
+          token: ${{ secrets.INTAKE_PAT || github.token }}
+
+      - uses: actions/setup-python@v5
+        if: steps.secret.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        if: steps.secret.outputs.present == 'true'
+        with:
+          node-version: "20"
+
+      - name: Unit tests (sanitizer / classifier / mapping)
+        if: steps.secret.outputs.present == 'true'
+        working-directory: pipelines/pylon
+        run: python3 test_pipeline.py
+
+      - name: Fetch tickets (60-day backfill on first run)
+        if: steps.secret.outputs.present == 'true'
+        working-directory: pipelines/pylon
+        env:
+          PYLON_API_KEY: ${{ secrets.PYLON_API_KEY }}
+        run: python3 fetcher.py
+
+      - name: Eval regression gate
+        if: steps.secret.outputs.present == 'true'
+        working-directory: pipelines/pylon
+        run: python3 eval_classifier.py --gate
+
+      - name: Export incidents fixture
+        if: steps.secret.outputs.present == 'true'
+        working-directory: pipelines/pylon
+        run: python3 export_incidents.py
+
+      - name: Format + validate (includes PII leak scan)
+        if: steps.secret.outputs.present == 'true'
+        run: |
+          npx --yes prettier --write app/src/data/fixtures/incidents.json
+          node scripts/validate-data.js
+
+      - name: Open PR if the feed changed
+        if: steps.secret.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.INTAKE_PAT || github.token }}
+        run: |
+          if git diff --quiet -- app/src/data/fixtures/incidents.json; then
+            echo "No incident changes today." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          branch="pylon-intake/${{ github.run_id }}"
+          git config user.name "pylon-intake[bot]"
+          git config user.email "pylon-intake@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add app/src/data/fixtures/incidents.json
+          git commit -m "Pylon intake: refresh incidents feed"
+          git push origin "$branch"
+          gh pr create \
+            --title "Pylon intake: refresh incidents feed ($(date -u +%F))" \
+            --body "$(printf 'Automated daily intake.\n\nGates already run in this workflow before opening the PR:\n- pipeline unit tests\n- eval regression gate (`eval_classifier.py --gate`)\n- `scripts/validate-data.js` incl. PII leak scan\n\nReview the diff for anything the sanitizer should have caught, then merge.')"

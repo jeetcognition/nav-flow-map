@@ -21,7 +21,8 @@ Living list — update when debt is added or paid down. Larger context in
 
 ## Process (Phase 4 of AUDIT.md)
 
-- [ ] Change the worker's REWRITE_PROMPT to open a PR with auto-merge instead of committing to `main` (decision made 2026-07-17)
-- [ ] Branch protection on `main` once the pipeline change lands
+- [x] Change the worker's REWRITE_PROMPT to open a PR with auto-merge instead of committing to `main` (decision made 2026-07-17; landed in code — needs `wrangler deploy` to take effect)
+- [ ] Branch protection on `main` — blocked on the worker redeploy above; then run:
+      `gh api -X PUT repos/jeetcognition/nav-flow-map/branches/main/protection -F required_status_checks[strict]=true -f 'required_status_checks[checks][][context]=validate' -f 'required_status_checks[checks][][context]=build' -F enforce_admins=false -F required_pull_request_reviews=null -F restrictions=null`
 - [ ] Coverage ratchet — blocked on the (currently descoped) test suite
 - [ ] gitleaks secret scan in CI

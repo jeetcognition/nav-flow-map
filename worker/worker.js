@@ -39,7 +39,7 @@ Do the following:
 
 4. VERIFY: run "node scripts/validate-data.js" (cross-checks the fixtures and navmap-edits.json) and "cd app && npm ci && npm run lint && npm run build" — both must pass. Do not change any other content, and never renumber or edit unrelated existing cases. Follow the repo's Prettier formatting for the files you touch.
 
-Commit all changed files (app/src/data/fixtures/*.json, qa-testing/testcases/*.md, navmap-edits.json) directly to the main branch — do NOT open a PR. The site rebuilds and deploys from main automatically.`;
+Commit all changed files (app/src/data/fixtures/*.json, qa-testing/testcases/*.md, navmap-edits.json) on a feature branch and open a pull request titled "Promote navmap edits" describing what was promoted — do NOT commit directly to main. Enable auto-merge on the PR so it merges as soon as CI (Validate + CI) passes; the site redeploys from main after the merge.`;
 
 function hasPromotable(edits) {
   return !!(
