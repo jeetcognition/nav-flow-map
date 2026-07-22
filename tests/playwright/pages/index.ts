@@ -1,6 +1,7 @@
 // Barrel export for page objects and shared route helpers.
 
 export { BasePage } from "./base.page";
+export { InfraPage } from "./infra.page";
 export { LoginPage } from "./login.page";
 export { MembershipPage, MEMBER_COLUMNS } from "./membership.page";
 export { OrgSelectorPage } from "./org-selector.page";

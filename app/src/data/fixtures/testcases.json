@@ -3574,12 +3574,12 @@
     "title": "Load cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-infra",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Settings → Infrastructure",
     "steps": "Load cold.",
     "expected": "Infrastructure heading, hypervisor/capacity health copy, Refresh action, and empty/list state render without page errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3594,7 +3594,7 @@
     "reach": "Infrastructure",
     "steps": "Inspect current VPC/tenant/hypervisor state.",
     "expected": "Empty state such as “No VPC data available” is clear, or populated rows show tenant/hypervisor/capacity status accurately.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3609,7 +3609,7 @@
     "reach": "Infrastructure → Refresh",
     "steps": "Click Refresh repeatedly and during slow/error network conditions.",
     "expected": "Refresh is idempotent; loading/error state is clear; stale health data is not shown as current after failure.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
