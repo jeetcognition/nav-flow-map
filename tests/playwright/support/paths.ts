@@ -71,4 +71,7 @@ export const routes = {
 
   /** Enterprise guardrails page. */
   guardrails: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/guardrails`,
+
+  /** Organizations list page. */
+  organizations: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/organizations`,
 } as const;

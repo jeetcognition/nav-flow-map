@@ -5,6 +5,7 @@ export { InfraPage } from "./infra.page";
 export { GuardrailsPage } from "./guardrails.page";
 export { LoginPage } from "./login.page";
 export { MembershipPage, MEMBER_COLUMNS } from "./membership.page";
+export { OrganizationsPage } from "./organizations.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { ReposPage } from "./repos.page";
 export { SkillsPage } from "./skills.page";
