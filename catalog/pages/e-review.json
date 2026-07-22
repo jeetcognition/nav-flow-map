@@ -1,0 +1,433 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-review",
+    "name": "Review Settings",
+    "route": "/org/{tenant}/settings/review",
+    "prefixes": ["REV"]
+  },
+  "testcases": [
+    {
+      "id": "REV-SMK01",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Load cold",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering", "navigation"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Settings → Review",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the Review settings page cold."
+        }
+      ],
+      "assertions": [
+        "Devin Review settings, PR descriptions, security scan, PR comments, findings categories, GitHub CI checks, automatic review, auto-review limits, rules/files, repositories list, and self-enrolled users render without page errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-SAN01",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Switch Repositories and Self-enrolled users tabs",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Review",
+      "preconditions": ["User is authenticated and on the Review settings page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Switch between the Repositories and Self-enrolled users tabs."
+        }
+      ],
+      "assertions": [
+        "Tab counts and lists render; URL/deep link preserves the selected tab with ?tab=users."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-SAN02",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Open Add repo without submitting",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Review",
+      "preconditions": ["User is authenticated and on the Review settings page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Add repo dialog without submitting."
+        }
+      ],
+      "assertions": [
+        "Repository search/selection, mode/host filters, Add gating, and close/cancel controls are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-REG01",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Toggle PR review settings and reload",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["state-management"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Review → toggles",
+      "preconditions": [
+        "User is authenticated as an enterprise admin with permission to update review settings"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Toggle PR descriptions, security scan, PR comments, findings categories, and CI checks, then reload."
+        }
+      ],
+      "assertions": ["Each setting persists independently; failed saves preserve prior state."],
+      "cleanup": {
+        "required": true,
+        "steps": ["Restore each toggle to its original value"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires explicit approval to mutate live PR review toggles and a way to observe failures safely; side effects are not reversible in an unattended Playwright run."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-REG02",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Search/filter repositories by host, mode, and special text",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering", "search"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "arjun",
+      "navigation": "Review → repositories",
+      "preconditions": ["User is authenticated and on the Review settings Repositories tab"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search and filter repositories by host, mode, and no-match/special text."
+        }
+      ],
+      "assertions": [
+        "Filtering is literal and safe; current enrollment state remains associated with the correct repo."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "The QA dataset and virtualized repository list do not provide stable host/mode filter states for deterministic search/no-match verification."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-REG03",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Test blank, zero, negative, decimal, huge, and valid ACU limits, then restore",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["validation", "state-management"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Review → auto-review limits",
+      "preconditions": ["User is authenticated and on the Review settings page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Test blank, zero, negative, decimal, huge, and valid per-PR ACU limits, then restore the original value."
+        }
+      ],
+      "assertions": [
+        "Only supported values save; validation is clear and no partial update occurs."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Restore the original per-PR ACU limit"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-REG04",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Add invalid, duplicate, long, Unicode, and HTML-like file patterns",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["security", "validation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Review → rules/files",
+      "preconditions": ["User is authenticated and on the Review settings Files section"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Add invalid, duplicate, long, Unicode, and HTML-like file patterns, verify behavior, then remove them."
+        }
+      ],
+      "assertions": [
+        "Invalid patterns are rejected; unsafe text is inert; valid patterns are scoped to the intended repository/enterprise."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Remove all custom file patterns added during the test"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-REG05",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Tampered enterprise slug and anonymous access",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["security", "authorization"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "maya",
+      "navigation": "Review",
+      "preconditions": [
+        "User is authenticated as an enterprise admin and an anonymous session is available"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Request a tampered sub-org enterprise slug and access Review settings as an anonymous user."
+        }
+      ],
+      "assertions": [
+        "Server-side authorization denies unauthorized changes and cross-enterprise access."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-E2E01",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Enroll a disposable repo/user and open a disposable PR",
+      "type": "E2E",
+      "priority": "P1",
+      "riskTags": ["end-to-end", "state-management"],
+      "cadence": ["release"],
+      "owner": "arjun",
+      "navigation": "Review → Git provider PR",
+      "preconditions": [
+        "User is authenticated and has permission to enroll repositories and open pull requests"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Enroll a disposable repo/user and open a disposable PR."
+        }
+      ],
+      "assertions": [
+        "Devin Review behavior follows saved settings; cleanup removes enrollment and restores original configuration."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Remove enrollment and restore original review configuration"]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires disposable repo/user and PR creation with human approval; not suitable for unattended Playwright run."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
