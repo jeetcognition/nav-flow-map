@@ -133,4 +133,111 @@ test.describe("Devin API", () => {
 
     expect(consoleErrors).toEqual([]);
   });
+
+  test("API-REG03 — Create a disposable service user and inspect token handling", async ({
+    page,
+  }) => {
+    const api = new DevinApiPage(page);
+    const consoleErrors = trackConsoleErrors(page);
+    const name = `qa-api-reg03-${Date.now()}`;
+
+    try {
+      await api.goto();
+      await api.heading.waitFor({ state: "visible" });
+      await api.provisionButton.click();
+      await page.getByRole("menuitem", { name: /Enterprise service user/ }).click();
+      await api.nameInput.fill(name);
+      await api.roleSelector.click();
+      await page.getByRole("option").first().click();
+      await api.expiresSelector.click();
+      await page.getByRole("option").first().click();
+
+      await Promise.all([
+        page.waitForResponse(
+          (r) => r.url().includes("/service-users") && r.request().method() === "POST",
+        ),
+        api.createSubmitButton.click(),
+      ]);
+
+      await expect(api.tokenDialog).toBeVisible();
+      await expect(api.tokenDialog).toContainText(name);
+      const tokenText = await api.tokenValue.innerText();
+      expect(tokenText).toMatch(/^cog_[a-z0-9]+$/);
+      await expect(api.saveTokenButton).toBeVisible();
+      await expect(api.copyTokenButton).toBeVisible();
+
+      await api.saveTokenButton.click();
+      await expect(api.tokenDialog).not.toBeVisible();
+      await expect(page.getByText("Service user provisioned successfully")).toBeVisible();
+
+      await api.searchInput.fill(name);
+      await page.waitForLoadState("networkidle");
+      const row = api.rowByName(name).first();
+      await expect(row).toBeVisible();
+      await expect(row).toContainText("Enterprise");
+      await expect(row).toContainText("Admin");
+      await expect(row).not.toContainText(tokenText);
+
+      await row.getByRole("button", { name: "Delete service user" }).click();
+      await expect(api.deleteConfirmDialog).toBeVisible();
+      await expect(api.deleteConfirmDialog).toContainText(name);
+      await api.deleteConfirmButton.click();
+      await expect(row).toHaveCount(0);
+    } finally {
+      await api.ensureDeleted(name);
+    }
+
+    expect(consoleErrors).toEqual([]);
+  });
+
+  test("API-REG04 — Cancel and confirm deletion of a disposable service user", async ({ page }) => {
+    const api = new DevinApiPage(page);
+    const consoleErrors = trackConsoleErrors(page);
+    const name = `qa-api-reg04-${Date.now()}`;
+
+    try {
+      await api.goto();
+      await api.heading.waitFor({ state: "visible" });
+      await api.provisionButton.click();
+      await page.getByRole("menuitem", { name: /Enterprise service user/ }).click();
+      await api.nameInput.fill(name);
+      await api.roleSelector.click();
+      await page.getByRole("option").first().click();
+      await api.expiresSelector.click();
+      await page.getByRole("option").first().click();
+      await Promise.all([
+        page.waitForResponse(
+          (r) => r.url().includes("/service-users") && r.request().method() === "POST",
+        ),
+        api.createSubmitButton.click(),
+      ]);
+      await api.saveTokenButton.click();
+
+      await api.searchInput.fill(name);
+      await page.waitForLoadState("networkidle");
+      const row = api.rowByName(name).first();
+      await expect(row).toBeVisible();
+      await expect(row).toContainText("Enterprise");
+      await expect(row).toContainText("Admin");
+
+      // Cancel once
+      await row.getByRole("button", { name: "Delete service user" }).click();
+      await expect(api.deleteConfirmDialog).toBeVisible();
+      await expect(api.deleteConfirmDialog).toContainText(name);
+      await api.deleteCancelButton.click();
+      await expect(api.deleteConfirmDialog).not.toBeVisible();
+      await expect(row).toBeVisible();
+
+      // Confirm deletion
+      await row.getByRole("button", { name: "Delete service user" }).click();
+      await expect(api.deleteConfirmDialog).toBeVisible();
+      await api.deleteConfirmButton.click();
+      await expect(api.deleteConfirmDialog).not.toBeVisible();
+      await expect(api.rowByName(name)).toHaveCount(0);
+    } finally {
+      await api.ensureDeleted(name);
+    }
+
+    expect(consoleErrors).toEqual([]);
+  });
 });

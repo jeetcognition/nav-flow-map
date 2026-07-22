@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
@@ -41,6 +41,22 @@ export class DevinApiPage extends BasePage {
   /** Submit button in the create form. */
   readonly createSubmitButton: Locator;
 
+  /** Token generation success dialog. */
+  readonly tokenDialog: Locator;
+  /** Token value shown in the generation dialog. */
+  readonly tokenValue: Locator;
+  /** Dismiss the token dialog after copy/backup. */
+  readonly saveTokenButton: Locator;
+  /** Copy token to clipboard. */
+  readonly copyTokenButton: Locator;
+
+  /** Delete service-user confirmation dialog. */
+  readonly deleteConfirmDialog: Locator;
+  /** Delete confirmation button inside the dialog. */
+  readonly deleteConfirmButton: Locator;
+  /** Cancel button inside the delete confirmation dialog. */
+  readonly deleteCancelButton: Locator;
+
   constructor(page: Page) {
     super(page);
     this.heading = page.getByRole("heading", { name: "Devin API", exact: true });
@@ -61,9 +77,38 @@ export class DevinApiPage extends BasePage {
     this.expiresSelector = page.locator('[role="combobox"]').nth(3);
     this.cancelButton = page.getByRole("button", { name: "Cancel" });
     this.createSubmitButton = page.getByRole("button", { name: "Provision service user" });
+
+    this.tokenDialog = page.getByRole("dialog").filter({ hasText: "Service user token generated" });
+    this.tokenValue = this.tokenDialog.getByText(/^cog_[a-z0-9]+$/);
+    this.saveTokenButton = this.tokenDialog.getByRole("button", { name: "I saved the token" });
+    this.copyTokenButton = this.tokenDialog.getByRole("button", { name: "Copy token" }).first();
+
+    this.deleteConfirmDialog = page
+      .getByRole("dialog")
+      .filter({ hasText: /Are you sure you want to delete the service user/ });
+    this.deleteConfirmButton = this.deleteConfirmDialog.getByRole("button", {
+      name: "Delete",
+      exact: true,
+    });
+    this.deleteCancelButton = this.deleteConfirmDialog.getByRole("button", { name: "Cancel" });
+  }
+
+  rowByName(name: string): Locator {
+    return this.tableRows.filter({ hasText: new RegExp(name, "i") });
   }
 
   async goto(slug: string = ENTERPRISE_SLUG) {
     await this.page.goto(routes.devinApi(slug));
+  }
+
+  async ensureDeleted(name: string) {
+    await this.goto();
+    await this.searchInput.fill(name);
+    await this.page.waitForLoadState("networkidle");
+    const row = this.rowByName(name).first();
+    if (!(await row.isVisible().catch(() => false))) return;
+    await row.getByRole("button", { name: "Delete service user" }).click();
+    await this.deleteConfirmButton.click();
+    await expect(row).toHaveCount(0);
   }
 }
