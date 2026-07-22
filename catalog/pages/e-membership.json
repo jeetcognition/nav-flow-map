@@ -1,0 +1,656 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-membership",
+    "name": "Membership",
+    "route": "/org/{tenant}/settings/membership",
+    "prefixes": ["MEMB"]
+  },
+  "testcases": [
+    {
+      "id": "MEMB-SMK01",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Load the page cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "jeet",
+      "navigation": "Enterprise settings → Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page cold."
+        }
+      ],
+      "assertions": [
+        "Heading, Learn more, tab counts, search, filters, Invite members, member table, and pagination render without a page or console error."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-SAN01",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Inspect the member table.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect the member table."
+        }
+      ],
+      "assertions": [
+        "Selection, Name, Email, Organizations, and Enterprise role columns are visible; names, emails, avatars, and role values are readable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-SAN02",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Open **Invite members** without submitting.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open **Invite members** without submitting."
+        }
+      ],
+      "assertions": [
+        "Role selector, multi-email field, close control, and disabled Add button are visible."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-SAN03",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Open **All organizations**.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open **All organizations**."
+        }
+      ],
+      "assertions": [
+        "Search, All organizations, organization names, current selection, and scrolling are usable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-SAN04",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Open **All enterprise roles** and the Invite-role selector.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open **All enterprise roles** and the Invite-role selector."
+        }
+      ],
+      "assertions": ["Search and available roles are visible; the current selection is marked."],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG01",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Search by matching/non-matching name or email, whitespace, Unicode, long, HTML-like, an…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search by matching/non-matching name or email, whitespace, Unicode, long, HTML-like, and injection-like text; then clear."
+        }
+      ],
+      "assertions": [
+        "Filtering is literal and safe; no-match state is clear; clearing restores the member list."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG02",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Combine organization and enterprise-role filters → search within each dropdown → clear …",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Combine organization and enterprise-role filters → search within each dropdown → clear filters."
+        }
+      ],
+      "assertions": [
+        "Only matching members appear; combined filters use correct intersection logic; clearing restores all results."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG03",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Enter blank, malformed, duplicate, existing-member, whitespace-separated, comma-separat…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Membership → Members → Invite members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Enter blank, malformed, duplicate, existing-member, whitespace-separated, comma-separated, mixed-validity, and excessive email lists."
+        }
+      ],
+      "assertions": [
+        "Add is gated correctly; actionable validation identifies invalid or duplicate entries; no unintended invite is sent."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires mocking, disposable resources, or UI interactions not reliably exercisable in Playwright."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG04",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Sort Name ascending/descending and move through Previous, Next, and numbered pages with…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Sort Name ascending/descending and move through Previous, Next, and numbered pages with active search and filters."
+        }
+      ],
+      "assertions": [
+        "Sort and pagination are stable; no duplicate or missing rows appear; active criteria behave consistently."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires mocking, disposable resources, or UI interactions not reliably exercisable in Playwright."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG05",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Expand members with zero, one, and many organizations.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "jeet",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Expand members with zero, one, and many organizations."
+        }
+      ],
+      "assertions": [
+        "Correct organization memberships display for that member only; zero state is clear; expansion stays within the viewport."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG06",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Record the original role → assign a different role → reload → restore the original role.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Membership → disposable member",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Record the original role → assign a different role → reload → restore the original role."
+        }
+      ],
+      "assertions": [
+        "Role persists and effective access changes accordingly; cleanup restores the exact original role."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG07",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "As an unauthorized user or with a tampered member ID, attempt invite, role change, remo…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As an unauthorized user or with a tampered member ID, attempt invite, role change, removal, and self-demotion."
+        }
+      ],
+      "assertions": [
+        "Unauthorized changes are denied; the last required admin cannot remove their own administrative access; cross-enterprise data is not exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-REG08",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Inspect URLs, UI, console, and requests while searching, filtering, expanding membershi…",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect URLs, UI, console, and requests while searching, filtering, expanding memberships, and opening Invite members."
+        }
+      ],
+      "assertions": [
+        "No invitation token, credential, private profile data, or internal error is exposed."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "MEMB-E2E01",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Invite a disposable account with Member role → accept → assign a disposable role and or…",
+      "type": "E2E",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Membership → Members",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Invite a disposable account with Member role → accept → assign a disposable role and organization → verify allowed/denied actions → remove or revoke it."
+        }
+      ],
+      "assertions": [
+        "Membership and permissions match the assignment; cleanup removes enterprise and organization access plus the disposable invite/member."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}

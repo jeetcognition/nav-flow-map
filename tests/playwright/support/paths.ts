@@ -37,4 +37,13 @@ export const routes = {
 
   /** Enterprise analytics page. */
   analytics: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/analytics`,
+
+  /** Enterprise membership page. */
+  membership: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/membership`,
+
+  /** Build a membership URL with a tab query. */
+  membershipTab: (
+    tab: "members" | "roles" | "groups" = "members",
+    slug: string = ENTERPRISE_SLUG,
+  ) => `/org/${slug}/settings/membership?tab=${tab}`,
 } as const;
