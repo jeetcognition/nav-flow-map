@@ -65,4 +65,7 @@ export const routes = {
   /** Enterprise connections page. */
   connections: (slug: string = ENTERPRISE_SLUG) =>
     `/org/${slug}/settings/connections?tab=integrations`,
+
+  /** Sub-org settings root. */
+  settingsRoot: (slug: string = TEST_SUBORG) => `/org/${slug}/settings`,
 } as const;
