@@ -27,4 +27,7 @@ export const routes = {
 
   /** Enterprise → General settings. */
   entGeneral: `/org/${ENTERPRISE_SLUG}/settings/general`,
+
+  /** Personal connections page. */
+  personalConnections: "/settings/connections",
 } as const;

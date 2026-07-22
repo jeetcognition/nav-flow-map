@@ -1,0 +1,354 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "pconn",
+    "name": "Personal Connections",
+    "route": "/settings/connections",
+    "prefixes": ["PCON"]
+  },
+  "testcases": [
+    {
+      "id": "PCON-SMK01",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "Load cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Settings → Personal Connections",
+      "preconditions": ["User is authenticated"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Cold-navigate to the Personal Connections page at /settings/connections."
+        }
+      ],
+      "assertions": [
+        "The page loads at /settings/connections, the Connections heading is visible, Integrations and MCP sections render, and GitLab, self-hosted GitLab, Slack, Linear, and GitHub rows are shown without exposing tokens."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/pconn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "PCON-SAN01",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "Inspect linked and unlinked provider rows.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "arjun",
+      "navigation": "Personal Connections",
+      "preconditions": ["User is authenticated and on the Personal Connections page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the Personal Connections page."
+        },
+        {
+          "number": 2,
+          "action": "Inspect each provider row under Integrations and the MCP section."
+        }
+      ],
+      "assertions": [
+        "Provider names, account labels, Link/Unlink controls, and 'Missing integration/MCP' guidance are readable and associated with the correct provider."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/pconn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "PCON-REG01",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "Start OAuth/link flow for each unlinked provider and cancel before authorizing.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["security", "navigation"],
+      "cadence": ["nightly"],
+      "owner": "arjun",
+      "navigation": "Personal Connections → Link provider",
+      "preconditions": ["User is authenticated and on the Personal Connections page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "For GitLab, Slack, Linear, and self-hosted GitLab, click the Link button."
+        },
+        {
+          "number": 2,
+          "action": "Cancel the flow before completing authorization and return to Personal Connections."
+        }
+      ],
+      "assertions": [
+        "Each redirect uses the correct provider, a Devin-owned redirect_uri callback, a non-empty state parameter, and no open-redirect or scriptable parameter echo; the account remains unlinked after cancellation."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": [
+          "Return to Personal Connections and verify the provider row still shows No account linked."
+        ]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/pconn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "PCON-REG02",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "Open link flow and test invalid, non-HTTPS, localhost/private-IP, long, Unicode, and injection-like instance URLs.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["security"],
+      "cadence": ["nightly"],
+      "owner": "maya",
+      "navigation": "Personal Connections → self-hosted GitLab",
+      "preconditions": ["User is authenticated and on the Personal Connections page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Attempt to start the self-hosted GitLab link flow with malformed or unsafe instance URLs."
+        }
+      ],
+      "assertions": [
+        "Malformed or unsafe URLs are rejected before request; no SSRF-capable protocol or host is accepted."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "blocked",
+        "blockedReason": "The self-hosted GitLab link flow redirects to gitlab.sbx.itsdev.in directly and does not expose a client-side instance-URL input for security injection testing in Playwright."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "PCON-REG03",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "With approval, unlink a disposable/personal provider account, reload, then re-link.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["state-mutation"],
+      "cadence": ["nightly"],
+      "owner": "jeet",
+      "navigation": "Personal Connections → Unlink",
+      "preconditions": [
+        "User is authenticated and a disposable linked provider account is available"
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Unlink the disposable provider, reload the page, and re-link it."
+        }
+      ],
+      "assertions": [
+        "UI and server state stay synchronized; no orphaned token remains; cleanup restores the link."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Re-link the disposable provider to restore the pre-test state."]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Requires completing a real external OAuth flow with a disposable account, which is not safe to automate in shared Playwright runs."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "PCON-REG04",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "Inspect team-enabled MCP connection rows and start/cancel any available OAuth flow.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering", "security"],
+      "cadence": ["nightly"],
+      "owner": "arjun",
+      "navigation": "Personal Connections → MCP",
+      "preconditions": ["User is authenticated and on the Personal Connections page"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open the MCP section and inspect any team-enabled MCP rows."
+        },
+        {
+          "number": 2,
+          "action": "Start and cancel any available MCP OAuth flow."
+        }
+      ],
+      "assertions": [
+        "MCP descriptions and scopes are clear; OAuth cancellation leaves state unchanged; shared organization identity warnings are visible where applicable."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "eligible",
+        "playwright": "blocked",
+        "blockedReason": "The QA tenant shows 'No MCPs' with no team-enabled MCP rows available, so there is no OAuth flow to start/cancel in Playwright."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "PCON-E2E01",
+      "pageId": "pconn",
+      "surface": "webapp",
+      "title": "With approval, connect a disposable provider/MCP, start a session that uses it, then disconnect and retest.",
+      "type": "E2E",
+      "priority": "P1",
+      "riskTags": ["state-mutation", "security"],
+      "cadence": ["weekly"],
+      "owner": "jeet",
+      "navigation": "Personal Connections → new session",
+      "preconditions": ["User is authenticated and a disposable provider/MCP account is available"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Connect a disposable provider/MCP, use it in a Devin session, then disconnect and retest."
+        }
+      ],
+      "assertions": [
+        "Connected credentials are available only as documented; disconnect prevents new use without leaking credential values."
+      ],
+      "cleanup": {
+        "required": true,
+        "steps": ["Disconnect the disposable provider/MCP."]
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Full end-to-end provider authorization and session usage requires real disposable credentials and interactive consent, which is not safe to automate in Playwright."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}

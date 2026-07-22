@@ -2,6 +2,31 @@
 
 This file is append-only. Each entry summarizes requested work, completed implementation or analysis, validation, and deferred items. Detailed rationale belongs in `decisions.md`.
 
+## 2026-07-21 — Automate `pconn` (Personal Connections) Playwright coverage
+
+### Requested
+
+- Continue node-by-node Playwright automation for non-Landing-Repo pages.
+
+### Implemented
+
+- `tests/playwright/pages/personal-connections.page.ts` + `routes.personalConnections`.
+- `tests/playwright/specs/authenticated/pconn.spec.ts`:
+  - `PCON-SMK01` — cold load `/settings/connections`, assert sections and provider rows render.
+  - `PCON-SAN01` — verify GitLab, Slack, Linear, self-hosted GitLab, and GitHub rows show the correct account labels and Link/Unlink controls.
+  - `PCON-REG01` — click Link for each unlinked provider, capture the OAuth start request, assert `client_id`/non-empty `state`/scoped `redirect_uri`, and abort the flow so the account stays unlinked.
+- `catalog/pages/pconn.json` created; `app/src/data/fixtures/testcases.json` automation + suite metadata synced (`PCON-SMK01` → `Smoke`, `PCON-E2E01` suite corrected to `E2E`, active cases marked `automated`).
+
+### Validation
+
+- `prettier --check .`, `npm run catalog:validate`, `node scripts/validate-data.js` pass.
+- `npx playwright test specs/authenticated/pconn.spec.ts` passes and is idempotent across two runs.
+- `app` `oxlint --deny-warnings`, `tsc -b`, `vite build` green.
+
+### Deferred / Observed
+
+- `PCON-REG02`, `PCON-REG03`, `PCON-REG04`, and `PCON-E2E01` remain Playwright-blocked because they require real external OAuth consent, disposable credentials, or team-enabled MCPs not present in QA.
+
 ## 2026-07-18 — Clarify the NavFlow "Run automation" button feedback
 
 ### Requested
