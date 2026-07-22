@@ -679,7 +679,7 @@
     "title": "Load cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-devin",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Settings → Devin",
     "steps": "Load cold.",
@@ -714,7 +714,7 @@
     "reach": "Devin → model/mode settings",
     "steps": "With approval, toggle Ultra/Fast/SWE/GPT/Fusion settings one at a time, reload, then restore.",
     "expected": "Each accepted change persists; rejected changes show actionable errors and leave prior state intact.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -729,7 +729,7 @@
     "reach": "Devin → tools/deployments",
     "steps": "With approval, toggle native deployments and web search, reload, then restore.",
     "expected": "New sessions receive allowed tools only according to saved settings; cleanup restores original state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -744,7 +744,7 @@
     "reach": "Devin → Git commit attribution",
     "steps": "Open/select each commit-author option and reload, then restore.",
     "expected": "Selection persists; descriptions match effective git metadata behavior; enterprise policy overrides are explicit.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -759,7 +759,7 @@
     "reach": "Devin → Commit email",
     "steps": "Test default/custom email, blank, malformed, long, Unicode, and injection-like values.",
     "expected": "Valid email persists; invalid values are rejected server-side and unsafe text stays inert.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-maya",
     "source": "authored"
@@ -774,7 +774,7 @@
     "reach": "Devin → PR behavior",
     "steps": "Change Open PRs as option, reload, and restore.",
     "expected": "Saved option is reflected consistently in UI and applies to later PR creation as documented.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -799,7 +799,7 @@
     "title": "With approval, set disposable git/PR behavior, create a session that opens a PR, then r…",
     "surfaceId": "enterprise",
     "nodeId": "e-devin",
-    "suite": "Regression",
+    "suite": "E2E",
     "priority": "P1",
     "reach": "Devin → new session → PR",
     "steps": "With approval, set disposable git/PR behavior, create a session that opens a PR, then restore.",
