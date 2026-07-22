@@ -46,4 +46,7 @@ export const routes = {
     tab: "members" | "roles" | "groups" = "members",
     slug: string = ENTERPRISE_SLUG,
   ) => `/org/${slug}/settings/membership?tab=${tab}`,
+
+  /** Enterprise infrastructure page. */
+  infrastructure: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/infrastructure`,
 } as const;
