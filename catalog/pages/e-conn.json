@@ -1,0 +1,435 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-conn",
+    "name": "Connections",
+    "route": "/org/{tenant}/settings/connections?tab=integrations",
+    "prefixes": ["ECON"]
+  },
+  "testcases": [
+    {
+      "id": "ECON-SMK01",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Load Integrations cold.",
+      "type": "Smoke",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy"],
+      "owner": "arjun",
+      "navigation": "Settings → Connections",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load Integrations cold."
+        }
+      ],
+      "assertions": [
+        "Git providers, communication, and task-management providers render with counts/status and no page errors."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-conn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-SAN01",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Inspect GitHub, GitLab, Bitbucket, Azure DevOps, Slack, Teams, Linear, and Jira cards.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "priya",
+      "navigation": "Connections",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Inspect GitHub, GitLab, Bitbucket, Azure DevOps, Slack, Teams, Linear, and Jira cards."
+        }
+      ],
+      "assertions": [
+        "Each provider shows a clear connected/not-connected/user-linked state and the correct Configure action."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-conn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-SAN02",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Switch to MCP servers.",
+      "type": "Sanity",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["deploy", "nightly"],
+      "owner": "maya",
+      "navigation": "Connections → MCP servers",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Switch to MCP servers."
+        }
+      ],
+      "assertions": [
+        "MCP count/list renders",
+        "tab state is reflected in URL/deep link",
+        "returning to Integrations restores its content."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-conn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-REG01",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Start and cancel each Configure/OAuth flow.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Connections → Configure provider",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Start and cancel each Configure/OAuth flow."
+        }
+      ],
+      "assertions": [
+        "Correct provider is targeted",
+        "callback/state is safe",
+        "cancellation does not create a partial connection."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-REG02",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Search/filter integration and MCP lists with no-match, whitespace, Unicode, long, HTML-…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Connections",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search/filter integration and MCP lists with no-match, whitespace, Unicode, long, HTML-like, and injection-like text."
+        }
+      ],
+      "assertions": [
+        "Filtering is literal and safe",
+        "empty/no-match state is clear",
+        "clearing restores the full active tab."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-conn.spec.ts"
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-MCP-REG01",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Open server details or policy controls without saving.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Connections → MCP servers",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open server details or policy controls without saving."
+        }
+      ],
+      "assertions": [
+        "Transport, scopes, access policy, and usage details render without exposing secrets or credentials."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "unsupported"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-MCP-REG02",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "With approval, allow/deny or connect/disconnect a disposable MCP server, reload, then r…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "jeet",
+      "navigation": "Connections → MCP servers",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "With approval, allow/deny or connect/disconnect a disposable MCP server, reload, then restore."
+        }
+      ],
+      "assertions": [
+        "Policy persists, affects new sessions as documented, and cleanup returns the server to its original state."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-MCP-REG03",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "Test malformed URL, non-HTTPS/local/private hosts, long names, duplicate names, and HTM…",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Connections → custom/server config",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Test malformed URL, non-HTTPS/local/private hosts, long names, duplicate names, and HTML-like fields."
+        }
+      ],
+      "assertions": [
+        "Invalid server definitions are rejected safely",
+        "unsafe text is inert",
+        "no SSRF-capable endpoint is accepted."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "unsupported"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ECON-E2E01",
+      "pageId": "e-conn",
+      "surface": "webapp",
+      "title": "With approval, enable a disposable integration/MCP and start a new session that attempt…",
+      "type": "E2E",
+      "priority": "P1",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["weekly"],
+      "owner": "jeet",
+      "navigation": "Connections → new session",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "With approval, enable a disposable integration/MCP and start a new session that attempts to use it."
+        }
+      ],
+      "assertions": [
+        "Tool/credential availability matches the enterprise and personal connection state",
+        "cleanup removes access."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "migration",
+        "reference": "app/src/data/fixtures/testcases.json"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-07-21"
+    }
+  ]
+}
