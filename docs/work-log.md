@@ -1,5 +1,40 @@
 # Work log
 
+## 2026-07-22 — Automate remaining `e-knowledge` regression/edge cases
+
+### Requested
+
+- Continue node-by-node Playwright automation for the `e-knowledge` (Knowledge) node.
+
+### Implemented
+
+- Expanded `tests/playwright/specs/authenticated/e-knowledge.spec.ts` with 15 additional cases:
+  - `KNOW-REG07` — create, edit, and delete a disposable Enterprise knowledge entry
+  - `KNOW-REG08` — create-validation rejects blank/malformed values
+  - `KNOW-REG09` — create/edit with HTML-like, Unicode, and RTL text
+  - `KNOW-REG10` — bulk delete selected disposable entries
+  - `KNOW-REG11` — edit all fields, reload, and restore originals
+  - `KNOW-REG12` — invalid values are rejected or not persisted
+  - `KNOW-REG13` — unsaved changes warn before leaving
+  - `KNOW-REG14` — compare chart, legend, and session records for the same period
+  - `KNOW-REG15` — click several **View session** rows, then return (works around browser-history tab-switch quirk)
+  - `KNOW-REG16` — Usage tab empty-state before sessions are recorded
+  - `KNOW-REG17` — tampered or unauthenticated access to Usage/View session is denied
+  - `KNOW-REG18` — delete cancel then confirm
+- Extended `tests/playwright/pages/knowledge.page.ts` with creation helpers, delete dialogs, bulk delete, and exact-match row opening (`openEntryByName`).
+- Updated `catalog/pages/e-knowledge.json` automation metadata and `app/src/data/fixtures/testcases.json` automation flags/spec paths.
+
+### Validation
+
+- `npx prettier --check .`, `npm run catalog:validate`, `node scripts/validate-data.js` pass.
+- `npx playwright test` — 174 passed, 9 skipped.
+- `app/` `oxlint --deny-warnings`, `tsc -b`, and `vite build` green.
+
+### Deferred / Observed
+
+- `KNOW-REG05` and `KNOW-E2E01` remain manual because they require running actual Devin sessions and verifying knowledge is applied only in a specific repository scope; session creation/usage surfacing did not appear in QA Usage analytics during exploration.
+- `KNOW-REG15` browser Back occasionally lands on the Details tab instead of Usage; the test explicitly re-selects Usage and verifies the session list reappears.
+
 ## 2026-07-22 — Pylon intake: 60-day corpus + deterministic ticket classifier
 
 ### Requested

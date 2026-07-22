@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { KnowledgePage } from "../../pages";
+import { routes } from "../../support/paths";
 
 test.describe("Knowledge Page", () => {
   test("KNOW-SMK01 — Load the page cold", async ({ page }) => {
@@ -104,30 +105,36 @@ test.describe("Knowledge Page", () => {
 
   test("KNOW-SAN05 — Select multiple Enterprise knowledge entries", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const firstName = `qa-temp-knowledge-san05-${ts}-1`;
+    const secondName = `qa-temp-knowledge-san05-${ts}-2`;
+
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("Enterprise knowledge");
-    const first = knowledge.tableRows
-      .filter({ hasText: "backend based code" })
-      .first()
-      .locator("span[role='checkbox']");
-    const second = knowledge.tableRows
-      .filter({ hasText: "qa-temp-knowledge-1784684134815" })
-      .first()
-      .locator("span[role='checkbox']");
+    // Create two disposable Enterprise entries up-front.
+    await knowledge.createKnowledge(firstName, "first", "trigger one");
+    await knowledge.createKnowledge(secondName, "second", "trigger two");
 
-    await first.click();
-    await page.getByRole("button", { name: "Take action" }).waitFor({ state: "visible" });
-    await second.click();
+    await knowledge.searchInput.fill(`qa-temp-knowledge-san05-${ts}`);
+    await knowledge.selectRow(firstName);
+    await expect(knowledge.takeActionButton).toBeVisible();
+    await knowledge.selectRow(secondName);
 
     await expect(page.getByText(/2 selected/)).toBeVisible();
-    await expect(page.getByRole("button", { name: "Take action" })).toBeVisible();
+    await expect(knowledge.takeActionButton).toBeVisible();
 
     // Undo selection so the next run starts from an unselected list.
-    await first.click();
-    await second.click();
-    await expect(page.getByRole("button", { name: "Take action" })).toBeHidden();
+    await knowledge.selectRow(firstName);
+    await knowledge.selectRow(secondName);
+    await expect(knowledge.takeActionButton).toBeHidden();
+
+    // Cleanup: delete the disposable entries.
+    await knowledge.selectRow(firstName);
+    await knowledge.selectRow(secondName);
+    await knowledge.chooseBulkDelete();
+    await knowledge.confirmBulkDelete();
+    await expect(knowledge.searchInput).toBeVisible();
   });
 
   test("KNOW-SAN07 — Open a built-in System knowledge entry", async ({ page }) => {
@@ -249,5 +256,549 @@ test.describe("Knowledge Page", () => {
 
     await knowledge.backToKnowledge.click();
     await expect(page).toHaveURL(/\/settings\/knowledge$/);
+  });
+
+  test("KNOW-REG07 — Create, edit, and delete a disposable Enterprise knowledge entry", async ({
+    page,
+  }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-e2e-${ts}`;
+    const content = "Original content for REG07.";
+    const trigger = "Original trigger.";
+    const macro = `qa-macro-${ts}`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, content, trigger, { macro });
+
+      // Verify in list and search.
+      await knowledge.searchInput.fill(name);
+      await expect(knowledge.tableRows.filter({ hasText: name }).first()).toBeVisible();
+
+      // Open and edit every detail field.
+      await knowledge.openEntryByName(name);
+      await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+
+      const updatedContent = "Updated REG07 content.";
+      const updatedTrigger = "Updated REG07 trigger.";
+      const updatedMacro = `qa-updated-macro-${ts}`;
+      await knowledge.fillKnowledgeDetail(updatedContent, updatedTrigger, updatedMacro);
+      await knowledge.selectPin("All sessions");
+      await knowledge.selectFolder("Enterprise Folder");
+      await knowledge.saveKnowledge();
+
+      await expect(knowledge.triggerInput).toHaveValue(updatedTrigger);
+      await expect(knowledge.macroInput).toHaveValue(updatedMacro);
+
+      // Reload and verify persistence.
+      await page.reload();
+      await page.getByRole("heading", { name, exact: true }).waitFor({ state: "visible" });
+      await expect(knowledge.contentsEditor).toContainText(updatedContent);
+      await expect(knowledge.triggerInput).toHaveValue(updatedTrigger);
+      await expect(knowledge.macroInput).toHaveValue(updatedMacro);
+      await expect(knowledge.pinSelect).toHaveValue("All sessions");
+      await expect(knowledge.folderSelect).toHaveValue("Enterprise Folder");
+
+      await knowledge.deleteOpenEntry();
+      await knowledge.searchInput.fill(name);
+      await expect(knowledge.tableRows.filter({ hasText: name }).first()).toBeHidden();
+    } finally {
+      // Best-effort cleanup if the test aborted mid-flow.
+      await page.goto(routes.enterpriseKnowledge());
+      await knowledge.searchInput.fill(name);
+      if (
+        await knowledge.tableRows
+          .filter({ hasText: name })
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
+  test("KNOW-REG09 — Create and edit with HTML-like, Unicode, and RTL text", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-inject-${ts}`;
+    // Use injection-like strings that must be stored and rendered inert.
+    const content = `<script>alert('xss')</script> 🔥 مرحبا`;
+    const trigger = `trigger-<img src=x onerror=alert(1)> 🚀`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, content, trigger, {
+        macro: `qa-inject-macro-${ts}`,
+      });
+
+      await knowledge.openEntryByName(name);
+      await expect(knowledge.contentsEditor).toContainText("alert('xss')");
+      await expect(knowledge.contentsEditor).toContainText("🔥");
+      await expect(knowledge.contentsEditor).toContainText("مرحبا");
+      await expect(knowledge.triggerInput).toHaveValue(trigger);
+
+      // The literal HTML-like text should be stored and displayed, not executed as DOM nodes.
+      await expect(knowledge.contentsEditor).toContainText("<script>alert('xss')</script>");
+      await expect(knowledge.triggerInput).toHaveValue(trigger);
+
+      await knowledge.deleteOpenEntry();
+    } finally {
+      await page.goto(routes.enterpriseKnowledge());
+      await knowledge.searchInput.fill(name);
+      if (
+        await knowledge.tableRows
+          .filter({ hasText: name })
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
+  test("KNOW-REG10 — Bulk delete selected disposable entries", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const firstName = `qa-temp-knowledge-bulk-${ts}-1`;
+    const secondName = `qa-temp-knowledge-bulk-${ts}-2`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(firstName, "bulk one", "trigger one");
+      await knowledge.createKnowledge(secondName, "bulk two", "trigger two");
+
+      await knowledge.searchInput.fill(`qa-temp-knowledge-bulk-${ts}`);
+      await knowledge.selectRow(firstName);
+      await knowledge.selectRow(secondName);
+
+      await expect(page.getByText(/2 selected/)).toBeVisible();
+      await knowledge.chooseBulkDelete();
+      await expect(page.locator('[role="dialog"]')).toContainText("Delete Items");
+      await expect(page.locator('[role="dialog"]')).toContainText("2 selected item");
+      await knowledge.confirmBulkDelete();
+
+      await knowledge.searchInput.fill(firstName);
+      await expect(knowledge.tableRows.filter({ hasText: firstName }).first()).toBeHidden();
+      await knowledge.searchInput.fill(secondName);
+      await expect(knowledge.tableRows.filter({ hasText: secondName }).first()).toBeHidden();
+    } finally {
+      await page.goto(routes.enterpriseKnowledge());
+      for (const name of [firstName, secondName]) {
+        await knowledge.searchInput.fill(name);
+        if (
+          await knowledge.tableRows
+            .filter({ hasText: name })
+            .first()
+            .isVisible()
+            .catch(() => false)
+        ) {
+          await knowledge.openEntryByName(name);
+          await knowledge.deleteOpenEntry().catch(() => {});
+        }
+      }
+    }
+  });
+
+  test("KNOW-REG11 — Edit all fields, reload, and restore originals", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-update-${ts}`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, "original content", "original trigger", {
+        macro: `qa-update-macro-${ts}`,
+      });
+      await knowledge.openEntryByName(name);
+
+      const originalContent = await knowledge.contentsEditor.innerText();
+      const originalTrigger = await knowledge.triggerInput.inputValue();
+      const originalMacro = await knowledge.macroInput.inputValue();
+      const originalPin = await knowledge.pinSelect.inputValue();
+      const originalFolder = await knowledge.folderSelect.inputValue();
+
+      const newContent = "Updated content for reload test.";
+      const newTrigger = "Updated trigger for reload test.";
+      const newMacro = `qa-updated-macro-${ts}`;
+      await knowledge.fillKnowledgeDetail(newContent, newTrigger, newMacro);
+      await knowledge.selectPin("All sessions");
+      await knowledge.saveKnowledge();
+
+      await page.reload();
+      await page.getByRole("heading", { name, exact: true }).waitFor({ state: "visible" });
+      await expect(knowledge.contentsEditor).toContainText(newContent);
+      await expect(knowledge.triggerInput).toHaveValue(newTrigger);
+      await expect(knowledge.macroInput).toHaveValue(newMacro);
+
+      // Restore original values.
+      await knowledge.fillKnowledgeDetail(originalContent, originalTrigger, originalMacro);
+      await knowledge.selectPin(originalPin as "None" | "All sessions");
+      await knowledge.selectFolder(originalFolder);
+      await knowledge.saveKnowledge();
+
+      await page.reload();
+      await expect(knowledge.contentsEditor).toContainText(originalContent);
+      await expect(knowledge.triggerInput).toHaveValue(originalTrigger);
+      await expect(knowledge.macroInput).toHaveValue(originalMacro);
+
+      await knowledge.deleteOpenEntry();
+    } finally {
+      await page.goto(routes.enterpriseKnowledge());
+      await knowledge.searchInput.fill(name);
+      if (
+        await knowledge.tableRows
+          .filter({ hasText: name })
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
+  test("KNOW-REG12 — Invalid values are rejected or not persisted", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-invalid-${ts}`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, "original content", "original trigger", {
+        macro: `qa-valid-macro-${ts}`,
+      });
+      await knowledge.openEntryByName(name);
+
+      // Blank content disables the Save button, so a PUT is never issued.
+      await knowledge.contentsEditor.click();
+      await knowledge.contentsEditor.fill("");
+      await expect(knowledge.saveButton).toBeDisabled();
+
+      // Restore valid content before testing macro validation.
+      await knowledge.contentsEditor.click();
+      await knowledge.contentsEditor.fill("restored content");
+
+      // Invalid macro in the detail page should be rejected by the backend.
+      const originalMacro = await knowledge.macroInput.inputValue();
+      await knowledge.macroInput.fill("");
+      await knowledge.macroInput.fill("bad macro spaces");
+      const [badResp] = await Promise.all([
+        page.waitForResponse(
+          (r) => /\/api\/[^/]+\/learning\/[^/]+/.test(r.url()) && r.request().method() === "PUT",
+        ),
+        knowledge.saveButton.click(),
+      ]);
+      expect(badResp.status()).toBe(400);
+
+      // Long and Unicode/RHTML-like values are stored safely but should render inert.
+      const longContent = "a".repeat(300);
+      const longTrigger = "trigger-".repeat(20);
+      const safeMacro = `qa-long-macro-${ts}`;
+      await knowledge.fillKnowledgeDetail(longContent, longTrigger, safeMacro);
+      const [okResp] = await Promise.all([
+        page.waitForResponse(
+          (r) => /\/api\/[^/]+\/learning\/[^/]+/.test(r.url()) && r.request().method() === "PUT",
+        ),
+        knowledge.saveButton.click(),
+      ]);
+      expect(okResp.status()).toBe(200);
+      await page.reload();
+      await expect(knowledge.contentsEditor).toContainText(longContent);
+      await expect(knowledge.triggerInput).toHaveValue(longTrigger);
+
+      // Restore original macro.
+      await knowledge.macroInput.fill("");
+      await knowledge.macroInput.fill(originalMacro);
+      await knowledge.saveKnowledge();
+
+      await knowledge.deleteOpenEntry();
+    } finally {
+      await page.goto(routes.enterpriseKnowledge());
+      await knowledge.searchInput.fill(name);
+      if (
+        await knowledge.tableRows
+          .filter({ hasText: name })
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
+  test("KNOW-REG08 — Create validation rejects blank and malformed values", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const baseName = `qa-temp-knowledge-valid-${ts}`;
+
+    await knowledge.goto();
+    await knowledge.heading.waitFor({ state: "visible" });
+
+    // Blank name and content should disable the Next button.
+    await knowledge.createButton.click();
+    await expect(knowledge.creationPanel).toBeVisible();
+    await knowledge.nameInput.fill("");
+    await knowledge.contentsEditor.click();
+    await knowledge.contentsEditor.fill("some content");
+    await expect(knowledge.nextButton).toBeDisabled();
+
+    await knowledge.nameInput.fill(baseName);
+    await knowledge.contentsEditor.click();
+    await knowledge.contentsEditor.fill("");
+    await expect(knowledge.nextButton).toBeDisabled();
+
+    // Fill valid name/content and then use an invalid macro.
+    await knowledge.contentsEditor.click();
+    await knowledge.contentsEditor.fill("content");
+    await knowledge.macroInput.fill("bad macro");
+    await knowledge.nextButton.click();
+    await knowledge.triggerInput.fill("trigger");
+    await Promise.all([
+      page.waitForResponse(
+        (r) => /\/api\/[^/]+\/learning$/.test(r.url()) && r.request().method() === "POST",
+      ),
+      knowledge.createSubmitButton.click(),
+    ]);
+    await expect(page.getByText(/Failed to create knowledge: Invalid macro/)).toBeVisible();
+
+    // Step 2 only exposes Back/Create; go back to step 1 to close with Cancel.
+    await knowledge.creationBackButton.click();
+    await knowledge.cancelButton.click();
+    await page.goto(routes.enterpriseKnowledge());
+    await knowledge.searchInput.fill(baseName);
+    const leftover = knowledge.tableRows.filter({ hasText: baseName }).first();
+    if (await leftover.isVisible().catch(() => false)) {
+      await knowledge.openEntryByName(baseName);
+      await knowledge.deleteOpenEntry();
+    }
+  });
+
+  test("KNOW-REG13 — Unsaved changes warn before leaving", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-unsaved-${ts}`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, "initial content", "initial trigger");
+      await knowledge.openEntryByName(name);
+
+      await knowledge.triggerInput.fill("Changed without saving");
+      await knowledge.backToKnowledge.click();
+
+      const dialog = page.getByRole("alertdialog").or(page.locator('[role="dialog"]'));
+      await expect(dialog).toContainText("Are you sure you want to leave this page?");
+      await dialog.getByRole("button", { name: "Cancel" }).click();
+
+      // Still on detail with the unsaved value.
+      await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+      await expect(knowledge.triggerInput).toHaveValue("Changed without saving");
+
+      // Discard and verify the original persisted value remains.
+      await knowledge.backToKnowledge.click();
+      await dialog.getByRole("button", { name: "Confirm" }).click();
+      await expect(page).toHaveURL(/\/settings\/knowledge$/);
+
+      await knowledge.openEntryByName(name);
+      await expect(knowledge.triggerInput).toHaveValue("initial trigger");
+      await knowledge.deleteOpenEntry();
+    } finally {
+      await page.goto(routes.enterpriseKnowledge());
+      await knowledge.searchInput.fill(name);
+      if (
+        await knowledge.tableRows
+          .filter({ hasText: name })
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
+  test("KNOW-REG18 — Delete cancel then confirm", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-delete-${ts}`;
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, "to delete", "trigger");
+      await knowledge.openEntryByName(name);
+
+      await knowledge.openDeleteDialog();
+      await expect(page.locator('[role="dialog"]')).toContainText("Delete Knowledge");
+      await knowledge.cancelDeleteDialog();
+      await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+
+      await knowledge.openDeleteDialog();
+      await knowledge.confirmDeleteDialog();
+      await expect(page).toHaveURL(/\/settings\/knowledge$/);
+
+      await knowledge.searchInput.fill(name);
+      await expect(knowledge.tableRows.filter({ hasText: name }).first()).toBeHidden();
+    } finally {
+      await page.goto(routes.enterpriseKnowledge());
+      await knowledge.searchInput.fill(name);
+      if (
+        await knowledge.tableRows
+          .filter({ hasText: name })
+          .first()
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
+  test("KNOW-REG14 — Compare the chart, legend, and session records for the same period", async ({
+    page,
+  }) => {
+    const knowledge = new KnowledgePage(page);
+    await knowledge.goto();
+    await knowledge.heading.waitFor({ state: "visible" });
+
+    await knowledge.openEntryByName("hi");
+
+    const [usageResp, sessionsResp] = await Promise.all([
+      page.waitForResponse((r) => r.url().endsWith("/analytics/usage")),
+      page.waitForResponse((r) => r.url().endsWith("/analytics/sessions")),
+      knowledge.usageTab.click(),
+    ]);
+
+    type UsageStat = { date: string; access: number; analysis: number; displayDate: string };
+    const usage = (await usageResp.json()) as { stats: UsageStat[]; last_updated_at: string };
+    const sessions = (await sessionsResp.json()) as {
+      data: { devin_id: string; session_title: string }[];
+    };
+
+    await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText("Session usage by day")).toBeVisible();
+    await expect(page.getByText("Retrieved")).toBeVisible();
+    await expect(page.getByText("Used")).toBeVisible();
+    await expect(page.getByText("Last 30 days")).toBeVisible();
+
+    const rows = knowledge.table.locator("tbody tr");
+    await expect(rows).toHaveCount(sessions.data.length);
+
+    expect(usage.stats.length).toBeGreaterThan(0);
+    const totalAccess = usage.stats.reduce((sum, s) => sum + s.access, 0);
+    const totalAnalysis = usage.stats.reduce((sum, s) => sum + s.analysis, 0);
+    expect(totalAccess).toBeGreaterThanOrEqual(sessions.data.length);
+    expect(totalAnalysis).toBeGreaterThanOrEqual(0);
+
+    const lastUpdated = new Date(usage.last_updated_at);
+    for (const stat of usage.stats) {
+      const statDate = new Date(stat.date);
+      expect(statDate.getTime()).toBeLessThanOrEqual(lastUpdated.getTime() + 86_400_000);
+      expect(lastUpdated.getTime() - statDate.getTime()).toBeLessThanOrEqual(31 * 86_400_000);
+    }
+
+    await knowledge.backToKnowledge.click();
+    await expect(page).toHaveURL(/\/settings\/knowledge$/);
+  });
+
+  test("KNOW-REG15 — Click View session for several rows, then return", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    await knowledge.goto();
+    await knowledge.heading.waitFor({ state: "visible" });
+
+    await knowledge.openEntryByName("hi");
+
+    const [sessionsResp] = await Promise.all([
+      page.waitForResponse((r) => r.url().endsWith("/analytics/sessions")),
+      knowledge.usageTab.click(),
+    ]);
+    const sessions = (await sessionsResp.json()) as {
+      data: { devin_id: string; session_title: string }[];
+    };
+
+    await expect(page.getByText("Session usage by day")).toBeVisible();
+    const viewButtons = page.getByRole("button", { name: "View session" });
+    const viewCount = await viewButtons.count();
+    expect(viewCount).toBeGreaterThan(0);
+
+    const clicks = Math.min(viewCount, 3);
+    for (let i = 0; i < clicks; i++) {
+      const expectedId = sessions.data[i].devin_id.replace("devin-", "");
+
+      await viewButtons.nth(i).click();
+      await page.waitForURL((url) => url.pathname.endsWith(`/sessions/${expectedId}`));
+      await expect(page.locator("body")).not.toContainText("This page could not be found");
+
+      await page.goBack();
+      await page.waitForURL(/\/settings\/knowledge\/.+/);
+      // The Usage tab isn't always auto-selected on later back navigations;
+      // explicitly reselect it and verify the session list reappears.
+      await knowledge.usageTab.click();
+      await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
+      await expect(page.getByText("Session usage by day")).toBeVisible();
+      await expect(knowledge.table.locator("tbody tr")).toHaveCount(sessions.data.length);
+    }
+
+    await knowledge.backToKnowledge.click();
+    await expect(page).toHaveURL(/\/settings\/knowledge$/);
+  });
+
+  test("KNOW-REG17 — Tampered or unauthenticated access to Usage and View session is denied", async ({
+    page,
+    browser,
+  }) => {
+    const knowledge = new KnowledgePage(page);
+
+    // Authenticated user with a tampered knowledge id.
+    await page.goto(`${routes.enterpriseKnowledge()}/not-a-real-id/usage`, {
+      waitUntil: "networkidle",
+    });
+    await expect(page.getByText("Not Found")).toBeVisible();
+
+    // Authenticated user with a tampered session id.
+    await page.goto("/sessions/not-a-real-id", { waitUntil: "networkidle" });
+    await expect(page.locator("body")).toContainText("This page could not be found");
+
+    // Unauthenticated user is denied access and no session data is exposed.
+    const unauthContext = await browser.newContext();
+    const unauthPage = await unauthContext.newPage();
+    await unauthPage.goto(`${routes.enterpriseKnowledge()}/not-a-real-id/usage`, {
+      waitUntil: "networkidle",
+    });
+    const unauthUrl = unauthPage.url();
+    if (unauthUrl.includes("auth.beta.devin.ai")) {
+      // Redirect to login is acceptable; nothing further to assert.
+    } else {
+      await expect(unauthPage.getByText("Not Found")).toBeVisible();
+      await expect(unauthPage.locator("body")).not.toContainText("Improve playbook");
+    }
+    await unauthContext.close();
+
+    // Return to the real knowledge page to reset state cleanly.
+    await knowledge.goto();
+    await knowledge.heading.waitFor({ state: "visible" });
   });
 });
