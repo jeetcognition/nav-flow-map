@@ -43,6 +43,11 @@ node ../../scripts/validate-data.js
 
 ## Invariants
 
+- **Pylon is read-only.** The pipeline's only Pylon API call is an
+  authenticated GET on `/issues` in `fetcher.py`; nothing here ever writes,
+  updates, or posts back to Pylon. Enforced mechanically by the read-only
+  guard in `test_pipeline.py` (CI fails on any write-shaped call). Prefer a
+  read-only-scoped API key in Pylon settings as defense in depth.
 - No LLM in the inference path; the LLM only edits the rule table via the
   refiner loop, gated by `eval_classifier.py --gate`.
 - Ticket text is PII: the DB and `.env` never leave the machine/runner;

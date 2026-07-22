@@ -99,8 +99,26 @@ for n in nasty:
     out = json.dumps(sanitize(n))
     check("no-email-leak", not re.search(r"[\w.+-]+@[\w-]+\.\w", out.replace("•••@•••", "")), out)
 
+
+print("read-only guard — the pipeline must NEVER write to Pylon")
+import pathlib
+
+WRITE_MARKERS = ['"-X"', '"--request"', '"-d"', '"--data"', '"--data-raw"', '"--form"',
+                 "requests.post", "requests.put", "requests.delete", "requests.patch",
+                 'method="POST"', "method='POST'", '"PUT"', '"POST"', '"DELETE"', '"PATCH"']
+for f in sorted(pathlib.Path(__file__).parent.glob("*.py")):
+    if f.name == "test_pipeline.py":  # the scanner itself contains the markers
+        continue
+    src = f.read_text()
+    if "usepylon.com" not in src:
+        continue
+    check(f"pylon-api-only-in-fetcher ({f.name})", f.name == "fetcher.py",
+          "only fetcher.py may call the Pylon API")
+    for m in WRITE_MARKERS:
+        check(f"no-write-marker {m} in {f.name}", m not in src)
+
 print()
 if FAILURES:
     print(f"{len(FAILURES)} FAILURES")
     raise SystemExit(1)
-print("all tests passed")
+print("read-only guard passed")
