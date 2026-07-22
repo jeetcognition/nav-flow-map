@@ -1819,12 +1819,12 @@
     "title": "Load the page cold.",
     "surfaceId": "enterprise",
     "nodeId": "e-membership",
-    "suite": "Sanity",
+    "suite": "Smoke",
     "priority": "P1",
     "reach": "Enterprise settings → Membership → Members",
     "steps": "Load the page cold.",
     "expected": "Heading, Learn more, tab counts, search, filters, Invite members, member table, and pagination render without a page or console error.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1839,7 +1839,7 @@
     "reach": "Membership → Members",
     "steps": "Inspect the member table.",
     "expected": "Selection, Name, Email, Organizations, and Enterprise role columns are visible; names, emails, avatars, and role values are readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1854,7 +1854,7 @@
     "reach": "Membership → Members",
     "steps": "Open **Invite members** without submitting.",
     "expected": "Role selector, multi-email field, close control, and disabled Add button are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1869,7 +1869,7 @@
     "reach": "Membership → Members",
     "steps": "Open **All organizations**.",
     "expected": "Search, All organizations, organization names, current selection, and scrolling are usable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1884,7 +1884,7 @@
     "reach": "Membership → Members",
     "steps": "Open **All enterprise roles** and the Invite-role selector.",
     "expected": "Search and available roles are visible; the current selection is marked.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1899,7 +1899,7 @@
     "reach": "Membership → Members",
     "steps": "Search by matching/non-matching name or email, whitespace, Unicode, long, HTML-like, and injection-like text; then clear.",
     "expected": "Filtering is literal and safe; no-match state is clear; clearing restores the member list.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1914,7 +1914,7 @@
     "reach": "Membership → Members",
     "steps": "Combine organization and enterprise-role filters → search within each dropdown → clear filters.",
     "expected": "Only matching members appear; combined filters use correct intersection logic; clearing restores all results.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1959,7 +1959,7 @@
     "reach": "Membership → Members",
     "steps": "Expand members with zero, one, and many organizations.",
     "expected": "Correct organization memberships display for that member only; zero state is clear; expansion stays within the viewport.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1974,7 +1974,7 @@
     "reach": "Membership → disposable member",
     "steps": "Record the original role → assign a different role → reload → restore the original role.",
     "expected": "Role persists and effective access changes accordingly; cleanup restores the exact original role.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2004,7 +2004,7 @@
     "reach": "Membership → Members",
     "steps": "Inspect URLs, UI, console, and requests while searching, filtering, expanding memberships, and opening Invite members.",
     "expected": "No invitation token, credential, private profile data, or internal error is exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2014,7 +2014,7 @@
     "title": "Invite a disposable account with Member role → accept → assign a disposable role and or…",
     "surfaceId": "enterprise",
     "nodeId": "e-membership",
-    "suite": "Regression",
+    "suite": "E2E",
     "priority": "P0",
     "reach": "Membership → Members",
     "steps": "Invite a disposable account with Member role → accept → assign a disposable role and organization → verify allowed/denied actions → remove or revoke it.",
