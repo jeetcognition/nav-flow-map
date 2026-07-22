@@ -137,6 +137,67 @@ test.describe("Knowledge Page", () => {
     await expect(knowledge.searchInput).toBeVisible();
   });
 
+  test("KNOW-SAN06 — Click Take action on a selected Enterprise knowledge entry", async ({
+    page,
+  }) => {
+    const knowledge = new KnowledgePage(page);
+    const ts = Date.now();
+    const name = `qa-temp-knowledge-san06-${ts}`;
+
+    await knowledge.goto();
+    await knowledge.heading.waitFor({ state: "visible" });
+
+    try {
+      await knowledge.createKnowledge(name, "sanity content", "sanity trigger");
+      await knowledge.searchInput.fill(name);
+      await knowledge.selectRow(name);
+      await expect(knowledge.takeActionButton).toBeVisible();
+
+      await knowledge.takeActionButton.click();
+      const options = page.getByRole("option");
+      await expect(options).toHaveCount(3);
+
+      const moveOption = options.nth(0);
+      const autoOption = options.nth(1);
+      const deleteOption = options.nth(2);
+
+      await expect(moveOption).toContainText("Move to folder");
+      await expect(moveOption).toContainText(
+        "Enterprise knowledge cannot be moved to a different folder",
+      );
+      await expect(moveOption).toHaveAttribute("aria-disabled", "true");
+
+      await expect(autoOption).toContainText("Auto-organize selection");
+      await expect(autoOption).toContainText(
+        "You must create at least one folder to auto organize knowledge",
+      );
+      await expect(autoOption).toHaveAttribute("aria-disabled", "true");
+
+      await expect(deleteOption).toHaveText("Delete");
+      await expect(deleteOption).not.toHaveAttribute("aria-disabled", "true");
+
+      // Close the menu and deselect so the next test starts clean.
+      await page.keyboard.press("Escape");
+      await expect(options).toHaveCount(0);
+      await knowledge.selectRow(name);
+      await expect(knowledge.takeActionButton).toBeHidden();
+
+      // Cleanup: remove the disposable entry.
+      await knowledge.searchInput.fill(name);
+      await knowledge.openEntryByName(name);
+      await knowledge.deleteOpenEntry();
+    } finally {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+      await knowledge.searchInput.fill(name);
+      const row = knowledge.tableRows.filter({ hasText: name }).first();
+      if (await row.isVisible().catch(() => false)) {
+        await knowledge.openEntryByName(name);
+        await knowledge.deleteOpenEntry().catch(() => {});
+      }
+    }
+  });
+
   test("KNOW-SAN07 — Open a built-in System knowledge entry", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
     await knowledge.goto();

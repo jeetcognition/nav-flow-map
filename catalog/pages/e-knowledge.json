@@ -250,7 +250,7 @@
       "riskTags": ["navigation", "ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "priya",
-      "navigation": "Knowledge → select multiple Enterprise entries",
+      "navigation": "Knowledge → select an Enterprise knowledge entry",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -259,7 +259,7 @@
         }
       ],
       "assertions": [
-        "Search actions, Move to folder, Auto-organize selection, and Delete are visible",
+        "Move to folder, Auto-organize selection, and Delete are visible",
         "Move and Auto-organize remain disabled with clear reasons",
         "Delete remains available."
       ],
@@ -273,11 +273,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "unsupported"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
       },
       "source": {
         "type": "migration",

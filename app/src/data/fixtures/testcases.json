@@ -1086,13 +1086,14 @@
     "nodeId": "e-knowledge",
     "suite": "Sanity",
     "priority": "P1",
-    "reach": "Knowledge → select multiple Enterprise entries",
+    "reach": "Knowledge → select an Enterprise knowledge entry",
     "steps": "Click **Take action**.",
-    "expected": "Search actions, Move to folder, Auto-organize selection, and Delete are visible. Move and Auto-organize remain disabled with clear reasons; Delete remains available.",
-    "automation": "not-automatable",
+    "expected": "Move to folder, Auto-organize selection, and Delete are visible. Move and Auto-organize remain disabled with clear reasons; Delete remains available.",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-knowledge.spec.ts"
   },
   {
     "id": "KNOW-SAN07",
