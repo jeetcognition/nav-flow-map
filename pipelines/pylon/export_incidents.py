@@ -72,7 +72,7 @@ NODE_KEYWORDS: list[tuple[str, str]] = [
     (r"\bpreference|notification setting|profile|theme|git identity", "prefs"),
     (r"\bapi key|service user|devin api|personal access token|\bpat\b", "e-api"),
     (r"\bsecrets?\b|credentials?", "s-secrets"),
-    (r"\bsessions?\b|composer|\bprompt\b|\bmcp\b|slack", "composer"),
+    (r"\bsessions?\b|composer|\bprompt\b|\bmcp\b|slack", "session"),
     (r"analytics|usage page|consumption", "my-analytics"),
     (r"settings", "ent"),
 ]

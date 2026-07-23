@@ -886,13 +886,12 @@ test.describe("Knowledge Page", () => {
       await knowledge.createKnowledge(name, content, trigger);
 
       // Refresh the knowledge list and search to confirm persistence.
-      await page.reload();
-      await knowledge.heading.waitFor({ state: "visible" });
-      await knowledge.searchInput.fill(name);
-      await expect(page.getByRole("cell", { name, exact: true }).first()).toBeVisible();
+      await knowledge.reloadAndWait();
+      await knowledge.searchFor(name);
+      await knowledge.expectEntryVisible(name);
 
       // Start a new Devin session with a prompt that contains the trigger word.
-      await session.gotoComposer();
+      await session.gotoSession();
       const sessionId = await session.sendPrompt(prompt);
       await session.waitForResponseEnding("KNOWLEDGE-TRIGGER-CONFIRMED", 180_000);
 
@@ -927,23 +926,10 @@ test.describe("Knowledge Page", () => {
         .toBe(true);
 
       // Clean up the disposable knowledge entry.
-      await page.goto(detailUrl);
+      await knowledge.openDetailUrl(detailUrl);
       await knowledge.deleteOpenEntry();
     } finally {
-      // Best-effort cleanup of the disposable knowledge entry.
-      try {
-        await page.goto(routes.enterpriseKnowledge());
-        await knowledge.heading.waitFor({ state: "visible" });
-        await knowledge.searchInput.fill(name);
-        const cell = page.getByRole("cell", { name, exact: true }).first();
-        if (await cell.isVisible().catch(() => false)) {
-          await cell.click();
-          await page.waitForURL(/\/settings\/knowledge\/.+/);
-          await knowledge.deleteOpenEntry();
-        }
-      } catch {
-        // Entry was already deleted or not found.
-      }
+      await knowledge.deleteEntryByName(name);
     }
   });
 });

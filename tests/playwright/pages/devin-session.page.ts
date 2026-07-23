@@ -2,9 +2,9 @@ import { expect, Locator, Page } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, TEST_SUBORG } from "../support/paths";
 
-// Page object for the sub-org home composer and the resulting /sessions/{id} chat.
+// Page object for the sub-org home session prompt and the resulting /sessions/{id} chat.
 //
-// The composer is a Slate rich-text editor: a contenteditable div that exposes
+// The prompt input is a Slate rich-text editor: a contenteditable div that exposes
 // `role="textbox"`, so we reach it with getByRole rather than a CSS selector.
 // The Send action is an icon button whose accessible name is "Send".
 //
@@ -28,12 +28,12 @@ export class DevinSessionPage extends BasePage {
     this.assistantMessages = page.locator('[class*="message-history--item"]');
   }
 
-  async gotoComposer() {
+  async gotoSession() {
     await this.goto();
     await expect(this.promptInput).toBeVisible({ timeout: 20_000 });
   }
 
-  /** Type a prompt in the home composer and submit it. Returns the new session id. */
+  /** Type a prompt in the home session prompt and submit it. Returns the new session id. */
   async sendPrompt(prompt: string) {
     await this.promptInput.click();
     await this.promptInput.fill(prompt);

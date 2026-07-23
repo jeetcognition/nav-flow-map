@@ -275,6 +275,48 @@ export class KnowledgePage extends BasePage {
     return (sessions?.data ?? []).some((s) => s.devin_id.replace("devin-", "") === sessionId);
   }
 
+  /** Replace the current search query with `name`. */
+  async searchFor(name: string) {
+    await this.searchInput.fill(name);
+  }
+
+  /** Assert that a table cell with the exact entry name is visible. */
+  async expectEntryVisible(name: string) {
+    await expect(this.page.getByRole("cell", { name, exact: true }).first()).toBeVisible();
+  }
+
+  /** Reload the knowledge list and wait for the heading to reappear. */
+  async reloadAndWait() {
+    await this.page.reload();
+    await this.heading.waitFor({ state: "visible" });
+  }
+
+  /** Navigate to a saved entry detail URL. */
+  async openDetailUrl(detailUrl: string) {
+    await this.page.goto(detailUrl, { waitUntil: "domcontentloaded" });
+  }
+
+  /**
+   * Best-effort deletion of an entry by name from the enterprise knowledge list.
+   * Swallows the case where the entry no longer exists so callers can use it for
+   * cleanup safety.
+   */
+  async deleteEntryByName(name: string, slug: string = ENTERPRISE_SLUG) {
+    try {
+      await this.goto(slug);
+      await this.heading.waitFor({ state: "visible" });
+      await this.searchFor(name);
+      const cell = this.page.getByRole("cell", { name, exact: true }).first();
+      if (await cell.isVisible().catch(() => false)) {
+        await cell.click();
+        await this.page.waitForURL(/\/settings\/knowledge\/.+/);
+        await this.deleteOpenEntry();
+      }
+    } catch {
+      // Entry was already deleted or not found.
+    }
+  }
+
   /** Confirm the bulk delete dialog for selected entries. */
   async confirmBulkDelete() {
     const dialog = this.page.locator('[role="dialog"]');
