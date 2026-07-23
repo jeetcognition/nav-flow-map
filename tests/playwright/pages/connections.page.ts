@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
@@ -26,6 +26,9 @@ export class ConnectionsPage extends BasePage {
   readonly mcpTable: Locator;
   readonly mcpTableRows: Locator;
   readonly mcpEmptyState: Locator;
+  readonly mcpEnabledSwitch: Locator;
+  readonly connectButton: Locator;
+  readonly connectMenuItem: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -42,6 +45,9 @@ export class ConnectionsPage extends BasePage {
     this.mcpTable = page.locator("table").first();
     this.mcpTableRows = this.mcpTable.locator("tbody tr");
     this.mcpEmptyState = page.getByText("No MCPs found");
+    this.mcpEnabledSwitch = page.getByRole("switch");
+    this.connectButton = page.getByRole("button", { name: "Connect", exact: true });
+    this.connectMenuItem = page.getByRole("menuitem", { name: "Connect", exact: true });
   }
 
   async goto(slug: string = ENTERPRISE_SLUG) {
@@ -50,5 +56,16 @@ export class ConnectionsPage extends BasePage {
 
   providerCard(name: Provider | string): Locator {
     return this.page.getByRole("link", { name: new RegExp(`^${name}`) }).first();
+  }
+
+  /** From the MCP servers tab, search for a server and open its enterprise detail page. */
+  async openMcpServer(name: string) {
+    await this.mcpSearchInput.fill(name);
+    await this.mcpTableRows.filter({ hasText: name }).first().click();
+    await this.page.waitForURL(/\/settings\/connections\/mcp\//);
+    await expect(this.page.getByText(name, { exact: true }).first()).toBeVisible();
+    await expect(
+      this.page.getByText("Usage and availability of this MCP across your enterprise."),
+    ).toBeVisible();
   }
 }

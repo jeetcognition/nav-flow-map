@@ -5,6 +5,7 @@ export { InfraPage } from "./infra.page";
 export { GuardrailsPage } from "./guardrails.page";
 export { GroupsIdpPage } from "./groups-idp.page";
 export { LoginPage } from "./login.page";
+export { McpMarketplacePage } from "./mcp-marketplace.page";
 export { MembershipPage, MEMBER_COLUMNS } from "./membership.page";
 export { OrganizationsPage } from "./organizations.page";
 export { OrgCreatePage } from "./org-create.page";

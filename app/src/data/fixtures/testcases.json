@@ -2984,7 +2984,7 @@
     "reach": "Connections → Configure provider",
     "steps": "Start and cancel each Configure/OAuth flow.",
     "expected": "Correct provider is targeted; callback/state is safe; cancellation does not create a partial connection.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3029,7 +3029,7 @@
     "reach": "Connections → MCP servers",
     "steps": "With approval, allow/deny or connect/disconnect a disposable MCP server, reload, then restore.",
     "expected": "Policy persists, affects new sessions as documented, and cleanup returns the server to its original state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3059,7 +3059,7 @@
     "reach": "Connections → new session",
     "steps": "With approval, enable a disposable integration/MCP and start a new session that attempts to use it.",
     "expected": "Tool/credential availability matches the enterprise and personal connection state; cleanup removes access.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
