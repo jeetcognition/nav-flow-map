@@ -96,6 +96,13 @@ export const routes = {
   environment: (slug: string = ENTERPRISE_SLUG, tab?: string) =>
     `/org/${slug}/settings/enterprise-environment${tab ? `?tab=${tab}` : ""}`,
 
+  /** Devin Review landing (PR review UI). Sub-org sidebar → Review. */
+  review: "/review",
+
+  /** Build a Devin Review pull-request URL. */
+  reviewPr: (owner: string, repo: string, number: number | string) =>
+    `/review/${owner}/${repo}/pull/${number}`,
+
   /** Enterprise Devin Review settings page. */
   reviewSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/review`,
 

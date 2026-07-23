@@ -31,6 +31,7 @@ export { DevinSessionPage } from "./devin-session.page";
 export { ConnectionsPage } from "./connections.page";
 export { SettingsRootPage } from "./settings-root.page";
 export { DevinSettingsPage } from "./devin-settings.page";
+export { ReviewPage } from "./review.page";
 export { ReviewSettingsPage } from "./review-settings.page";
 export { WikiPage } from "./wiki.page";
 
