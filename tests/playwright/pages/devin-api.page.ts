@@ -101,6 +101,31 @@ export class DevinApiPage extends BasePage {
     await this.page.goto(routes.devinApi(slug));
   }
 
+  /**
+   * Navigate to the page and capture the authenticated service-users API request the app
+   * issues on load, returning the bearer Authorization header, the enterprise id in use, and
+   * the API origin. Used by authorization/IDOR tests to replay requests with tampered inputs.
+   */
+  async captureServiceUsersApi(): Promise<{
+    enterpriseId: string;
+    authorization: string;
+    baseUrl: string;
+  }> {
+    const [req] = await Promise.all([
+      this.page.waitForRequest(
+        (r) =>
+          /\/api\/enterprise\/enterprise-[a-z0-9]+\/service-users(\?|$)/.test(r.url()) &&
+          r.method() === "GET",
+      ),
+      this.goto(),
+    ]);
+    await this.heading.waitFor({ state: "visible" });
+    const url = new URL(req.url());
+    const enterpriseId = url.pathname.match(/enterprise-[a-z0-9]+/)![0];
+    const authorization = req.headers()["authorization"] ?? "";
+    return { enterpriseId, authorization, baseUrl: url.origin };
+  }
+
   async ensureDeleted(name: string) {
     await this.goto();
     await this.searchInput.fill(name);

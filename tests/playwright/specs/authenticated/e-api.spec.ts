@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, request } from "@playwright/test";
 import { DevinApiPage } from "../../pages";
 
 test.describe("Devin API", () => {
@@ -236,6 +236,72 @@ test.describe("Devin API", () => {
       await expect(api.rowByName(name)).toHaveCount(0);
     } finally {
       await api.ensureDeleted(name);
+    }
+
+    expect(consoleErrors).toEqual([]);
+  });
+
+  test("API-REG05 — Server-side authorization blocks IDOR and unauthenticated access", async ({
+    page,
+  }) => {
+    const api = new DevinApiPage(page);
+    const consoleErrors = trackConsoleErrors(page);
+
+    // Capture a real authenticated request so we can replay it with tampered inputs.
+    const { enterpriseId, authorization, baseUrl } = await api.captureServiceUsersApi();
+    expect(authorization).toMatch(/^Bearer /);
+
+    const authed = { authorization };
+    const fakeEnterprise = "enterprise-00000000000000000000000000000000";
+    const fakeServiceUser = "service-user-00000000000000000000000000000000";
+    const listPath = (ent: string) => `${baseUrl}/api/enterprise/${ent}/service-users`;
+    const keysPath = (ent: string) =>
+      `${baseUrl}/api/enterprise/${ent}/api-keys?page=1&per_page=25`;
+
+    // Control: the admin can read their own enterprise's service users.
+    const control = await page.request.get(listPath(enterpriseId), { headers: authed });
+    expect(control.status()).toBe(200);
+
+    // IDOR: reading another enterprise's keys/users with a valid token is rejected.
+    for (const url of [listPath(fakeEnterprise), keysPath(fakeEnterprise)]) {
+      const res = await page.request.get(url, { headers: authed });
+      expect(res.status()).toBe(403);
+    }
+
+    // IDOR: mutating a foreign enterprise (create/delete) is rejected before any change.
+    const foreignCreate = await page.request.post(listPath(fakeEnterprise), {
+      headers: authed,
+      data: { name: "idor-probe", role_id: "x", expiration_days: 7 },
+    });
+    expect(foreignCreate.status()).toBe(403);
+
+    const foreignDelete = await page.request.delete(
+      `${listPath(fakeEnterprise)}/${fakeServiceUser}`,
+      { headers: authed },
+    );
+    expect(foreignDelete.status()).toBe(403);
+
+    // No cross-tenant leakage: deleting a non-existent user in the real enterprise is a
+    // clean 404 (not a silent 200 that would imply an out-of-scope delete succeeded).
+    const missingDelete = await page.request.delete(
+      `${listPath(enterpriseId)}/${fakeServiceUser}`,
+      { headers: authed },
+    );
+    expect(missingDelete.status()).toBe(404);
+
+    // Unauthenticated: without the bearer token every operation is refused.
+    const anon = await request.newContext();
+    try {
+      for (const url of [listPath(enterpriseId), keysPath(enterpriseId)]) {
+        const res = await anon.get(url);
+        expect(res.status()).toBe(401);
+      }
+      const anonCreate = await anon.post(listPath(enterpriseId), {
+        data: { name: "idor-probe", role_id: "x", expiration_days: 7 },
+      });
+      expect(anonCreate.status()).toBe(401);
+    } finally {
+      await anon.dispose();
     }
 
     expect(consoleErrors).toEqual([]);
