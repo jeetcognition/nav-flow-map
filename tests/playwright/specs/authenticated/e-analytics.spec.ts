@@ -1,6 +1,41 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Download, Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { AnalyticsPage } from "../../pages";
 import { routes } from "../../support/paths";
+
+interface ExportedSession {
+  org_id: string;
+  created_at: string;
+  user_email: string;
+  url: string;
+}
+
+interface SessionsExport {
+  sessions: ExportedSession[];
+  date_range: { start: string; end: string };
+}
+
+async function readExport(download: Download): Promise<SessionsExport> {
+  const filePath = await download.path();
+  return JSON.parse(readFileSync(filePath, "utf-8")) as SessionsExport;
+}
+
+/**
+ * Capture the enterprise ID, bearer token, and a real metrics URL from the
+ * metrics API traffic the page issues. The API authenticates via an
+ * Authorization header (not cookies), so tampered-ID API checks must reuse it.
+ */
+async function captureMetricsAuth(
+  page: Page,
+): Promise<{ enterpriseId: string; authorization: string; realMetricsUrl: string }> {
+  const request = await page.waitForRequest(/\/api\/enterprises\/enterprise-[0-9a-f]+\/metrics\//);
+  const match = request.url().match(/\/api\/enterprises\/(enterprise-[0-9a-f]+)\//);
+  const authorization = (await request.allHeaders())["authorization"];
+  if (!match || !authorization) {
+    throw new Error("Could not capture enterprise ID and auth from metrics traffic");
+  }
+  return { enterpriseId: match[1], authorization, realMetricsUrl: request.url() };
+}
 
 async function expectNoCrash(page: any) {
   await expect(page.getByRole("tab", { name: "Usage" })).toBeVisible();
@@ -216,6 +251,162 @@ test.describe("Enterprise Analytics", () => {
     }
 
     await page.goto(routes.analytics());
+    await analytics.expectLoaded();
+  });
+
+  test("ANAL-REG04 — Refresh data and export each supported view/range", async ({ page }) => {
+    const analytics = new AnalyticsPage(page);
+    const authPromise = captureMetricsAuth(page);
+    await analytics.goto();
+    await analytics.expectLoaded();
+    const { authorization } = await authPromise;
+
+    // Refresh updates the freshness timestamp.
+    await analytics.refreshData();
+
+    // Export on the default range (This month) matches the active filter.
+    const monthExport = await readExport(await analytics.exportData());
+    const monthStart = new Date(monthExport.date_range.start);
+    const monthEnd = new Date(monthExport.date_range.end);
+    expect(monthStart.getUTCDate()).toBe(1);
+    for (const session of monthExport.sessions) {
+      const created = new Date(session.created_at);
+      expect(created.getTime()).toBeGreaterThanOrEqual(monthStart.getTime());
+      expect(created.getTime()).toBeLessThanOrEqual(monthEnd.getTime());
+    }
+
+    // The export only contains sessions from organizations inside this enterprise.
+    const orgsResponse = await page.request.get("/api/enterprise/organizations", {
+      headers: { authorization },
+    });
+    expect(orgsResponse.ok()).toBe(true);
+    const enterpriseOrgs = (await orgsResponse.json()) as Array<{ org_id: string }>;
+    const allowedOrgIds = new Set(enterpriseOrgs.map((o) => o.org_id));
+    for (const session of monthExport.sessions) {
+      expect(allowedOrgIds.has(session.org_id)).toBe(true);
+    }
+
+    // Export after switching to a different range matches the new filter.
+    await analytics.selectDateRange("Last 7 days");
+    const weekDownload = await analytics.exportData();
+    expect(weekDownload.suggestedFilename()).toMatch(
+      /^sessions_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.json$/,
+    );
+    const weekExport = await readExport(weekDownload);
+    const weekStart = new Date(weekExport.date_range.start);
+    const weekEnd = new Date(weekExport.date_range.end);
+    expect(weekEnd.getTime() - weekStart.getTime()).toBe(7 * 24 * 60 * 60 * 1000);
+    for (const session of weekExport.sessions) {
+      const created = new Date(session.created_at);
+      expect(created.getTime()).toBeGreaterThanOrEqual(weekStart.getTime());
+      expect(created.getTime()).toBeLessThanOrEqual(weekEnd.getTime());
+    }
+
+    // Export under a different chart view stays scoped to the same range.
+    await analytics.selectView("By origin");
+    const originExport = await readExport(await analytics.exportData());
+    expect(originExport.date_range).toEqual(weekExport.date_range);
+
+    // Restore defaults.
+    await analytics.selectView("By size");
+    await analytics.selectDateRange("This month");
+    await analytics.expectLoaded();
+  });
+
+  test("ANAL-REG06 — Tampered enterprise/org IDs never expose foreign analytics", async ({
+    page,
+  }) => {
+    const analytics = new AnalyticsPage(page);
+    const authPromise = captureMetricsAuth(page);
+    await analytics.goto();
+    const { enterpriseId, authorization, realMetricsUrl } = await authPromise;
+    const headers = { authorization };
+
+    // Sanity check: the captured credentials do read our own enterprise's metrics.
+    const ownResponse = await page.request.get(realMetricsUrl, { headers });
+    expect(ownResponse.status()).toBe(200);
+
+    // The same credentials are denied for enterprises we do not belong to.
+    const now = Date.now();
+    const range = `start_date=${new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString()}&end_date=${new Date(now).toISOString()}`;
+    const tamperedIds = [
+      "enterprise-00000000000000000000000000000000",
+      "enterprise-ffffffffffffffffffffffffffffffff",
+    ];
+    expect(tamperedIds).not.toContain(enterpriseId);
+    for (const tamperedId of tamperedIds) {
+      for (const endpoint of ["usage", "sessions", "sessions/export", "usage-by-user"]) {
+        const response = await page.request.get(
+          `/api/enterprises/${tamperedId}/metrics/${endpoint}?${range}`,
+          { headers },
+        );
+        expect([401, 403, 404]).toContain(response.status());
+        const body = await response.text();
+        expect(body).not.toContain("acu_used");
+        expect(body).not.toContain("user_email");
+      }
+    }
+
+    // A tampered org query param must not crash the page or scope to a foreign org.
+    await page.goto(`${routes.analytics()}?org=org-00000000000000000000000000000000`);
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await expectNoCrash(page);
+    await expect(analytics.orgFilter).toHaveText("All organizations");
+
+    await page.goto(routes.analytics());
+    await analytics.expectLoaded();
+  });
+
+  test("ANAL-E2E01 — Set range/org/view, refresh, export, deep-link reload, restore defaults", async ({
+    page,
+  }) => {
+    const analytics = new AnalyticsPage(page);
+    await analytics.goto();
+    await analytics.expectLoaded();
+
+    // Set date range + organization + view.
+    await analytics.selectDateRange("Last 7 days");
+    await expect(page).toHaveURL(/period=last-7-days/);
+    await analytics.selectOrg(analytics.testSuborgDisplay);
+    await expect(page).toHaveURL(/org=org-/);
+    const orgId = new URL(page.url()).searchParams.get("org");
+    expect(orgId).toMatch(/^org-/);
+    await analytics.selectView("By origin");
+
+    // Refresh.
+    await analytics.refreshData();
+
+    // Export matches the selected UI scope: date range and org filter.
+    const download = await analytics.exportData();
+    expect(download.suggestedFilename()).toMatch(
+      /^sessions_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.json$/,
+    );
+    const exported = await readExport(download);
+    const start = new Date(exported.date_range.start);
+    const end = new Date(exported.date_range.end);
+    expect(end.getTime() - start.getTime()).toBe(7 * 24 * 60 * 60 * 1000);
+    for (const session of exported.sessions) {
+      expect(session.org_id).toBe(orgId);
+      const created = new Date(session.created_at);
+      expect(created.getTime()).toBeGreaterThanOrEqual(start.getTime());
+      expect(created.getTime()).toBeLessThanOrEqual(end.getTime());
+    }
+
+    // Deep-link reload restores the URL-persisted state (period + org).
+    // Known limitation: the chart view is not encoded in the URL and resets to "By size".
+    const deepLink = page.url();
+    expect(deepLink).toMatch(/period=last-7-days/);
+    expect(deepLink).toContain(`org=${orgId}`);
+    await page.goto(deepLink);
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await expect(analytics.dateRangeButton.first()).toHaveText(/Last 7 days/);
+    await expect(analytics.orgFilter).toHaveText(analytics.testSuborgDisplay);
+    await expect(analytics.viewFilter).toHaveText("By size");
+
+    // Clear/restore defaults through the UI.
+    await analytics.selectAllOrganizations();
+    await expect(page).not.toHaveURL(/org=/);
+    await analytics.selectDateRange("This month");
     await analytics.expectLoaded();
   });
 });

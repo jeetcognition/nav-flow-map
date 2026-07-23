@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { Page, Locator, Download, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, TEST_SUBORG_DISPLAY } from "../support/paths";
 
@@ -18,6 +18,8 @@ export class AnalyticsPage extends BasePage {
   readonly refreshButton: Locator;
   /** Export button. */
   readonly exportButton: Locator;
+  /** "Last updated …" data-freshness label. */
+  readonly lastUpdated: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -30,6 +32,7 @@ export class AnalyticsPage extends BasePage {
     this.groupingFilter = page.locator('[role="combobox"][aria-label="Time grouping"]').first();
     this.refreshButton = page.getByRole("button", { name: "Refresh data" });
     this.exportButton = page.getByRole("button", { name: "Export" });
+    this.lastUpdated = page.getByText(/Last updated/);
   }
 
   override async goto() {
@@ -154,6 +157,21 @@ export class AnalyticsPage extends BasePage {
     await this.page.waitForLoadState("networkidle").catch(() => {});
     await this.page.keyboard.press("Escape");
     await expect(this.groupingFilter).toHaveText(option);
+  }
+
+  /** Refresh the data and wait for the freshness label to reset. */
+  async refreshData() {
+    await this.refreshButton.click();
+    await this.page.waitForLoadState("networkidle").catch(() => {});
+    // The label wording varies ("less than a minute ago" / "in less than a minute").
+    await expect(this.lastUpdated).toHaveText(/Last updated (in )?less than a minute( ago)?/);
+  }
+
+  /** Click Export and return the resulting download. */
+  async exportData(): Promise<Download> {
+    const downloadPromise = this.page.waitForEvent("download");
+    await this.exportButton.click();
+    return downloadPromise;
   }
 
   /** Convenience default org display name used for scoping. */
