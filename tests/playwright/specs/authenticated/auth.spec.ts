@@ -45,6 +45,22 @@ async function fetchCode(): Promise<string> {
   });
 }
 
+/** Poll the inbox until a code different from `previous` arrives (i.e. the resent email). */
+async function fetchDifferentCode(previous: string): Promise<string> {
+  const deadline = Date.now() + 120_000;
+  let code = previous;
+  while (code === previous && Date.now() < deadline) {
+    code = await fetchLatestOtp({
+      user: process.env.GMAIL_IMAP_USER || email,
+      password: appPassword,
+      initialDelayMs: 10_000,
+      timeoutMs: 60_000,
+    });
+  }
+  expect(code).not.toBe(previous);
+  return code;
+}
+
 test.describe("Auth (Email + OTP)", () => {
   test("AUTH-SAN01 — Enter a valid work email and click Continue", async ({ browser }) => {
     const page = await newAnonymousPage(browser);
@@ -106,9 +122,49 @@ test.describe("Auth (Email + OTP)", () => {
     await page.close();
   });
 
-  test("AUTH-REG02 — Reject an expired OTP code", async ({ browser: _browser }) => {
-    // Waiting for expiration in real time is slow and flaky; keep manual until we can seed an old code.
-    test.skip(true, "Expired-code test requires controlled code seeding; keep manual");
+  test("AUTH-REG02 — Reject a stale OTP code, then log in with a fresh one", async ({
+    browser,
+  }) => {
+    // Requesting a new code invalidates the previous one, which stands in for waiting
+    // out the real expiry window.
+    test.setTimeout(300_000);
+    const page = await newAnonymousPage(browser);
+    const login = new LoginPage(page);
+    const orgSelector = new OrgSelectorPage(page);
+
+    await login.goto();
+    await login.submitEmail(email);
+    await expect(login.otpInput).toBeVisible({ timeout: 15_000 });
+
+    const staleCode = await fetchCode();
+    await login.resendButton.click();
+    let freshCode = await fetchDifferentCode(staleCode);
+
+    // The stale code must be rejected with a clear error, staying on the OTP step.
+    await login.otpInput.fill(staleCode);
+    await login.continueButton.click();
+    await expect(login.otpError).toBeVisible({ timeout: 10_000 });
+    await expect(page).toHaveURL(/passwordless-email-challenge/);
+
+    // Requesting a fresh code allows login. The shared OTP inbox can race with other
+    // login flows, so re-request the code and retry if a fetched code is rejected.
+    let loggedIn = false;
+    for (let attempt = 0; attempt < 3 && !loggedIn; attempt++) {
+      if (attempt > 0) {
+        await login.resendButton.click();
+        freshCode = await fetchDifferentCode(freshCode);
+      }
+      await login.otpInput.fill(freshCode);
+      await login.continueButton.click();
+      loggedIn = await orgSelector.heading
+        .waitFor({ state: "visible", timeout: 20_000 })
+        .then(() => true)
+        .catch(() => false);
+    }
+    await expect(orgSelector.heading).toBeVisible({ timeout: 30_000 });
+
+    // Closing the anonymous context discards the session; no persistent state remains.
+    await page.close();
   });
 
   test("AUTH-REG03 — Open a protected route while logged out", async ({ browser }) => {
