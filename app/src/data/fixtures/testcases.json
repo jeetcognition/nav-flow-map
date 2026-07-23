@@ -2369,7 +2369,7 @@
     "reach": "Organizations",
     "steps": "Inspect the first and last pages.",
     "expected": "Previous and Next controls are visible and correctly enabled or disabled for the current page.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2444,7 +2444,7 @@
     "reach": "Organizations → disposable organization",
     "steps": "Record original values → change the name and ACU limit to a valid positive integer → save → reload → restore the originals.",
     "expected": "Save succeeds; the table and modal show persisted values; cleanup restores the exact original state.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2474,7 +2474,7 @@
     "reach": "Organizations → Manage organization",
     "steps": "Enter No limit or blank, zero, negative, decimal, text, exponent notation, and leading-zero ACU values.",
     "expected": "Supported values save consistently; invalid values show actionable validation and never partially update the organization.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2489,7 +2489,7 @@
     "reach": "Organizations → Manage organization",
     "steps": "Enter boundary and extremely large positive ACU values, then attempt to save.",
     "expected": "The supported range is validated before submission; out-of-range values are rejected clearly and no partial update occurs.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2504,7 +2504,7 @@
     "reach": "Organizations → Manage organization",
     "steps": "Make unsaved changes, then click outside, press Escape, use Back, or navigate away.",
     "expected": "A warning or documented discard behavior occurs; changes are not silently saved or lost.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2534,7 +2534,7 @@
     "reach": "Organizations",
     "steps": "As a non-admin or with a tampered organization ID, attempt list, edit, ACU update, and delete operations.",
     "expected": "Server-side authorization denies unauthorized and cross-enterprise access without changing organization data.",
-    "automation": "manual",
+    "automation": "active",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
