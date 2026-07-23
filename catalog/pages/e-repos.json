@@ -276,12 +276,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires adding/removing repository permissions and a disposable repository target; cleanup cannot be guaranteed without approval."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -323,12 +322,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires a restricted user or tampered org/repo context that is not available in the shared admin Playwright setup."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -371,12 +369,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires granting/revoking repo access and starting a session, which is an end-to-end flow not suitable for the shared Playwright tenant."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-repos.spec.ts"
       },
       "source": {
         "type": "migration",

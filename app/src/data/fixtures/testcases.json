@@ -3149,7 +3149,7 @@
     "reach": "Repositories",
     "steps": "With approval, add/remove or change permission for a disposable repository/member, reload, then restore.",
     "expected": "Permission changes persist for the correct repo/org only; cleanup restores original access.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3164,7 +3164,7 @@
     "reach": "Repositories",
     "steps": "As restricted user or with tampered org/repo IDs, request or mutate repository permissions.",
     "expected": "Server denies unauthorized/cross-tenant access and does not expose private repo metadata.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3179,7 +3179,7 @@
     "reach": "Repositories → session",
     "steps": "With approval, grant disposable repo access, start a session that references it, then revoke and retest.",
     "expected": "Session access follows repository permissions; revocation prevents new access after cleanup.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
