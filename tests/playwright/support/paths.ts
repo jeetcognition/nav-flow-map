@@ -81,6 +81,10 @@ export const routes = {
   /** Enterprise Devin settings page. */
   devinSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/enterprise-devin`,
 
+  /** Enterprise environment page, optionally targeting a tab. */
+  environment: (slug: string = ENTERPRISE_SLUG, tab?: string) =>
+    `/org/${slug}/settings/enterprise-environment${tab ? `?tab=${tab}` : ""}`,
+
   /** Enterprise Devin Review settings page. */
   reviewSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/review`,
 
