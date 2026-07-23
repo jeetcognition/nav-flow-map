@@ -4656,7 +4656,7 @@
     "reach": "On the OTP step",
     "steps": "Wait for the code to expire (or use an old code) and submit",
     "expected": "The expired code is rejected with a clear error; requesting a fresh code allows login.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
