@@ -1,5 +1,16 @@
-import { test, expect, type ConsoleMessage } from "@playwright/test";
-import { GuardrailsPage, ENTERPRISE_SLUG } from "../../pages";
+import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
+import { GuardrailsPage, DevinSessionPage, ENTERPRISE_SLUG, ALT_SUBORG } from "../../pages";
+import { routes, TEST_SUBORG_DISPLAY } from "../../support/paths";
+import {
+  captureGuardrailsApi,
+  getGuardrailAction,
+  getGuardrails,
+  getViolations,
+  listViolations,
+  putGuardrail,
+  type GuardrailsApiContext,
+  type GuardrailViolation,
+} from "../../support/guardrails-api";
 
 test.describe("Guardrails", () => {
   let errors: string[] = [];
@@ -169,5 +180,213 @@ test.describe("Guardrails", () => {
     await expect(listbox).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page).toHaveURL(/\/settings\/guardrails\?tab=violations$/);
+  });
+});
+
+// Enforcement tests drive real Devin sessions, whose pages emit benign console
+// errors (e.g. 403s on optional integrations), so they live outside the
+// console-error harness above.
+test.describe("Guardrails enforcement and authorization", () => {
+  const GUARDRAIL_NAME = "Profanity";
+  const GUARDRAIL_ID = "profanity";
+  // The classifier reliably flags this phrase as profanity; the marker keeps
+  // each run's violation record uniquely identifiable.
+  const profanePrompt = (marker: string) =>
+    `${marker}: this damn flaky test suite is a piece of shit and I hate it`;
+
+  async function openGuardrails(page: Page): Promise<{
+    guardrails: GuardrailsPage;
+    api: GuardrailsApiContext;
+  }> {
+    const guardrails = new GuardrailsPage(page);
+    const api = await captureGuardrailsApi(page, () => guardrails.goto());
+    await guardrails.heading.waitFor({ state: "visible" });
+    return { guardrails, api };
+  }
+
+  async function findViolation(
+    page: Page,
+    api: GuardrailsApiContext,
+    marker: string,
+  ): Promise<GuardrailViolation> {
+    let found: GuardrailViolation | undefined;
+    await expect
+      .poll(
+        async () => {
+          const violations = await listViolations(page, api);
+          found = violations.find((v) => v.user_message.includes(marker));
+          return found !== undefined;
+        },
+        { intervals: [2_000, 5_000, 10_000], timeout: 90_000 },
+      )
+      .toBe(true);
+    return found!;
+  }
+
+  test("GUARD-REG04 — Trigger warn and block outcomes in disposable sessions", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(360_000);
+
+    const { guardrails, api } = await openGuardrails(page);
+    const session = new DevinSessionPage(page);
+    const original = await guardrails.currentAction(GUARDRAIL_NAME);
+    const ts = Date.now();
+
+    try {
+      // Warn outcome: the message is flagged but the session continues.
+      if (original !== "Warn user") await guardrails.setAction(GUARDRAIL_NAME, "Warn user");
+      await expect
+        .poll(() => getGuardrailAction(page, api, GUARDRAIL_ID), { timeout: 30_000 })
+        .toBe("warn_user");
+
+      const warnMarker = `GUARD-REG04-warn-${ts}`;
+      await session.gotoSession();
+      await session.sendPrompt(profanePrompt(warnMarker));
+      await expect(session.guardrailWarnFlag).toBeVisible({ timeout: 60_000 });
+      await expect(session.guardrailBlockedBanner).toBeHidden();
+
+      const warnViolation = await findViolation(page, api, warnMarker);
+      expect(warnViolation.action_taken).toBe("warn_user");
+      expect(warnViolation.guardrail_id).toBe(GUARDRAIL_ID);
+
+      // Block outcome: the message is denied and the session ends.
+      await guardrails.goto();
+      await guardrails.heading.waitFor({ state: "visible" });
+      await guardrails.setAction(GUARDRAIL_NAME, "Block message");
+      await expect
+        .poll(() => getGuardrailAction(page, api, GUARDRAIL_ID), { timeout: 30_000 })
+        .toBe("block_message");
+
+      const blockMarker = `GUARD-REG04-block-${ts}`;
+      await session.gotoSession();
+      await session.sendPrompt(profanePrompt(blockMarker));
+      await expect(session.guardrailBlockedBanner).toBeVisible({ timeout: 60_000 });
+      await expect(session.guardrailBlockedNotice).toBeVisible();
+      await expect(page.getByText("Continue in a new session")).toBeVisible();
+
+      // The violation record carries full metadata without leaking anything
+      // beyond the message the user actually sent.
+      const blockViolation = await findViolation(page, api, blockMarker);
+      expect(blockViolation.action_taken).toBe("block_message");
+      expect(blockViolation.guardrail_id).toBe(GUARDRAIL_ID);
+      expect(blockViolation.org_name).toBe(TEST_SUBORG_DISPLAY);
+      expect(blockViolation.event_id).toMatch(/^event-/);
+      expect(blockViolation.devin_id).toMatch(/^devin-/);
+      expect(blockViolation.violation_source).toBe("devin");
+      expect(blockViolation.confidence_score).toBeGreaterThan(0);
+      expect(blockViolation.reasoning.length).toBeGreaterThan(0);
+      expect(blockViolation.user_message).toBe(profanePrompt(blockMarker));
+    } finally {
+      // Restore the original action so the run is idempotent.
+      await guardrails.goto();
+      await guardrails.heading.waitFor({ state: "visible" });
+      if ((await guardrails.currentAction(GUARDRAIL_NAME)) !== original) {
+        await guardrails.setAction(GUARDRAIL_NAME, original);
+      }
+    }
+  });
+
+  test("GUARD-REG05 — Tampered enterprise/violation access and policy updates are rejected", async ({
+    page,
+    browser,
+  }) => {
+    const { guardrails, api } = await openGuardrails(page);
+    const tamperedId = "enterprise-00000000000000000000000000000000";
+
+    const baselineResp = await getGuardrails(page, api);
+    expect(baselineResp.status()).toBe(200);
+    const baseline = await baselineResp.json();
+
+    // Reading another enterprise's guardrails or violations is rejected.
+    expect((await getGuardrails(page, api, tamperedId)).status()).toBe(403);
+    expect((await getViolations(page, api, tamperedId)).status()).toBe(403);
+
+    // Updating another enterprise's policy is rejected...
+    const put = await putGuardrail(
+      page,
+      api,
+      GUARDRAIL_ID,
+      { is_enabled: true, action: "warn_user" },
+      tamperedId,
+    );
+    expect(put.status()).toBe(403);
+
+    // ...and our own policy is untouched by the attempt.
+    const afterResp = await getGuardrails(page, api);
+    expect(afterResp.status()).toBe(200);
+    expect(await afterResp.json()).toEqual(baseline);
+
+    // A nonexistent org slug renders a 404, not guardrails data.
+    await page.goto(routes.guardrails("no-such-enterprise-xyz"));
+    await expect(page.locator("body")).toContainText("This page could not be found");
+
+    // A sub-org slug does not expose the enterprise guardrails settings.
+    await page.goto(routes.guardrails(ALT_SUBORG));
+    await page.waitForLoadState("networkidle");
+    await expect(guardrails.description).toBeHidden();
+
+    // An anonymous context is redirected to login.
+    const anonContext = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    try {
+      const anonPage = await anonContext.newPage();
+      await anonPage.goto(routes.guardrails());
+      await anonPage.waitForURL(/auth\.beta\.devin\.ai/, { timeout: 30_000 });
+    } finally {
+      await anonContext.close();
+    }
+  });
+
+  test("GUARD-E2E01 — Set a disposable guardrail to warn, trigger it, verify, and restore", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(360_000);
+
+    const { guardrails, api } = await openGuardrails(page);
+    const session = new DevinSessionPage(page);
+    const original = await guardrails.currentAction(GUARDRAIL_NAME);
+    const marker = `GUARD-E2E01-${Date.now()}`;
+    const prompt = profanePrompt(marker);
+
+    try {
+      // Disposable policy change, persisted across a reload.
+      if (original !== "Warn user") await guardrails.setAction(GUARDRAIL_NAME, "Warn user");
+      await page.reload();
+      await guardrails.heading.waitFor({ state: "visible" });
+      await expect(guardrails.guardrailAction(GUARDRAIL_NAME)).toHaveText("Warn user");
+      await expect
+        .poll(() => getGuardrailAction(page, api, GUARDRAIL_ID), { timeout: 30_000 })
+        .toBe("warn_user");
+
+      // Trigger the guardrail in a controlled session: enforcement warns the
+      // user but the session keeps going.
+      await session.gotoSession();
+      await session.sendPrompt(prompt);
+      await expect(session.guardrailWarnFlag).toBeVisible({ timeout: 60_000 });
+      await expect(session.guardrailBlockedBanner).toBeHidden();
+
+      // Logging: the violation is recorded with no payload beyond the prompt.
+      const violation = await findViolation(page, api, marker);
+      expect(violation.guardrail_id).toBe(GUARDRAIL_ID);
+      expect(violation.action_taken).toBe("warn_user");
+      expect(violation.org_name).toBe(TEST_SUBORG_DISPLAY);
+      expect(violation.user_message).toBe(prompt);
+
+      // The violation also surfaces in the Violations tab UI.
+      await guardrails.gotoViolations();
+      const row = guardrails.violationsTable.locator("tbody tr").filter({ hasText: marker });
+      await expect(row).toBeVisible();
+      await expect(row).toContainText("Warn user");
+    } finally {
+      // Restore: the guardrail returns to its original action.
+      await guardrails.goto();
+      await guardrails.heading.waitFor({ state: "visible" });
+      if ((await guardrails.currentAction(GUARDRAIL_NAME)) !== original) {
+        await guardrails.setAction(GUARDRAIL_NAME, original);
+      }
+      await page.reload();
+      await guardrails.heading.waitFor({ state: "visible" });
+      await expect(guardrails.guardrailAction(GUARDRAIL_NAME)).toHaveText(original);
+    }
   });
 });

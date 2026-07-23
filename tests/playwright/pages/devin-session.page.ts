@@ -20,12 +20,24 @@ export class DevinSessionPage extends BasePage {
   readonly promptInput: Locator;
   readonly sendButton: Locator;
   readonly assistantMessages: Locator;
+  readonly guardrailBlockedBanner: Locator;
+  readonly guardrailBlockedNotice: Locator;
+  readonly guardrailWarnFlag: Locator;
 
   constructor(page: Page) {
     super(page);
     this.promptInput = page.getByRole("textbox").first();
     this.sendButton = page.getByRole("button", { name: "Send", exact: true });
     this.assistantMessages = page.locator('[class*="message-history--item"]');
+    this.guardrailBlockedBanner = page.getByText(
+      "Your request has been denied due to violating our safe use policy",
+    );
+    this.guardrailBlockedNotice = page.getByText(
+      "Your message was blocked. Please start a new session.",
+    );
+    this.guardrailWarnFlag = page.getByText(
+      "This message was flagged for potentially violating your organization's usage policies.",
+    );
   }
 
   async gotoSession() {

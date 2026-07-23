@@ -3315,10 +3315,11 @@
     "reach": "Guardrails",
     "steps": "Trigger or simulate warn/block/terminate outcomes in a disposable session.",
     "expected": "User-facing outcome matches configured action; violation record contains enough metadata without sensitive payload leakage.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-guardrails.spec.ts"
   },
   {
     "id": "GUARD-REG05",
@@ -3330,10 +3331,11 @@
     "reach": "Guardrails",
     "steps": "As non-admin or with tampered enterprise/violation IDs, attempt to read violations or update policy.",
     "expected": "Authorization prevents cross-enterprise violation access and unauthorized policy changes.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-guardrails.spec.ts"
   },
   {
     "id": "GUARD-E2E01",
@@ -3345,10 +3347,11 @@
     "reach": "Guardrails → session",
     "steps": "With approval, set a disposable guardrail to warn/block, trigger it in a controlled session, verify violation, then restore.",
     "expected": "Enforcement, logging, and cleanup work end to end without leaking sensitive content.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-guardrails.spec.ts"
   },
   {
     "id": "SECM-SMK01",
