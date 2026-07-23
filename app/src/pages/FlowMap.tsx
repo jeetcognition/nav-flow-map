@@ -73,10 +73,24 @@ function FlowMapInner() {
 
   const selectNode = useCallback(
     (id: string | null) => {
-      setParam("node", id);
-      if (!id) setParam("case", null);
+      // A single update: two sequential setSearchParams calls would each read
+      // the same stale params, so the second would clobber the first (e.g.
+      // deselecting never actually cleared the "node" param).
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (id === null) {
+            next.delete("node");
+            next.delete("case");
+          } else {
+            next.set("node", id);
+          }
+          return next;
+        },
+        { replace: true },
+      );
     },
-    [setParam],
+    [setSearchParams],
   );
 
   // ---- tree + graph model ----
