@@ -197,4 +197,25 @@ test.describe("Devin settings", () => {
       await devin.selectOpenPrsAsOption(/^Per-organization/);
     }
   });
+
+  test("DEVIN-REG06 — Tampered enterprise ID cannot update Devin settings", async ({ page }) => {
+    const devin = new DevinSettingsPage(page);
+    await devin.goto();
+    await devin.heading.waitFor({ state: "visible" });
+
+    const webSearchOriginal = await devin.webSearchSwitch.getAttribute("aria-checked");
+
+    // Capture a genuine, authorized settings PUT (and confirm it succeeds) while restoring state.
+    const capture = await devin.captureAuthorizedSettingsPut();
+    expect(capture.entId).toMatch(/^enterprise-[a-f0-9]+$/);
+
+    // The same request, aimed at an enterprise the admin does not own, must be rejected server-side.
+    const tampered = await devin.attemptTamperedSettingsPut(capture);
+    expect(tampered.status()).toBe(403);
+    expect(await tampered.text()).toContain("Unauthorized");
+
+    // The forged request changed nothing: the real enterprise setting is back to its original value.
+    await reloadAndWait(page, devin);
+    await expect(devin.webSearchSwitch).toHaveAttribute("aria-checked", webSearchOriginal);
+  });
 });

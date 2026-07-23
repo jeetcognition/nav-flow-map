@@ -1,6 +1,17 @@
-import { Locator, Page, Response, expect } from "@playwright/test";
+import { APIResponse, Locator, Page, Response, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
+
+/** A captured, authorized enterprise-settings PUT: its URL, headers, body, and the real enterprise id. */
+export interface CapturedSettingsPut {
+  url: string;
+  headers: Record<string, string>;
+  body: string | null;
+  entId: string;
+}
+
+/** All-zero enterprise id used to forge a request against an enterprise the admin does not own. */
+const TAMPERED_ENTERPRISE_ID = "enterprise-00000000000000000000000000000000";
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -184,5 +195,51 @@ export class DevinSettingsPage extends BasePage {
       ),
       option.click(),
     ]);
+  }
+
+  /** Predicate matching the enterprise-settings PUT the page fires when a switch is toggled. */
+  private isSettingsPut(request: { method(): string; url(): string }): boolean {
+    return (
+      request.method() === "PUT" &&
+      request.url().includes("/api/enterprise/") &&
+      request.url().endsWith("/settings")
+    );
+  }
+
+  /**
+   * Toggle web search (an authorized change) to capture a real settings PUT — URL, auth
+   * headers, body, and enterprise id — then toggle back so the enterprise state is restored.
+   * The 200 assertion inside `toggleSwitch` confirms the authorized write succeeds.
+   */
+  async captureAuthorizedSettingsPut(): Promise<CapturedSettingsPut> {
+    const requestPromise = this.page.waitForRequest((request) => this.isSettingsPut(request));
+    await this.toggleSwitch(this.webSearchSwitch);
+    const request = await requestPromise;
+
+    const url = request.url();
+    const entId = url.match(/(enterprise-[a-f0-9]+)/)?.[1] ?? "";
+    const headers = request.headers();
+    const body = request.postData();
+
+    // Restore the switch so the enterprise ends the test in its original state.
+    await this.toggleSwitch(this.webSearchSwitch);
+
+    return { url, headers, body, entId };
+  }
+
+  /**
+   * Replay a captured settings PUT with the enterprise id swapped for one the admin does not own.
+   * Server-side authorization must reject it, so the change never lands on the real enterprise.
+   */
+  async attemptTamperedSettingsPut(capture: CapturedSettingsPut): Promise<APIResponse> {
+    const tamperedUrl = capture.url.replace(capture.entId, TAMPERED_ENTERPRISE_ID);
+    const headers = { ...capture.headers };
+    delete headers["content-length"];
+    delete headers["host"];
+
+    return this.page.request.put(tamperedUrl, {
+      headers,
+      data: capture.body ?? {},
+    });
   }
 }

@@ -789,7 +789,7 @@
     "reach": "Devin",
     "steps": "As non-admin or with tampered enterprise ID, attempt to update Devin settings.",
     "expected": "Server-side authorization prevents unauthorized setting changes and privilege escalation.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
