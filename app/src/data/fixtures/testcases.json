@@ -624,7 +624,7 @@
     "reach": "General → Require SSO",
     "steps": "Force or simulate save failure while toggling.",
     "expected": "Error is clear; previous state is preserved; UI does not show a saved state that the server rejected.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -654,7 +654,7 @@
     "reach": "General",
     "steps": "Rapidly toggle SSO in a disposable/staging enterprise or mocked environment.",
     "expected": "Final persisted state is deterministic; concurrent saves cannot leave client/server disagreement.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -669,7 +669,7 @@
     "reach": "General",
     "steps": "Inspect UI, URL, console, and requests while loading and saving.",
     "expected": "No auth tokens, IdP secrets, stack traces, or internal configuration values are exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"

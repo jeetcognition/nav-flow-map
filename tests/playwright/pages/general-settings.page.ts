@@ -6,6 +6,11 @@ import { routes } from "../support/paths";
 export class GeneralSettingsPage extends BasePage {
   protected readonly path = routes.entGeneral;
 
+  /** Glob for the enterprise settings save endpoint (PUT). */
+  static readonly settingsApiGlob = "**/api/enterprise/*/settings";
+  /** Matches the enterprise settings save endpoint URL. */
+  static readonly settingsApiPattern = /\/api\/enterprise\/[^/]+\/settings$/;
+
   /** Page heading "General". */
   readonly heading: Locator;
   /** "Back to enterprise" button in the main panel. */
@@ -45,6 +50,16 @@ export class GeneralSettingsPage extends BasePage {
     } catch {
       // Network idle may already be reached.
     }
+  }
+
+  /** Wait for the next settings save (PUT) response. */
+  waitForSaveResponse(timeout = 15_000) {
+    return this.page.waitForResponse(
+      (res) =>
+        res.request().method() === "PUT" &&
+        GeneralSettingsPage.settingsApiPattern.test(new URL(res.url()).pathname),
+      { timeout },
+    );
   }
 
   /** Click "Back to enterprise" to return to the enterprise settings landing page. */
