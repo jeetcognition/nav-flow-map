@@ -5327,7 +5327,7 @@
     "reach": "jeet-test-org → Settings → Secrets",
     "steps": "Load the page cold.",
     "expected": "Breadcrumb and back navigation, help text, Organization and Personal counts, search, Bulk add secrets, Add secret, table, and empty or list state render without page or console errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5342,7 +5342,7 @@
     "reach": "Secrets",
     "steps": "Inspect both scopes.",
     "expected": "Organization and Personal tabs show independent counts; Name, Type, Note, Updated by, and Updated at columns are readable without displaying secret values.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5357,7 +5357,7 @@
     "reach": "Secrets → empty scope",
     "steps": "Inspect the empty state.",
     "expected": "No secrets found and Add your first secret appear; controls remain usable and no row from the other scope leaks into the view.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5372,7 +5372,7 @@
     "reach": "Secrets → Add secret",
     "steps": "Open the dialog without submitting.",
     "expected": "Scope, type, name, value, note, Redact value, close, and Store secret controls appear; the title reflects the selected scope.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5387,7 +5387,7 @@
     "reach": "Secrets → Add secret / Bulk add secrets",
     "steps": "Inspect Raw secret, Cookie, TOTP, and bulk-import forms.",
     "expected": "Raw, Cookie JSON or base64, TOTP and QR, upload-file, pasted `.env`, scope, and gated Store controls match the selected workflow.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5432,7 +5432,7 @@
     "reach": "Secrets → Add secret → Raw secret",
     "steps": "With approval, create disposable Raw secrets with blank, whitespace, multiline, Unicode, very long, and special-character values plus long or HTML-like notes.",
     "expected": "Required value validation is actionable; supported values persist exactly; notes render inertly; plaintext is never exposed after saving.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -5447,7 +5447,7 @@
     "reach": "Secrets → Add secret → Cookie",
     "steps": "Test valid JSON or base64 and malformed JSON, invalid base64, missing fields, unsupported domains or paths, duplicates, and oversized payloads.",
     "expected": "Only valid Chromium-format cookies are accepted; errors identify the problem without logging cookie contents.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5492,7 +5492,7 @@
     "reach": "Secrets → Add or Bulk add",
     "steps": "Switch Organization and Personal scopes and secret types after entering unsaved data; close, press Escape, go Back, refresh, and revisit.",
     "expected": "Scope, title, and fields remain consistent; warning or documented discard behavior occurs; no secret is silently stored or moved between scopes.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -5507,7 +5507,7 @@
     "reach": "Secrets → disposable secret",
     "steps": "With approval, create a disposable secret → verify metadata → edit name, value, note, and redaction → reload → delete it.",
     "expected": "CRUD persists correctly; editing never reveals the previous value unnecessarily; only the selected secret changes; cleanup removes it.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -5522,7 +5522,7 @@
     "reach": "Secrets → disposable secret → Actions → Delete",
     "steps": "With approval, cancel once, then confirm; repeat with similarly named rows.",
     "expected": "Confirmation identifies the exact secret and scope; cancel changes nothing; confirm removes only the selected secret and leaves no usable residual value.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
