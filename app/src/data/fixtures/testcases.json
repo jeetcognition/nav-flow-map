@@ -3572,10 +3572,11 @@
     "reach": "Devin API",
     "steps": "As non-admin or with tampered service-user/enterprise IDs, attempt list/create/delete/legacy-token operations.",
     "expected": "Server-side authorization prevents unauthorized key access, IDOR, and privilege escalation.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
-    "source": "authored"
+    "source": "authored",
+    "specPath": "tests/playwright/specs/authenticated/e-api.spec.ts"
   },
   {
     "id": "INFRA-SMK01",
