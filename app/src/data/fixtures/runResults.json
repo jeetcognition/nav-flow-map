@@ -184,7 +184,7 @@
     },
     {
       "caseId": "STOOL-E2E01",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "skipped",
       "durationSec": 174
     },
@@ -862,7 +862,7 @@
   "RUN-1012": [
     {
       "caseId": "STOOL-SAN02",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 75
     },
@@ -1026,7 +1026,7 @@
     },
     {
       "caseId": "COMP-REG04",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 208
     },
@@ -1050,7 +1050,7 @@
     },
     {
       "caseId": "STOOL-E2E01",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 57
     },
@@ -1298,7 +1298,7 @@
   "RUN-998": [
     {
       "caseId": "STOOL-SAN02",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 134
     },
@@ -1486,7 +1486,7 @@
     },
     {
       "caseId": "COMP-REG04",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 139
     },
@@ -1504,7 +1504,7 @@
     },
     {
       "caseId": "STOOL-E2E01",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "failed",
       "durationSec": 23
     },
@@ -1770,7 +1770,7 @@
   "RUN-984": [
     {
       "caseId": "STOOL-SAN02",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 165
     },
@@ -1988,7 +1988,7 @@
     },
     {
       "caseId": "STOOL-E2E01",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 42
     },
@@ -2496,7 +2496,7 @@
     },
     {
       "caseId": "COMP-REG04",
-      "nodeId": "composer",
+      "nodeId": "session",
       "status": "passed",
       "durationSec": 174
     },

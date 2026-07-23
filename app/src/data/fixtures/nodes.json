@@ -40,13 +40,13 @@
     "prefixes": ["SUB", "SUB-NS"]
   },
   {
-    "id": "composer",
-    "label": "New session (Composer)",
+    "id": "session",
+    "label": "New session",
     "group": "suborg",
-    "route": "/org/jeet-devin-qa/ (composer)",
+    "route": "/org/jeet-devin-qa/",
     "desc": "Prompt box, Agent/Ask mode, repo and context selectors, and session tools.",
     "parent": "suborg",
-    "via": "Use the composer on the home page",
+    "via": "Use the session prompt on the home page",
     "prefixes": ["COMP", "STOOL"]
   },
   {

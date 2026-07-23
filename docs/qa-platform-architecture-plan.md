@@ -94,7 +94,7 @@ nav-flow-map/
     pages.yaml                      # Routes, parents, ownership, risk tags
     cases/
       auth.yaml
-      composer.yaml
+      session.yaml
       enterprise-devin.yaml
       ...
     bugs.yaml                       # IDs + links; external trackers remain authoritative
