@@ -54,7 +54,7 @@ export class MembershipPage extends BasePage {
   memberRow(name: string): Locator {
     return this.page
       .locator("table tbody tr")
-      .filter({ hasText: new RegExp(name, "i") })
+      .filter({ hasText: new RegExp(escapeRegex(name), "i") })
       .first();
   }
 
@@ -241,5 +241,98 @@ export class MembershipPage extends BasePage {
   /** Assert the member table is populated (at least one row). */
   async expectTablePopulated() {
     await expect(this.memberTable.locator("tr").first()).toBeVisible();
+  }
+
+  /** Invite an email with the default Member role through the Invite dialog. */
+  async inviteMember(email: string) {
+    await this.openInviteDialog();
+    const dlg = this.inviteDialog();
+    await dlg.getByPlaceholder("Ex. user@example.com, user2@example.com").fill(email);
+    await dlg.locator("button").filter({ hasText: /^Add$/ }).click();
+    await dlg.waitFor({ state: "hidden", timeout: 15_000 });
+  }
+
+  /** Select a member row via its checkbox cell, revealing the bulk-action toolbar. */
+  async selectRow(row: Locator) {
+    await row.locator("td").first().locator("div").first().click();
+    await this.toolbarButton("Remove members").waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Select the row if it is not already selected (bulk actions clear selection). */
+  async ensureRowSelected(row: Locator) {
+    const checkbox = row.locator('[role="checkbox"]').first();
+    if ((await checkbox.getAttribute("aria-checked")) !== "true") {
+      await this.selectRow(row);
+    }
+  }
+
+  /** A button in the bulk-action toolbar shown when rows are selected. */
+  toolbarButton(name: string): Locator {
+    return this.page.locator("button").filter({ hasText: new RegExp(`^${escapeRegex(name)}$`) });
+  }
+
+  /** Toggle an org row in a dialog until the confirm button enables (clicks can miss the checkbox). */
+  private async selectDialogOrg(dlg: Locator, orgName: string, confirm: Locator) {
+    const option = dlg
+      .locator("label")
+      .filter({ hasText: new RegExp(`^${escapeRegex(orgName)}$`) })
+      .first();
+    const checkbox = option.getByRole("checkbox");
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await checkbox.click();
+      try {
+        await expect(confirm).toBeEnabled({ timeout: 3_000 });
+        return;
+      } catch {
+        // Retry the toggle.
+      }
+    }
+    const state = {
+      options: await dlg.locator("label").allTextContents(),
+      checked: await checkbox.getAttribute("aria-checked").catch(() => "missing"),
+      buttons: await dlg.locator("button").allTextContents(),
+    };
+    throw new Error(`Could not select "${orgName}" in the dialog: ${JSON.stringify(state)}`);
+  }
+
+  /** Add the selected members to an organization (default org role). */
+  async addOrganizationToSelection(orgName: string) {
+    await this.toolbarButton("Add organizations").click();
+    const dlg = this.page.getByRole("dialog").filter({ hasText: "Add organizations" });
+    await dlg.waitFor({ state: "visible", timeout: 10_000 });
+    await dlg.getByPlaceholder("Search organizations...").fill(orgName);
+    const next = dlg.locator("button").filter({ hasText: /^Next$/ });
+    await this.selectDialogOrg(dlg, orgName, next);
+    await next.click();
+    await dlg
+      .locator("button")
+      .filter({ hasText: /^Add \d+ organizations?$/ })
+      .click();
+    await dlg.waitFor({ state: "hidden", timeout: 15_000 });
+  }
+
+  /** Remove an organization from the selected members. */
+  async removeOrganizationsFromSelection(orgName: string) {
+    await this.toolbarButton("Remove organizations").click();
+    const dlg = this.page.getByRole("dialog").filter({ hasText: "Remove organizations" });
+    await dlg.waitFor({ state: "visible", timeout: 10_000 });
+    const confirm = dlg.locator("button").filter({ hasText: /^Remove \d+ organizations?$/ });
+    await this.selectDialogOrg(dlg, orgName, confirm);
+    await confirm.click();
+    await dlg.waitFor({ state: "hidden", timeout: 15_000 });
+  }
+
+  /** Remove the selected members from the enterprise (confirms the dialog). */
+  async removeSelectedMembers() {
+    await this.toolbarButton("Remove members").click();
+    const dlg = this.page
+      .getByRole("dialog")
+      .filter({ hasText: "Remove members from enterprise?" });
+    await dlg.waitFor({ state: "visible", timeout: 10_000 });
+    await dlg
+      .locator("button")
+      .filter({ hasText: /^Remove$/ })
+      .click();
+    await dlg.waitFor({ state: "hidden", timeout: 15_000 });
   }
 }

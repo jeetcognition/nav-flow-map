@@ -17,6 +17,8 @@ export interface FetchOtpOptions {
   password?: string;
   /** Only consider messages whose From contains this (case-insensitive). */
   fromIncludes?: string;
+  /** Only consider messages whose To contains this (case-insensitive). */
+  toIncludes?: string;
   /** Only consider messages whose Subject contains this (case-insensitive). */
   subjectIncludes?: string;
   /** Regex with a capture group for the code. Defaults to a 6-digit match. */
@@ -55,6 +57,7 @@ export async function fetchLatestOtp(options: FetchOtpOptions = {}): Promise<str
   const timeoutMs = options.timeoutMs ?? 90_000;
   const pollIntervalMs = options.pollIntervalMs ?? 3_000;
   const fromIncludes = options.fromIncludes?.toLowerCase();
+  const toIncludes = options.toIncludes?.toLowerCase();
   const subjectIncludes = options.subjectIncludes?.toLowerCase();
 
   // Wait for the email to arrive before polling.
@@ -76,6 +79,7 @@ export async function fetchLatestOtp(options: FetchOtpOptions = {}): Promise<str
     while (Date.now() < deadline) {
       const code = await findNewestCode(client, {
         fromIncludes,
+        toIncludes,
         subjectIncludes,
         codeRegex,
       });
@@ -89,11 +93,17 @@ export async function fetchLatestOtp(options: FetchOtpOptions = {}): Promise<str
 }
 
 /**
- * Find the OTP code from the email with the highest UID (newest email).
+ * Find the OTP code from the newest email that matches the filters,
+ * scanning back over the most recent messages (newest first).
  */
 async function findNewestCode(
   client: ImapFlow,
-  filters: { fromIncludes?: string; subjectIncludes?: string; codeRegex: RegExp },
+  filters: {
+    fromIncludes?: string;
+    toIncludes?: string;
+    subjectIncludes?: string;
+    codeRegex: RegExp;
+  },
 ): Promise<string | undefined> {
   const lock = await client.getMailboxLock("INBOX");
   try {
@@ -103,25 +113,33 @@ async function findNewestCode(
     const uids = await client.search({ since }, { uid: true });
     if (!uids || uids.length === 0) return undefined;
 
-    // Pick the highest UID (newest email).
-    const maxUid = Math.max(...uids);
-    const msg = await client.fetchOne(
-      String(maxUid),
-      { envelope: true, source: true },
-      { uid: true },
-    );
-    if (!msg || !msg.source) return undefined;
+    // Walk the newest emails first; a shared inbox can hold codes for other logins.
+    const newestFirst = [...uids].sort((a, b) => b - a).slice(0, 10);
+    for (const uid of newestFirst) {
+      const msg = await client.fetchOne(
+        String(uid),
+        { envelope: true, source: true },
+        { uid: true },
+      );
+      if (!msg || !msg.source) continue;
 
-    const from = (msg.envelope?.from?.map((a) => a.address ?? "").join(",") ?? "").toLowerCase();
-    const subject = (msg.envelope?.subject ?? "").toLowerCase();
-    if (filters.fromIncludes && !from.includes(filters.fromIncludes)) return undefined;
-    if (filters.subjectIncludes && !subject.includes(filters.subjectIncludes)) return undefined;
+      const from = (msg.envelope?.from?.map((a) => a.address ?? "").join(",") ?? "").toLowerCase();
+      const to = (msg.envelope?.to?.map((a) => a.address ?? "").join(",") ?? "").toLowerCase();
+      const subject = (msg.envelope?.subject ?? "").toLowerCase();
+      if (filters.fromIncludes && !from.includes(filters.fromIncludes)) continue;
+      if (filters.toIncludes && !to.includes(filters.toIncludes)) continue;
+      if (filters.subjectIncludes && !subject.includes(filters.subjectIncludes)) continue;
 
-    const parsed = await simpleParser(msg.source);
-    const haystacks = [parsed.subject ?? "", parsed.text ?? "", parsed.html || ""];
-    for (const text of haystacks) {
-      const m = filters.codeRegex.exec(text);
-      if (m) return (m[1] ?? m[0]).trim();
+      const parsed = await simpleParser(msg.source);
+      const haystacks = [parsed.subject ?? "", parsed.text ?? "", parsed.html || ""];
+      for (const text of haystacks) {
+        const m = filters.codeRegex.exec(text);
+        if (m) return (m[1] ?? m[0]).trim();
+      }
+      // Without filters keep the original semantics: only consider the newest email.
+      if (!filters.fromIncludes && !filters.toIncludes && !filters.subjectIncludes) {
+        return undefined;
+      }
     }
     return undefined;
   } finally {

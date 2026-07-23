@@ -1994,7 +1994,7 @@
     "reach": "Membership → Members",
     "steps": "As an unauthorized user or with a tampered member ID, attempt invite, role change, removal, and self-demotion.",
     "expected": "Unauthorized changes are denied; the last required admin cannot remove their own administrative access; cross-enterprise data is not exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2024,7 +2024,7 @@
     "reach": "Membership → Members",
     "steps": "Invite a disposable account with Member role → accept → assign a disposable role and organization → verify allowed/denied actions → remove or revoke it.",
     "expected": "Membership and permissions match the assignment; cleanup removes enterprise and organization access plus the disposable invite/member.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
