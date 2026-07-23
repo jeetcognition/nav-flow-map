@@ -75,6 +75,9 @@ export const routes = {
   /** Sub-org settings root. */
   settingsRoot: (slug: string = TEST_SUBORG) => `/org/${slug}/settings`,
 
+  /** Sub-org secrets page. */
+  secrets: (slug: string = TEST_SUBORG) => `/org/${slug}/settings/secrets`,
+
   /** Enterprise guardrails page. */
   guardrails: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/guardrails`,
 
