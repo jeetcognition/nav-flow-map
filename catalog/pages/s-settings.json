@@ -275,8 +275,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -321,8 +321,8 @@
         "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/s-settings.spec.ts"
       },
       "source": {
         "type": "migration",

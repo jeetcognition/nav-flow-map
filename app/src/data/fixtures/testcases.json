@@ -4172,7 +4172,7 @@
     "reach": "Sub-orgs and Settings",
     "steps": "As a user without access or with tampered org slug, request the root and child settings pages.",
     "expected": "Server denies unauthorized/cross-org access and does not expose settings metadata from another sub-org.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -4187,7 +4187,7 @@
     "reach": "Enterprise Organizations → Sub-orgs and Settings",
     "steps": "Navigate from Organizations to `jeet-test-org`, open several child settings pages, then return to Organizations.",
     "expected": "Cross-level navigation preserves enterprise/sub-org context and does not lose the selected organization.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
