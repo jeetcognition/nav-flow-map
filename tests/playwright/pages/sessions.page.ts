@@ -2,6 +2,9 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
 
+/** URL glob for the enterprise sessions list API (used for route interception). */
+export const SESSIONS_LIST_API = "**/api/enterprise/*/v2sessions*";
+
 /** Page object for the Enterprise Sessions list (`/settings/enterprise-sessions`). */
 export class SessionsPage extends BasePage {
   protected readonly path = routes.enterpriseSessions();
@@ -24,6 +27,8 @@ export class SessionsPage extends BasePage {
   readonly clearFilters: Locator;
   /** Inactive sessions count text (visible after default/reset load). */
   readonly inactiveSessionsText: Locator;
+  /** Empty-list placeholder shown when the list has no rows (empty or errored). */
+  readonly noSessionsText: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -38,6 +43,7 @@ export class SessionsPage extends BasePage {
     this.updatedDateFilter = page.getByRole("button", { name: /After Jul \d+/ });
     this.clearFilters = page.getByRole("button", { name: "Clear filters" });
     this.inactiveSessionsText = page.getByText(/Inactive sessions/).first();
+    this.noSessionsText = page.getByText("No sessions found");
   }
 
   override async goto() {
@@ -101,6 +107,14 @@ export class SessionsPage extends BasePage {
   async clearAllFilters() {
     await this.clearFilters.click();
     await expect(this.sessionRows.first()).toBeVisible({ timeout: 15_000 });
+  }
+
+  /** The filter bar (search + chips) must stay usable even when the list itself errors. */
+  async expectFilterBarVisible() {
+    await expect(this.searchInput).toBeVisible();
+    await expect(this.creatorFilter).toBeVisible();
+    await expect(this.archivedFilter).toBeVisible();
+    await expect(this.updatedDateFilter).toBeVisible();
   }
 
   async openSession(nth = 0) {

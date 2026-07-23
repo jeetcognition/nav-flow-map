@@ -16,7 +16,7 @@ export { SupportPage } from "./support.page";
 export { EnterpriseSettingsPage } from "./ent-settings.page";
 export { GeneralSettingsPage } from "./general-settings.page";
 export { PersonalConnectionsPage } from "./personal-connections.page";
-export { SessionsPage } from "./sessions.page";
+export { SessionsPage, SESSIONS_LIST_API } from "./sessions.page";
 export { AnalyticsPage } from "./analytics.page";
 export { KnowledgePage } from "./knowledge.page";
 export { DevinApiPage } from "./devin-api.page";
