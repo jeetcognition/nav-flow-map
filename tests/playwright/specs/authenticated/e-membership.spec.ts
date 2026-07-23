@@ -1,6 +1,7 @@
-import { test, expect, ConsoleMessage, Page } from "@playwright/test";
-import { MembershipPage, MEMBER_COLUMNS } from "../../pages";
-import { ALT_SUBORG_NAME } from "../../support/paths";
+import { test, expect, request as apiRequest, ConsoleMessage, Page } from "@playwright/test";
+import { LoginPage, MembershipPage, MEMBER_COLUMNS } from "../../pages";
+import { routes, ALT_SUBORG_NAME } from "../../support/paths";
+import { fetchLatestOtp } from "../../support/gmail-otp";
 
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
@@ -307,5 +308,178 @@ test.describe("Enterprise Membership", () => {
 
     eCleanup();
     nCleanup();
+  });
+
+  test("MEMB-E2E01 — Invite a disposable Member, accept, assign an organization, and remove.", async ({
+    page,
+    browser,
+  }, testInfo) => {
+    testInfo.setTimeout(600_000);
+
+    const inbox = (process.env.DEVIN_ADMIN_EMAIL ?? "").trim();
+    const appPassword = (process.env.GMAIL_APP_PASSWORD ?? "").trim();
+    test.skip(
+      !inbox || !appPassword,
+      "Set DEVIN_ADMIN_EMAIL and GMAIL_APP_PASSWORD to log in as the disposable invitee.",
+    );
+
+    // Gmail plus-addressing delivers the invite and OTP to the same inbox.
+    const alias = inbox.replace("@", `+memb-e2e01-${Date.now()}@`);
+    const m = new MembershipPage(page);
+
+    try {
+      await m.goto();
+      await m.heading.waitFor({ state: "visible" });
+
+      // Invite the disposable account with the default Member role.
+      await m.inviteMember(alias);
+      await m.search(alias);
+      const row = m.memberRow(alias);
+      await expect(row).toBeVisible({ timeout: 15_000 });
+      await expect(m.rowRoleButton(row).first()).toHaveText("Member");
+      await expect(row.locator("td").nth(3)).toContainText("0 organizations");
+
+      // Accept: the invitee logs in with email OTP in a fresh context.
+      // Explicitly drop the project's storageState so the invitee starts anonymous.
+      const inviteeCtx = await browser.newContext({ storageState: undefined });
+      const inviteePage = await inviteeCtx.newPage();
+      try {
+        const login = new LoginPage(inviteePage);
+        await login.goto();
+        await login.submitEmail(alias);
+
+        // The shared inbox also receives codes for other logins, so target the
+        // alias recipient and retry with a fresh code if a stale one was read.
+        const inviteeHome = inviteePage.getByText(
+          "Before using Devin, contact your enterprise administrator",
+        );
+        for (let attempt = 0; attempt < 3; attempt++) {
+          if (attempt > 0) await login.resendButton.click();
+          const code = await fetchLatestOtp({
+            user: inbox,
+            password: appPassword,
+            toIncludes: alias,
+            subjectIncludes: "verification code",
+            initialDelayMs: 20_000,
+            timeoutMs: 120_000,
+          });
+          await login.submitOtp(code);
+          const loggedIn = await inviteeHome
+            .waitFor({ state: "visible", timeout: 30_000 })
+            .then(() => true)
+            .catch(() => false);
+          if (loggedIn) break;
+        }
+
+        // The new Member has enterprise access but no organizations yet.
+        await expect(inviteeHome).toBeVisible({ timeout: 15_000 });
+
+        // Denied action: a Member cannot open enterprise Membership settings.
+        await inviteePage.goto(routes.membership());
+        await expect(inviteePage.getByText("Access denied")).toBeVisible({ timeout: 30_000 });
+
+        // Assign an organization to the invitee as the admin.
+        await m.ensureRowSelected(row);
+        await m.addOrganizationToSelection(ALT_SUBORG_NAME);
+        await expect(row.locator("td").nth(3)).toContainText("1 organization", {
+          timeout: 15_000,
+        });
+
+        // The invitee now sees the assigned organization.
+        await inviteePage.goto(routes.orgSelector);
+        await expect(inviteePage.getByText(ALT_SUBORG_NAME).first()).toBeVisible({
+          timeout: 30_000,
+        });
+
+        // Revoke the organization, then remove the member entirely.
+        await m.ensureRowSelected(row);
+        await m.removeOrganizationsFromSelection(ALT_SUBORG_NAME);
+        await expect(row.locator("td").nth(3)).toContainText("0 organizations", {
+          timeout: 15_000,
+        });
+        await m.ensureRowSelected(row);
+        await m.removeSelectedMembers();
+        await m.search(alias);
+        await expect(m.noMembersFound).toBeVisible({ timeout: 15_000 });
+      } finally {
+        await inviteeCtx.close();
+      }
+    } finally {
+      // Idempotent cleanup: remove the disposable invitee if any step failed midway.
+      await page.goto(routes.membershipTab("members"));
+      await m.heading.waitFor({ state: "visible" });
+      await m.search(alias);
+      const leftover = m.memberRow(alias);
+      const present = await leftover
+        .waitFor({ state: "visible", timeout: 10_000 })
+        .then(() => true)
+        .catch(() => false);
+      if (present) {
+        await m.ensureRowSelected(leftover);
+        await m.removeSelectedMembers();
+      }
+    }
+  });
+
+  test("MEMB-REG07 — Unauthorized and tampered membership changes are denied.", async ({
+    page,
+    browser,
+  }) => {
+    const m = new MembershipPage(page);
+
+    // Capture the enterprise API base the UI itself uses.
+    const apiReq = page.waitForRequest(/\/api\/enterprise\/[^/]+\//, { timeout: 30_000 });
+    await m.goto();
+    await m.heading.waitFor({ state: "visible" });
+    const enterpriseApiBase = (await apiReq).url().match(/^.*\/api\/enterprise\/[^/]+/)![0];
+
+    // Self-demotion guard: the admin's own role selector is disabled.
+    const adminEmail = (process.env.DEVIN_ADMIN_EMAIL ?? "").trim();
+    test.skip(!adminEmail, "Set DEVIN_ADMIN_EMAIL to locate the logged-in admin's row.");
+    await m.search(adminEmail);
+    const ownRow = m.memberRow(adminEmail);
+    await expect(ownRow).toBeVisible({ timeout: 15_000 });
+    await expect(m.rowRoleButton(ownRow).first()).toHaveText("Admin");
+    await expect(m.rowRoleButton(ownRow).first()).toBeDisabled();
+
+    // Unauthenticated API attempts at invite, role change, and removal are denied.
+    const api = await apiRequest.newContext();
+    try {
+      const invite = await api.post(`${enterpriseApiBase}/invite`, {
+        data: { emails: ["tampered@example.com"], role: "Member" },
+      });
+      expect(invite.status()).toBe(401);
+      const roleChange = await api.post(`${enterpriseApiBase}/members`, {
+        data: { memberId: "tampered-member-id", role: "Admin" },
+      });
+      expect(roleChange.status()).toBe(401);
+      const removal = await api.post(`${enterpriseApiBase}/members/delete`, {
+        data: { memberIds: ["tampered-member-id"] },
+      });
+      expect(removal.status()).toBe(401);
+    } finally {
+      await api.dispose();
+    }
+
+    // Unauthenticated page access is redirected to login without exposing member data.
+    // Explicitly drop the project's storageState so this context is anonymous.
+    const unauthCtx = await browser.newContext({ storageState: undefined });
+    try {
+      const unauthPage = await unauthCtx.newPage();
+      await unauthPage.goto(routes.membership());
+      await unauthPage.waitForURL(/auth\.beta\.devin\.ai/, { timeout: 30_000 });
+      await expect(unauthPage.locator("body")).not.toContainText(adminEmail);
+    } finally {
+      await unauthCtx.close();
+    }
+
+    // A tampered enterprise slug yields 404 and exposes no cross-enterprise data.
+    await page.goto(routes.membership("tampered-enterprise-slug"), { waitUntil: "networkidle" });
+    await expect(page.getByText("This page could not be found")).toBeVisible();
+    await expect(page.locator("table")).toHaveCount(0);
+
+    // Return to the real membership page to leave a clean state.
+    await m.goto();
+    await m.heading.waitFor({ state: "visible" });
   });
 });
