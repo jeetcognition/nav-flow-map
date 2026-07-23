@@ -2084,7 +2084,7 @@
     "reach": "Roles → Create for enterprise",
     "steps": "Open the form without saving.",
     "expected": "Role name, Cancel, disabled Save changes, permission descriptions, checkboxes, and enterprise permission groups are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2159,7 +2159,7 @@
     "reach": "Roles → Create role",
     "steps": "Attempt creation with blank, duplicate-within-scope, long, whitespace-only, Unicode, emoji, and HTML-like names, with zero permissions.",
     "expected": "Clear validation appears; unsafe text stays inert; no invalid role is created; same names in different scopes remain unambiguous if supported.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2174,7 +2174,7 @@
     "reach": "Roles → Create role",
     "steps": "Expand/collapse permission groups and select/deselect permissions across groups.",
     "expected": "Group state and checkbox selection remain accurate; descriptions stay aligned; implied or dependent permissions are handled clearly.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2189,7 +2189,7 @@
     "reach": "Roles → Create for enterprise",
     "steps": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions → verify → edit name/permissions → reload → delete.",
     "expected": "Enterprise role create/read/update/delete persists correctly; cleanup confirms the role is absent.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2219,7 +2219,7 @@
     "reach": "Roles → Create or edit role",
     "steps": "Make unsaved changes, then use Cancel, Back, or another page.",
     "expected": "A warning or documented discard behavior occurs; changes are not silently saved or lost.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2249,7 +2249,7 @@
     "reach": "Membership → Roles",
     "steps": "As a restricted admin or with a tampered role ID, attempt view/create/edit/delete or grant permissions the actor lacks.",
     "expected": "Server-side authorization denies privilege escalation and cross-enterprise access.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"

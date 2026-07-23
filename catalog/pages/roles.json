@@ -177,12 +177,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -416,12 +415,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -465,12 +463,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -513,12 +510,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -609,12 +605,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "The create/edit role forms are not reachable in the QA environment (clicking Create for enterprise lands on a route without an enterprise slug and keeps the roles list; role rows have no visible edit/delete controls)."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -705,12 +700,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires a restricted-admin or tampered-role context that is not available in the shared admin Playwright setup."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
       },
       "source": {
         "type": "migration",

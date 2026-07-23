@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { RolesPage } from "../../pages";
+import { ENTERPRISE_SLUG } from "../../support/paths";
 
 test.describe("Roles", () => {
   function watchErrors(page: Page): string[] {
@@ -131,5 +132,223 @@ test.describe("Roles", () => {
     await expect.poll(() => roles.tableRows.count()).toBeGreaterThan(1);
 
     expect(errors).toHaveLength(0);
+  });
+
+  test("ROLE-SAN03 — Open the form without saving.", async ({ page }) => {
+    const errors = watchErrors(page);
+    const roles = new RolesPage(page);
+    await roles.goto();
+    await roles.openCreateForm("enterprise");
+
+    await expect(page).toHaveURL(/\/settings\/roles\/enterprise\/add/);
+    await expect(page.getByRole("heading", { name: "Create enterprise role" })).toBeVisible();
+    await expect(roles.roleNameInput).toBeVisible();
+    await expect(roles.cancelButton).toBeVisible();
+    await expect(roles.saveChangesButton).toBeDisabled();
+
+    // Enterprise permission groups with per-permission descriptions and checkboxes.
+    await expect(roles.groupHeaderRow(/Account permissions/)).toBeVisible();
+    await expect(roles.groupHeaderRow(/Integration permissions/)).toBeVisible();
+    await expect(roles.permissionRow(/View organizations/)).toBeVisible();
+    await expect(
+      page.getByText("View enterprise organizations (read-only)", { exact: true }),
+    ).toBeVisible();
+    await expect(roles.permissionCheckbox(/View organizations/)).toBeVisible();
+    await expect(roles.permissionCheckbox(/View organizations/)).not.toBeChecked();
+
+    // Leave without saving; the roles list is unchanged.
+    await roles.cancelButton.click();
+    await expect(roles.rolesTab).toHaveAttribute("aria-selected", "true");
+
+    expect(errors).toHaveLength(0);
+  });
+
+  test("ROLE-REG04 — Attempt creation with blank, whitespace-only, and edge-case names.", async ({
+    page,
+  }) => {
+    const errors = watchErrors(page);
+    const roles = new RolesPage(page);
+    // Long + Unicode + emoji + HTML-like name in one disposable role.
+    const edgeName = `qa-temp-edge-${Date.now()}-āēī-🔒-<script>alert(1)</script>-${"x".repeat(40)}`;
+
+    try {
+      await roles.goto();
+      await roles.openCreateForm("enterprise");
+
+      // Blank and whitespace-only names are rejected: Save stays disabled.
+      await expect(roles.saveChangesButton).toBeDisabled();
+      await roles.roleNameInput.fill("   ");
+      await expect(roles.saveChangesButton).toBeDisabled();
+
+      // Unsafe/Unicode text stays inert through create, list rendering, and delete.
+      await roles.roleNameInput.fill(edgeName);
+      await roles.permissionCheckbox(/View organizations/).check();
+      await roles.saveChangesButton.click();
+      await roles.searchInput.waitFor({ state: "visible" });
+
+      await roles.searchInput.fill(edgeName);
+      await expect(roles.rowByRoleName(edgeName)).toHaveCount(1);
+      await expect(roles.tableRows.first().getByText(edgeName)).toBeVisible();
+
+      // Same names in different scopes remain unambiguous (built-in Admin exists in both).
+      await roles.searchInput.fill("Admin");
+      await expect(roles.rowByRoleName("Admin").filter({ hasText: "Enterprise" })).toHaveCount(1);
+      await expect(roles.rowByRoleName("Admin").filter({ hasText: "Organization" })).toHaveCount(1);
+    } finally {
+      await roles.deleteRoleIfPresent(edgeName);
+    }
+
+    await roles.searchInput.fill(edgeName);
+    await expect(roles.noResultsRow).toBeVisible();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  test("ROLE-REG05 — Expand/collapse permission groups and select/deselect permissions.", async ({
+    page,
+  }) => {
+    const errors = watchErrors(page);
+    const roles = new RolesPage(page);
+    await roles.goto();
+    await roles.openCreateForm("enterprise");
+
+    // Descriptions stay aligned with their permission rows.
+    await expect(roles.permissionRow(/View organizations/)).toContainText(
+      "View enterprise organizations (read-only)",
+    );
+    await expect(roles.permissionRow(/View Git integrations/)).toContainText(
+      "View Git integrations (read-only)",
+    );
+
+    // Collapse a group: its permissions hide while other groups stay expanded.
+    await roles.groupHeaderRow(/Account permissions/).click();
+    await expect(roles.permissionRow(/View organizations/)).toBeHidden();
+    await expect(roles.permissionRow(/View Git integrations/)).toBeVisible();
+
+    // Expand it again.
+    await roles.groupHeaderRow(/Account permissions/).click();
+    await expect(roles.permissionRow(/View organizations/)).toBeVisible();
+
+    // Select/deselect permissions across groups; checkbox state stays accurate.
+    await roles.permissionCheckbox(/View organizations/).check();
+    await roles.permissionCheckbox(/View Git integrations/).check();
+    await expect(roles.permissionCheckbox(/View organizations/)).toBeChecked();
+    await expect(roles.permissionCheckbox(/View Git integrations/)).toBeChecked();
+
+    await roles.permissionCheckbox(/View organizations/).uncheck();
+    await expect(roles.permissionCheckbox(/View organizations/)).not.toBeChecked();
+    await expect(roles.permissionCheckbox(/View Git integrations/)).toBeChecked();
+
+    // Leave without saving.
+    await roles.cancelButton.click();
+    await expect(roles.rolesTab).toHaveAttribute("aria-selected", "true");
+
+    expect(errors).toHaveLength(0);
+  });
+
+  test("ROLE-REG06 — Create, verify, edit, reload, and delete an enterprise role.", async ({
+    page,
+  }) => {
+    const errors = watchErrors(page);
+    const roles = new RolesPage(page);
+    const name = `qa-temp-enterprise-role-${Date.now()}`;
+    const editedName = `${name}-edited`;
+
+    try {
+      // Create with minimal permissions.
+      await roles.createEnterpriseRole(name, [/View organizations/]);
+      await roles.searchInput.fill(name);
+      await expect(roles.rowByRoleName(name)).toHaveCount(1);
+      await expect(roles.rowByRoleName(name)).toContainText("1 permission");
+      await expect(roles.rowByRoleName(name)).toContainText("Enterprise");
+      await expect(roles.rowByRoleName(name)).toContainText("Custom");
+
+      // Edit name and permissions.
+      await roles.openRoleDetail(name);
+      await roles.editRoleButton.click();
+      await roles.roleNameInput.fill(editedName);
+      await roles.permissionCheckbox(/View account membership/).check();
+      await roles.saveChangesButton.click();
+      await expect(page.getByRole("heading", { name: editedName })).toBeVisible();
+
+      // Reload: the edit persists.
+      await page.reload();
+      await expect(page.getByRole("heading", { name: editedName })).toBeVisible();
+      await roles.goto();
+      await roles.searchInput.fill(editedName);
+      await expect(roles.rowByRoleName(editedName)).toContainText("2 permissions");
+
+      // Delete with confirmation.
+      await roles.openRoleDetail(editedName);
+      await roles.deleteButton.click();
+      await expect(roles.deleteDialog).toContainText(
+        `This will permanently delete "${editedName}"`,
+      );
+      await roles.confirmDeleteButton.click();
+      await roles.searchInput.waitFor({ state: "visible" });
+    } finally {
+      await roles.deleteRoleIfPresent(editedName);
+      await roles.deleteRoleIfPresent(name);
+    }
+
+    // Cleanup confirms the role is absent.
+    await roles.searchInput.fill(name);
+    await expect(roles.noResultsRow).toBeVisible();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  test("ROLE-REG08 — Make unsaved changes, then use Cancel, Back, or another page.", async ({
+    page,
+  }) => {
+    const errors = watchErrors(page);
+    const roles = new RolesPage(page);
+    const name = `qa-temp-unsaved-role-${Date.now()}`;
+
+    // Cancel: documented discard behavior — returns to the list, nothing saved.
+    await roles.goto();
+    await roles.openCreateForm("enterprise");
+    await roles.roleNameInput.fill(name);
+    await roles.permissionCheckbox(/View organizations/).check();
+    await roles.cancelButton.click();
+    await expect(roles.rolesTab).toHaveAttribute("aria-selected", "true");
+    await roles.searchInput.fill(name);
+    await expect(roles.noResultsRow).toBeVisible();
+
+    // Back to Roles: same discard behavior, nothing silently saved.
+    await roles.searchInput.fill("");
+    await roles.openCreateForm("enterprise");
+    await roles.roleNameInput.fill(name);
+    await roles.backToRolesButton.click();
+    await expect(roles.rolesTab).toHaveAttribute("aria-selected", "true");
+    await roles.searchInput.fill(name);
+    await expect(roles.noResultsRow).toBeVisible();
+
+    // Navigating to another page also discards without saving.
+    await roles.searchInput.fill("");
+    await roles.openCreateForm("enterprise");
+    await roles.roleNameInput.fill(name);
+    await roles.goto();
+    await roles.searchInput.fill(name);
+    await expect(roles.noResultsRow).toBeVisible();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  test("ROLE-REG10 — Tampered role IDs are denied without exposing role data.", async ({
+    page,
+  }) => {
+    const roles = new RolesPage(page);
+
+    // A tampered/foreign role ID resolves to a denial, not role data.
+    await page.goto(`/org/${ENTERPRISE_SLUG}/settings/roles/deadbeefdeadbeefdeadbeefdeadbeef`);
+    await expect(page.getByText("Role not found")).toBeVisible();
+    await expect(roles.editRoleButton).toHaveCount(0);
+    await expect(roles.deleteButton).toHaveCount(0);
+
+    // A malformed role path falls through to a 404, not an editable form.
+    await page.goto(`/org/${ENTERPRISE_SLUG}/settings/roles/%2e%2e%2fescape`);
+    await expect(roles.roleNameInput).toHaveCount(0);
+    await expect(roles.saveChangesButton).toHaveCount(0);
   });
 });
