@@ -115,7 +115,14 @@ test.describe("Automations", () => {
     await expect(page.getByRole("option", { name: /^Repositories/ })).toBeVisible();
     await expect(page.getByRole("option", { name: /^Playbooks/ })).toBeVisible();
     await page.getByRole("option", { name: /^Repositories/ }).click();
-    await expect(mentionMenu).toContainText(/Type to search/i);
+    // With no repos connected the submenu prompts to search; with repos
+    // connected it lists them immediately.
+    await expect(
+      mentionMenu
+        .getByText(/Type to search/i)
+        .or(mentionMenu.getByRole("option"))
+        .first(),
+    ).toBeVisible();
     await page.keyboard.press("Escape");
 
     await automations.instructionsEditor.click();
