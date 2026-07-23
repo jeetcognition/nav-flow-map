@@ -249,7 +249,7 @@
     "reach": "Home",
     "steps": "Type a prompt → Send",
     "expected": "Session is created and opens; navigates to session page.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -264,7 +264,7 @@
     "reach": "Home",
     "steps": "Click Send with empty box, then whitespace-only",
     "expected": "Send disabled/blocked for empty AND whitespace-only (contenteditable).",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -294,7 +294,7 @@
     "reach": "Home",
     "steps": "Open **mode dropdown**",
     "expected": "Lists modes (Normal/Ultra/Agent/Standard + Mode/Speed groupings); selecting changes mode; no crash.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -309,7 +309,7 @@
     "reach": "Home",
     "steps": "Open **Add context** menu",
     "expected": "~9 items render (files/repos/knowledge/etc.); each selectable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -339,7 +339,7 @@
     "reach": "Home",
     "steps": "Send options → \"Start session in background\"",
     "expected": "Option present; background start works.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -354,7 +354,7 @@
     "reach": "Home",
     "steps": "Paste 10,000-char prompt; special chars/Unicode/`<script>`",
     "expected": "Accepts/handles large input; renders inert; no crash.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -519,7 +519,7 @@
     "reach": "Open any running session",
     "steps": "Load Progress tab",
     "expected": "Shell / IDE(Editor) / Browser / Planner tabs render.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
