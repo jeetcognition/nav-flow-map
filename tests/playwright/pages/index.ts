@@ -32,6 +32,7 @@ export { ConnectionsPage } from "./connections.page";
 export { SettingsRootPage } from "./settings-root.page";
 export { DevinSettingsPage } from "./devin-settings.page";
 export { ReviewSettingsPage } from "./review-settings.page";
+export { WikiPage } from "./wiki.page";
 
 export {
   routes,
