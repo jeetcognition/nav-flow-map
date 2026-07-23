@@ -1,4 +1,4 @@
-import { type Page, type Locator } from "@playwright/test";
+import { type Page, type Locator, type Response } from "@playwright/test";
 import { ENTERPRISE_SLUG, routes } from "../support/paths";
 import { BasePage } from "./base.page";
 
@@ -36,5 +36,53 @@ export class OrganizationsPage extends BasePage {
 
   rowByName(name: string): Locator {
     return this.content.getByRole("row").filter({ hasText: new RegExp(name, "i") });
+  }
+
+  /** "Manage <org>" dialog opened from a row's edit control. */
+  get manageDialog(): Locator {
+    return this.page.getByRole("dialog");
+  }
+
+  get nameInput(): Locator {
+    return this.page.locator("#displayName");
+  }
+
+  get acuInput(): Locator {
+    return this.page.locator("#maxAcuLimit");
+  }
+
+  get saveButton(): Locator {
+    return this.page.getByRole("button", { name: "Save changes" });
+  }
+
+  async searchFor(query: string) {
+    await this.searchInput.fill(query);
+    await this.page.keyboard.press("Enter");
+  }
+
+  async openManageDialog(name: string) {
+    await this.rowByName(name).getByRole("button", { name: "Update name and limits" }).click();
+    await this.nameInput.waitFor();
+  }
+
+  /** Clicks Save and resolves with the PATCH /api/enterprise/organizations response. */
+  async saveAndWaitForPatch(): Promise<Response> {
+    const [response] = await Promise.all([
+      this.page.waitForResponse(
+        (r) =>
+          r.request().method() === "PATCH" && r.url().includes("/api/enterprise/organizations/"),
+      ),
+      this.saveButton.click(),
+    ]);
+    return response;
+  }
+
+  /** Captures the app's bearer token by reloading and sniffing an API request. */
+  async captureAuthorizationHeader(): Promise<string> {
+    const requestPromise = this.page.waitForRequest(
+      (r) => r.url().includes("/api/") && Boolean(r.headers()["authorization"]),
+    );
+    await this.page.reload();
+    return (await requestPromise).headers()["authorization"];
   }
 }

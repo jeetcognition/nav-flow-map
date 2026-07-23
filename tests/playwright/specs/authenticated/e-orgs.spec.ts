@@ -1,5 +1,12 @@
-import { test, expect, type ConsoleMessage } from "@playwright/test";
-import { OrganizationsPage, ENTERPRISE_SLUG } from "../../pages";
+import { test, expect, request, type ConsoleMessage } from "@playwright/test";
+import { OrganizationsPage, ENTERPRISE_SLUG, TEST_SUBORG_DISPLAY } from "../../pages";
+
+const PAGINATED_ORGS = "/api/enterprise/all-organizations/paginated";
+
+interface PageInfo {
+  has_next: boolean;
+  has_previous: boolean;
+}
 
 test.describe("Organizations", () => {
   let errors: string[] = [];
@@ -51,6 +58,46 @@ test.describe("Organizations", () => {
     await page.keyboard.press("Escape");
     await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
     await expect(page.getByRole("button", { name: "Save changes" })).toHaveCount(0);
+  });
+
+  test("ORG-SAN03 — Inspect the first and last pages", async ({ page }) => {
+    const orgs = new OrganizationsPage(page);
+    const paginated = page.waitForResponse((r) => r.url().includes(PAGINATED_ORGS));
+    await orgs.goto();
+    const firstPageInfo = (await (await paginated).json()).page_info as PageInfo;
+    expect(firstPageInfo.has_previous).toBe(false);
+
+    await expect(orgs.previousButton).toBeVisible();
+    await expect(orgs.nextButton).toBeVisible();
+    await expect(orgs.nextButton).toBeEnabled();
+
+    // Previous is a no-op on the first page: the visible data does not change.
+    const firstRow = orgs.rows.nth(1);
+    const firstPageRowText = (await firstRow.textContent()) ?? "";
+    await orgs.previousButton.click();
+    await expect(firstRow).toHaveText(firstPageRowText);
+
+    // Walk forward until the API reports the last page.
+    let hasNext = firstPageInfo.has_next;
+    for (let i = 0; hasNext && i < 30; i++) {
+      const response = page.waitForResponse((r) => r.url().includes(PAGINATED_ORGS));
+      await orgs.nextButton.click();
+      const pageInfo = (await (await response).json()).page_info as PageInfo;
+      hasNext = pageInfo.has_next;
+      if (!hasNext) expect(pageInfo.has_previous).toBe(true);
+    }
+    expect(hasNext).toBe(false);
+
+    // On the last page Next is a no-op and Previous still works.
+    await expect(orgs.previousButton).toBeVisible();
+    await expect(orgs.nextButton).toBeVisible();
+    const lastPageRowText = (await firstRow.textContent()) ?? "";
+    await orgs.nextButton.click();
+    await expect(firstRow).toHaveText(lastPageRowText);
+
+    const back = page.waitForResponse((r) => r.url().includes(PAGINATED_ORGS));
+    await orgs.previousButton.click();
+    expect(((await (await back).json()).page_info as PageInfo).has_next).toBe(true);
   });
 
   test("ORG-REG01 — Search with full/partial name, no-match, whitespace, case variants, and safe special characters", async ({
@@ -141,6 +188,171 @@ test.describe("Organizations", () => {
     }
   });
 
+  test("ORG-REG05 — Change name and ACU limit, save, reload, and restore the originals", async ({
+    page,
+  }) => {
+    const orgs = new OrganizationsPage(page);
+    const originalName = TEST_SUBORG_DISPLAY;
+    const tempName = `${originalName}-reg05-tmp`;
+
+    await orgs.goto();
+    await orgs.searchFor(originalName);
+    await orgs.openManageDialog(originalName);
+    await expect(orgs.nameInput).toHaveValue(originalName);
+    const originalAcu = await orgs.acuInput.inputValue();
+
+    try {
+      await orgs.nameInput.fill(tempName);
+      await orgs.acuInput.fill("7");
+      const save = await orgs.saveAndWaitForPatch();
+      expect(save.ok()).toBe(true);
+
+      await page.reload();
+      await orgs.searchFor(tempName);
+      const row = orgs.rowByName(tempName);
+      await expect(row).toBeVisible();
+      await expect(row.getByRole("cell").nth(4)).toHaveText("7");
+
+      await orgs.openManageDialog(tempName);
+      await expect(orgs.nameInput).toHaveValue(tempName);
+      await expect(orgs.acuInput).toHaveValue("7");
+    } finally {
+      // Restore the original name and ACU limit whether or not assertions passed.
+      if ((await orgs.manageDialog.count()) === 0) {
+        await orgs.searchFor(tempName);
+        await orgs.openManageDialog(tempName);
+      }
+      await orgs.nameInput.fill(originalName);
+      await orgs.acuInput.fill(originalAcu);
+      const restore = await orgs.saveAndWaitForPatch();
+      expect(restore.ok()).toBe(true);
+    }
+
+    await page.reload();
+    await orgs.searchFor(originalName);
+    const restoredRow = orgs.rowByName(originalName);
+    await expect(restoredRow).toBeVisible();
+    await expect(restoredRow.getByRole("cell").nth(4)).toHaveText("No limit");
+  });
+
+  test("ORG-REG07 — Enter No limit, zero, negative, decimal, text, exponent, and leading-zero ACU values", async ({
+    page,
+  }) => {
+    const orgs = new OrganizationsPage(page);
+    await orgs.goto();
+    await orgs.searchFor(TEST_SUBORG_DISPLAY);
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await expect(orgs.acuInput).toHaveValue("");
+    await expect(orgs.acuInput).toHaveAttribute("placeholder", "No limit");
+
+    // Negative and decimal values fail native min=0/integer validation; Save stays disabled.
+    for (const invalid of ["-5", "2.5"]) {
+      await orgs.acuInput.fill(invalid);
+      await expect(orgs.saveButton).toBeDisabled();
+    }
+
+    // Text is not accepted by the numeric input at all.
+    await orgs.acuInput.fill("");
+    await orgs.acuInput.pressSequentially("abc");
+    await expect(orgs.acuInput).toHaveValue("");
+    await expect(orgs.saveButton).toBeDisabled();
+
+    // Exponent notation is accepted by the numeric input as a valid integer.
+    await orgs.acuInput.fill("");
+    await orgs.acuInput.pressSequentially("1e5");
+    await expect(orgs.acuInput).toHaveValue("1e5");
+    await expect(orgs.saveButton).toBeEnabled();
+
+    // Save zero, verify it persists, then a leading-zero value, then restore No limit.
+    await orgs.acuInput.fill("0");
+    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+    const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
+    await expect(row.getByRole("cell").nth(4)).toHaveText("0");
+
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await expect(orgs.acuInput).toHaveValue("0");
+    await orgs.acuInput.fill("007");
+    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+    await expect(row.getByRole("cell").nth(4)).toHaveText("7");
+
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await orgs.acuInput.fill("");
+    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+  });
+
+  test("ORG-REG08 — Enter boundary and extremely large positive ACU values, then attempt to save", async ({
+    page,
+  }) => {
+    const orgs = new OrganizationsPage(page);
+    await orgs.goto();
+    await orgs.searchFor(TEST_SUBORG_DISPLAY);
+    const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
+    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await orgs.acuInput.fill("99999999999999999999");
+    const save = await orgs.saveAndWaitForPatch();
+    expect(save.ok()).toBe(false);
+
+    // The rejected save leaves the dialog open and does not partially update the row.
+    await expect(orgs.manageDialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(orgs.manageDialog).toHaveCount(0);
+
+    await page.reload();
+    await orgs.searchFor(TEST_SUBORG_DISPLAY);
+    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+
+    // The rejected PATCH logs a resource error on the console; it is expected here.
+    errors = errors.filter(
+      (text) => !/the server responded with a status of|failed to update/i.test(text),
+    );
+  });
+
+  test("ORG-REG09 — Make unsaved changes, then dismiss via Escape, outside click, and navigation", async ({
+    page,
+  }) => {
+    const orgs = new OrganizationsPage(page);
+    const patches: string[] = [];
+    page.on("request", (r) => {
+      if (r.method() === "PATCH" && r.url().includes("/api/enterprise/organizations/")) {
+        patches.push(r.url());
+      }
+    });
+
+    await orgs.goto();
+    await orgs.searchFor(TEST_SUBORG_DISPLAY);
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    const originalAcu = await orgs.acuInput.inputValue();
+
+    // Escape discards the dirty state without saving.
+    await orgs.nameInput.fill(`${TEST_SUBORG_DISPLAY}-dirty`);
+    await page.keyboard.press("Escape");
+    await expect(orgs.manageDialog).toHaveCount(0);
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await expect(orgs.nameInput).toHaveValue(TEST_SUBORG_DISPLAY);
+    await expect(orgs.acuInput).toHaveValue(originalAcu);
+
+    // Clicking outside the dialog also discards the dirty state.
+    await orgs.nameInput.fill(`${TEST_SUBORG_DISPLAY}-dirty`);
+    await page.mouse.click(10, 10);
+    await expect(orgs.manageDialog).toHaveCount(0);
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await expect(orgs.nameInput).toHaveValue(TEST_SUBORG_DISPLAY);
+
+    // Navigating away and returning shows the original, unsaved values.
+    await orgs.nameInput.fill(`${TEST_SUBORG_DISPLAY}-dirty`);
+    await orgs.goto();
+    await orgs.searchFor(TEST_SUBORG_DISPLAY);
+    await expect(orgs.rowByName(TEST_SUBORG_DISPLAY)).toBeVisible();
+    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    await expect(orgs.nameInput).toHaveValue(TEST_SUBORG_DISPLAY);
+    await page.keyboard.press("Escape");
+
+    expect(patches).toHaveLength(0);
+  });
+
   test("ORG-REG10 — Click delete, cancel, repeat, and confirm", async ({ page }) => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
@@ -165,6 +377,40 @@ test.describe("Organizations", () => {
     await dialog2.getByRole("button", { name: "Cancel" }).click();
     await expect(dialog2).toHaveCount(0);
     await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+  });
+
+  test("ORG-REG11 — Attempt list, edit, and delete operations without authorization or with a tampered organization ID", async ({
+    page,
+    baseURL,
+  }) => {
+    const orgs = new OrganizationsPage(page);
+    await orgs.goto();
+    await expect(orgs.heading).toBeVisible();
+    const authorization = await orgs.captureAuthorizationHeader();
+    const tamperedId = "org-00000000000000000000000000000000";
+    const orgApiPath = `/api/enterprise/organizations/${tamperedId}`;
+
+    // A valid admin token cannot touch an organization outside its enterprise.
+    const authed = await request.newContext({ baseURL, extraHTTPHeaders: { authorization } });
+    const anon = await request.newContext({ baseURL });
+    try {
+      expect((await authed.patch(orgApiPath, { data: { displayName: "x" } })).status()).toBe(403);
+      expect((await authed.delete(orgApiPath)).status()).toBe(403);
+
+      // Without a token every operation is denied.
+      expect((await anon.get("/api/enterprise/organizations")).status()).toBe(401);
+      expect((await anon.patch(orgApiPath, { data: { displayName: "x" } })).status()).toBe(401);
+      expect((await anon.delete(orgApiPath)).status()).toBe(401);
+    } finally {
+      await authed.dispose();
+      await anon.dispose();
+    }
+
+    // Organization data is unchanged after the denied attempts.
+    await orgs.searchFor(TEST_SUBORG_DISPLAY);
+    const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
+    await expect(row).toBeVisible();
+    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
   });
 
   test("ORG-REG12 — Inspect URL, UI, console, and requests during search, edit, and delete", async ({
