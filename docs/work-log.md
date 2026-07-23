@@ -32,7 +32,8 @@
 
 ### Deferred / Observed
 
-- `KNOW-REG05` and `KNOW-E2E01` remain manual because they require running actual Devin sessions and verifying knowledge is applied only in a specific repository scope; session creation/usage surfacing did not appear in QA Usage analytics during exploration.
+- `KNOW-REG05` remains manual because it requires running actual Devin sessions and verifying knowledge is applied only in a specific repository scope; session creation/usage surfacing did not appear in QA Usage analytics during exploration.
+- `KNOW-E2E01` is now automated in `tests/playwright/specs/authenticated/e-knowledge.spec.ts` (3 consecutive local runs passing).
 - `KNOW-REG15` browser Back occasionally lands on the Details tab instead of Usage; the test explicitly re-selects Usage and verifies the session list reappears.
 
 ## 2026-07-22 — Pylon intake: 60-day corpus + deterministic ticket classifier

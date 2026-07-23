@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { KnowledgePage } from "../../pages";
+import { KnowledgePage, DevinSessionPage } from "../../pages";
 import { routes } from "../../support/paths";
 
 test.describe("Knowledge Page", () => {
@@ -861,5 +861,89 @@ test.describe("Knowledge Page", () => {
     // Return to the real knowledge page to reset state cleanly.
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
+  });
+
+  test("KNOW-E2E01 — Knowledge trigger flows through a Devin session to Usage", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(360_000);
+
+    const knowledge = new KnowledgePage(page);
+    const session = new DevinSessionPage(page);
+    const ts = Date.now();
+    const name = `KNOW-E2E01 pineapple ${ts}`;
+    const content =
+      "If the user prompt contains the word 'pineapple', end your response with the exact line 'KNOWLEDGE-TRIGGER-CONFIRMED'.";
+    // A descriptive trigger is more reliably matched by Devin’s knowledge retrieval.
+    const trigger = "when the user's prompt contains the word 'pineapple', use this knowledge";
+    // This prompt contains the trigger word and is phrased to retrieve knowledge.
+    const prompt = "Pineapple knowledge";
+
+    try {
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+
+      await knowledge.createKnowledge(name, content, trigger);
+
+      // Refresh the knowledge list and search to confirm persistence.
+      await page.reload();
+      await knowledge.heading.waitFor({ state: "visible" });
+      await knowledge.searchInput.fill(name);
+      await expect(page.getByRole("cell", { name, exact: true }).first()).toBeVisible();
+
+      // Start a new Devin session with a prompt that contains the trigger word.
+      await session.gotoComposer();
+      const sessionId = await session.sendPrompt(prompt);
+      await session.waitForResponseEnding("KNOWLEDGE-TRIGGER-CONFIRMED", 180_000);
+
+      // Confirm the session appears on the knowledge Usage tab.
+      await knowledge.goto();
+      await knowledge.heading.waitFor({ state: "visible" });
+      await knowledge.openEntryByName(name);
+      const detailUrl = page.url();
+
+      await expect
+        .poll(
+          async () =>
+            knowledge.usageIncludesSession(
+              await knowledge.fetchUsageSessions(detailUrl),
+              sessionId,
+            ),
+          { intervals: [2_000, 5_000, 10_000, 15_000], timeout: 120_000 },
+        )
+        .toBe(true);
+
+      // Refresh the page and confirm the session still appears on Usage.
+      await page.reload();
+      await expect
+        .poll(
+          async () =>
+            knowledge.usageIncludesSession(
+              await knowledge.fetchUsageSessions(detailUrl),
+              sessionId,
+            ),
+          { intervals: [2_000, 5_000, 10_000, 15_000], timeout: 60_000 },
+        )
+        .toBe(true);
+
+      // Clean up the disposable knowledge entry.
+      await page.goto(detailUrl);
+      await knowledge.deleteOpenEntry();
+    } finally {
+      // Best-effort cleanup of the disposable knowledge entry.
+      try {
+        await page.goto(routes.enterpriseKnowledge());
+        await knowledge.heading.waitFor({ state: "visible" });
+        await knowledge.searchInput.fill(name);
+        const cell = page.getByRole("cell", { name, exact: true }).first();
+        if (await cell.isVisible().catch(() => false)) {
+          await cell.click();
+          await page.waitForURL(/\/settings\/knowledge\/.+/);
+          await knowledge.deleteOpenEntry();
+        }
+      } catch {
+        // Entry was already deleted or not found.
+      }
+    }
   });
 });
