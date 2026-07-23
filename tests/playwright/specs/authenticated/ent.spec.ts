@@ -209,6 +209,49 @@ test.describe("Enterprise Settings landing", () => {
     await expect(page).toHaveURL(/\/settings$/);
   });
 
+  test("ENTSET-REG08 — Inspect URL, UI, network, and console while using the page", async ({
+    page,
+  }) => {
+    const consoleErrors: string[] = [];
+    const failedResponses: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") consoleErrors.push(message.text());
+    });
+    page.on("response", (response) => {
+      if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`);
+    });
+
+    const ent = new EnterpriseSettingsPage(page);
+    await ent.goto();
+    await ent.heading.waitFor({ state: "visible" });
+
+    // Use the page: open a child settings card and come back.
+    await ent.openCard("General");
+    await page.waitForURL(/\/settings\/general$/, { timeout: 20_000 });
+    await page.waitForLoadState("networkidle");
+    await page.goBack();
+    await page.waitForURL(/\/settings$/, { timeout: 20_000 });
+    await page.waitForLoadState("networkidle");
+    await expect(ent.heading).toBeVisible();
+
+    // URL contains no credentials, tokens, or private configuration values.
+    expect(page.url()).not.toMatch(/(token|secret|api[_-]?key|password|bearer)=/i);
+
+    // Rendered UI exposes no secret material or internal error dumps.
+    const secretPatterns = [
+      /Bearer\s+[A-Za-z0-9\-_]{16,}/,
+      /eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}/, // JWT
+      /api[_-]?key["'\s:=]+[A-Za-z0-9\-_]{16,}/i,
+      /(Traceback \(most recent call last\)|Internal Server Error|stack trace)/i,
+    ];
+    const body = await page.locator("body").innerText();
+    for (const pattern of secretPatterns) expect(body).not.toMatch(pattern);
+
+    // No internal errors surfaced via console or failed network responses.
+    expect(consoleErrors).toEqual([]);
+    expect(failedResponses).toEqual([]);
+  });
+
   test("ENTSET-REG07 — Refresh and traverse using browser Back/Forward", async ({ page }) => {
     const ent = new EnterpriseSettingsPage(page);
     await ent.goto();

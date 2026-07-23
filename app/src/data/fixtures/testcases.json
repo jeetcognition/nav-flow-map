@@ -5312,7 +5312,7 @@
     "reach": "Enterprise Settings",
     "steps": "Inspect the URL, UI, network responses, and console while using the page.",
     "expected": "No credentials, tokens, private configuration values, or internal errors are exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
