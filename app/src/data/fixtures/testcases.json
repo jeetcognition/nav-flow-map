@@ -3194,7 +3194,7 @@
     "reach": "`/settings/deepwiki` or left nav DeepWiki",
     "steps": "Load",
     "expected": "DeepWiki renders for an indexed repo (architecture wiki + diagrams).",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3209,7 +3209,7 @@
     "reach": "DeepWiki",
     "steps": "Search wiki; XSS in query",
     "expected": "Inert; results render.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3936,7 +3936,7 @@
     "reach": "Sidebar → Wiki",
     "steps": "Load",
     "expected": "Wiki renders; search present.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -3951,7 +3951,7 @@
     "reach": "Wiki",
     "steps": "Search XSS/emoji; open repo wiki",
     "expected": "XSS-safe; repo wiki TOC renders.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
