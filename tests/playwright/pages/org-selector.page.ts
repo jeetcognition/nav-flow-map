@@ -17,6 +17,10 @@ export class OrgSelectorPage extends BasePage {
   readonly firstOverflowButton: Locator;
   /** Sidebar collapse/expand trigger. */
   readonly sidebarToggle: Locator;
+  /** The application sidebar container. */
+  readonly sidebar: Locator;
+  /** The global command/search palette dialog. */
+  readonly commandPalette: Locator;
   /** Sidebar search / command palette trigger. */
   readonly searchButton: Locator;
   /** Bottom-left help trigger. */
@@ -35,6 +39,8 @@ export class OrgSelectorPage extends BasePage {
     this.sidebarToggle = page
       .locator('[data-testid="sidebar"] button[data-slot="sidebar-trigger"]')
       .first();
+    this.sidebar = page.getByTestId("sidebar");
+    this.commandPalette = page.locator('[role="dialog"]');
     this.searchButton = page.getByRole("button", { name: "Search" }).first();
     this.helpButton = page.getByRole("button", { name: "Help" }).first();
     this.organizationsLink = page.getByRole("link", { name: "Organizations" });
@@ -84,7 +90,12 @@ export class OrgSelectorPage extends BasePage {
   /** Open the global command palette. */
   async openCommandPalette() {
     await this.searchButton.click();
-    await this.page.locator('[role="dialog"]').waitFor({ state: "visible", timeout: 10_000 });
+    await this.commandPalette.waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Current rendered width of the sidebar, in pixels. */
+  async sidebarWidth(): Promise<number> {
+    return this.sidebar.evaluate((el) => el.getBoundingClientRect().width);
   }
 
   /** The top-left "All organizations" dropdown menu when open. */
