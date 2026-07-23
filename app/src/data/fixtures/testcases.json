@@ -2294,7 +2294,7 @@
     "reach": "Membership → Groups (IdP)",
     "steps": "Deep-link, refresh, and use Back/Forward on `?tab=groups`.",
     "expected": "Groups remains selected; the empty state does not show stale members, roles, or groups from another tenant.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
