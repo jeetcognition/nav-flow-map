@@ -7,6 +7,7 @@ export { GroupsIdpPage } from "./groups-idp.page";
 export { LoginPage } from "./login.page";
 export { MembershipPage, MEMBER_COLUMNS } from "./membership.page";
 export { OrganizationsPage } from "./organizations.page";
+export { OrgCreatePage } from "./org-create.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { ReposPage } from "./repos.page";
 export { SkillsPage } from "./skills.page";
