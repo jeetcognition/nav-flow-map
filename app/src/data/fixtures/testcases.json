@@ -1664,7 +1664,7 @@
     "reach": "Settings → Environment",
     "steps": "Load cold.",
     "expected": "Configuration, Blueprint, Outposts, Golden snapshot, Snapshots, and Steering knowledge surfaces render without page errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1679,7 +1679,7 @@
     "reach": "Environment",
     "steps": "Switch each tab and deep-link/refresh it.",
     "expected": "Selected tab content and URL state are consistent; invalid tab falls back safely.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": true,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1709,7 +1709,7 @@
     "reach": "Environment → Configuration",
     "steps": "Test organization/repository selection and required configuration controls without saving.",
     "expected": "Save/start actions are gated until valid selections exist; helper text identifies what will be affected.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1724,7 +1724,7 @@
     "reach": "Environment → Blueprint",
     "steps": "Edit disposable blueprint text with valid YAML, malformed YAML, huge content, Unicode, and HTML-like text; discard or restore.",
     "expected": "Parser/validation errors are clear; unsafe text is inert; no invalid blueprint is saved.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1739,7 +1739,7 @@
     "reach": "Environment → Outposts",
     "steps": "Inspect outpost configuration/list/empty states and available actions.",
     "expected": "Outpost state, ownership, and disabled controls are clear; no unrelated tenant data appears.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1754,7 +1754,7 @@
     "reach": "Environment → Golden snapshot",
     "steps": "Inspect legacy snapshot controls and warnings without changing state.",
     "expected": "Legacy status and migration/usage guidance are clear; unavailable actions are safely disabled.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1769,7 +1769,7 @@
     "reach": "Environment → Snapshots",
     "steps": "Search snapshot/version history by script/repo/user/status with no-match and special text.",
     "expected": "Filtering is literal and safe; row counts/statuses remain accurate; no stale data is shown after filter changes.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1799,7 +1799,7 @@
     "reach": "Environment",
     "steps": "As non-admin or with tampered org/repo/snapshot IDs, attempt to read or mutate environment config.",
     "expected": "Authorization denies unauthorized access; blueprint contents, secrets, and logs are not leaked cross-tenant.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
