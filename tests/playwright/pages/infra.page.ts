@@ -25,4 +25,24 @@ export class InfraPage extends BasePage {
   refreshButtons(): Locator {
     return this.refreshButton;
   }
+
+  /**
+   * Navigates to the infrastructure page and captures the VPC health request the app
+   * issues, returning its URL and headers so specs can replay it with tampered IDs.
+   */
+  async gotoAndCaptureVpcRequest(
+    slug: string = ENTERPRISE_SLUG,
+  ): Promise<{ url: string; headers: Record<string, string>; status: number }> {
+    const requestPromise = this.page.waitForRequest((request) =>
+      /\/api\/enterprise\/[^/]+\/vpc/.test(request.url()),
+    );
+    await this.page.goto(routes.infrastructure(slug));
+    const request = await requestPromise;
+    const response = await request.response();
+    return {
+      url: request.url(),
+      headers: await request.allHeaders(),
+      status: response?.status() ?? 0,
+    };
+  }
 }
