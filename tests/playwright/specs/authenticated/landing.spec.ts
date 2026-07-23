@@ -94,20 +94,11 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     await org.toggleSidebar();
-    await page.waitForTimeout(300);
-
-    const collapsedWidth = await page
-      .locator('[data-testid="sidebar"]')
-      .evaluate((el) => el.getBoundingClientRect().width);
-    expect(collapsedWidth).toBeLessThan(100);
+    await expect.poll(() => org.sidebarWidth()).toBeLessThan(100);
 
     // The expand tooltip is not exposed as a stable DOM element, so we verify the state instead.
     await page.keyboard.press("Control+b");
-    await page.waitForTimeout(300);
-    const expandedWidth = await page
-      .locator('[data-testid="sidebar"]')
-      .evaluate((el) => el.getBoundingClientRect().width);
-    expect(expandedWidth).toBeGreaterThan(200);
+    await expect.poll(() => org.sidebarWidth()).toBeGreaterThan(200);
     await expect(org.heading).toBeVisible();
   });
 
@@ -122,10 +113,10 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     await org.openCommandPalette();
-    const dialog = page.locator('[role="dialog"]');
+    const dialog = org.commandPalette;
     await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Actions");
     await expect(dialog).toContainText("Navigation");
+    await expect(dialog).toContainText("Go to new session");
     await expect(dialog).toContainText("Settings");
   });
 
@@ -172,11 +163,10 @@ test.describe("Landing Search Page", () => {
       });
 
       await org.searchFor(value);
-      await page.waitForTimeout(300);
-      expect(dialogSeen).toBe(false);
       // Page should still show the heading and search field; no crash.
       await expect(org.heading).toBeVisible();
       await expect(org.searchInput).toBeVisible();
+      expect(dialogSeen).toBe(false);
     });
   }
 
@@ -231,7 +221,7 @@ test.describe("Landing Search Page", () => {
     await assertNoLeaks(page, consoleLogs, pageErrors);
 
     await org.searchFor("fri");
-    await page.waitForTimeout(300);
+    await expect(org.orgCard("fri-5")).toBeVisible();
     await assertNoLeaks(page, consoleLogs, pageErrors);
 
     await org.orgCard("fri-5").click();
@@ -253,19 +243,19 @@ test.describe("Landing Search Page", () => {
         .catch(() => false)
     ) {
       await menu.getByText("Unpin organization").click();
-      await page.waitForTimeout(300);
+      await expect(menu).toBeHidden();
       await org.openOverflowFor("fri-5");
     }
 
     await menu.getByText("Pin organization").click();
-    await page.waitForTimeout(300);
+    await expect(menu).toBeHidden();
 
     await org.openOverflowFor("fri-5");
     await expect(menu.getByText("Unpin organization")).toBeVisible();
 
     // Reset state
     await menu.getByText("Unpin organization").click();
-    await page.waitForTimeout(300);
+    await expect(menu).toBeHidden();
 
     await org.openOverflowFor("fri-5");
     await expect(menu.getByText("Pin organization")).toBeVisible();
@@ -303,7 +293,6 @@ test.describe("Landing Search Page", () => {
       } else {
         // Contact sales stays on the org selector; just verify no crash.
         await page.getByText(item, { exact: true }).first().click();
-        await page.waitForTimeout(500);
         await expect(org.heading).toBeVisible();
       }
       await page.goto("/");
@@ -317,24 +306,13 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
 
-    const expanded = await page
-      .locator('[data-testid="sidebar"]')
-      .evaluate((el) => el.getBoundingClientRect().width);
-    expect(expanded).toBeGreaterThan(200);
+    await expect.poll(() => org.sidebarWidth()).toBeGreaterThan(200);
 
     await org.toggleSidebar();
-    await page.waitForTimeout(300);
-    const collapsed = await page
-      .locator('[data-testid="sidebar"]')
-      .evaluate((el) => el.getBoundingClientRect().width);
-    expect(collapsed).toBeLessThan(100);
+    await expect.poll(() => org.sidebarWidth()).toBeLessThan(100);
 
     await page.keyboard.press("Control+b");
-    await page.waitForTimeout(300);
-    const reExpanded = await page
-      .locator('[data-testid="sidebar"]')
-      .evaluate((el) => el.getBoundingClientRect().width);
-    expect(reExpanded).toBeGreaterThan(200);
+    await expect.poll(() => org.sidebarWidth()).toBeGreaterThan(200);
 
     await expect(org.heading).toBeVisible();
   });
@@ -346,11 +324,10 @@ test.describe("Landing Search Page", () => {
     await org.goto();
     await org.openCommandPalette();
 
-    const input = page.locator('[role="dialog"] [role="combobox"]').first();
+    const input = org.commandPalette.locator('[role="combobox"]').first();
     await input.fill("new session");
-    await page.waitForTimeout(300);
 
-    const dialog = page.locator('[role="dialog"]');
+    const dialog = org.commandPalette;
     await expect(dialog).toContainText("Go to new session");
     await expect(dialog).toContainText("Results");
   });
@@ -360,9 +337,8 @@ test.describe("Landing Search Page", () => {
     await org.goto();
     await org.openCommandPalette();
 
-    const option = page.locator('[role="dialog"]').getByText("Switch organization…").first();
+    const option = org.commandPalette.getByText("Switch organization…").first();
     await option.click();
-    await page.waitForTimeout(300);
 
     // Switch organization keeps the user on the valid org-selector page.
     await expect(org.heading).toBeVisible({ timeout: 15_000 });

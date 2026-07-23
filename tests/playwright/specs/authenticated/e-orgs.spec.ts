@@ -122,9 +122,11 @@ test.describe("Organizations", () => {
     const headerCheckbox = page.getByRole("checkbox", { name: "Select all rows" });
     const rowCheckbox = page.getByRole("checkbox", { name: "Select row" }).first();
 
-    await rowCheckbox.click({ force: true });
+    // force: the row wrapper div intercepts pointer events over these base-ui
+    // checkboxes, so actionability checks never pass without it.
+    await rowCheckbox.check({ force: true });
     await expect(rowCheckbox).toBeChecked();
-    await rowCheckbox.click({ force: true });
+    await rowCheckbox.uncheck({ force: true });
     await expect(rowCheckbox).not.toBeChecked();
 
     await headerCheckbox.click({ force: true });
