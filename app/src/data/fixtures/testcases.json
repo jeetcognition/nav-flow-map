@@ -3390,7 +3390,7 @@
     "reach": "Org sidebar → Security, or `/org/<org>/code-scan`",
     "steps": "Load",
     "expected": "Scans / Profiles tabs render; \"Start Scan\" button. Bare `/code-scan` (no org) → 404 (expected).",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3405,7 +3405,7 @@
     "reach": "Code-scan",
     "steps": "Open **Start Scan** dialog",
     "expected": "Repo / profile / auto-scan / interactive-mode options render; Start gated without a repo.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3420,7 +3420,7 @@
     "reach": "Code-scan",
     "steps": "Configure Auto-Scan schedule; Profiles CRUD",
     "expected": "Schedule + profile persist.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
