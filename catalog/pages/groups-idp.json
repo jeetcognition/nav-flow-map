@@ -84,13 +84,12 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Switching Membership tabs uses history.replaceState, so browser Back lands on about:blank instead of the previous tab."
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/groups-idp.spec.ts"
       },
       "source": {
         "type": "migration",

@@ -18,6 +18,52 @@ test.describe("Groups (IdP)", () => {
     expect(pageErrors).toHaveLength(0);
   });
 
+  test("IDP-REG01 — Deep-link, refresh, and use Back/Forward", async ({ page }) => {
+    const idp = new GroupsIdpPage(page);
+
+    // Start from the settings landing page so browser history has a prior entry.
+    await page.goto(routes.entSettings);
+    await page.waitForLoadState("networkidle");
+
+    // Deep-link straight to the Groups (IdP) tab.
+    await idp.goto();
+    await expect(page).toHaveURL(routes.membership(ENTERPRISE_SLUG, "groups"));
+    await expect(idp.groupsTab).toHaveAttribute("aria-selected", "true");
+    await expect(idp.noGroupsHeading).toBeVisible();
+    await expect(idp.idpSetupGuidance).toBeVisible();
+
+    // Refresh: Groups stays selected and the empty state is intact.
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await expect(page).toHaveURL(routes.membership(ENTERPRISE_SLUG, "groups"));
+    await expect(idp.groupsTab).toHaveAttribute("aria-selected", "true");
+    await expect(idp.noGroupsHeading).toBeVisible();
+
+    // Switch to Members and back to Groups. Tab switches use
+    // history.replaceState, so they do not add history entries.
+    await idp.membersTab.click();
+    await expect(page).toHaveURL(routes.membership(ENTERPRISE_SLUG, "members"));
+    await expect(idp.membersTab).toHaveAttribute("aria-selected", "true");
+    await idp.groupsTab.click();
+    await expect(page).toHaveURL(routes.membership(ENTERPRISE_SLUG, "groups"));
+    await expect(idp.groupsTab).toHaveAttribute("aria-selected", "true");
+    await expect(idp.noGroupsHeading).toBeVisible();
+
+    // Back skips the replaced tab states and lands on the prior page.
+    await page.goBack();
+    await page.waitForLoadState("networkidle");
+    await expect(page).toHaveURL(new RegExp(`/org/${ENTERPRISE_SLUG}/settings($|\\?)`));
+
+    // Forward returns to Groups with the empty state — no stale members/roles.
+    await page.goForward();
+    await page.waitForLoadState("networkidle");
+    await expect(page).toHaveURL(routes.membership(ENTERPRISE_SLUG, "groups"));
+    await expect(idp.groupsTab).toHaveAttribute("aria-selected", "true");
+    await expect(idp.noGroupsHeading).toBeVisible();
+    await expect(idp.idpSetupGuidance).toBeVisible();
+    await expect(page.getByRole("table")).toHaveCount(0);
+  });
+
   test("IDP-REG02 — Open Groups with a tampered enterprise context", async ({ page }) => {
     // A valid sub-org slug should normalize to the canonical enterprise URL.
     await page.goto(routes.membership(ALT_SUBORG, "groups"));

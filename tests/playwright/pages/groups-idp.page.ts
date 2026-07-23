@@ -9,6 +9,8 @@ export class GroupsIdpPage extends BasePage {
   readonly heading: Locator;
   /** Groups (IdP) tab. */
   readonly groupsTab: Locator;
+  /** Members tab. */
+  readonly membersTab: Locator;
   /** "No groups found" empty-state heading. */
   readonly noGroupsHeading: Locator;
   /** IdP SSO setup guidance text. */
@@ -18,6 +20,7 @@ export class GroupsIdpPage extends BasePage {
     super(page);
     this.heading = page.getByRole("heading", { name: "Membership", exact: true });
     this.groupsTab = page.getByRole("tab", { name: /Groups \(IdP\)/ });
+    this.membersTab = page.getByRole("tab", { name: /^Members/ });
     this.noGroupsHeading = page.getByRole("heading", { name: "No groups found", exact: true });
     this.idpSetupGuidance = page.getByText(
       "Groups can be created by setting up SSO with an IdP provider.",
