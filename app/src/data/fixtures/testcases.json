@@ -9,7 +9,7 @@
     "reach": "Settings → Preferences",
     "steps": "Load cold.",
     "expected": "Profile, picture, name, email, user ID, display/theme, language, notifications, Git commit author/email, PR behavior, child-session approval, and Devin Review preferences render without page errors.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -24,7 +24,7 @@
     "reach": "Preferences",
     "steps": "Inspect disabled/read-only identity fields and editable controls without saving.",
     "expected": "Email/user ID are not accidentally editable; editable fields and dropdowns have clear current values and labels.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -54,7 +54,7 @@
     "reach": "Preferences → Name",
     "steps": "With approval, enter blank, whitespace, long, Unicode, emoji, HTML-like, and injection-like names, then restore original.",
     "expected": "Validation is clear; unsafe text stays inert; accepted values persist after reload; cleanup restores the original name.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -84,7 +84,7 @@
     "reach": "Preferences → Notifications",
     "steps": "Toggle in-app, sound, browser, Slack, newsletter, and child-session approval options, reload, then restore.",
     "expected": "Each setting persists independently; browser-permission denial is handled clearly; cleanup restores prior state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -99,7 +99,7 @@
     "reach": "Preferences → Git/PR settings",
     "steps": "Change commit author/email, PR draft behavior, PR-open mode, and review trigger with valid/invalid email inputs.",
     "expected": "Valid selections persist; invalid email is rejected; enterprise locks/overrides are shown instead of silently ignored.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -114,7 +114,7 @@
     "reach": "Preferences → new session/PR flow",
     "steps": "With approval, set a disposable preference combination, reload, open session/PR-related flow, then restore.",
     "expected": "Preferences are reflected consistently in downstream UI; cleanup restores all original values.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
