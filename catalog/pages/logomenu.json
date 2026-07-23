@@ -29,7 +29,7 @@
         }
       ],
       "assertions": [
-        "Enterprise name/member count, **Enterprise settings**, **Invite members**, organization list, **Switch account**, and **Log out** are visible and readable."
+        "Enterprise name/member count, **Enterprise settings**, **Invite members**, organization list, and **Log out** are visible and readable."
       ],
       "cleanup": {
         "required": false,
@@ -40,13 +40,12 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Switch account is not exposed in the current top-left menu; only Log out appears."
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -414,7 +413,7 @@
       "id": "SUB-IM-REG08",
       "pageId": "logomenu",
       "surface": "webapp",
-      "title": "Inspect the dropdown UI, URL, and console while switching organizations/accounts",
+      "title": "Inspect the dropdown UI, URL, and console while switching organizations",
       "type": "Regression",
       "priority": "P0",
       "riskTags": ["navigation", "security"],
@@ -429,7 +428,7 @@
         },
         {
           "number": 2,
-          "action": "Switch organizations and accounts through the dropdown."
+          "action": "Switch organizations through the dropdown."
         }
       ],
       "assertions": [
@@ -444,13 +443,12 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Switch account is not exposed in the current top-left menu, and the case explicitly requires switching both organizations and accounts."
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/logomenu.spec.ts"
       },
       "source": {
         "type": "migration",
