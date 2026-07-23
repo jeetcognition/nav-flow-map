@@ -81,6 +81,9 @@ export const routes = {
   /** Organizations list page. */
   organizations: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/organizations`,
 
+  /** Create organization form. */
+  orgCreate: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/organizations/create`,
+
   /** Enterprise Devin settings page. */
   devinSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/enterprise-devin`,
 

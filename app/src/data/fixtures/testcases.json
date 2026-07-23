@@ -2594,7 +2594,7 @@
     "reach": "Create organization → Members",
     "steps": "Inspect the default member state.",
     "expected": "Add me as a member, member search, Name and Email columns, pagination, and selected count are visible; the current user is selected by default.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2609,7 +2609,7 @@
     "reach": "Create organization → Repository permissions",
     "steps": "Inspect the section without submitting.",
     "expected": "No permissions by default and the repository-permissions link are visible; the form does not silently grant repository access.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2639,7 +2639,7 @@
     "reach": "Create organization",
     "steps": "Enter blank or No limit, zero, a valid positive integer, negative, decimal, text, exponent notation, and leading-zero ACU values.",
     "expected": "Only supported values enable Create; invalid values show actionable validation and no organization is partially created.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2669,7 +2669,7 @@
     "reach": "Create organization → Members",
     "steps": "Search by member name and email, then try no-match, whitespace, Unicode, long, and HTML-like input; clear it.",
     "expected": "Results filter safely; No members found appears when appropriate; clearing restores the member table.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2684,7 +2684,7 @@
     "reach": "Create organization → Members",
     "steps": "Select and deselect members across several pages and searches.",
     "expected": "Selected count and checkboxes remain accurate; no intended selection is lost and no unrelated member is added.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2699,7 +2699,7 @@
     "reach": "Create organization → Members",
     "steps": "Toggle Add me as a member while selecting other members.",
     "expected": "Current-user selection and the corresponding table row remain consistent; duplicate membership is impossible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -2714,7 +2714,7 @@
     "reach": "Create organization",
     "steps": "Enter form data, then use Cancel, Back, refresh, and revisit the URL without submitting.",
     "expected": "No organization is created; returning starts a clean form or restores state only through documented behavior.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2729,7 +2729,7 @@
     "reach": "Create organization → Repository permissions",
     "steps": "Follow the repository-permissions link, then return.",
     "expected": "The correct settings page opens; incomplete organization data is not submitted or retained unexpectedly.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2759,7 +2759,7 @@
     "reach": "Create organization",
     "steps": "Inspect URL, UI, console, and requests while entering names, ACU limits, and member searches.",
     "expected": "No credentials, private member data, tenant secrets, stack traces, or unnecessary identifiers are exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -2774,7 +2774,7 @@
     "reach": "Create organization",
     "steps": "With explicit approval, create `qa-temp-org-<timestamp>` using a bounded ACU limit and disposable member → verify it in Organizations, verify membership and no default repository permissions → delete it.",
     "expected": "Creation and tenant isolation work correctly; cleanup confirms the temporary organization and its access are removed even if an intermediate assertion fails.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
