@@ -106,6 +106,10 @@ export const routes = {
   /** Enterprise Devin Review settings page. */
   reviewSettings: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/review`,
 
+  /** Devin Review viewer for a specific merge/pull request. */
+  reviewMergeRequest: (host: string, projectPath: string, iid: number) =>
+    `/review/${host}/${projectPath}/-/merge_requests/${iid}`,
+
   /** Enterprise Membership page, optionally targeting a tab. */
   membership: (slug: string = ENTERPRISE_SLUG, tab?: "members" | "roles" | "groups") =>
     `/org/${slug}/settings/membership${tab ? `?tab=${tab}` : ""}`,
