@@ -8,6 +8,7 @@ export { LoginPage } from "./login.page";
 export { MembershipPage, MEMBER_COLUMNS } from "./membership.page";
 export { OrganizationsPage } from "./organizations.page";
 export { OrgSelectorPage } from "./org-selector.page";
+export { PlaybooksPage } from "./playbooks.page";
 export { ReposPage } from "./repos.page";
 export { SkillsPage } from "./skills.page";
 export { RolesPage } from "./roles.page";
