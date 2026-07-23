@@ -1,5 +1,6 @@
 // Barrel export for page objects and shared route helpers.
 
+export { AutomationsPage } from "./automations.page";
 export { BasePage } from "./base.page";
 export { InfraPage } from "./infra.page";
 export { GuardrailsPage } from "./guardrails.page";

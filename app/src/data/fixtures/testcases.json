@@ -3816,7 +3816,7 @@
     "reach": "Sidebar → Automations",
     "steps": "Load",
     "expected": "Automations list + Create render.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3846,7 +3846,7 @@
     "reach": "Create → Advanced",
     "steps": "Expand Advanced (agent mode, child sessions, run-as-creator, network policy, metadata, ACU/rate limits)",
     "expected": "All controls render.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -3861,7 +3861,7 @@
     "reach": "Create → Advanced → Network policy",
     "steps": "Add domain `javascript:alert(1)`, `<script>`, `http://`, whitespace",
     "expected": "**BUG-006**: accepted unvalidated. Expected: reject malformed/non-allowlisted.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3876,7 +3876,7 @@
     "reach": "Create",
     "steps": "Webhook trigger",
     "expected": "Inline URL + `X-Webhook-Secret` notice present.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3891,7 +3891,7 @@
     "reach": "Automations",
     "steps": "Create schedule/webhook automation → trigger → session spawns",
     "expected": "Event spawns a session; delivery target (Slack) receives result. **N/E** unless approved.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4206,7 +4206,7 @@
     "reach": "Left nav → Automations",
     "steps": "Load",
     "expected": "Automations list + Create button render.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4236,7 +4236,7 @@
     "reach": "Create",
     "steps": "Select each trigger: Slack, GitHub webhook, Linear/Jira, Schedule, Custom webhook",
     "expected": "Each trigger reveals its config; webhook shows `X-Webhook-Secret`.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -4251,7 +4251,7 @@
     "reach": "Create → Advanced → Network policy",
     "steps": "Add domain `javascript:alert(1)`, `<script>`, `http://`, whitespace, valid domain",
     "expected": "**BUG-006**: malformed accepted unvalidated. Expected: only valid domains.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4281,7 +4281,7 @@
     "reach": "Create",
     "steps": "Prompt/playbook + repo/environment selection",
     "expected": "Selectable; playbook invokable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4311,7 +4311,7 @@
     "reach": "Automations",
     "steps": "Create webhook automation → POST to webhook with secret → session spawns",
     "expected": "Valid secret → session created; invalid/missing secret → rejected. **N/E** unless approved.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -4341,7 +4341,7 @@
     "reach": "Schedules → Create",
     "steps": "Set cron/recurrence + prompt",
     "expected": "Valid cron accepted; invalid cron rejected.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4356,7 +4356,7 @@
     "reach": "Schedules",
     "steps": "Create one-time + recurring; edit; delete",
     "expected": "CRUD persists; next-run time correct. **N/E** on live / delete after.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -4371,7 +4371,7 @@
     "reach": "Schedules",
     "steps": "Create near-term schedule → wait for fire",
     "expected": "Session spawns at scheduled time; appears in Sessions list. **N/E** unless approved.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
