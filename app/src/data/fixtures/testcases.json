@@ -2879,7 +2879,7 @@
     "reach": "Analytics → Export/refresh",
     "steps": "Refresh data and export each supported view/range.",
     "expected": "Refresh timestamp updates correctly; export file matches active filters and contains no unauthorized user/session detail.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -2909,7 +2909,7 @@
     "reach": "Analytics",
     "steps": "As restricted user or with tampered org/user/repo IDs, request analytics outside the enterprise.",
     "expected": "Server denies unauthorized metrics and does not expose private usage, cost, or session metadata.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -2924,7 +2924,7 @@
     "reach": "Analytics",
     "steps": "Set date range + organization + view, refresh, export, deep-link reload, then clear/restore defaults.",
     "expected": "Full analytics state is reproducible through URL and exported data matches the selected UI scope.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
