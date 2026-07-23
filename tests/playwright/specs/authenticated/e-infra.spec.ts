@@ -63,4 +63,38 @@ test.describe("Infrastructure", () => {
 
     expect(errors).toHaveLength(0);
   });
+
+  test("INFRA-REG03 — Tampered tenant IDs are denied infrastructure health data.", async ({
+    page,
+  }) => {
+    const infra = new InfraPage(page);
+
+    // Capture the legitimate VPC health request (including its auth headers) and
+    // confirm the baseline request for the admin's own enterprise succeeds.
+    const captured = await infra.gotoAndCaptureVpcRequest();
+    expect(captured.status).toBe(200);
+    const enterpriseId = captured.url.match(/\/api\/enterprise\/([^/]+)\/vpc/)?.[1];
+    expect(enterpriseId).toBeTruthy();
+
+    // Replay the same authenticated request with tampered tenant identifiers.
+    const authorization = captured.headers["authorization"];
+    expect(authorization).toBeTruthy();
+    const origin = new URL(captured.url).origin;
+    const tamperedIds = ["enterprise-00000000000000000000000000000000", `${enterpriseId}x`];
+
+    for (const tamperedId of tamperedIds) {
+      const response = await page.request.get(`${origin}/api/enterprise/${tamperedId}/vpc`, {
+        headers: { authorization },
+      });
+
+      // Server denies unauthorized/cross-tenant infra visibility.
+      expect([401, 403, 404]).toContain(response.status());
+
+      // The denial does not expose internal host details.
+      const body = await response.text();
+      expect(body).not.toContain("tenants");
+      expect(body).not.toContain("hypervisor");
+      expect(body.toLowerCase()).not.toContain("host");
+    }
+  });
 });

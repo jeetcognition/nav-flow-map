@@ -227,12 +227,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires a restricted user or tampered tenant/hypervisor context that is not available in the shared admin Playwright setup."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-infra.spec.ts"
       },
       "source": {
         "type": "migration",

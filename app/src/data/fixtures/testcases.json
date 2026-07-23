@@ -3647,7 +3647,7 @@
     "reach": "Infrastructure",
     "steps": "As restricted user or with tampered tenant/hypervisor IDs, request infrastructure health data.",
     "expected": "Server denies unauthorized/cross-tenant infra visibility and does not expose internal host details unnecessarily.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
