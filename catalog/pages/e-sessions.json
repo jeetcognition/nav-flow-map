@@ -321,12 +321,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires an additional user role or environment not available in this Playwright project."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-sessions.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -335,7 +334,7 @@
       "linkedBugIds": [],
       "externalReferences": [],
       "version": 1,
-      "lastReviewed": "2026-07-21"
+      "lastReviewed": "2026-07-23"
     },
     {
       "id": "SESS-REG05",
@@ -369,12 +368,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires an additional user role or environment not available in this Playwright project."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-sessions.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -383,7 +381,7 @@
       "linkedBugIds": [],
       "externalReferences": [],
       "version": 1,
-      "lastReviewed": "2026-07-21"
+      "lastReviewed": "2026-07-23"
     },
     {
       "id": "SESS-E2E01",
@@ -416,12 +414,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires an additional user role or environment not available in this Playwright project."
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-sessions.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -430,7 +427,7 @@
       "linkedBugIds": [],
       "externalReferences": [],
       "version": 1,
-      "lastReviewed": "2026-07-21"
+      "lastReviewed": "2026-07-23"
     }
   ]
 }

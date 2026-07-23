@@ -474,7 +474,7 @@
     "reach": "Sessions",
     "steps": "As a restricted user or with tampered creator/session/enterprise IDs, request sessions outside the enterprise.",
     "expected": "Server denies cross-enterprise or unauthorized session access; no prompt, transcript, attachment, or secret-derived data leaks.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -489,7 +489,7 @@
     "reach": "Sessions",
     "steps": "Force list/search/filter API 403/404/500 or slow responses.",
     "expected": "Loading and error states are scoped to the list; stale results are not presented as current.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -504,7 +504,7 @@
     "reach": "Sessions",
     "steps": "Filter to a known creator/date, open a session, return, then clear filters.",
     "expected": "End-to-end session discovery and return navigation work without losing state.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
