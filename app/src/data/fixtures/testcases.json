@@ -954,7 +954,7 @@
     "reach": "Sub-org sidebar → Review, or `/review`",
     "steps": "Load",
     "expected": "Review landing renders; PR URL input present.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -969,7 +969,7 @@
     "reach": "Review landing",
     "steps": "Paste a valid PR URL → click **\"Go to pull request\"** button",
     "expected": "**Known BUG-017**: button never enables; only pressing **Enter** submits. Expected once fixed: button enables on valid URL and submits.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -3906,7 +3906,7 @@
     "reach": "Sidebar → Review",
     "steps": "Load",
     "expected": "Review renders; PR URL input (dismiss intro modal — BL-043).",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -3921,7 +3921,7 @@
     "reach": "Review",
     "steps": "Paste valid PR URL → click \"Go to pull request\"",
     "expected": "**BUG-017**: button never enables; Enter submits (then works incl. graceful \"PR Not Found\").",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
