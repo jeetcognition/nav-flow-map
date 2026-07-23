@@ -47,11 +47,34 @@ export class GuardrailsPage extends BasePage {
     await this.page.goto(routes.guardrails(slug));
   }
 
+  async gotoViolations(slug: string = ENTERPRISE_SLUG) {
+    await this.page.goto(`${routes.guardrails(slug)}?tab=violations`);
+  }
+
   guardrailAction(name: string): Locator {
     const row = this.contentArea
       .locator("div")
       .filter({ hasText: new RegExp(`^${name}`) })
       .first();
     return row.getByRole("combobox").first();
+  }
+
+  /** Current UI label of a guardrail's action combobox (e.g. "Block message"). */
+  async currentAction(name: string): Promise<string> {
+    return (await this.guardrailAction(name).textContent())?.trim() ?? "";
+  }
+
+  /** Change a guardrail's action and wait for the policy update to persist. */
+  async setAction(name: string, action: string) {
+    const combo = this.guardrailAction(name);
+    await combo.click();
+    await Promise.all([
+      this.page.waitForResponse(
+        (r) =>
+          r.url().includes("/guardrails/") && r.request().method() === "PUT" && r.status() === 200,
+      ),
+      this.page.getByRole("option", { name: action }).click(),
+    ]);
+    await expect(combo).toHaveText(action);
   }
 }
