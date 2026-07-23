@@ -1379,7 +1379,7 @@
     "reach": "Enterprise settings → Playbooks",
     "steps": "Load the page cold.",
     "expected": "Heading, description/documentation, Enterprise/System tabs with counts, search, and table render without a page or console error.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1394,7 +1394,7 @@
     "reach": "Playbooks → Enterprise",
     "steps": "Inspect the Enterprise list.",
     "expected": "Create playbook, Name/Macro/Created by/Last updated columns, and Enterprise rows are visible and readable.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1409,7 +1409,7 @@
     "reach": "Playbooks → System",
     "steps": "Inspect the System list.",
     "expected": "System count and Cognition Team playbooks are visible; Create playbook is unavailable for the read-only System collection.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-priya",
     "source": "authored"
@@ -1424,7 +1424,7 @@
     "reach": "Playbooks → Enterprise",
     "steps": "Click **Create playbook**.",
     "expected": "Breadcrumb, Back to playbooks, name, author, Edit/Preview, editor, macro, Devin mode, Cancel, Save, and fullscreen controls are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1439,7 +1439,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Inspect the default editor content.",
     "expected": "Overview, Procedure, Advice & Pointers, and Forbidden actions template sections plus the character counter are visible.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1454,7 +1454,7 @@
     "reach": "Playbooks",
     "steps": "Search with matching, no-match, whitespace, emoji, long, HTML-like, and injection-like input; then clear.",
     "expected": "Results filter safely; no-match state is clear; input remains inert; clearing restores the full list.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1469,7 +1469,7 @@
     "reach": "Playbooks",
     "steps": "Load names, macros, and bodies containing HTML-like, Unicode, and RTL text.",
     "expected": "Values render as inert text; no script executes or sensitive/internal data is exposed.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1499,7 +1499,7 @@
     "reach": "Playbooks",
     "steps": "Switch Enterprise/System tabs → refresh and deep-link each tab → open an invalid tab value.",
     "expected": "Correct tab persists after reload; invalid values safely fall back without a crash.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1514,7 +1514,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Attempt creation with blank name/body, duplicate name, excessive-length values, and HTML-like text.",
     "expected": "Required validation is clear; unsafe text remains inert; no incomplete playbook is created.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1529,7 +1529,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Try macros without `!`, with spaces, duplicates, unsupported characters, and excessive length.",
     "expected": "Invalid or duplicate macros are rejected clearly; a valid unique macro is accepted.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-maya",
     "source": "authored"
@@ -1544,7 +1544,7 @@
     "reach": "Playbooks → New playbook",
     "steps": "Create `qa-temp-playbook-<timestamp>` → verify in Enterprise/search → edit name/body/macro/mode → reload and verify → delete.",
     "expected": "Create/read/update/delete persists correctly; cleanup confirms the disposable playbook is absent.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1559,7 +1559,7 @@
     "reach": "Playbooks → New or disposable playbook",
     "steps": "Enter Markdown → switch Edit/Preview → enter and exit fullscreen.",
     "expected": "Preview renders headings and lists safely; editor text is retained; fullscreen preserves content and controls.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1604,7 +1604,7 @@
     "reach": "Playbooks → New or disposable playbook",
     "steps": "Make unsaved changes, then use Back, Cancel, or another page.",
     "expected": "A warning or documented discard behavior occurs; changes are not silently saved or lost.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
@@ -1619,7 +1619,7 @@
     "reach": "Disposable playbook",
     "steps": "Select each available Devin mode → save and reload → launch a session from the playbook → delete it.",
     "expected": "Selected mode persists and the launched session uses that mode; cleanup removes the disposable playbook.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
@@ -1649,7 +1649,7 @@
     "reach": "Playbooks → Create playbook → New session",
     "steps": "Create a disposable playbook with a unique instruction and `!qa_temp_<timestamp>` macro → invoke the macro in a new session → verify mode/instruction → delete it.",
     "expected": "The correct playbook launches and Devin follows its unique procedure; unrelated playbooks are not used; cleanup removes the disposable playbook.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"
