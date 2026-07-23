@@ -12,6 +12,7 @@ export { PlaybooksPage } from "./playbooks.page";
 export { ReposPage } from "./repos.page";
 export { SkillsPage } from "./skills.page";
 export { RolesPage } from "./roles.page";
+export { SecurityPage } from "./security.page";
 export { SuborgPage } from "./suborg.page";
 export { SupportPage } from "./support.page";
 export { EnterpriseSettingsPage } from "./ent-settings.page";
