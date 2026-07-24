@@ -939,7 +939,7 @@
     "reach": "Review → Git provider PR",
     "steps": "With approval, enroll a disposable repo/user and open a disposable PR.",
     "expected": "Devin Review behavior follows saved settings; cleanup removes enrollment and restores original configuration.",
-    "automation": "manual",
+    "automation": "automated",
     "flaky": false,
     "createdBy": "u-arjun",
     "source": "authored"

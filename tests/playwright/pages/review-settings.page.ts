@@ -74,6 +74,71 @@ export class ReviewSettingsPage extends BasePage {
     await target.waitFor({ state: "visible" });
   }
 
+  /** Remove button for an enrolled repo row, e.g. "gitlab.com/group/project". */
+  removeRepoButton(hostPath: string): Locator {
+    return this.page.getByRole("button", { name: `Remove ${hostPath}` });
+  }
+
+  /** Mode combobox ("Auto review" / "When the PR is ready") for an enrolled repo row. */
+  repoModeSelect(repoPath: string): Locator {
+    return this.page
+      .locator("div.flex.items-center.justify-between", { hasText: repoPath })
+      .first()
+      .getByRole("combobox");
+  }
+
+  /** Enrolls a repository through the Add repo dialog and waits for the settings save. */
+  async enrollRepo(repoPath: string): Promise<{ saved: boolean; status?: number }> {
+    // The dialog truncates long repo names, so search and match on the group segment.
+    const group = repoPath.split("/")[0];
+    await this.openAddRepoDialog();
+    await this.addRepoSearchInput.fill(group);
+    // The list is virtualized and re-renders while the search settles; wait
+    // until every rendered row matches the query so the toggle cannot land on
+    // a recycled row for a different repository.
+    await this.page.waitForFunction((g) => {
+      const rows = Array.from(document.querySelectorAll("[role='dialog'] button[data-index]"));
+      return rows.length > 0 && rows.every((r) => (r.textContent ?? "").includes(g));
+    }, group);
+    // Click the row's checkbox directly (a row click can land on the inline
+    // visibility button) and confirm the toggle registered before saving.
+    const row = this.addRepoListRow.filter({ hasText: group }).first();
+    const checkbox = row.getByRole("checkbox").first();
+    const checkedState = row.locator("[role='checkbox'][aria-checked='true']").first();
+    await checkbox.click();
+    try {
+      await checkedState.waitFor({ timeout: 10_000 });
+    } catch {
+      // The virtualized row occasionally swallows the first click; retry once.
+      await checkbox.click();
+      await checkedState.waitFor({ timeout: 10_000 });
+    }
+    const respPromise = this.page
+      .waitForResponse(
+        (r) => r.url().includes("/api/pr-review/settings/repos") && r.request().method() === "PUT",
+        { timeout: 15_000 },
+      )
+      .catch(() => null);
+    await this.addRepoSaveButton.click();
+    const resp = await respPromise;
+    await this.addRepoDialog.waitFor({ state: "hidden" });
+    return { saved: !!resp, status: resp?.status() };
+  }
+
+  /** Removes an enrolled repository and waits for the settings save. */
+  async unenrollRepo(hostPath: string): Promise<{ saved: boolean; status?: number }> {
+    const respPromise = this.page
+      .waitForResponse(
+        (r) => r.url().includes("/api/pr-review/settings/repos") && r.request().method() === "PUT",
+        { timeout: 15_000 },
+      )
+      .catch(() => null);
+    await this.removeRepoButton(hostPath).click();
+    const resp = await respPromise;
+    await this.removeRepoButton(hostPath).waitFor({ state: "hidden" });
+    return { saved: !!resp, status: resp?.status() };
+  }
+
   async openAddRepoDialog() {
     await this.addRepoButton.click();
     await this.addRepoDialog.waitFor({ state: "visible" });

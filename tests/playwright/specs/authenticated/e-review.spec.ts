@@ -1,5 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { ReviewSettingsPage, routes, ALT_SUBORG } from "../../pages";
+import {
+  GITLAB_QA_TOKEN,
+  GITLAB_QA_HOST,
+  GITLAB_QA_PROJECT_PATH,
+  openDisposableMr,
+  fetchMrComments,
+  closeDisposableMr,
+  DisposableMr,
+} from "../../support/gitlab";
 
 test.describe("Review Settings", () => {
   test("REV-SMK01 — Load cold", async ({ page }) => {
@@ -168,6 +177,81 @@ test.describe("Review Settings", () => {
       expect(dialogs).toHaveLength(0);
     } finally {
       await review.removeAllFilePatterns();
+    }
+  });
+
+  test("REV-E2E01 — Enroll a disposable repo and open a disposable PR", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!GITLAB_QA_TOKEN, "GITLAB_QA_API_TOKEN is not configured");
+    // Devin Review needs several minutes to analyze and comment on the MR.
+    testInfo.setTimeout(720_000);
+
+    const hostPath = `${GITLAB_QA_HOST}/${GITLAB_QA_PROJECT_PATH}`;
+    const review = new ReviewSettingsPage(page);
+    await review.goto();
+    await review.heading.waitFor({ state: "visible" });
+
+    // Pre-state: the disposable repo must not already be enrolled.
+    if (
+      await review
+        .removeRepoButton(hostPath)
+        .isVisible()
+        .catch(() => false)
+    ) {
+      await review.unenrollRepo(hostPath);
+      await expect(review.removeRepoButton(hostPath)).toBeHidden();
+    }
+
+    let mr: DisposableMr | null = null;
+    try {
+      const enrolled = await review.enrollRepo(GITLAB_QA_PROJECT_PATH);
+      expect(enrolled.saved).toBe(true);
+      expect(enrolled.status).toBe(200);
+      await expect(review.removeRepoButton(hostPath)).toBeVisible();
+      await expect(review.repoModeSelect(GITLAB_QA_PROJECT_PATH)).toHaveText("Auto review");
+
+      mr = await openDisposableMr(`qa-rev-e2e01-${Date.now()}`);
+
+      // The in-app review viewer renders the enrolled repo's MR.
+      await page.goto(routes.reviewMergeRequest(GITLAB_QA_HOST, GITLAB_QA_PROJECT_PATH, mr.iid));
+      // First visits show a Devin Review onboarding dialog; dismiss it.
+      await page
+        .getByRole("dialog", { name: "Devin Review" })
+        .getByRole("button", { name: "Skip" })
+        .click({ timeout: 10_000 })
+        .catch(() => {});
+      await expect(
+        page.getByRole("link", { name: `${GITLAB_QA_PROJECT_PATH} #${mr.iid}` }),
+      ).toBeVisible({ timeout: 30_000 });
+      await expect(page.getByText("You can't view this repository")).toBeHidden();
+
+      // Devin Review follows the saved settings: the auto review posts MR comments.
+      await expect
+        .poll(
+          async () => {
+            const comments = await fetchMrComments(mr!.iid);
+            return comments.some((c) => c.includes("Devin Review"));
+          },
+          { intervals: [15_000], timeout: 600_000 },
+        )
+        .toBe(true);
+    } finally {
+      if (mr) {
+        await closeDisposableMr(mr);
+      }
+      // Cleanup removes the enrollment and restores the original configuration.
+      await review.goto();
+      await review.heading.waitFor({ state: "visible" });
+      if (
+        await review
+          .removeRepoButton(hostPath)
+          .isVisible()
+          .catch(() => false)
+      ) {
+        await review.unenrollRepo(hostPath);
+      }
+      await expect(review.removeRepoButton(hostPath)).toBeHidden();
     }
   });
 

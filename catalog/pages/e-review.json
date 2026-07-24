@@ -412,13 +412,12 @@
         "roles": ["enterprise-admin"]
       },
       "executors": {
-        "devinBrowser": "required",
-        "playwright": "blocked",
-        "blockedReason": "Requires disposable repo/user and PR creation with human approval; not suitable for unattended Playwright run."
+        "devinBrowser": "eligible",
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
       },
       "source": {
         "type": "migration",
