@@ -84,9 +84,7 @@ export function FlowNode({ data, selected }: NodeProps<FlowNodeType>) {
         </div>
       </div>
       <div className="fn-foot">
-        <span className="fn-sub mono">
-          {hasCases ? `${stats.total} cases` : "no cases"}
-        </span>
+        <span className="fn-sub mono">{hasCases ? `${stats.total} cases` : "no cases"}</span>
         {collapsible && (
           <button
             className="fn-branch"

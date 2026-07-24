@@ -14,12 +14,6 @@ import {
 export type LayoutMode = "split" | "graph" | "panel";
 export type HeatMode = "coverage" | "risk";
 
-const LEGEND: { color: string; label: string }[] = [
-  { color: "var(--heat-covered)", label: "Covered" },
-  { color: "var(--heat-partial)", label: "Partial" },
-  { color: "var(--heat-uncovered)", label: "Uncovered" },
-];
-
 interface Props {
   layout: LayoutMode;
   mode: HeatMode;
@@ -87,16 +81,6 @@ export function FlowToolbar({
             </button>
           ))}
         </div>
-        {mode === "coverage" && (
-          <div className="fm-legend">
-            {LEGEND.map((l) => (
-              <span key={l.label} className="fm-legend-item">
-                <span className="fm-legend-dot" style={{ background: l.color }} />
-                {l.label}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
       <div className="fm-tools">
         <button className="btn fm-btn" onClick={onAddPage}>
