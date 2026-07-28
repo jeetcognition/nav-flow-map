@@ -2,6 +2,7 @@ import { test as setup, expect } from "@playwright/test";
 import fs from "node:fs";
 import { LoginPage, OrgSelectorPage } from "../pages";
 import { fetchLatestOtp } from "../support/gmail-otp";
+import { routes } from "../support/paths";
 
 // Captures an authenticated admin session once so other tests can reuse it.
 // Run with `npm run auth` or let it run automatically as the `setup` project dependency.
@@ -31,8 +32,11 @@ setup("authenticate as admin", async ({ page }) => {
     }),
   );
 
-  // Confirm we landed on the post-login org-selector page.
+  // Confirm we landed on the post-login org-selector page. These assertions double
+  // as AUTH-SAN02 (valid OTP → successful login) so the spec does not need to spend
+  // a second OTP on the same flow.
   await expect(orgSelector.heading).toBeVisible({ timeout: 30_000 });
+  await expect(page).toHaveURL(routes.orgSelector);
 
   await page.context().storageState({ path: ".auth/admin.json" });
   console.log("[auth:ADMIN] session saved -> .auth/admin.json");
