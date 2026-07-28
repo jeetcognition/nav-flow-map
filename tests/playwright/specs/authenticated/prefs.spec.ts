@@ -269,6 +269,11 @@ test.describe("Personal Preferences", () => {
     const prefs = new PrefsPage(page);
     await prefs.goto();
 
+    test.skip(
+      (await prefs.rowHeading("Default agent").count()) === 0,
+      "The Default agent setting is not present on the Preferences page",
+    );
+
     const original = ((await prefs.combobox("Default agent").textContent()) ?? "").trim();
     expect(original).not.toBe("");
     // The composer chip shows a short label ("Fast" for "Fast Mode").

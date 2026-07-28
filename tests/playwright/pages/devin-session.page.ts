@@ -86,13 +86,32 @@ export class DevinSessionPage extends BasePage {
 
   async closeMenu() {
     await this.page.keyboard.press("Escape");
+    if (await this.openMenu.isVisible().catch(() => false)) {
+      // Focus can land outside the menu after selecting an item; dismiss
+      // with an outside click instead.
+      await this.page.mouse.click(5, 5);
+    }
     await expect(this.openMenu).toBeHidden();
   }
 
-  /** Select a capability radio (e.g. "Ultra" or "Normal") in the mode dropdown. */
+  /** Select a capability (e.g. "Ultra" or "Normal") in the mode dropdown.
+   * Capabilities render as menuitemradios or plain menuitems; "Normal" opens
+   * a speed submenu (Standard/Fast) instead of selecting directly. */
   async selectCapability(name: string) {
-    await this.page.getByRole("menuitemradio", { name }).click();
-    // The capability radios keep the menu open; dismiss it explicitly.
+    const item = this.page
+      .locator('[role="menuitemradio"], [role="menuitem"]')
+      .filter({ hasText: new RegExp(`^${name}`) })
+      .first();
+    await item.click();
+    if ((await item.getAttribute("aria-expanded").catch(() => null)) === "true") {
+      const submenu = this.page.getByRole("menu").last();
+      const checked = submenu.locator('[role="menuitemradio"][aria-checked="true"]');
+      const target = (await checked.count())
+        ? checked.first()
+        : submenu.getByRole("menuitemradio").first();
+      await target.click();
+    }
+    // The capability items keep the menu open; dismiss it explicitly.
     await this.closeMenu();
   }
 
