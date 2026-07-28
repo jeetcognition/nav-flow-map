@@ -52,14 +52,14 @@ test.describe("New session composer", () => {
 
     await session.openModeMenu();
     const menu = session.openMenu;
-    // Capability radios plus the Mode/Speed groupings.
+    // Capability radios plus the Mode grouping.
+    await expect(menu).toContainText("Capability");
     await expect(menu).toContainText("Normal");
     await expect(menu).toContainText("Ultra");
     await expect(menu).toContainText("Fusion");
-    await expect(menu).toContainText("SWE-1.7");
+    await expect(menu).toContainText(/SWE[- ]1\.7/);
     await expect(menu).toContainText("Mode");
     await expect(menu).toContainText("Agent");
-    await expect(menu).toContainText("Speed");
     await expect(menu).toContainText("Fast");
 
     // Selecting a capability changes the trigger label; no crash.

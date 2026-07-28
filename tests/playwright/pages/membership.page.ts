@@ -60,7 +60,7 @@ export class MembershipPage extends BasePage {
 
   /** The role selector button inside a member row. */
   rowRoleButton(row: Locator): Locator {
-    return row.getByRole("combobox");
+    return row.locator('button[role="combobox"][data-dd-action-name="Select role"]');
   }
 
   /** The organizations count button inside a member row (zero if absent). */
@@ -151,7 +151,7 @@ export class MembershipPage extends BasePage {
   /** Click a visible option by name in an open filter dialog (no search). */
   async clickFilterOption(dialog: Locator, name: string) {
     const option = dialog
-      .locator("div")
+      .getByRole("option")
       .filter({ hasText: new RegExp(`^${name}$`) })
       .last();
     await option.waitFor({ state: "visible", timeout: 10_000 });
@@ -166,7 +166,7 @@ export class MembershipPage extends BasePage {
     await search.click();
     await this.page.keyboard.insertText(name);
     const option = dialog
-      .locator("div")
+      .getByRole("option")
       .filter({ hasText: new RegExp(`^${name}$`) })
       .last();
     await option.waitFor({ state: "visible", timeout: 10_000 });
@@ -222,7 +222,7 @@ export class MembershipPage extends BasePage {
       .filter({ hasText: /Admin|Member/ })
       .last();
     await list
-      .locator("div")
+      .getByRole("option")
       .filter({ hasText: new RegExp(`^${targetRole}$`) })
       .last()
       .click();
