@@ -8,18 +8,20 @@ views.
 
 ## Repository layout
 
-| Path                                 | What                                                                                                                                                                 |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app/`                               | **QA Command Center** — the React app served at the URL above (Dashboard, NavFlow graph, Runs, Issues, Incidents, Automation). See [`app/README.md`](app/README.md). |
-| `app/src/data/fixtures/`             | Canonical data: `nodes.json` (graph pages), `testcases.json`, `bugs.json`, plus runs/incidents/sessions fixtures.                                                    |
-| `catalog/`                           | Canonical page/testcase catalog foundation (schema + `pages/*.json`).                                                                                                |
-| `docs/`                              | Architecture, durable decisions, and work-log.                                                                                                                       |
-| `scripts/validate-catalog.mjs`       | Validates `catalog/pages/*.json` against `catalog/schema/page-catalog.schema.json`.                                                                                  |
-| `scripts/validate-data.js`           | Cross-checks the fixtures and `navmap-edits.json` (run by the Validate CI workflow).                                                                                 |
-| `tests/playwright/`                  | Playwright E2E suite for product webapp cases. See [`tests/playwright/README.md`](tests/playwright/README.md).                                                       |
-| `worker/`                            | Cloudflare Worker: commits `navmap-edits.json`, starts Devin promotion/suggestion sessions (`wrangler deploy`).                                                      |
-| `qa-testing/`                        | Markdown test-case sources maintained by the AI promotion pass.                                                                                                      |
-| `AUDIT.md` / `TODO.md` / `AGENTS.md` | Engineering audit, living backlog, and contributor/agent conventions.                                                                                                |
+| Path                                 | What                                                                                                                                                                  |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/`                               | **QA Command Center** — the React app served at the URL above (Dashboard, NavFlow graph, Runs, Issues, Incidents, Automation). See [`app/README.md`](app/README.md).  |
+| `app/src/data/fixtures/`             | Canonical data: `nodes.json` (graph pages), `testcases.json`, `bugs.json`, plus runs/incidents/sessions fixtures.                                                     |
+| `catalog/`                           | Canonical page/testcase catalog foundation (schema + `pages/*.json`).                                                                                                 |
+| `docs/`                              | Architecture, durable decisions, and work-log.                                                                                                                        |
+| `scripts/validate-catalog.mjs`       | Validates `catalog/pages/*.json` against `catalog/schema/page-catalog.schema.json`.                                                                                   |
+| `scripts/validate-data.js`           | Cross-checks the fixtures and `navmap-edits.json` (run by the Validate CI workflow).                                                                                  |
+| `tests/playwright/`                  | Playwright E2E suite for product webapp cases. See [`tests/playwright/README.md`](tests/playwright/README.md).                                                        |
+| `worker/`                            | Cloudflare Worker: commits `navmap-edits.json`, starts Devin promotion/suggestion sessions (`wrangler deploy`).                                                       |
+| `qa-testing/`                        | Markdown test-case sources maintained by the AI promotion pass.                                                                                                       |
+| `.agents/skills/`                    | Model-invocable QA skills that run the app under test in an authenticated Chrome (exploratory + deterministic catalog runner).                                        |
+| `qa-loop/`                           | The exploration loop: heuristics/lenses, expectations oracle, surface-map drift baseline, change-radar, scope, backlog. See [`qa-loop/README.md`](qa-loop/README.md). |
+| `AUDIT.md` / `TODO.md` / `AGENTS.md` | Engineering audit, living backlog, and contributor/agent conventions.                                                                                                 |
 
 The legacy no-build site (root `index.html` + `testcases.js` + `bugs.js`) was
 removed on 2026-07-18 once the React app replaced it; its data lives on as the

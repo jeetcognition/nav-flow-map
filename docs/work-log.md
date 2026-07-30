@@ -488,3 +488,29 @@
 
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
+
+## 2026-07-16 — QA loop ported from `empty` + `enterprise-self-qa`
+
+Distilled the two soon-to-be-archived QA repos into this one (QA-DEC-027).
+
+- Added `.agents/skills/exploratory-qa/` (SKILL.md + PROMPT.md) — open-ended
+  browser bug-hunting, interactive change→save→reload→verify→revert, edge cases,
+  stability protocol, false-positive traps, Devin-native login bootstrap.
+- Added `.agents/skills/desktop-qa-runner/SKILL.md` — deterministic catalog-case
+  executor with the reusable action-transcript → Playwright base.
+- Added shared CDP scripts `.agents/skills/scripts/` (lib.py, start_login.py,
+  find_cdp_port.sh, explore_template.py).
+- Added `qa-loop/`: README (the loop + where memory lives), scope, change-radar,
+  heuristics/lenses (L1–L7, evolvable), expectations (expected-behavior +
+  known-quirks), memory (surface-map drift baseline + backlog).
+- Resolved the four merge conflicts (result vocab, bug format, ID scheme, default env).
+- No change to the React app, fixtures, catalog cases, or worker — additive only.
+
+### Validation
+
+- `npm run check` (prettier + catalog validation)
+- No app/ or fixture changes (existing 372 cases and CI data validation unaffected)
+
+### Implementation reference
+
+- Decision QA-DEC-027.
