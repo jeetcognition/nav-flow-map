@@ -31,5 +31,22 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], storageState: ".auth/admin.json" },
       testMatch: "authenticated/*.spec.ts",
     },
+    // Safari-engine (WebKit) variants of the same specs. Opt-in via
+    // WEBKIT=1 so the default (and CI) run stays Chromium-only.
+    ...(process.env.WEBKIT
+      ? [
+          {
+            name: "unauthenticated-webkit",
+            use: { ...devices["Desktop Safari"] },
+            testMatch: "unauthenticated/*.spec.ts",
+          },
+          {
+            name: "authenticated-webkit",
+            dependencies: ["setup"],
+            use: { ...devices["Desktop Safari"], storageState: ".auth/admin.json" },
+            testMatch: "authenticated/*.spec.ts",
+          },
+        ]
+      : []),
   ],
 });
