@@ -36,7 +36,7 @@
     "route": "/org/jeet-devin-qa/",
     "desc": "Sub-org workspace home.",
     "parent": "landing",
-    "via": "Type jeet-test-org in the search bar → click jeet-test-org",
+    "via": "Type jeet-devin-qa in the search bar → click jeet-devin-qa",
     "prefixes": ["SUB", "SUB-NS"]
   },
   {
@@ -266,7 +266,7 @@
     "route": "/org/jeet-devin-qa/settings",
     "desc": "Per-sub-org settings: General, Connections, Products, Resources, and Administration.",
     "parent": "ent",
-    "via": "Settings → Organizations → click jeet-test-org",
+    "via": "Settings → Organizations → click jeet-devin-qa",
     "prefixes": ["SUB-OS"]
   },
   {

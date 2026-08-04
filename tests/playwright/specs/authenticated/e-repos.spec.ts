@@ -27,14 +27,14 @@ test.describe("Repositories", () => {
     expect(errors).toHaveLength(0);
   });
 
-  test("REPO-SAN01 — Open organization selector and choose jeet-test-org.", async ({ page }) => {
+  test("REPO-SAN01 — Open organization selector and choose jeet-devin-qa.", async ({ page }) => {
     const errors = watchErrors(page);
     const repos = new ReposPage(page);
     await repos.goto();
     await repos.selectOrganization();
 
     await expect(page).toHaveURL(/org=jeet-devin-qa/);
-    await expect(repos.orgSelector).toContainText("jeet-test-org");
+    await expect(repos.orgSelector).toContainText("jeet-devin-qa");
     await expect(repos.table).toBeVisible();
 
     expect(errors).toHaveLength(0);

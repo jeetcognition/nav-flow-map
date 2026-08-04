@@ -18,7 +18,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy"],
       "owner": "arjun",
-      "navigation": "Settings → Organizations → `jeet-test-org`",
+      "navigation": "Settings → Organizations → `jeet-devin-qa`",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -165,7 +165,7 @@
         }
       ],
       "assertions": [
-        "The selected sub-org remains `jeet-test-org`",
+        "The selected sub-org remains `jeet-devin-qa`",
         "navigation does not jump to enterprise-level pages unexpectedly."
       ],
       "cleanup": {
@@ -291,7 +291,7 @@
       "id": "SUB-OS-E2E01",
       "pageId": "s-settings",
       "surface": "webapp",
-      "title": "Navigate from Organizations to `jeet-test-org`, open several child settings pages, then…",
+      "title": "Navigate from Organizations to `jeet-devin-qa`, open several child settings pages, then…",
       "type": "E2E",
       "priority": "P1",
       "riskTags": ["navigation", "ui-rendering"],
@@ -302,7 +302,7 @@
       "steps": [
         {
           "number": 1,
-          "action": "Navigate from Organizations to `jeet-test-org`, open several child settings pages, then return to Organizations."
+          "action": "Navigate from Organizations to `jeet-devin-qa`, open several child settings pages, then return to Organizations."
         }
       ],
       "assertions": [

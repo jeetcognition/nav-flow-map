@@ -24,7 +24,7 @@ TYPE = SMK (smoke), SAN (sanity), REG (regression), E2E. IDs are stable; never r
 ## Environment
 - Base: `https://cog-enterprise-qa.beta.devinenterprise.com`
 - Enterprise: `cog-enterprise-qa` (display "Cog Enterprise QA")
-- Sub-org under test: display **jeet-test-org**, slug **jeet-devin-qa** (routes use the slug; `/org/jeet-test-org/*` 404s)
+- Sub-org under test: display **jeet-devin-qa**, slug **jeet-devin-qa**
 - Enterprise settings routes: `/org/cog-enterprise-qa/settings/<page>` (short `/settings/<page>` resolves in the currently-active org context).
 
 ## Result legend
