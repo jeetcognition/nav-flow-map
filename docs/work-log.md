@@ -1,5 +1,31 @@
 # Work log
 
+## 2026-07-29 — Playwright agent playbook + per-run memory
+
+### Requested
+
+- An instruction file in `tests/playwright/` so any LLM/agent can (1) author new test cases
+  following the suite's Page Object Model and anti-flakiness conventions, (2) triage post-run
+  failures as app issues vs script issues, (3) open scoped fix PRs for locator drift, and
+  (4) record a memory file per run.
+
+### Implemented
+
+- `tests/playwright/PLAYWRIGHT-AGENT.md` — agent playbook covering the catalog-case authoring
+  procedure (read the case fully → reproduce the flow manually → one engineered test mapped 1:1 →
+  idempotent cleanup), POM rules (one spec per catalog page, locator priority, locator-parameter
+  method reuse, forbidden actions), the post-execution triage checklist, the locator-drift fix-PR
+  workflow, and the per-run memory template.
+- `tests/playwright/memory/` — committed folder for one run-memory md per agent run.
+- `tests/playwright/playwright.config.ts` — added the JSON reporter
+  (`test-results/results.json`) so agents can parse pass/fail results reliably.
+- Pointers added in `tests/playwright/README.md` and the root `AGENTS.md` layout table.
+
+### Validation
+
+- `npx prettier --check .` green at the root; `npx playwright test --list` confirms the config
+  loads with the new reporter.
+
 ## 2026-07-22 — Automate remaining `e-knowledge` regression/edge cases
 
 ### Requested
