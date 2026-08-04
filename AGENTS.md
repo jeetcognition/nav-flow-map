@@ -5,15 +5,15 @@ rest is enforced by review.
 
 ## Repository layout
 
-| Path                | What                                                           | Status                                                                                                                         |
-| ------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `app/`              | QA Command Center — React 19 + Vite + TS strict                | Active development                                                                                                             |
-| `catalog/`          | Canonical page/testcase catalog (architecture foundation)      | Active development — validated by `scripts/validate-catalog.mjs`                                                               |
-| `docs/`             | Architecture, decisions, and work-log durable memory           | Append-only documentation                                                                                                      |
-| `navmap-edits.json` | Pending website edits (overlay merged over the fixtures)       | Pipeline-owned — written by the save worker, promoted into `app/src/data/fixtures/` by the Devin pass; excluded from Prettier. |
-| `tests/playwright/` | E2E product webapp tests                                       | Active development — run from `tests/playwright/`; env-driven (see `.env.example`).                                            |
-| `worker/`           | Cloudflare Worker: commits edits, starts Devin sessions        | Active; deploy with `wrangler deploy`                                                                                          |
-| `qa-testing/`       | Markdown test-case sources maintained by the AI promotion pass | Pipeline-owned                                                                                                                 |
+| Path                | What                                                           | Status                                                                                                                                    |
+| ------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/`              | QA Command Center — React 19 + Vite + TS strict                | Active development                                                                                                                        |
+| `catalog/`          | Canonical page/testcase catalog (architecture foundation)      | Active development — validated by `scripts/validate-catalog.mjs`                                                                          |
+| `docs/`             | Architecture, decisions, and work-log durable memory           | Append-only documentation                                                                                                                 |
+| `navmap-edits.json` | Pending website edits (overlay merged over the fixtures)       | Pipeline-owned — written by the save worker, promoted into `app/src/data/fixtures/` by the Devin pass; excluded from Prettier.            |
+| `tests/playwright/` | E2E product webapp tests                                       | Active development — run from `tests/playwright/`; env-driven (see `.env.example`). Agents follow `tests/playwright/PLAYWRIGHT-AGENT.md`. |
+| `worker/`           | Cloudflare Worker: commits edits, starts Devin sessions        | Active; deploy with `wrangler deploy`                                                                                                     |
+| `qa-testing/`       | Markdown test-case sources maintained by the AI promotion pass | Pipeline-owned                                                                                                                            |
 
 ## Rules
 

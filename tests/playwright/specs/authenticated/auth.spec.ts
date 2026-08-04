@@ -6,9 +6,10 @@ import { routes } from "../../support/paths";
 const email = process.env.DEVIN_ADMIN_EMAIL ?? "";
 const appPassword = process.env.GMAIL_APP_PASSWORD ?? "";
 
-if (!email || !appPassword) {
-  test.skip("DEVIN_ADMIN_EMAIL and GMAIL_APP_PASSWORD are required to run auth specs");
-}
+test.skip(
+  !email || !appPassword,
+  "DEVIN_ADMIN_EMAIL and GMAIL_APP_PASSWORD are required to run auth specs",
+);
 
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,

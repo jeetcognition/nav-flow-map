@@ -6,6 +6,8 @@ End-to-end tests for the Devin Enterprise web app, driven by the canonical catal
 
 ```text
 tests/playwright/
+├── PLAYWRIGHT-AGENT.md   # Agent playbook: authoring, triage, fix PRs, run memory
+├── memory/         # One committed md per agent run (see PLAYWRIGHT-AGENT.md)
 ├── pages/          # Page objects (BasePage, LoginPage, OrgSelectorPage)
 ├── support/        # Environment routes (paths.ts) and Gmail-OTP helper (gmail-otp.ts)
 ├── specs/          # Test specs and auth setup
@@ -16,6 +18,8 @@ tests/playwright/
 ├── .env.example
 └── package.json
 ```
+
+LLM/agents authoring or running these tests must follow [`PLAYWRIGHT-AGENT.md`](./PLAYWRIGHT-AGENT.md).
 
 ## Environment
 
