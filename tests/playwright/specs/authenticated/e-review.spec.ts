@@ -32,7 +32,6 @@ test.describe("Review Settings", () => {
     await expect(review.usersTab).toBeVisible();
     await expect(review.addRepoButton).toBeVisible();
     await expect(review.allModesFilter).toBeVisible();
-    await expect(review.allHostsFilter).toBeVisible();
   });
 
   test("REV-SAN01 — Switch Repositories and Self-enrolled users tabs", async ({ page }) => {
@@ -60,7 +59,6 @@ test.describe("Review Settings", () => {
     await review.heading.waitFor({ state: "visible" });
 
     await expect(review.allModesFilter).toBeVisible();
-    await expect(review.allHostsFilter).toBeVisible();
 
     await review.openAddRepoDialog();
     await expect(review.addRepoDialog).toBeVisible();

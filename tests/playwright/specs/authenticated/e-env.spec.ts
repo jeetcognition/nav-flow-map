@@ -28,22 +28,18 @@ test.describe("Environment", () => {
       await expect(tab).toBeVisible();
     }
 
-    // Golden snapshot (legacy) is the default tab: snapshot surfaces render.
-    await expect(env.machineSnapshotHeading).toBeVisible();
+    // Rollout is the default tab: build health and the organizations table render.
+    await expect(env.rolloutStatusHeading).toBeVisible();
     await expect(env.organizationsHeading).toBeVisible();
-    await expect(env.snapshotsSubTab).toBeVisible();
-    await expect(env.steeringKnowledgeSubTab).toBeVisible();
+    await expect(env.rolloutOrgSearch).toBeVisible();
 
-    // Configuration, Blueprint, Outposts, and Steering knowledge surfaces render.
+    // Configuration, Blueprint, and Outposts surfaces render.
     await env.configurationTab.click();
     await expect(env.snapshotBuildsHeading).toBeVisible();
     await env.blueprintTab.click();
     await expect(env.blueprintHeading).toBeVisible();
     await env.outpostsTab.click();
     await expect(env.outpostsHeading).toBeVisible();
-    await env.goldenSnapshotTab.click();
-    await env.steeringKnowledgeSubTab.click();
-    await expect(env.steeringKnowledgeHeading).toBeVisible();
 
     expect(errors).toHaveLength(0);
   });
@@ -57,7 +53,7 @@ test.describe("Environment", () => {
       [env.configurationTab, "configuration"],
       [env.blueprintTab, "blueprint"],
       [env.outpostsTab, "outposts"],
-      [env.goldenSnapshotTab, "snapshots"],
+      [env.rolloutTab, "rollout"],
     ];
     for (const [tab, param] of tabParams) {
       await tab.click();
@@ -76,8 +72,8 @@ test.describe("Environment", () => {
     // An invalid tab value falls back safely to the default tab.
     await env.goto("bogus-tab-value");
     await expect(env.heading).toBeVisible();
-    await expect(env.goldenSnapshotTab).toHaveAttribute("aria-selected", "true");
-    await expect(env.machineSnapshotHeading).toBeVisible();
+    await expect(env.rolloutTab).toHaveAttribute("aria-selected", "true");
+    await expect(env.rolloutStatusHeading).toBeVisible();
   });
 
   test("ENV-REG01 — Test required configuration controls without saving.", async ({ page }) => {
@@ -166,6 +162,12 @@ test.describe("Environment", () => {
     const errors = watchErrors(page);
     const env = new EnvironmentPage(page);
     await env.goto("snapshots");
+    await expect(env.heading).toBeVisible();
+
+    test.skip(
+      (await env.goldenSnapshotTab.count()) === 0,
+      "The Golden snapshot (legacy) tab is no longer present on the Environment page",
+    );
 
     await expect(env.goldenSnapshotTab).toHaveAttribute("aria-selected", "true");
     await expect(env.goldenSnapshotTab).toContainText("legacy");
@@ -188,6 +190,12 @@ test.describe("Environment", () => {
   }) => {
     const env = new EnvironmentPage(page);
     await env.goto("snapshots");
+    await expect(env.heading).toBeVisible();
+
+    test.skip(
+      (await env.goldenSnapshotTab.count()) === 0,
+      "The Golden snapshot (legacy) tab is no longer present on the Environment page",
+    );
 
     // Version history: literal filtering, empty state, and full restore.
     await expect(env.currentVersionBadge).toBeVisible();

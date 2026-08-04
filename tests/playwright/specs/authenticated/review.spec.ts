@@ -29,11 +29,13 @@ test.describe("Review", () => {
     await suborg.reviewLink.click();
     await expect(page).toHaveURL(/\/review$/);
 
-    // First visit shows the intro dialog (BL-043); dismiss it to reach the landing.
+    // A first visit shows the intro card (BL-043); its dismissal persists
+    // across visits, so dismiss it only when present.
     const review = new ReviewPage(page);
-    await expect(review.introDialog).toBeVisible();
-    await review.dismissIntroDialog();
-    await expect(review.introDialog).toBeHidden();
+    if (await review.introCard.isVisible().catch(() => false)) {
+      await review.dismissIntroCard();
+    }
+    await expect(review.introCard).toBeHidden();
 
     await expect(review.reviewAnyPrLabel).toBeVisible();
     await expect(review.prUrlInput).toBeVisible();

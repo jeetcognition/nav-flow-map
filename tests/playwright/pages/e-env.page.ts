@@ -1,11 +1,10 @@
-import { Page, Locator } from "@playwright/test";
+import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
 // Enterprise → Environment (…/settings/enterprise-environment).
-// Main tabs: Configuration | Blueprint | Outposts | Golden snapshot (legacy).
-// The Golden snapshot tab hosts the version-history table plus an
-// Organizations section with Snapshots / Steering knowledge sub-tabs.
+// Main tabs: Rollout | Configuration | Blueprint | Outposts. Rollout is the
+// default tab and shows build health plus a per-organization rollout table.
 export class EnvironmentPage extends BasePage {
   protected readonly path = routes.environment();
 
@@ -15,10 +14,15 @@ export class EnvironmentPage extends BasePage {
   );
 
   // Main tabs
+  readonly rolloutTab = this.page.getByRole("tab", { name: "Rollout" });
   readonly configurationTab = this.page.getByRole("tab", { name: "Configuration" });
   readonly blueprintTab = this.page.getByRole("tab", { name: "Blueprint" });
   readonly outpostsTab = this.page.getByRole("tab", { name: "Outposts" });
   readonly goldenSnapshotTab = this.page.getByRole("tab", { name: "Golden snapshot (legacy)" });
+
+  // Rollout tab
+  readonly rolloutStatusHeading = this.page.getByRole("heading", { name: "Rollout status" });
+  readonly rolloutOrgSearch = this.page.getByPlaceholder("Search organizations...");
 
   // Configuration tab
   readonly snapshotBuildsHeading = this.page.getByText("Snapshot builds", { exact: true });
@@ -82,7 +86,7 @@ export class EnvironmentPage extends BasePage {
   }
 
   mainTabs(): Locator[] {
-    return [this.configurationTab, this.blueprintTab, this.outpostsTab, this.goldenSnapshotTab];
+    return [this.rolloutTab, this.configurationTab, this.blueprintTab, this.outpostsTab];
   }
 
   /**
@@ -91,7 +95,16 @@ export class EnvironmentPage extends BasePage {
    * different order between renders; sorting makes the content comparable.
    */
   async blueprintText(): Promise<string> {
-    const raw = await this.blueprintEditorContent.innerText();
+    // Monaco renders asynchronously; wait until two consecutive reads agree so
+    // a partially rendered buffer is never captured.
+    let raw = await this.blueprintEditorContent.innerText();
+    await expect(async () => {
+      const next = await this.blueprintEditorContent.innerText();
+      if (next !== raw) {
+        raw = next;
+        throw new Error("editor still rendering");
+      }
+    }).toPass({ timeout: 15_000 });
     return raw
       .split("\n")
       .map((line) => line.trim())

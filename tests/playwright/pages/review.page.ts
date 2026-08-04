@@ -5,14 +5,15 @@ import { routes } from "../support/paths";
 // Devin Review landing (`/review`) and the pull-request review view
 // (`/review/{owner}/{repo}/pull/{n}`).
 //
-// A first visit shows a "Devin Review" intro dialog (see BL-043); `goto`
-// dismisses it so tests always start from the landing itself.
+// A first visit shows an "Unlock the full experience" intro card prompting
+// personal git connections (see BL-043); `goto` dismisses it so tests always
+// start from the landing itself.
 export class ReviewPage extends BasePage {
   protected readonly path = routes.review;
 
-  /** First-visit "Devin Review" intro dialog. */
-  readonly introDialog: Locator;
-  readonly introSkipButton: Locator;
+  /** First-visit "Unlock the full experience" intro card. */
+  readonly introCard: Locator;
+  readonly introCloseButton: Locator;
 
   // Landing
   readonly reviewAnyPrLabel: Locator;
@@ -33,8 +34,8 @@ export class ReviewPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.introDialog = page.getByRole("dialog", { name: "Devin Review" });
-    this.introSkipButton = this.introDialog.getByRole("button", { name: "Skip" });
+    this.introCard = page.getByText("Unlock the full experience");
+    this.introCloseButton = page.getByRole("main").getByRole("button", { name: "Close" }).first();
 
     this.reviewAnyPrLabel = page.getByText("Review any PR URL");
     this.prUrlInput = page.getByRole("textbox", {
@@ -53,16 +54,16 @@ export class ReviewPage extends BasePage {
     this.viewOnGithubButton = page.getByRole("button", { name: "View on GitHub" });
   }
 
-  /** Navigate to the Review landing and dismiss the first-visit intro dialog. */
+  /** Navigate to the Review landing and dismiss the first-visit intro card. */
   async goto() {
     await super.goto();
-    await this.dismissIntroDialog();
+    await this.dismissIntroCard();
   }
 
-  /** Dismiss the first-visit intro dialog if it is showing. */
-  async dismissIntroDialog() {
-    await this.introSkipButton.click({ timeout: 10_000 }).catch(() => {});
-    await this.introDialog.waitFor({ state: "hidden" });
+  /** Dismiss the first-visit intro card if it is showing. */
+  async dismissIntroCard() {
+    await this.introCloseButton.click({ timeout: 10_000 }).catch(() => {});
+    await this.introCard.waitFor({ state: "hidden" });
   }
 
   /** Submit a PR URL from the landing input by pressing Enter. */

@@ -23,7 +23,6 @@ export class ReviewSettingsPage extends BasePage {
   readonly usersTab: Locator;
   readonly addRepoButton: Locator;
   readonly allModesFilter: Locator;
-  readonly allHostsFilter: Locator;
   readonly addRepoDialog: Locator;
   readonly addRepoSearchInput: Locator;
   readonly addRepoCancelButton: Locator;
@@ -51,7 +50,6 @@ export class ReviewSettingsPage extends BasePage {
     this.usersTab = page.getByRole("tab", { name: /Self-enrolled users/ });
     this.addRepoButton = page.getByRole("button", { name: "Add repo" });
     this.allModesFilter = page.getByRole("combobox").filter({ hasText: "All modes" });
-    this.allHostsFilter = page.getByRole("combobox").filter({ hasText: "All hosts" });
     this.addRepoDialog = page.getByRole("dialog", { name: "Select repositories" });
     this.addRepoSearchInput = page.getByPlaceholder("Search repositories…");
     this.addRepoCancelButton = this.addRepoDialog.getByRole("button", { name: "Cancel" });

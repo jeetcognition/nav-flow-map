@@ -316,7 +316,9 @@ test.describe("Playbooks Page", () => {
       await expect(page.getByRole("tabpanel", { name: "Details" })).toContainText(
         `updated body ${ts}`,
       );
-      await expect(playbooks.macroInput).toHaveValue(`!qa_temp_crud_upd_${ts}`);
+      // The read-only detail view renders the macro as text with a copy button
+      // rather than an input.
+      await expect(page.getByText(`!qa_temp_crud_upd_${ts}`, { exact: true })).toBeVisible();
       await expect(playbooks.modeSelect).toHaveText("Normal");
 
       // Delete and confirm the disposable playbook is absent.
