@@ -44,19 +44,19 @@ test.describe("Organizations", () => {
   test("ORG-SAN02 — Open a row's edit control without saving", async ({ page }) => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
-    await orgs.searchInput.fill("jeet-test-org");
+    await orgs.searchInput.fill("jeet-devin-qa");
     await page.keyboard.press("Enter");
-    await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+    await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
 
-    const row = orgs.rowByName("jeet-test-org");
+    const row = orgs.rowByName("jeet-devin-qa");
     await row.getByRole("button", { name: "Update name and limits" }).click();
 
-    await expect(page.locator("#displayName")).toHaveValue("jeet-test-org");
+    await expect(page.locator("#displayName")).toHaveValue("jeet-devin-qa");
     await expect(page.locator("#maxAcuLimit")).toHaveAttribute("placeholder", "No limit");
     await expect(page.getByRole("button", { name: "Save changes" })).toBeVisible();
 
     await page.keyboard.press("Escape");
-    await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+    await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
     await expect(page.getByRole("button", { name: "Save changes" })).toHaveCount(0);
   });
 
@@ -106,11 +106,11 @@ test.describe("Organizations", () => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
 
-    const matchQueries = ["jeet-test-org", "jeet", "JEET-TEST"];
+    const matchQueries = ["jeet-devin-qa", "jeet", "JEET-DEVIN"];
     for (const q of matchQueries) {
       await orgs.searchInput.fill(q);
       await page.keyboard.press("Enter");
-      await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+      await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
     }
 
     const noMatchQueries = ["no-such-org-98765", "   ", "' OR '1'='1", "<script>alert(1)</script>"];
@@ -162,7 +162,7 @@ test.describe("Organizations", () => {
   test("ORG-REG04 — Select and deselect one row and the header checkbox", async ({ page }) => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
-    await orgs.searchInput.fill("jeet-test-org");
+    await orgs.searchInput.fill("jeet-devin-qa");
     await page.keyboard.press("Enter");
     await expect(orgs.rows).toHaveCount(2);
 
@@ -356,11 +356,11 @@ test.describe("Organizations", () => {
   test("ORG-REG10 — Click delete, cancel, repeat, and confirm", async ({ page }) => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
-    await orgs.searchInput.fill("jeet-test-org");
+    await orgs.searchInput.fill("jeet-devin-qa");
     await page.keyboard.press("Enter");
-    await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+    await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
 
-    const row = orgs.rowByName("jeet-test-org");
+    const row = orgs.rowByName("jeet-devin-qa");
     await row.getByRole("button", { name: "Delete" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -369,14 +369,14 @@ test.describe("Organizations", () => {
 
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
-    await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+    await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
 
     await row.getByRole("button", { name: "Delete" }).click();
     const dialog2 = page.getByRole("dialog");
     await expect(dialog2).toBeVisible();
     await dialog2.getByRole("button", { name: "Cancel" }).click();
     await expect(dialog2).toHaveCount(0);
-    await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+    await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
   });
 
   test("ORG-REG11 — Attempt list, edit, and delete operations without authorization or with a tampered organization ID", async ({
@@ -419,14 +419,14 @@ test.describe("Organizations", () => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
 
-    await orgs.searchInput.fill("jeet-test-org");
+    await orgs.searchInput.fill("jeet-devin-qa");
     await page.keyboard.press("Enter");
-    await expect(orgs.rowByName("jeet-test-org")).toBeVisible();
+    await expect(orgs.rowByName("jeet-devin-qa")).toBeVisible();
     await expect(page).toHaveURL(/\/settings\/organizations$/);
 
-    const row = orgs.rowByName("jeet-test-org");
+    const row = orgs.rowByName("jeet-devin-qa");
     await row.getByRole("button", { name: "Update name and limits" }).click();
-    await expect(page.locator("#displayName")).toHaveValue("jeet-test-org");
+    await expect(page.locator("#displayName")).toHaveValue("jeet-devin-qa");
     await page.keyboard.press("Escape");
 
     await row.getByRole("button", { name: "Delete" }).click();

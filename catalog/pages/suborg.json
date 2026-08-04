@@ -12,22 +12,22 @@
       "id": "SUB-SAN01",
       "pageId": "suborg",
       "surface": "webapp",
-      "title": "Open the Landing Repo Page after selecting jeet-test-org",
+      "title": "Open the Landing Repo Page after selecting jeet-devin-qa",
       "type": "Sanity",
       "priority": "P1",
       "riskTags": ["navigation"],
       "cadence": ["deploy", "nightly"],
       "owner": "priya",
       "navigation": "Sub-org home",
-      "preconditions": ["User is authenticated and has selected the jeet-test-org context"],
+      "preconditions": ["User is authenticated and has selected the jeet-devin-qa context"],
       "steps": [
         {
           "number": 1,
-          "action": "Open the Landing Repo Page after selecting `jeet-test-org`."
+          "action": "Open the Landing Repo Page after selecting `jeet-devin-qa`."
         }
       ],
       "assertions": [
-        "Top-left header shows the Devin logo, selected organization name `jeet-test-org`, and organization-menu control."
+        "Top-left header shows the Devin logo, selected organization name `jeet-devin-qa`, and organization-menu control."
       ],
       "cleanup": {
         "required": false,

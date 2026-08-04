@@ -4,7 +4,7 @@ Page: `/org/jeet-devin-qa/settings/secrets`.
 
 | ID | Type | Pri | How to reach | Steps | Expected |
 |---|---|---|---|---|---|
-| SECRET-SMK01 | Smoke | P1 | jeet-test-org → Settings → Secrets | Load the page cold. | Breadcrumb and back navigation, help text, Organization and Personal counts, search, Bulk add secrets, Add secret, table, and empty or list state render without page or console errors. |
+| SECRET-SMK01 | Smoke | P1 | jeet-devin-qa → Settings → Secrets | Load the page cold. | Breadcrumb and back navigation, help text, Organization and Personal counts, search, Bulk add secrets, Add secret, table, and empty or list state render without page or console errors. |
 | SECRET-SAN01 | Sanity | P1 | Secrets | Inspect both scopes. | Organization and Personal tabs show independent counts; Name, Type, Note, Updated by, and Updated at columns are readable without displaying secret values. |
 | SECRET-SAN02 | Sanity | P1 | Secrets → empty scope | Inspect the empty state. | No secrets found and Add your first secret appear; controls remain usable and no row from the other scope leaks into the view. |
 | SECRET-SAN03 | Sanity | P1 | Secrets → Add secret | Open the dialog without submitting. | Scope, type, name, value, note, Redact value, close, and Store secret controls appear; the title reflects the selected scope. |

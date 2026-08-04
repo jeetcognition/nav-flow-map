@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { SuborgPage, TEST_SUBORG_DISPLAY } from "../../pages";
 
 test.describe("Landing Repo Page", () => {
-  test("SUB-SAN01 — Open the Landing Repo Page after selecting jeet-test-org", async ({ page }) => {
+  test("SUB-SAN01 — Open the Landing Repo Page after selecting jeet-devin-qa", async ({ page }) => {
     const suborg = new SuborgPage(page);
     await suborg.goto();
     await suborg.newSessionLink.waitFor({ state: "visible" });

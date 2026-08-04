@@ -59,7 +59,7 @@
       "id": "REPO-SAN01",
       "pageId": "e-repos",
       "surface": "webapp",
-      "title": "Open organization selector and choose `jeet-test-org` without mutating permissions.",
+      "title": "Open organization selector and choose `jeet-devin-qa` without mutating permissions.",
       "type": "Sanity",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
@@ -70,7 +70,7 @@
       "steps": [
         {
           "number": 1,
-          "action": "Open organization selector and choose `jeet-test-org` without mutating permissions."
+          "action": "Open organization selector and choose `jeet-devin-qa` without mutating permissions."
         }
       ],
       "assertions": [
