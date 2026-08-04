@@ -74,15 +74,14 @@ test.describe("Auth (Email + OTP)", () => {
     await page.close();
   });
 
-  test("AUTH-SAN02 — Enter the valid OTP code from the email and submit", async ({ browser }) => {
-    const page = await newAnonymousPage(browser);
-    const login = new LoginPage(page);
+  test("AUTH-SAN02 — Enter the valid OTP code from the email and submit", async ({ page }) => {
+    // The valid-OTP login itself is exercised (and asserted) by auth.setup.ts, which
+    // this project depends on. Reuse its captured session instead of spending a
+    // second OTP on the identical flow.
     const orgSelector = new OrgSelectorPage(page);
-    await login.goto();
-    await login.loginWithEmailOtp(email, fetchCode);
+    await page.goto("/");
     await expect(orgSelector.heading).toBeVisible({ timeout: 30_000 });
     await expect(page).toHaveURL(routes.orgSelector);
-    await page.close();
   });
 
   test("AUTH-SAN03 — Reload the browser tab after successful login", async ({ page }) => {
