@@ -32,7 +32,7 @@ export class SuborgPage extends BasePage {
     this.orgMenuTrigger = page
       .getByRole("button", { name: new RegExp(TEST_SUBORG_DISPLAY) })
       .first();
-    this.newSessionLink = page.getByRole("link", { name: "New session" });
+    this.newSessionLink = page.locator('a[aria-label="New session"][href^="/org/"]');
     this.automationsLink = page.getByRole("link", { name: "Automations" });
     this.securityLink = page.getByRole("link", { name: "Security" });
     this.reviewLink = page.getByRole("link", { name: "Review" });

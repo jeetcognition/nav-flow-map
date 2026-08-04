@@ -119,10 +119,8 @@ test.describe("Enterprise Membership", () => {
 
     const dlg = m.orgFilterDialog();
     await expect(dlg.locator("input").first()).toBeVisible();
-    await expect(dlg.locator("div").filter({ hasText: /^All organizations$/ })).toBeVisible();
-    await expect(
-      dlg.locator("div").filter({ hasText: new RegExp(`^${ALT_SUBORG_NAME}$`) }),
-    ).toBeVisible();
+    await expect(dlg.getByRole("option", { name: "All organizations" })).toBeVisible();
+    await expect(dlg.getByRole("option", { name: ALT_SUBORG_NAME })).toBeVisible();
 
     // Close while keeping the default "All organizations" selection.
     await m.clickFilterOption(dlg, "All organizations");
@@ -135,9 +133,9 @@ test.describe("Enterprise Membership", () => {
 
     const dlg = m.roleFilterDialog();
     await expect(dlg.locator("input").first()).toBeVisible();
-    await expect(dlg.locator("div").filter({ hasText: /^All enterprise roles$/ })).toBeVisible();
-    await expect(dlg.locator("div").filter({ hasText: /^Admin$/ })).toBeVisible();
-    await expect(dlg.locator("div").filter({ hasText: /^Member$/ })).toBeVisible();
+    await expect(dlg.getByRole("option", { name: "All enterprise roles" })).toBeVisible();
+    await expect(dlg.getByRole("option", { name: "Admin" })).toBeVisible();
+    await expect(dlg.getByRole("option", { name: "Member" })).toBeVisible();
     await m.clickFilterOption(dlg, "All enterprise roles");
 
     await m.openInviteDialog();
@@ -195,7 +193,7 @@ test.describe("Enterprise Membership", () => {
         async () => {
           const rows = await m.memberTable.locator("tr").count();
           const roleTexts = await m.memberTable
-            .locator('button[role="combobox"]')
+            .locator('button[role="combobox"][data-dd-action-name="Select role"]')
             .allTextContents();
           return (
             roleTexts.length > 0 && rows <= orgRows && roleTexts.every((t) => t.trim() === "Admin")
