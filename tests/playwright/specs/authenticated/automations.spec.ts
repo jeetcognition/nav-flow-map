@@ -56,7 +56,13 @@ test.describe("Automations", () => {
 
     await automations.addSubmenuTrigger("GitHub", "Issue comment");
     await expect(page.getByText("in repo")).toBeVisible();
-    await expect(page.getByText(/don't trigger for events from public GitHub/)).toBeVisible();
+    // The repo picker shows the public-GitHub caveat when GitHub is connected,
+    // or a connect prompt when it is not; either is a valid configuration reveal.
+    await expect(
+      page.getByText(
+        /don't trigger for events from public GitHub|Connect GitHub to use this trigger/,
+      ),
+    ).toBeVisible();
     await automations.removeAllTriggers();
 
     await automations.addSubmenuTrigger("Linear", "Issue created");

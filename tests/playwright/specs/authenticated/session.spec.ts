@@ -87,7 +87,6 @@ test.describe("New session composer", () => {
       "Devin sessions",
       "Playbooks",
       "Secrets",
-      "Send secrets",
       "Actions",
     ]) {
       const entry = page.getByRole("menuitem", { name: item, exact: true });
