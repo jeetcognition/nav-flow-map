@@ -614,3 +614,15 @@ ESEC-REG03 (bulk-import per-line inline errors + disabled Store), ESEC-REG04
 (search injection), ESEC-REG05 (no errors). ESEC-REG06 (store/delete race +
 encryption) is manual — enterprise-wide mutation on the shared tenant; ESEC-REG07
 (non-admin authz/IDOR) is blocked on a non-admin auth fixture.
+
+## 2026-08-07 — Misc per-page gaps: tab deep links, Devin smoke, org-role form, playbook history
+
+- API-REG08: `?tab=` deep links (service-users / pat-policies / legacy-api) each
+  select the right tab on a cold load.
+- DEVIN-SMK01: cold-load smoke — heading, Sessions section, and every model/mode
+  and tool switch with a definite aria-checked state.
+- ROLE-REG11: organization-role create form renders the permission matrix at
+  /settings/roles/organization/add; Cancel creates nothing.
+- PLAY-REG15: playbook detail Version history tab renders Date/Title/Author/
+  Source/Status with the Active version (no catalog page exists for e-playbooks).
+- TC-GRP-003 (Groups empty state) found already covered by IDP-SMK01.

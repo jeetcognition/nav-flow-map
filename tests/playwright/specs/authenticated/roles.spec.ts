@@ -351,4 +351,36 @@ test.describe("Roles", () => {
     await expect(roles.roleNameInput).toHaveCount(0);
     await expect(roles.saveChangesButton).toHaveCount(0);
   });
+
+  test("ROLE-REG11 — Open the organization-role create form and cancel without a mutation.", async ({
+    page,
+  }) => {
+    const errors = watchErrors(page);
+    const roles = new RolesPage(page);
+    await roles.goto();
+    await roles.tableRows.first().waitFor({ state: "visible" });
+    const rowCountBefore = await roles.tableRows.count();
+
+    await roles.openCreateForm("organizations");
+    await expect(page).toHaveURL(
+      new RegExp(`/org/${ENTERPRISE_SLUG}/settings/roles/organization/add`),
+    );
+    await expect(page.getByRole("heading", { name: "Create organization role" })).toBeVisible();
+    await expect(page.getByText("Assigned per organization")).toBeVisible();
+
+    // The organization-role form exposes the same permission matrix sections.
+    await expect(roles.roleNameInput).toBeVisible();
+    await expect(roles.groupHeaderRow(/Usage permissions/)).toBeVisible();
+    await expect(roles.groupHeaderRow(/Organization permissions/)).toBeVisible();
+    await expect(roles.saveChangesButton).toBeVisible();
+
+    // Cancel returns to the Roles list without creating anything.
+    await roles.roleNameInput.fill("qa-temp-cancel-only");
+    await roles.cancelButton.click();
+    await expect(roles.rolesTab).toHaveAttribute("aria-selected", "true");
+    await expect(roles.rowByRoleName("qa-temp-cancel-only")).toHaveCount(0);
+    await expect(roles.tableRows).toHaveCount(rowCountBefore);
+
+    expect(errors).toHaveLength(0);
+  });
 });

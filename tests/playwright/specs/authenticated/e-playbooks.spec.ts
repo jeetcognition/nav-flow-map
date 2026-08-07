@@ -500,4 +500,39 @@ test.describe("Playbooks Page", () => {
     const playbooks = new PlaybooksPage(page);
     await expectNoPageErrors(page, () => playbooks.goto(), { ready: playbooks.heading });
   });
+
+  test("PLAY-REG15 — Open a playbook detail and inspect the Version history tab", async ({
+    page,
+  }) => {
+    const playbooks = new PlaybooksPage(page);
+    await playbooks.goto();
+    const loadedRow = playbooks.tableRows.filter({
+      hasNot: page.locator("[data-slot='skeleton']"),
+    });
+    await loadedRow.first().waitFor({ state: "visible" });
+    await loadedRow.first().click();
+    await playbooks.backToPlaybooks.waitFor({ state: "visible" });
+
+    // The detail page exposes Details and Version history tabs.
+    const detailsTab = page.getByRole("tab", { name: "Details" });
+    const versionHistoryTab = page.getByRole("tab", { name: "Version history" });
+    await expect(detailsTab).toBeVisible();
+    await expect(versionHistoryTab).toBeVisible();
+
+    await versionHistoryTab.click();
+    await expect(versionHistoryTab).toHaveAttribute("aria-selected", "true");
+
+    // The version table renders its full column set and at least the active version.
+    const historyTable = page.locator("main table").last();
+    for (const column of ["Date", "Title", "Author", "Source", "Status"]) {
+      await expect(historyTable.getByRole("columnheader", { name: column })).toBeVisible();
+    }
+    await expect(historyTable.locator("tbody tr").first()).toBeVisible();
+    await expect(historyTable.getByText("Active", { exact: true }).first()).toBeVisible();
+
+    // Switching back to Details restores the read-only overview.
+    await detailsTab.click();
+    await expect(detailsTab).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText("Overview", { exact: true })).toBeVisible();
+  });
 });
