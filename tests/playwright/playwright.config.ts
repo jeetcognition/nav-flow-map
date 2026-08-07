@@ -35,5 +35,12 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], storageState: ".auth/admin.json" },
       testMatch: "authenticated/*.spec.ts",
     },
+    // Specs that reuse the saved NON-ADMIN member session (authorization checks).
+    {
+      name: "member",
+      dependencies: ["setup"],
+      use: { ...devices["Desktop Chrome"], storageState: ".auth/member.json" },
+      testMatch: "member/*.spec.ts",
+    },
   ],
 });

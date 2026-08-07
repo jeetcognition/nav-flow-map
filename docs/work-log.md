@@ -661,3 +661,39 @@ and was not substituted.
   session names.
 - Enterprise secret store/delete race (TC-SEC-006/008/010): enterprise-wide
   mutation on the shared tenant; run manually via the skill.
+
+## 2026-08-07 — Non-admin (Member) authorization fixture + coverage
+
+Previously blocked because only an admin session existed. Set up a real
+non-admin identity end to end:
+
+- Invited `jeet.qa.secondary+nonadmin@gmail.com` (a plus-alias of the OTP
+  inbox, so the code lands in the same mailbox) as a plain enterprise **Member**
+  and added it to `TEST_SUBORG`. An enterprise-only invite is not enough — the
+  user is parked on the org-selector with "contact your enterprise
+  administrator" until it belongs to at least one organization.
+- `auth.setup.ts` gained an "authenticate as member" setup writing
+  `.auth/member.json`, keyed on `DEVIN_MEMBER_EMAIL`; the OTP lookup
+  disambiguates on the `To:` header. It waits for the app shell and the
+  `is.authenticated` cookie before saving — saving on the first non-login URL
+  yields a state with only Auth0 cookies and no app session.
+- New `member` Playwright project runs `specs/member/*.spec.ts`.
+
+Observed authorization behavior (new `e-authz` catalog page, MBR-REG01…07):
+
+- Access denied panel: connections, enterprise-devin, review,
+  enterprise-environment, membership, organizations, devin-api, guardrails,
+  infrastructure, usage-policies, secrets.
+- Readable by a member: knowledge, playbooks, repositories, analytics, support.
+- `settings/general` **redirects to the hub** instead of showing Access denied —
+  inconsistent with every other admin-only route.
+- The hub hides admin-only entries, matching the route gate.
+- API layer: the app authenticates with a bearer token, so a cookie-only
+  `fetch()` is always 401 and proves nothing. Replaying the member's own
+  captured token gives 403 on `/api/enterprise/idp-groups` and
+  `/api/enterprise/all-organizations/paginated`, while
+  `/api/enterprise/organizations` returns only the member's 2 organizations
+  versus 148 for an admin — no cross-tenant leak.
+
+Still blocked: CSRF (needs request forging outside a browser context) and
+cross-tenant IDOR _mutations_ (needs a second disposable tenant).
