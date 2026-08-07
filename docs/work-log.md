@@ -1,5 +1,15 @@
 # Work log
 
+## 2026-08-07 — Automate GEN-REG06 breadcrumb navigation
+
+### Implemented
+
+- Added Playwright coverage for the General settings breadcrumb sequence and the
+  Settings, Enterprise, and Back to enterprise navigation controls.
+- Added scoped breadcrumb locators to the General settings page object.
+- Added GEN-REG06 to the canonical e-general catalog with active Playwright
+  automation metadata.
+
 ## 2026-07-29 — Playwright agent playbook + per-run memory
 
 ### Requested

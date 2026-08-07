@@ -1,5 +1,6 @@
 import { test, expect, type ConsoleMessage } from "@playwright/test";
 import { GeneralSettingsPage } from "../../pages";
+import { routes } from "../../support/paths";
 
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
@@ -212,5 +213,32 @@ test.describe("Enterprise General settings", () => {
       page.off("pageerror", onPageError);
       page.off("request", onRequest);
     }
+  });
+
+  test("GEN-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const general = new GeneralSettingsPage(page);
+    const enterpriseSettingsHeading = page.getByRole("heading", {
+      name: "Enterprise Settings",
+      level: 2,
+    });
+
+    await general.goto();
+    await expect(general.breadcrumbNav).toBeVisible();
+    await expect(await general.breadcrumbLabels()).toEqual(["Settings", "Enterprise", "General"]);
+    await expect(general.lastBreadcrumbLink).toHaveCount(0);
+
+    await general.breadcrumbCrumb("Settings").click();
+    await expect(page).toHaveURL(routes.entSettings);
+    await expect(enterpriseSettingsHeading).toBeVisible();
+
+    await general.goto();
+    await general.breadcrumbCrumb("Enterprise").click();
+    await expect(page).toHaveURL(routes.entSettings);
+    await expect(enterpriseSettingsHeading).toBeVisible();
+
+    await general.goto();
+    await general.clickBackToEnterprise();
+    await expect(page).toHaveURL(routes.entSettings);
+    await expect(enterpriseSettingsHeading).toBeVisible();
   });
 });
