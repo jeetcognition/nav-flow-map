@@ -701,6 +701,54 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "ENTSET-REG10",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Search settings with whitespace, Unicode, and injection payloads.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["security-injection"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Search the settings sidebar with whitespace, Unicode, SQL-like, and HTML-like payloads."
+        }
+      ],
+      "assertions": [
+        "whitespace-only input keeps the page usable",
+        "Unicode and SQL-like payloads filter literally with a clean no-match state",
+        "HTML-like payloads render inert with no dialog or crash"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/ent.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills tab-tampering and search-injection cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

@@ -578,3 +578,28 @@
 - Organizations shows no error/retry message on a failed list fetch — the
   table stays in its skeleton state.
 - Infrastructure shows no error indicator on a failed refresh.
+
+## 2026-08-07 — Automate tab-param tampering and settings-search injection
+
+### Implemented
+
+- MEMB-REG10: membership tab switching updates `?tab=`, Back/Forward and
+  refresh restore the correct tab, tampered `?tab=` values (script, SQL-like,
+  unknown, empty) fall back safely to Members, and the Learn more docs link is
+  `target=_blank rel=noopener`. In-page tab clicks replace the history entry,
+  so the test creates a real entry with a direct navigation first.
+- ENTSET-REG10: settings sidebar search with whitespace, Unicode, SQL-like,
+  and HTML-like payloads renders literal, inert results.
+
+### Skill cases found already covered or not applicable
+
+- TC-DAPI-006 (API search injection) — covered by API-REG01.
+- TC-CONN-007 (MCP search injection) — covered by ECON-REG02.
+- TC-SESS-006 (sessions text-field injection) — covered by SESS-REG01; the
+  page has no config fields.
+- TC-GRP-005 (group search) — the QA tenant has zero IdP groups and the
+  Groups tab renders no search control.
+- TC-GEN-004 (enterprise name injection) — the General page renders no
+  enterprise-name field.
+- TC-ANLY-009 (CSV formula injection) — needs seeded session data containing
+  formula-like names; not automatable against the shared tenant yet.
