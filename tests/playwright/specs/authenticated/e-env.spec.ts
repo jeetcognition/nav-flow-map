@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { EnvironmentPage, routes } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 // Enterprise → Environment (e-env). Read-only against the shared QA tenant:
 // nothing is saved, built, or reset; blueprint edits are always discarded.
 test.describe("Environment", () => {
@@ -251,5 +252,19 @@ test.describe("Environment", () => {
     } finally {
       await anonContext.close();
     }
+  });
+
+  test("ENV-REG08 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const env = new EnvironmentPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => env.goto(), {
+      crumbs: ["Settings", "Enterprise", "Environment"],
+    });
+  });
+
+  test("ENV-REG09 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const env = new EnvironmentPage(page);
+    await expectNoPageErrors(page, () => env.goto(), { ready: env.heading });
   });
 });

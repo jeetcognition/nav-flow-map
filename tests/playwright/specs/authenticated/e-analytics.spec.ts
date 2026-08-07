@@ -2,7 +2,8 @@ import { test, expect, Download, Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { AnalyticsPage } from "../../pages";
 import { routes } from "../../support/paths";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 interface ExportedSession {
   org_id: string;
   created_at: string;
@@ -408,5 +409,24 @@ test.describe("Enterprise Analytics", () => {
     await expect(page).not.toHaveURL(/org=/);
     await analytics.selectDateRange("This month");
     await analytics.expectLoaded();
+  });
+
+  test("ANAL-REG07 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const analytics = new AnalyticsPage(page);
+    // Observed: the Analytics page renders only "Settings > Enterprise" with
+    // "Enterprise" as plain text — there is no "Analytics" crumb.
+    await expectEnterpriseBreadcrumbs(page, () => analytics.goto(), {
+      crumbs: ["Settings", "Enterprise"],
+      linkCrumbs: ["Settings"],
+    });
+  });
+
+  test("ANAL-REG08 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const analytics = new AnalyticsPage(page);
+    await expectNoPageErrors(page, () => analytics.goto(), {
+      settle: () => analytics.expectLoaded(),
+    });
   });
 });

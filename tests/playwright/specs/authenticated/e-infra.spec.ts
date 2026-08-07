@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { InfraPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Infrastructure", () => {
   function watchErrors(page: Page): string[] {
     const errors: string[] = [];
@@ -96,5 +97,19 @@ test.describe("Infrastructure", () => {
       expect(body).not.toContain("hypervisor");
       expect(body.toLowerCase()).not.toContain("host");
     }
+  });
+
+  test("INFRA-REG04 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const infra = new InfraPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => infra.goto(), {
+      crumbs: ["Settings", "Enterprise", "Infrastructure"],
+    });
+  });
+
+  test("INFRA-REG05 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const infra = new InfraPage(page);
+    await expectNoPageErrors(page, () => infra.goto(), { ready: infra.heading });
   });
 });

@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { EnterpriseSettingsPage, ENTERPRISE_NAME, ALT_SUBORG_NAME } from "../../pages";
 
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Enterprise Settings landing", () => {
   test("ENTSET-SAN01 — Open Enterprise Settings", async ({ page }) => {
     const ent = new EnterpriseSettingsPage(page);
@@ -273,5 +274,12 @@ test.describe("Enterprise Settings landing", () => {
     await page.goForward();
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/settings\/general$/);
+  });
+
+  test("ENTSET-REG09 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const ent = new EnterpriseSettingsPage(page);
+    await expectNoPageErrors(page, () => ent.goto(), { ready: ent.heading });
   });
 });

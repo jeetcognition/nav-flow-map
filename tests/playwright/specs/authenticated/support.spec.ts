@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { SupportPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Support Page", () => {
   test("SUP-SAN02 — Locate the Documentation card heading", async ({ page }) => {
     const support = new SupportPage(page);
@@ -61,5 +62,24 @@ test.describe("Support Page", () => {
 
     // The original page should still be on the Support page.
     await expect(page).toHaveURL(/\/settings\/support/);
+  });
+
+  test("SUP-REG02 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const support = new SupportPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => support.goto(), {
+      crumbs: ["Settings", "Enterprise", "Support"],
+    });
+  });
+
+  test("SUP-REG03 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const support = new SupportPage(page);
+    // The embedded Decagon support-chat widget fails its auth-token request
+    // (404) on the QA tenant; that third-party failure is ignored.
+    await expectNoPageErrors(page, () => support.goto(), {
+      ready: support.heading,
+      ignore: [/decagon/i, /Failed to load resource.*404/],
+    });
   });
 });

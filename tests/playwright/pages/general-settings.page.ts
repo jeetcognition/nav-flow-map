@@ -13,6 +13,14 @@ export class GeneralSettingsPage extends BasePage {
 
   /** Page heading "General". */
   readonly heading: Locator;
+  /** Breadcrumb navigation for the enterprise settings page. */
+  readonly breadcrumbNav: Locator;
+  /** Ordered, visible, non-separator breadcrumb crumbs. */
+  readonly breadcrumbCrumbs: Locator;
+  /** Last breadcrumb crumb, which is the current page label. */
+  readonly lastBreadcrumbCrumb: Locator;
+  /** Any link inside the last breadcrumb crumb. */
+  readonly lastBreadcrumbLink: Locator;
   /** "Back to enterprise" button in the main panel. */
   readonly backToEnterprise: Locator;
   /** Authentication section heading. */
@@ -25,6 +33,10 @@ export class GeneralSettingsPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.heading = this.page.locator("main").getByRole("heading", { name: "General", level: 2 });
+    this.breadcrumbNav = this.page.getByRole("navigation", { name: "breadcrumb" });
+    this.breadcrumbCrumbs = this.breadcrumbNav.locator("ol > li:not(:has(svg)):visible");
+    this.lastBreadcrumbCrumb = this.breadcrumbCrumbs.last();
+    this.lastBreadcrumbLink = this.lastBreadcrumbCrumb.locator("a");
     this.backToEnterprise = this.page.getByRole("button", { name: "Back to enterprise" }).first();
     this.authenticationHeading = this.page
       .locator("main")
@@ -34,6 +46,16 @@ export class GeneralSettingsPage extends BasePage {
       level: 4,
     });
     this.ssoSwitch = this.page.getByRole("switch").first();
+  }
+
+  /** Return the breadcrumb crumb with the given visible name. */
+  breadcrumbCrumb(name: string): Locator {
+    return this.breadcrumbCrumbs.getByText(name, { exact: true });
+  }
+
+  /** Return the ordered visible breadcrumb labels. */
+  async breadcrumbLabels(): Promise<string[]> {
+    return (await this.breadcrumbCrumbs.allTextContents()).map((label) => label.trim());
   }
 
   /** Current aria-checked state of the SSO switch. */

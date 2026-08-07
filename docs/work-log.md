@@ -1,5 +1,15 @@
 # Work log
 
+## 2026-08-07 — Automate GEN-REG06 breadcrumb navigation
+
+### Implemented
+
+- Added Playwright coverage for the General settings breadcrumb sequence and the
+  Settings, Enterprise, and Back to enterprise navigation controls.
+- Added scoped breadcrumb locators to the General settings page object.
+- Added GEN-REG06 to the canonical e-general catalog with active Playwright
+  automation metadata.
+
 ## 2026-07-29 — Playwright agent playbook + per-run memory
 
 ### Requested
@@ -514,3 +524,36 @@
 
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
+
+## 2026-08-07 — Automate breadcrumb navigation across enterprise settings pages
+
+### Implemented
+
+- Added a shared `expectEnterpriseBreadcrumbs` helper
+  (`tests/playwright/support/breadcrumbs.ts`) that verifies crumb order, the
+  plain-text last crumb, and Settings/Enterprise/Back-to-enterprise navigation.
+- Added one breadcrumb regression test to each of 14 enterprise settings specs
+  (analytics, connections, devin, devin-api, environment, guardrails,
+  infrastructure, knowledge, organizations, playbooks, review, sessions,
+  skills, support).
+- Added matching catalog entries with active automation metadata for the 12
+  pages that have catalog files (environment and playbooks have none yet).
+
+### Observed product drift (asserted as observed, noted here)
+
+- Analytics renders only `Settings > Enterprise` — no `Analytics` crumb, and
+  the `Enterprise` crumb is plain text rather than a link.
+- Enterprise Sessions has no `Back to enterprise` button.
+
+## 2026-08-07 — Automate "page has no errors" checks across enterprise settings pages
+
+### Implemented
+
+- Added a shared error-collection helper (`tests/playwright/support/errors.ts`)
+  with `watchPageErrors` (console + pageerror with an ignore list) and
+  `expectNoPageErrors` (load, settle, assert no error boundary and no errors).
+- Added one no-errors regression test to 18 specs covering every enterprise
+  settings page (membership sweeps the Members/Roles/Groups tabs).
+- The Support page ignores the known Decagon support-chat auth-token 404 —
+  a third-party widget failure on the QA tenant.
+- Added matching catalog entries for the 16 pages with catalog files.
