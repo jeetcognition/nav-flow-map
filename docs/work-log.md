@@ -514,3 +514,27 @@
 
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
+
+## 2026-08-07 — QA-DEC-027: pattern engine + pattern-first Incidents rebuild
+
+- Ported the graph-clustering idea from `ent-qa/pylon-report-parser` into
+  `pipelines/pylon/pattern_engine.py`, gated behind the deterministic
+  classifier (only `definite-bug`/`possible-bug` tickets cluster). Memory is
+  derived per run from the 60-day window; human coverage verdicts live in the
+  committed `coverage.json` ledger.
+- Hardened `fetcher.py`: incremental fetches are clamped to the retention
+  window and chunked day-by-day (upstream parity), and retention cleanup now
+  actually runs each fetch.
+- Added the `ref-id-evidence` language-agnostic rule per the refiner protocol.
+  Eval: recall 98% → 100% (the known Chinese-invoice FN is now caught), no
+  regressions, gate green.
+- Rebuilt the Incidents page pattern-first (Lavish-reviewed mockup, user
+  decisions applied: Coverage gaps default view, tickets folded inside
+  patterns only, breakdown charts dropped, product chips top-right).
+  `IncidentBreakdown.tsx` deleted; page split into
+  `PatternCard`/`VerifyQueue`/`SurfaceChips`.
+- Extended `validate-data.js` (patterns referential checks + PII scan on
+  patterns.json) and `pylon-intake.yml` (exports + diffs both fixtures).
+- Gates at time of commit: pipeline unit tests green, eval gate green,
+  validate-data green, oxlint 0/0, tsc -b clean, vite build ok, prettier
+  clean, catalog validation green.

@@ -57,3 +57,16 @@ node ../../scripts/validate-data.js
 - Eval coverage decays as labeled tickets age past the 60-day fetch window —
   `eval_classifier.py` warns on missing rows; the refiner appends fresh
   labels from UI verifications to compensate.
+
+## Pattern engine (QA-DEC-027)
+
+`pattern_engine.py` clusters classifier-approved tickets (definite/possible
+only) into coverage-gap patterns — union-find over normalized titles,
+language-agnostic error signatures (ids/codes/stack shapes), and token
+overlap — then ranks by impact × growth. Temporal memory (first_seen, 24h
+growth) is derived from the 60-day window every run, so nothing stateful has
+to survive CI. Human verdicts live in the committed `coverage.json` ledger
+({pattern_id → uncovered/weak/covered/dismissed}); dismissed patterns never
+resurface. `export_incidents.py` emits both `incidents.json` and
+`patterns.json` fixtures (sanitized; PII-scanned by
+`scripts/validate-data.js`).

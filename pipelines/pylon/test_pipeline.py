@@ -100,6 +100,47 @@ for n in nasty:
     check("no-email-leak", not re.search(r"[\w.+-]+@[\w-]+\.\w", out.replace("•••@•••", "")), out)
 
 
+print("pattern_engine — clustering, ranking, coverage join (QA-DEC-027)")
+from datetime import datetime, timedelta, timezone
+
+from pattern_engine import build_patterns, error_sig, flow_of
+
+NOW = datetime(2026, 8, 7, 12, 0, tzinfo=timezone.utc)
+
+
+def pt(num: int, title: str, body: str = "", hours_ago: int = 1, state: str = "new",
+       verdict: str = "definite-bug", surface: str = "enterprise", score: float = 5.0) -> dict:
+    return {
+        "id": f"id-{num}", "number": num, "title": title, "body_snippet": body,
+        "state": state, "link": f"https://x.pylon/{num}",
+        "created_at": (NOW - timedelta(hours=hours_ago)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "_verdict": verdict, "_surface": surface, "_score": score,
+    }
+
+
+check("flow-best-match", flow_of({"title": "devin review pull request broken", "body_snippet": ""}) == "Review/GitHub")
+check("flow-fallback", flow_of({"title": "zzz qqq", "body_snippet": ""}) == "Other")
+check("sig-language-free", error_sig({"title": "账单编号：ORFVDYCI-0011 发票不对", "body_snippet": ""}) != "", "ref ids match in any language")
+
+same = [pt(1, "Permission denied: reached message rate limit"),
+        pt(2, "permission denied — reached message rate limit again"),
+        pt(3, "Rate limit: permission denied reached for message", hours_ago=30)]
+other = [pt(9, "Upload attachment fails with corrupt file", hours_ago=2)]
+pats = build_patterns(same + other, now=NOW)
+check("clusters-merge", len(pats) == 2, f"expected 2 clusters, got {len(pats)}")
+big = max(pats, key=lambda p: p["total"])
+check("cluster-size", big["total"] == 3, str(big["total"]))
+check("growth-derived", big["count24h"] == 2 and big["growth24h"] == 1,
+      f"24h={big['count24h']} growth={big['growth24h']}")
+check("first-seen-derived", big["firstSeen"] == (NOW - timedelta(hours=30)).strftime("%Y-%m-%dT%H:%M:%SZ"))
+check("rank-order", pats[0] is big, "bigger cluster must rank first")
+check("stable-id", len(big["id"]) == 12)
+check("default-uncovered", all(p["coverage"] == "uncovered" for p in pats))
+check("suggested-test-flow", "20 standard user actions" in big["suggestedTest"], big["suggestedTest"])
+
+pats2 = build_patterns(same + other, now=NOW)
+check("deterministic-ids", {p["id"] for p in pats} == {p["id"] for p in pats2})
+
 print("read-only guard — the pipeline must NEVER write to Pylon")
 import pathlib
 

@@ -45,6 +45,7 @@ RULES: list[tuple[str, str, float, str]] = [
     ("says-but", r"(says|shows|showing|displays|display)[^.]{0,60}\b(but|yet|even though|although)\b", 1.0, "text"),
     ("otp-failure", r"(not?|n'?t|never) receiv\w*[^.]{0,25}(code|otp|verification|email)|code (is )?not (accepted|working|received)|verification code[^.]{0,30}(invalid|not|error)", 1.6, "text"),
     ("nonenglish-broken", r"не работает|no funciona|não funciona|ne fonctionne pas|funktioniert nicht|çalışmıyor|不能用|无法(使用|登录|访问)|用不了|打不开|自动[^,。]{0,15}(改成|恢复|变成)|还是(显示|个人|我的名字)|为什么[^?？]{0,30}还是", 1.4, "text"),
+    ("ref-id-evidence", r"\b[a-z]{6,}-\d{4,}\b|账单编号|注文番号|订单编?号", 1.0, "text"),
     ("problem-statement", r"\bthe (problem|issue) is\b", 0.8, "text"),
     ("bug-report-doc", r"\bbug report\b|\bsteps?:\b|\bexpected( behavior| result)?:\b|\bactual( behavior| result)?:\b", 1.2, "text"),
 

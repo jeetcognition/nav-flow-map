@@ -6,6 +6,7 @@ import bugsJson from "./fixtures/bugs.json";
 import runsJson from "./fixtures/runs.json";
 import runResultsJson from "./fixtures/runResults.json";
 import incidentsJson from "./fixtures/incidents.json";
+import patternsJson from "./fixtures/patterns.json";
 import sessionsJson from "./fixtures/sessions.json";
 import { SURFACES, USERS } from "./fixtures/static";
 import { devinSessionUrl } from "../lib/config";
@@ -17,6 +18,8 @@ import type {
   IncidentCategory,
   NavNode,
   NodeStats,
+  Pattern,
+  PatternCoverage,
   Run,
   SessionStatus,
   Surface,
@@ -34,6 +37,7 @@ const store = {
   runs: [...(runsJson as Run[])],
   runResults: { ...(runResultsJson as Record<string, CaseResult[]>) },
   incidents: [...(incidentsJson as Incident[])],
+  patterns: [...(patternsJson as Pattern[])],
   sessions: [...(sessionsJson as DevinSession[])],
 };
 
@@ -63,6 +67,10 @@ export const getRunResults = (runId: string): CaseResult[] => store.runResults[r
 export const getIncidents = (): Incident[] => store.incidents;
 export const getIncident = (id: string): Incident | undefined =>
   store.incidents.find((i) => i.id === id);
+export const getPatterns = (): Pattern[] => store.patterns;
+/** member incidents of a pattern that are present in the incidents feed */
+export const patternIncidents = (p: Pattern): Incident[] =>
+  p.incidentIds.map((id) => getIncident(id)).filter((i): i is Incident => !!i);
 export const getSessions = (): DevinSession[] => store.sessions;
 
 export const incidentCategory = (i: Incident): IncidentCategory => i.humanCategory ?? i.ai.category;
@@ -147,6 +155,20 @@ export function escapedDefects(): Incident[] {
 }
 
 // ---- mutations ----
+/** Human coverage verdict on a pattern (step 10 of QA-DEC-027). Local-first;
+ * the decision is promoted into pipelines/pylon/coverage.json via PR. */
+export function setPatternCoverage(
+  id: string,
+  coverage: PatternCoverage,
+  coveredBy: string | null = null,
+) {
+  const p = store.patterns.find((x) => x.id === id);
+  if (!p) return;
+  p.coverage = coverage;
+  p.coveredBy = coveredBy;
+  notify();
+}
+
 export function overrideIncidentCategory(id: string, category: IncidentCategory, userId: string) {
   const inc = store.incidents.find((i) => i.id === id);
   if (!inc) return;

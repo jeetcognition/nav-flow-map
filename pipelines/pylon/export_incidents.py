@@ -18,11 +18,15 @@ import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from pattern_engine import build_patterns
 from ticket_classifier import classify
 
 HERE = Path(__file__).parent
 # repo-relative: pipelines/pylon/ -> repo root -> app fixtures
-DEFAULT_OUT = Path(__file__).resolve().parents[2] / "app/src/data/fixtures/incidents.json"
+FIXTURES = Path(__file__).resolve().parents[2] / "app/src/data/fixtures"
+DEFAULT_OUT = FIXTURES / "incidents.json"
+DEFAULT_PATTERNS_OUT = FIXTURES / "patterns.json"
+MAX_PATTERNS = 60
 
 OPEN_STATES = {"new", "waiting_on_you", "on_hold"}
 INVESTIGATING_STATES = {"waiting_on_customer"}
@@ -105,7 +109,60 @@ def draft_testcase(title: str, desc: str, node: str) -> dict:
     }
 
 
-def run(out_path: Path) -> None:
+def export_patterns(rows: list[dict], incident_ids: set[str], out_path: Path) -> None:
+    """Steps 4-8 of QA-DEC-027: cluster the classified tickets into patterns
+    and emit the sanitized fixture the Incidents page renders."""
+    kept = []
+    for r in rows:
+        res = classify(r)
+        if res["verdict"] == "not-app-issue":
+            continue
+        r["_verdict"], r["_surface"], r["_score"] = res["verdict"], res["surface"], res["score"]
+        kept.append(r)
+
+    out = []
+    for p in build_patterns(kept):
+        label = sanitize(p["label"])[:120] or p["flow"]
+        member_ids = [f"INC-{r['number']}" for r in p["items"]]
+        member_ids = [i for i in member_ids if i in incident_ids]
+        ranked = sorted(p["items"], key=lambda r: -r["_score"])
+        evidence = [
+            {"number": r["number"], "link": r["link"] or None}
+            for r in ranked[:8]
+            if r.get("number")
+        ]
+        top = max(p["items"], key=lambda r: r["_score"])
+        node, _ = map_node(sanitize(f"{top.get('title') or ''} {top.get('body_snippet') or ''}"))
+        out.append({
+            "id": f"PAT-{p['id']}",
+            "label": label,
+            "surfaceId": p["surface"],
+            "flow": p["flow"],
+            "nodeId": node,
+            "total": p["total"],
+            "open": p["open"],
+            "definite": p["definite"],
+            "count24h": p["count24h"],
+            "growth24h": p["growth24h"],
+            "firstSeen": p["firstSeen"],
+            "score": p["score"],
+            "suggestedTest": p["suggestedTest"],
+            "coverage": p["coverage"],
+            "coveredBy": p["coveredBy"],
+            "incidentIds": member_ids,
+            "evidence": evidence,
+        })
+
+    out = out[:MAX_PATTERNS]
+    out_path.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
+    by = {}
+    for p in out:
+        by[p["coverage"]] = by.get(p["coverage"], 0) + 1
+    print(f"wrote {len(out)} patterns → {out_path}")
+    print(f"  by coverage: {by}")
+
+
+def run(out_path: Path, patterns_path: Path | None = None) -> None:
     conn = sqlite3.connect(HERE / "pylon_issues.db")
     conn.row_factory = sqlite3.Row
     rows = [dict(r) for r in conn.execute("SELECT * FROM issues ORDER BY created_at DESC")]
@@ -177,9 +234,12 @@ def run(out_path: Path) -> None:
     if dropped > 0:
         print(f"  dropped {dropped} lower-priority resolved incidents (cap {MAX_INCIDENTS})")
 
+    export_patterns(rows, {i["id"] for i in incidents}, patterns_path or DEFAULT_PATTERNS_OUT)
+
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--patterns-out", type=Path, default=DEFAULT_PATTERNS_OUT)
     args = ap.parse_args()
-    run(args.out)
+    run(args.out, args.patterns_out)

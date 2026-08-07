@@ -12,10 +12,12 @@ const pages = readJson("app/src/data/fixtures/nodes.json");
 const testcases = readJson("app/src/data/fixtures/testcases.json");
 const bugs = readJson("app/src/data/fixtures/bugs.json");
 const incidents = readJson("app/src/data/fixtures/incidents.json");
+const patterns = readJson("app/src/data/fixtures/patterns.json");
 const incidentsRaw = fs.readFileSync(
   path.join(root, "app/src/data/fixtures/incidents.json"),
   "utf8",
 );
+const patternsRaw = fs.readFileSync(path.join(root, "app/src/data/fixtures/patterns.json"), "utf8");
 const edits = readJson("navmap-edits.json");
 
 const errors = [];
@@ -57,14 +59,37 @@ for (const inc of incidents) {
   if (inc.draftCase && !pageIds.has(inc.draftCase.nodeId))
     errors.push(`incident ${inc.id} draftCase references unknown page ${inc.draftCase.nodeId}`);
 }
-// PII leak gate: incidents.json is generated from support tickets.
-const scrubbed = incidentsRaw.replaceAll("•••@•••", "");
-const emailLeak = scrubbed.match(/[\w.+-]+@[\w-]+\.[\w-]{2,}/);
-if (emailLeak) errors.push(`PII leak in incidents.json: email-like string "${emailLeak[0]}"`);
-const orgLeak = scrubbed.match(/app\.devin\.ai\/(org|sessions)\/(?!•••)[\w-]+/);
-if (orgLeak) errors.push(`PII leak in incidents.json: unmasked link "${orgLeak[0]}"`);
-const hostLeak = scrubbed.match(/https?:\/\/(?!•••)[\w-]+\.devinenterprise\.com/);
-if (hostLeak) errors.push(`PII leak in incidents.json: enterprise host "${hostLeak[0]}"`);
+// Patterns fixture (QA-DEC-027): structure + references.
+const SURFACE_IDS = new Set(["enterprise", "retail", "windsurf", "devin-cli"]);
+const COVERAGE = new Set(["uncovered", "weak", "covered", "dismissed"]);
+const incidentIds = new Set(incidents.map((i) => i.id));
+for (const id of dup(patterns.map((p) => p.id))) errors.push(`duplicate pattern id: ${id}`);
+for (const p of patterns) {
+  if (!/^PAT-[0-9a-f]{12}$/.test(p.id)) errors.push(`pattern ${p.id} bad id shape`);
+  if (!SURFACE_IDS.has(p.surfaceId)) errors.push(`pattern ${p.id} bad surface ${p.surfaceId}`);
+  if (!pageIds.has(p.nodeId)) errors.push(`pattern ${p.id} references unknown page ${p.nodeId}`);
+  if (!COVERAGE.has(p.coverage)) errors.push(`pattern ${p.id} bad coverage ${p.coverage}`);
+  if (!Number.isInteger(p.total) || p.total < 1) errors.push(`pattern ${p.id} bad total`);
+  for (const iid of p.incidentIds || [])
+    if (!incidentIds.has(iid)) errors.push(`pattern ${p.id} references unknown incident ${iid}`);
+  for (const ev of p.evidence || [])
+    if (ev.link && !/^https:\/\//.test(ev.link))
+      errors.push(`pattern ${p.id} evidence link must be https`);
+}
+
+// PII leak gate: both fixtures are generated from support tickets.
+for (const [name, raw] of [
+  ["incidents.json", incidentsRaw],
+  ["patterns.json", patternsRaw],
+]) {
+  const scrubbed = raw.replaceAll("•••@•••", "");
+  const emailLeak = scrubbed.match(/[\w.+-]+@[\w-]+\.[\w-]{2,}/);
+  if (emailLeak) errors.push(`PII leak in ${name}: email-like string "${emailLeak[0]}"`);
+  const orgLeak = scrubbed.match(/app\.devin\.ai\/(org|sessions)\/(?!•••)[\w-]+/);
+  if (orgLeak) errors.push(`PII leak in ${name}: unmasked link "${orgLeak[0]}"`);
+  const hostLeak = scrubbed.match(/https?:\/\/(?!•••)[\w-]+\.devinenterprise\.com/);
+  if (hostLeak) errors.push(`PII leak in ${name}: enterprise host "${hostLeak[0]}"`);
+}
 
 for (const l of (edits.addedLinks || []).concat(edits.removedLinks || [])) {
   const added = new Set((edits.addedPages || []).map((p) => p.id));
@@ -78,5 +103,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `OK: ${pages.length} pages, ${testcases.length} test cases, ${bugs.length} bugs, ${incidents.length} incidents (leak scan clean).`,
+  `OK: ${pages.length} pages, ${testcases.length} test cases, ${bugs.length} bugs, ${incidents.length} incidents, ${patterns.length} patterns (leak scan clean).`,
 );
