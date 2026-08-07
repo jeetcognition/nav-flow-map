@@ -538,3 +538,17 @@
 - Gates at time of commit: pipeline unit tests green, eval gate green,
   validate-data green, oxlint 0/0, tsc -b clean, vite build ok, prettier
   clean, catalog validation green.
+
+## 2026-08-07 — fixture refresh from the daily DB snapshot
+
+- Merged the `ent-qa/pylon-report-parser` `data`-branch snapshot (1,940
+  tickets, Jul 24 → Aug 7) into the local pipeline DB and applied 60-day
+  retention: now 9,020 tickets spanning Jun 8 → Aug 7. Known gap: Jul 22–23
+  is in neither source (needs a `PYLON_API_KEY` fetch to backfill).
+- Re-ran classifier eval on the merged window: precision 97%, recall 100%,
+  F1 0.99, definite band 10/10 — gate green. 80 labeled tickets have aged
+  out of the window and no longer score (eval set shrinks as the window
+  rolls; see TODO).
+- Re-exported both fixtures: 200 incidents (all open — 554 resolved dropped
+  at the cap), 52 definite; 60 patterns, all `uncovered` (coverage ledger is
+  still empty until verdict persistence lands).

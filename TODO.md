@@ -35,3 +35,6 @@ Living list — update when debt is added or paid down. Larger context in
       promoted manually)
 - [ ] Fold verify-queue verdicts into `labels/eval_set.json` automatically
       after ~25 verifications (refiner cadence, REFINER.md)
+- [ ] Eval set shrinks as the 60-day window rolls (80 of 201 labeled tickets
+      no longer in the DB on 2026-08-07) — pin the labeled tickets' raw rows
+      into `labels/` so the eval stays stable regardless of retention
