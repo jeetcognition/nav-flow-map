@@ -751,21 +751,34 @@
 }
 .pat-evidence {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 4px;
   margin-top: var(--sp-2);
 }
-.pat-ticket-chip {
+.pat-reason {
+  margin: var(--sp-1, 4px) 0 0;
+  color: var(--amber, #f59e0b);
   font-size: var(--fs-xs);
-  background: var(--surface-3);
-  border: 1px solid var(--border);
-  color: var(--blue-soft);
-  border-radius: 999px;
-  padding: 3px 10px;
-  text-decoration: none;
 }
-a.pat-ticket-chip:hover {
-  border-color: var(--border-strong);
+.pat-id {
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-3);
+  opacity: 0.7;
+}
+.pat-ticket-line {
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+  color: var(--blue-soft);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+a.pat-ticket-line:hover {
+  color: var(--text);
   text-decoration: none;
 }
 .pat-actions {

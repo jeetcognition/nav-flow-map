@@ -72,12 +72,17 @@ const SURFACE_IDS = new Set(["enterprise", "retail", "windsurf", "devin-cli"]);
 const COVERAGE = new Set(["uncovered", "weak", "covered", "dismissed"]);
 const incidentIds = new Set(incidents.map((i) => i.id));
 for (const id of dup(patterns.map((p) => p.id))) errors.push(`duplicate pattern id: ${id}`);
+const TRENDS = new Set(["new", "accelerating", "stable", "declining"]);
 for (const p of patterns) {
   if (!/^PAT-[0-9a-f]{12}$/.test(p.id)) errors.push(`pattern ${p.id} bad id shape`);
   if (!SURFACE_IDS.has(p.surfaceId)) errors.push(`pattern ${p.id} bad surface ${p.surfaceId}`);
   if (!pageIds.has(p.nodeId)) errors.push(`pattern ${p.id} references unknown page ${p.nodeId}`);
   if (!COVERAGE.has(p.coverage)) errors.push(`pattern ${p.id} bad coverage ${p.coverage}`);
   if (!Number.isInteger(p.total) || p.total < 1) errors.push(`pattern ${p.id} bad total`);
+  if (!Number.isInteger(p.count14d) || p.count14d < 0) errors.push(`pattern ${p.id} bad count14d`);
+  if (!TRENDS.has(p.trend)) errors.push(`pattern ${p.id} bad trend ${p.trend}`);
+  if (typeof p.priorityReason !== "string" || !p.priorityReason)
+    errors.push(`pattern ${p.id} missing priorityReason`);
   for (const iid of p.incidentIds || [])
     if (!incidentIds.has(iid)) errors.push(`pattern ${p.id} references unknown incident ${iid}`);
   for (const ev of p.evidence || [])

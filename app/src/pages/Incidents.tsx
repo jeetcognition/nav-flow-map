@@ -98,12 +98,16 @@ export default function Incidents() {
   );
 
   const q = query.trim().toLowerCase();
+  // same ordering as the report parser's "Sort: Trending"
+  const TREND_ORDER = { accelerating: 3, new: 2, stable: 1, declining: 0 } as const;
   const visible = (list: Pattern[]) => {
     const filtered = list
       .filter((p) => activeSurfaces.has(p.surfaceId))
       .filter((p) => !q || matchesSearch(p, q));
     return growingFirst
-      ? [...filtered].sort((a, b) => b.growth24h - a.growth24h || b.score - a.score)
+      ? [...filtered].sort(
+          (a, b) => (TREND_ORDER[b.trend] ?? 1) - (TREND_ORDER[a.trend] ?? 1) || b.score - a.score,
+        )
       : filtered;
   };
 
@@ -192,7 +196,7 @@ export default function Incidents() {
               onClick={() => setGrowingFirst((g) => !g)}
               aria-pressed={growingFirst}
             >
-              Growing first
+              Trending first
             </button>
           </div>
         )}

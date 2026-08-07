@@ -189,7 +189,11 @@ def export_patterns(rows: list[dict], incident_ids: set[str], out_path: Path) ->
         member_ids = [i for i in member_ids if i in incident_ids]
         ranked = sorted(p["items"], key=lambda r: -r["_score"])
         evidence = [
-            {"number": r["number"], "link": r["link"] or None}
+            {
+                "number": r["number"],
+                "title": display_title(r, 100),
+                "link": r["link"] or None,
+            }
             for r in ranked[:8]
             if r.get("number")
         ]
@@ -206,6 +210,9 @@ def export_patterns(rows: list[dict], incident_ids: set[str], out_path: Path) ->
             "definite": p["definite"],
             "count24h": p["count24h"],
             "growth24h": p["growth24h"],
+            "count14d": p["count14d"],
+            "trend": p["trend"],
+            "priorityReason": p["priorityReason"],
             "firstSeen": p["firstSeen"],
             "score": p["score"],
             "suggestedTest": p["suggestedTest"],

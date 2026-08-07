@@ -137,13 +137,17 @@ export interface Pattern {
   definite: number;
   count24h: number;
   growth24h: number;
+  count14d: number;
+  trend: "new" | "accelerating" | "stable" | "declining";
+  /** why this gap matters, e.g. "6 reports in 14 days (repeat pattern) · 3 still open" */
+  priorityReason: string;
   firstSeen: string;
   score: number;
   suggestedTest: string;
   coverage: PatternCoverage;
   coveredBy: string | null;
   incidentIds: string[];
-  evidence: { number: number; link: string | null }[];
+  evidence: { number: number; title?: string; link: string | null }[];
 }
 
 export interface User {

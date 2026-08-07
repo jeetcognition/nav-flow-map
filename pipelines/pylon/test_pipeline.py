@@ -136,7 +136,7 @@ check("first-seen-derived", big["firstSeen"] == (NOW - timedelta(hours=30)).strf
 check("rank-order", pats[0] is big, "bigger cluster must rank first")
 check("stable-id", len(big["id"]) == 12)
 check("default-uncovered", all(p["coverage"] == "uncovered" for p in pats))
-check("suggested-test-flow", "20 standard user actions" in big["suggestedTest"], big["suggestedTest"])
+check("suggested-test-flow", "20 standard actions" in big["suggestedTest"], big["suggestedTest"])
 
 pats2 = build_patterns(same + other, now=NOW)
 check("deterministic-ids", {p["id"] for p in pats} == {p["id"] for p in pats2})
@@ -224,6 +224,32 @@ check("generic-labels-distinct", len({p["label"] for p in gen_pats}) == 2,
       str([p["label"] for p in gen_pats]))
 check("generic-label-has-excerpt", all("“" in p["label"] for p in gen_pats),
       str([p["label"] for p in gen_pats]))
+
+print("suggest_test() + trend + priority reason (parser gap-card parity)")
+from pattern_tests import suggest_test
+
+check("review-fallback-exact",
+      suggest_test([], "Review/GitHub", "zzz", "windsurf")
+      == "Create PR via Devin session → verify PR appears on GitHub → verify review comments can be posted")
+check("schedule-specific",
+      "scheduled task" in suggest_test([], "Sessions/Automation", "schedule did not run", "enterprise"))
+check("trace-specific",
+      "Permission denied: internal error" in suggest_test([], "Permissions/Rate limits", "trace id: <id>", "enterprise"))
+check("other-reproduces-headline",
+      suggest_test([], "Other", "zzz", "retail").startswith("Reproduce: "))
+
+# trend + priority reason are derived per pattern from the window
+lone = build_patterns([pt(41, "Upload attachment fails with corrupt file", hours_ago=2)], now=NOW)[0]
+check("new-trend", lone["trend"] == "new", lone["trend"])
+check("new-reason", "new pattern" in lone["priorityReason"], lone["priorityReason"])
+accel_items = ([pt(50 + i, "Permission denied: reached message rate limit", hours_ago=24 * 2 + i) for i in range(4)]
+               + [pt(60, "permission denied: reached message rate limit again", hours_ago=24 * 10)])
+accel = build_patterns(accel_items, now=NOW)[0]
+check("accelerating-trend", accel["trend"] == "accelerating", accel["trend"])
+check("count14d-derived", accel["count14d"] == 5, str(accel["count14d"]))
+quiet = build_patterns([pt(70, "Upload attachment fails badly", hours_ago=24 * 12),
+                        pt(71, "upload attachment fails badly again", hours_ago=24 * 13)], now=NOW)[0]
+check("emerging-fallback", quiet["priorityReason"] == "emerging pattern", quiet["priorityReason"])
 
 print("pending verdicts + coverage ledger — the worker→pipeline contract (QA-DEC-028)")
 import tempfile

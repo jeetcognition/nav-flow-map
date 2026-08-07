@@ -65,7 +65,10 @@ export function PatternCard({
   const surfaceLabel =
     getSurfaces().find((s) => s.id === pattern.surfaceId)?.label ?? pattern.surfaceId;
   const color = SURFACE_COLORS[pattern.surfaceId] ?? "var(--text-3)";
-  const isNew = pattern.count24h > 0 && pattern.count24h === pattern.total;
+  const freq =
+    pattern.count14d > 0
+      ? `${pattern.count14d} in 14d`
+      : `${pattern.total} ticket${pattern.total === 1 ? "" : "s"}`;
 
   return (
     <motion.article
@@ -82,12 +85,13 @@ export function PatternCard({
         <span className="pat-rank num">{index + 1}</span>
         <span className="pat-label">{pattern.label}</span>
         <span className="pat-meta">
-          {pattern.growth24h > 0 && (
+          {pattern.trend === "accelerating" && (
             <span className="badge badge-red">
-              <TrendUp size={11} weight="bold" /> growing
+              <TrendUp size={11} weight="bold" /> accelerating
             </span>
           )}
-          {isNew && <span className="badge badge-amber">new</span>}
+          {pattern.trend === "new" && <span className="badge badge-amber">new</span>}
+          {pattern.trend === "declining" && <span className="badge badge-green">declining</span>}
           {pattern.coverage === "covered" && <span className="badge badge-green">covered</span>}
           {pattern.coverage === "weak" && <span className="badge badge-amber">weak</span>}
           {pattern.coverage === "dismissed" && <span className="badge badge-gray">dismissed</span>}
@@ -95,7 +99,7 @@ export function PatternCard({
             {surfaceLabel}
           </span>
           <span className="pat-count num">
-            {pattern.total} ticket{pattern.total === 1 ? "" : "s"}
+            {freq}
             {pattern.open > 0 && ` · ${pattern.open} open`}
           </span>
         </span>
@@ -110,29 +114,33 @@ export function PatternCard({
               <p className="pat-desc">
                 {pattern.flow} — {top?.description || pattern.label}
               </p>
+              <p className="pat-reason">{pattern.priorityReason}</p>
               <div className="pat-evidence">
-                {pattern.evidence.map((ev) =>
-                  ev.link ? (
+                {pattern.evidence.map((ev) => {
+                  const text = ev.title ? `#${ev.number} — ${ev.title}` : `#${ev.number}`;
+                  return ev.link ? (
                     <a
                       key={ev.number}
-                      className="pat-ticket-chip mono"
+                      className="pat-ticket-line"
                       href={ev.link}
                       target="_blank"
                       rel="noreferrer"
+                      title={text}
                     >
-                      #{ev.number}
+                      {text}
                     </a>
                   ) : (
-                    <span key={ev.number} className="pat-ticket-chip mono">
-                      #{ev.number}
+                    <span key={ev.number} className="pat-ticket-line" title={text}>
+                      {text}
                     </span>
-                  ),
-                )}
+                  );
+                })}
               </div>
             </section>
             <section>
               <h4 className="pat-sec-title">
                 <Sparkle size={12} weight="duotone" /> What to test
+                <span className="pat-id mono">{pattern.id.replace(/^PAT-/, "")}</span>
               </h4>
               <p className="pat-test">{pattern.suggestedTest}</p>
               {pattern.coveredBy && (

@@ -25,6 +25,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from pattern_headlines import excerpt, headline, is_generic
+from pattern_tests import suggest_test
 
 COVERAGE_PATH = Path(__file__).parent / "coverage.json"
 COVERAGE_STATUSES = {"uncovered", "weak", "covered", "dismissed"}
@@ -161,21 +162,6 @@ def cluster(rows: list[dict]) -> list[list[dict]]:
     return list(groups.values())
 
 
-SUGGESTED_TESTS = {
-    "Billing/Account": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "Login/Auth": "Attempt login via SSO and email+OTP → verify redirect completes and a session is established → verify no redirect loop or rejected code",
-    "Permissions/Rate limits": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
-    "Sessions/Automation": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
-    "CLI": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
-    "IDE/Desktop": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
-    "Review/GitHub": "Open a PR with review enabled → verify comments post and every citation link scrolls to the cited range",
-    "Files/Attachments": "Upload txt, png, and pdf → reference each in a prompt → verify the agent reads all three",
-    "Quota/Usage": "Record ACU balance → run a short session → verify the deduction matches expected usage",
-    "Onboarding/Setup": "Create a new org → complete the setup wizard → verify transition out of 'setting up' within 60s",
-    "Other": "Reproduce the reported scenario end-to-end → verify correct behavior and no console/network errors",
-}
-
-
 def _iso(dt: datetime) -> str:
     return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -192,6 +178,7 @@ def build_patterns(rows: list[dict], now: datetime | None = None) -> list[dict]:
     as _verdict/_surface/_score). Returns ranked pattern dicts (unsanitized)."""
     now = now or datetime.now(timezone.utc)
     cut24, cut48 = _iso(now - timedelta(hours=24)), _iso(now - timedelta(hours=48))
+    cut7, cut14 = _iso(now - timedelta(days=7)), _iso(now - timedelta(days=14))
     coverage = load_coverage()
 
     # Two clusters formed around different keys can still tell the same human
@@ -221,8 +208,38 @@ def build_patterns(rows: list[dict], now: datetime | None = None) -> list[dict]:
         created = sorted(r.get("created_at") or "" for r in items)
         count24 = sum(1 for r in items if (r.get("created_at") or "") >= cut24)
         prev24 = sum(1 for r in items if cut48 <= (r.get("created_at") or "") < cut24)
+        count7d = sum(1 for r in items if (r.get("created_at") or "") >= cut7)
+        prev7d = sum(1 for r in items if cut14 <= (r.get("created_at") or "") < cut7)
+        count14d = sum(1 for r in items if (r.get("created_at") or "") >= cut14)
         open_ct = sum(1 for r in items if (r.get("state") or "") in OPEN_STATES)
         definite = sum(1 for r in items if r["_verdict"] == "definite-bug")
+        first_seen = created[0] if created and created[0] else _iso(now)
+
+        # Trend, derived from the window (the parser reads pattern_history;
+        # we have no cross-run state by design — same buckets, same wording).
+        if first_seen >= cut24:
+            trend = "new"
+        elif count7d > prev7d * 1.2 and count7d >= 2:
+            trend = "accelerating"
+        elif count7d < prev7d * 0.8:
+            trend = "declining"
+        else:
+            trend = "stable"
+
+        # Why this gap matters — the parser's priority_reason line.
+        reasons = []
+        if count14d >= 5:
+            reasons.append(f"{count14d} reports in 14 days (repeat pattern)")
+        if count24 >= 2:
+            reasons.append(f"{count24} reports today (active)")
+        if open_ct >= 3:
+            reasons.append(f"{open_ct} still open")
+        if trend == "accelerating":
+            reasons.append("accelerating — growing fast")
+        elif trend == "new":
+            reasons.append("new pattern (first seen today)")
+        if not reasons:
+            reasons.append("emerging pattern")
 
         score = (
             max(r["_score"] for r in items) * 8
@@ -244,9 +261,12 @@ def build_patterns(rows: list[dict], now: datetime | None = None) -> list[dict]:
             "definite": definite,
             "count24h": count24,
             "growth24h": count24 - prev24,
-            "firstSeen": created[0] if created and created[0] else _iso(now),
+            "count14d": count14d,
+            "trend": trend,
+            "priorityReason": " · ".join(reasons),
+            "firstSeen": first_seen,
             "score": round(score, 1),
-            "suggestedTest": SUGGESTED_TESTS.get(flow, SUGGESTED_TESTS["Other"]),
+            "suggestedTest": suggest_test(items, flow, key, surface),
             "coverage": cov.get("status", "uncovered"),
             "coveredBy": cov.get("coveredBy"),
         })

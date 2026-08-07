@@ -626,3 +626,27 @@
 - Also hardened excerpt/title junk handling: masked-PII remnants
   ("o: •••@•••") and mangled mail-header prefixes never surface as labels;
   export label cap 120→140 so the closing excerpt quote survives.
+
+## 2026-08-07 — parser gap-card parity: suggested tests, trend, evidence titles
+
+- `pattern_tests.py` (NEW): port of the parser's `suggest_test` cascade —
+  suggested tests are now cluster-specific step chains ("Enable Devin Review
+  on a repo → open PR → verify review comments appear within 5 min…")
+  instead of one static sentence per flow; the static `SUGGESTED_TESTS`
+  table is gone. Fallback reproduces the pattern headline.
+- Trend per pattern, derived from the 60-day window (the parser reads its
+  `pattern_history` table; we keep the no-cross-run-state invariant):
+  `new` (first seen <24h), `accelerating` (last 7d > 1.2× previous 7d),
+  `declining` (< 0.8×), else `stable`. Plus the parser's
+  `priority_reason` line ("6 reports in 14 days (repeat pattern) · 3 still
+  open · accelerating — growing fast", fallback "emerging pattern") and
+  `count14d` frequency.
+- Evidence entries now carry sanitized ticket titles — the UI shows
+  "#64565 — Several rounds of Auto-Review…" lines instead of bare number
+  chips (parser evidence shape).
+- PatternCard: trend badges (accelerating/new/declining), meta shows
+  "N in 14d · M open", priority reason under What-breaks, bare pattern id
+  next to What-to-test (it is the coverage.json key), "Growing first" →
+  "Trending first" with the parser's trend sort order.
+- `validate-data.js` checks the new fields; 11 new pipeline tests
+  (suggest_test branches, trend derivation, count14d, emerging fallback).
