@@ -17,6 +17,7 @@ export { SkillsPage } from "./skills.page";
 export { RolesPage } from "./roles.page";
 export { SecurityPage } from "./security.page";
 export { SecretsPage } from "./s-secrets.page";
+export { EnterpriseSecretsPage } from "./e-secrets.page";
 export { SuborgPage } from "./suborg.page";
 export { SupportPage } from "./support.page";
 export { EnterpriseSettingsPage } from "./ent-settings.page";
