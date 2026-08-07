@@ -603,3 +603,14 @@
   enterprise-name field.
 - TC-ANLY-009 (CSV formula injection) — needs seeded session data containing
   formula-like names; not automatable against the shared tenant yet.
+
+## 2026-08-07 — Enterprise Secrets page: catalog page + Playwright spec
+
+New `e-secrets` catalog page and `EnterpriseSecretsPage` (extends the sub-org
+`SecretsPage` — same component, enterprise route). Implemented ESEC-SMK01
+(load/empty state), ESEC-REG01 (breadcrumbs), ESEC-REG02 (add-panel fields,
+255-char name cap, literal note payloads, Redact default ON, reset on reopen),
+ESEC-REG03 (bulk-import per-line inline errors + disabled Store), ESEC-REG04
+(search injection), ESEC-REG05 (no errors). ESEC-REG06 (store/delete race +
+encryption) is manual — enterprise-wide mutation on the shared tenant; ESEC-REG07
+(non-admin authz/IDOR) is blocked on a non-admin auth fixture.

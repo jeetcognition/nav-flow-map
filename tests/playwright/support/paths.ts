@@ -80,6 +80,9 @@ export const routes = {
   /** Sub-org secrets page. */
   secrets: (slug: string = TEST_SUBORG) => `/org/${slug}/settings/secrets`,
 
+  /** Enterprise secrets page. */
+  entSecrets: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/secrets`,
+
   /** Enterprise guardrails page. */
   guardrails: (slug: string = ENTERPRISE_SLUG) => `/org/${slug}/settings/guardrails`,
 
