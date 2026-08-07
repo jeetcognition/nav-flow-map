@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { DevinSettingsPage } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
+import { GeneralSettingsPage } from "../../pages";
 const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "swe-1-7", "fusion"] as const;
 const TOOL_SWITCHES = ["enterprise-secure-mode", "enterprise-web-search"] as const;
 const PR_OPEN_AS_OPTIONS = [
@@ -232,5 +233,47 @@ test.describe("Devin settings", () => {
   }) => {
     const devin = new DevinSettingsPage(page);
     await expectNoPageErrors(page, () => devin.goto(), { ready: devin.heading });
+  });
+
+  test("DEVIN-REG09 — Force save failure on a settings toggle", async ({ page }) => {
+    const devin = new DevinSettingsPage(page);
+    await devin.goto();
+    const ultra = devin.switchFor("ultra");
+    await expect(ultra).toBeVisible();
+    const initial = await ultra.getAttribute("aria-checked");
+
+    await page.route(GeneralSettingsPage.settingsApiGlob, async (route) => {
+      if (route.request().method() === "PUT") {
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ detail: "Simulated save failure" }),
+        });
+      } else {
+        await route.fallback();
+      }
+    });
+
+    try {
+      const [response] = await Promise.all([
+        page.waitForResponse(
+          (res) =>
+            res.request().method() === "PUT" &&
+            GeneralSettingsPage.settingsApiPattern.test(new URL(res.url()).pathname),
+        ),
+        ultra.click(),
+      ]);
+      expect(response.status()).toBe(500);
+
+      // A clear error toast is shown and the rejected value is not kept.
+      await expect(page.getByText("Failed to update Ultra setting.").first()).toBeVisible();
+      await expect(ultra).toHaveAttribute("aria-checked", initial);
+    } finally {
+      await page.unroute(GeneralSettingsPage.settingsApiGlob);
+    }
+
+    // The server state is unchanged — a reload shows the original value.
+    await reloadAndWait(page, devin);
+    await expect(devin.switchFor("ultra")).toHaveAttribute("aria-checked", initial);
   });
 });

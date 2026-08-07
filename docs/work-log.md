@@ -557,3 +557,24 @@
 - The Support page ignores the known Decagon support-chat auth-token 404 —
   a third-party widget failure on the QA tenant.
 - Added matching catalog entries for the 16 pages with catalog files.
+
+## 2026-08-07 — Automate save/fetch failure-handling cases
+
+### Implemented
+
+- DEVIN-REG09: settings toggle with the enterprise settings PUT forced to 500
+  — asserts the error toast, unreverted UI state, and reload-stable server state.
+- REV-REG08: auto-saving Devin Review toggle with the save PUT forced to 500 —
+  asserts the error toast, reverted state, and reload-stable server state.
+- ORG-REG15: organizations paginated fetch forced to 500 — asserts the page
+  chrome survives with no error boundary and no data presented as loaded.
+- INFRA-REG06: five rapid refreshes plus a 500 on the VPC health request —
+  asserts idempotent refresh and graceful failure.
+- ECON-REG05: all integration status requests forced to 500 — asserts no error
+  boundary and no phantom "Connected" state.
+
+### Observed product gaps (asserted as observed, noted here)
+
+- Organizations shows no error/retry message on a failed list fetch — the
+  table stays in its skeleton state.
+- Infrastructure shows no error indicator on a failed refresh.

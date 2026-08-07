@@ -856,6 +856,54 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "ORG-REG15",
+      "pageId": "e-orgs",
+      "surface": "webapp",
+      "title": "Force list fetch failure and verify graceful degradation.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["error-handling"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Organizations",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page with the paginated organizations fetch intercepted to return 500."
+        }
+      ],
+      "assertions": [
+        "the page chrome survives a 500 on the paginated list fetch",
+        "no error boundary or white screen appears",
+        "no organization data is presented as loaded"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-orgs.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills save/fetch failure-handling cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }
