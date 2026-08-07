@@ -2,6 +2,7 @@ import { test, expect, type ConsoleMessage } from "@playwright/test";
 import { GeneralSettingsPage } from "../../pages";
 import { routes } from "../../support/paths";
 
+import { expectNoPageErrors } from "../../support/errors";
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
   /\botp\b/i,
@@ -242,5 +243,12 @@ test.describe("Enterprise General settings", () => {
     await general.clickBackToEnterprise();
     await expect(page).toHaveURL(routes.entSettings);
     await expect(enterpriseSettingsHeading).toBeVisible();
+  });
+
+  test("GEN-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const general = new GeneralSettingsPage(page);
+    await expectNoPageErrors(page, () => general.goto(), { ready: general.heading });
   });
 });

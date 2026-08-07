@@ -12,6 +12,7 @@ import {
   type GuardrailViolation,
 } from "../../support/guardrails-api";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Guardrails", () => {
   let errors: string[] = [];
 
@@ -395,5 +396,12 @@ test.describe("Guardrails enforcement and authorization", () => {
     await expectEnterpriseBreadcrumbs(page, () => guardrails.goto(), {
       crumbs: ["Settings", "Enterprise", "Guardrails"],
     });
+  });
+
+  test("GUARD-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const guardrails = new GuardrailsPage(page);
+    await expectNoPageErrors(page, () => guardrails.goto(), { ready: guardrails.heading });
   });
 });

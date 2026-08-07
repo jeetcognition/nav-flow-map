@@ -1,6 +1,7 @@
 import { test, expect, request } from "@playwright/test";
 import { DevinApiPage } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Devin API", () => {
   function trackConsoleErrors(page: import("@playwright/test").Page) {
     const errors: string[] = [];
@@ -312,5 +313,12 @@ test.describe("Devin API", () => {
     await expectEnterpriseBreadcrumbs(page, () => api.goto(), {
       crumbs: ["Settings", "Enterprise", "Devin API"],
     });
+  });
+
+  test("API-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const api = new DevinApiPage(page);
+    await expectNoPageErrors(page, () => api.goto(), { ready: api.heading });
   });
 });

@@ -6,6 +6,7 @@ import {
   TEST_SUBORG_DISPLAY,
 } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 const PROVIDERS = [
   "GitHub",
   "GitLab",
@@ -346,5 +347,12 @@ test.describe("Connections", () => {
     await expectEnterpriseBreadcrumbs(page, () => connections.goto(), {
       crumbs: ["Settings", "Enterprise", "Connections"],
     });
+  });
+
+  test("ECON-REG04 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const connections = new ConnectionsPage(page);
+    await expectNoPageErrors(page, () => connections.goto(), { ready: connections.heading });
   });
 });

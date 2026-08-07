@@ -3,6 +3,7 @@ import { LoginPage, MembershipPage, MEMBER_COLUMNS } from "../../pages";
 import { routes, ALT_SUBORG_NAME } from "../../support/paths";
 import { fetchLatestOtp } from "../../support/gmail-otp";
 
+import { expectNoPageErrors } from "../../support/errors";
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
   /\botp\b/i,
@@ -479,5 +480,20 @@ test.describe("Enterprise Membership", () => {
     // Return to the real membership page to leave a clean state.
     await m.goto();
     await m.heading.waitFor({ state: "visible" });
+  });
+
+  test("MEMB-REG09 — Verify all tabs load without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const membership = new MembershipPage(page);
+    await expectNoPageErrors(page, () => membership.goto(), {
+      ready: membership.heading,
+      settle: async () => {
+        for (const tab of [membership.rolesTab, membership.groupsTab, membership.membersTab]) {
+          await tab.click();
+          await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+        }
+      },
+    });
   });
 });

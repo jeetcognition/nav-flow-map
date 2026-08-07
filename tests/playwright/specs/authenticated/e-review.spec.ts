@@ -10,6 +10,7 @@ import {
   DisposableMr,
 } from "../../support/gitlab";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Review Settings", () => {
   test("REV-SMK01 — Load cold", async ({ page }) => {
     const review = new ReviewSettingsPage(page);
@@ -285,5 +286,12 @@ test.describe("Review Settings", () => {
     await expectEnterpriseBreadcrumbs(page, () => review.goto(), {
       crumbs: ["Settings", "Enterprise", "Devin Review"],
     });
+  });
+
+  test("REV-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const review = new ReviewSettingsPage(page);
+    await expectNoPageErrors(page, () => review.goto(), { ready: review.heading });
   });
 });

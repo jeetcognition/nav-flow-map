@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { SessionsPage, SESSIONS_LIST_API } from "../../pages";
 import { routes } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 /**
  * Captures URL/console/page errors so we can fail on unexpected dialogs
  * (e.g., injection attempts) even when the assertion would otherwise pass.
@@ -316,6 +317,15 @@ test.describe("Enterprise Sessions", () => {
     await expectEnterpriseBreadcrumbs(page, () => sessions.goto(), {
       crumbs: ["Settings", "Enterprise", "Sessions"],
       backButton: false,
+    });
+  });
+
+  test("SESS-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const sessions = new SessionsPage(page);
+    await expectNoPageErrors(page, () => sessions.goto(), {
+      settle: () => sessions.expectLoaded(),
     });
   });
 });

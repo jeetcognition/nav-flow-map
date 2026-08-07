@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { KnowledgePage, DevinSessionPage } from "../../pages";
 import { routes } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Knowledge Page", () => {
   test("KNOW-SMK01 — Load the page cold", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
@@ -938,5 +939,12 @@ test.describe("Knowledge Page", () => {
     await expectEnterpriseBreadcrumbs(page, () => knowledge.goto(), {
       crumbs: ["Settings", "Enterprise", "Knowledge"],
     });
+  });
+
+  test("KNOW-REG20 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const knowledge = new KnowledgePage(page);
+    await expectNoPageErrors(page, () => knowledge.goto(), { ready: knowledge.heading });
   });
 });

@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { DevinSettingsPage } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "swe-1-7", "fusion"] as const;
 const TOOL_SWITCHES = ["enterprise-secure-mode", "enterprise-web-search"] as const;
 const PR_OPEN_AS_OPTIONS = [
@@ -224,5 +225,12 @@ test.describe("Devin settings", () => {
     await expectEnterpriseBreadcrumbs(page, () => devin.goto(), {
       crumbs: ["Settings", "Enterprise", "Devin"],
     });
+  });
+
+  test("DEVIN-REG08 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const devin = new DevinSettingsPage(page);
+    await expectNoPageErrors(page, () => devin.goto(), { ready: devin.heading });
   });
 });

@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { PlaybooksPage, DevinSessionPage } from "../../pages";
 import { routes } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Playbooks Page", () => {
   test("PLAY-SMK01 — Load the page cold", async ({ page }) => {
     const playbooks = new PlaybooksPage(page);
@@ -491,5 +492,12 @@ test.describe("Playbooks Page", () => {
     await expectEnterpriseBreadcrumbs(page, () => playbooks.goto(), {
       crumbs: ["Settings", "Enterprise", "Playbooks"],
     });
+  });
+
+  test("PLAY-REG14 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const playbooks = new PlaybooksPage(page);
+    await expectNoPageErrors(page, () => playbooks.goto(), { ready: playbooks.heading });
   });
 });

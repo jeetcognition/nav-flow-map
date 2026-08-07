@@ -544,3 +544,16 @@
 - Analytics renders only `Settings > Enterprise` — no `Analytics` crumb, and
   the `Enterprise` crumb is plain text rather than a link.
 - Enterprise Sessions has no `Back to enterprise` button.
+
+## 2026-08-07 — Automate "page has no errors" checks across enterprise settings pages
+
+### Implemented
+
+- Added a shared error-collection helper (`tests/playwright/support/errors.ts`)
+  with `watchPageErrors` (console + pageerror with an ignore list) and
+  `expectNoPageErrors` (load, settle, assert no error boundary and no errors).
+- Added one no-errors regression test to 18 specs covering every enterprise
+  settings page (membership sweeps the Members/Roles/Groups tabs).
+- The Support page ignores the known Decagon support-chat auth-token 404 —
+  a third-party widget failure on the QA tenant.
+- Added matching catalog entries for the 16 pages with catalog files.

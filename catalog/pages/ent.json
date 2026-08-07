@@ -654,6 +654,53 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ENTSET-REG09",
+      "pageId": "ent",
+      "surface": "webapp",
+      "title": "Verify the page loads without console errors or error boundaries.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Enterprise Settings",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page and check for error boundaries and console JS errors."
+        }
+      ],
+      "assertions": [
+        "no error boundary is rendered",
+        "no console errors or uncaught page errors occur"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/ent.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills page-has-no-errors cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { SkillsPage, routes } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Skills & Rules", () => {
   function watchErrors(page: Page): string[] {
     const errors: string[] = [];
@@ -154,5 +155,12 @@ test.describe("Skills & Rules", () => {
     await expectEnterpriseBreadcrumbs(page, () => skills.goto(), {
       crumbs: ["Settings", "Enterprise", "Skills"],
     });
+  });
+
+  test("SKILL-REG06 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const skills = new SkillsPage(page);
+    await expectNoPageErrors(page, () => skills.goto(), { ready: skills.heading });
   });
 });
