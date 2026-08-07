@@ -626,3 +626,38 @@ encryption) is manual — enterprise-wide mutation on the shared tenant; ESEC-RE
 - PLAY-REG15: playbook detail Version history tab renders Date/Title/Author/
   Source/Status with the Active version (no catalog page exists for e-playbooks).
 - TC-GRP-003 (Groups empty state) found already covered by IDP-SMK01.
+
+## 2026-08-07 — Enterprise Security drift + blueprint-editor deep cases
+
+### Enterprise Security (TC-SECU-001…009)
+
+The skill assumes an enterprise Security settings page, but the product has
+none: /org/{enterprise}/settings/security renders the in-app 404 and the
+settings hub lists no Security entry. Added ESECU-REG01 to pin that drift and
+a new `e-security` catalog page; the functional cases are cataloged as blocked
+(product drift). Sub-org code-scan Security coverage is a different surface
+and was not substituted.
+
+### Blueprint editor (TC-ENV-016/017/018/019)
+
+- ENV-REG10: pins two product gaps found live — dirty blueprint edits are
+  silently discarded on tab switch and on reload, with no unsaved-changes
+  warning or beforeunload prompt.
+- ENV-REG11: pins that invalid YAML shows no inline error markers and leaves
+  Save blueprint ENABLED (no client-side validation); also covers caret and
+  keyboard navigation and exact discard recovery. Save is never clicked on the
+  shared enterprise blueprint.
+- TC-ENV-018 dirty-tracking/discard was already covered by ENV-REG02; the
+  save round-trip half needs a disposable non-inherited scope and stays manual.
+
+### Consolidated blocked-case summary
+
+- Non-admin authorization (TC-GEN-008, TC-HUB-008, TC-SEC-011 UI half, …):
+  blocked until auth.setup.ts captures a second, non-admin session.
+- CSRF assertions on mutations: need request-forging fixtures outside the
+  authenticated browser context.
+- Cross-tenant IDOR mutation probes: need a second disposable tenant.
+- Analytics CSV formula injection (TC-ANLY-009): needs seeded formula-like
+  session names.
+- Enterprise secret store/delete race (TC-SEC-006/008/010): enterprise-wide
+  mutation on the shared tenant; run manually via the skill.
