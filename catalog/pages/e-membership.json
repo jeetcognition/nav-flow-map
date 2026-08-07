@@ -698,6 +698,55 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MEMB-REG10",
+      "pageId": "e-membership",
+      "surface": "webapp",
+      "title": "Tab navigation honors the param and tampering falls back safely.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Membership",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Switch tabs, exercise Back/Forward and refresh, then load tampered ?tab= values."
+        }
+      ],
+      "assertions": [
+        "switching tabs updates ?tab= and Back/Forward restore the correct tab",
+        "a refresh keeps the current tab",
+        "tampered ?tab= values fall back to Members with no XSS or crash",
+        "the Learn more link opens docs with target=_blank and rel=noopener"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-membership.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills tab-tampering and search-injection cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

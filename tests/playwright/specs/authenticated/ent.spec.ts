@@ -282,4 +282,37 @@ test.describe("Enterprise Settings landing", () => {
     const ent = new EnterpriseSettingsPage(page);
     await expectNoPageErrors(page, () => ent.goto(), { ready: ent.heading });
   });
+
+  test("ENTSET-REG10 — Search settings with whitespace, Unicode, and injection payloads", async ({
+    page,
+  }) => {
+    const ent = new EnterpriseSettingsPage(page);
+    page.on("dialog", (dialog) => {
+      throw new Error(`Unexpected dialog: ${dialog.message()}`);
+    });
+    await ent.goto();
+    await ent.heading.waitFor({ state: "visible" });
+    const orgRows = ent.visibleOrgRows();
+
+    // Whitespace-only input keeps the sidebar usable.
+    await ent.search("   ");
+    await expect(ent.heading).toBeVisible();
+
+    // Unicode input filters literally without crashing.
+    await ent.search("😀漢字");
+    await expect(orgRows).toHaveCount(0);
+    await expect(ent.heading).toBeVisible();
+
+    // SQL-like payload is treated as a literal no-match string.
+    await ent.search("' OR 1=1 --");
+    await expect(orgRows).toHaveCount(0);
+    await expect(
+      page.locator("main").getByText("Enterprise preferences and settings"),
+    ).toBeVisible();
+
+    // HTML-like payload renders inert (no dialog fired, page intact).
+    await ent.search("<img src=x onerror=alert(1)>");
+    await expect(orgRows).toHaveCount(0);
+    await expect(ent.heading).toBeVisible();
+  });
 });

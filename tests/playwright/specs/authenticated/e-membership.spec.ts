@@ -4,6 +4,7 @@ import { routes, ALT_SUBORG_NAME } from "../../support/paths";
 import { fetchLatestOtp } from "../../support/gmail-otp";
 
 import { expectNoPageErrors } from "../../support/errors";
+import { errorBoundaryIndicators } from "../../support/errors";
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
   /\botp\b/i,
@@ -495,5 +496,49 @@ test.describe("Enterprise Membership", () => {
         }
       },
     });
+  });
+
+  test("MEMB-REG10 — Tab navigation honors the param and tampering falls back safely", async ({
+    page,
+  }) => {
+    const membership = new MembershipPage(page);
+    const selectedTab = page.locator("button[role='tab'][aria-selected='true']");
+    page.on("dialog", (dialog) => {
+      throw new Error(`Unexpected dialog: ${dialog.message()}`);
+    });
+
+    // Switching tabs updates ?tab= and Back/Forward restore the previous tab.
+    await membership.goto();
+    await expect(page).toHaveURL(/tab=members/);
+    await membership.rolesTab.click();
+    await expect(page).toHaveURL(/tab=roles/);
+    // In-page tab clicks replace the history entry, so create a real entry
+    // with a direct navigation before exercising Back/Forward.
+    await page.goto(routes.membershipTab("groups"));
+    await expect(selectedTab).toHaveText(/Groups/);
+    await page.goBack();
+    await expect(page).toHaveURL(/tab=roles/);
+    await expect(selectedTab).toHaveText(/Roles/);
+    await page.goForward();
+    await expect(page).toHaveURL(/tab=groups/);
+    await expect(selectedTab).toHaveText(/Groups/);
+
+    // A refresh keeps the current tab.
+    await page.reload({ waitUntil: "networkidle" });
+    await expect(selectedTab).toHaveText(/Groups/);
+
+    // Tampered ?tab= values fall back to the Members default with no XSS or crash.
+    for (const tampered of ["<script>alert(1)</script>", "xyz", "members' OR '1'='1", ""]) {
+      await page.goto(`${routes.membership()}?tab=${encodeURIComponent(tampered)}`);
+      await expect(membership.heading).toBeVisible();
+      await expect(selectedTab).toHaveText(/Members/);
+      await expect(errorBoundaryIndicators(page)).toHaveCount(0);
+    }
+
+    // The Learn more link opens the docs safely in a new tab.
+    const learnMore = page.locator("main").getByRole("link", { name: "Learn more" }).first();
+    await expect(learnMore).toBeVisible();
+    await expect(learnMore).toHaveAttribute("target", "_blank");
+    await expect(learnMore).toHaveAttribute("rel", /noopener/);
   });
 });
