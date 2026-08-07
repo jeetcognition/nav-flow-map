@@ -336,6 +336,54 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "INFRA-REG06",
+      "pageId": "e-infra",
+      "surface": "webapp",
+      "title": "Refresh is idempotent and degrades gracefully on failure.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["error-handling"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Infrastructure",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Click Refresh rapidly five times, then refresh with the VPC health request intercepted to return 500."
+        }
+      ],
+      "assertions": [
+        "five rapid refreshes leave a consistent non-stuck state",
+        "a 500 on the health request does not crash the page",
+        "no stale data is presented as fresh"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-infra.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills save/fetch failure-handling cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

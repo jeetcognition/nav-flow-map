@@ -523,6 +523,54 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "DEVIN-REG09",
+      "pageId": "e-devin",
+      "surface": "webapp",
+      "title": "Force save failure on a settings toggle.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["error-handling"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Devin",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Toggle a setting with the settings save intercepted to return 500."
+        }
+      ],
+      "assertions": [
+        "a 500 on the settings PUT shows a clear error toast",
+        "the toggle keeps its original state",
+        "a reload shows the original value"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-devin.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills save/fetch failure-handling cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

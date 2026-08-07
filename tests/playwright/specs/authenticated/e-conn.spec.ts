@@ -7,6 +7,7 @@ import {
 } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
+import { errorBoundaryIndicators } from "../../support/errors";
 const PROVIDERS = [
   "GitHub",
   "GitLab",
@@ -354,5 +355,31 @@ test.describe("Connections", () => {
   }) => {
     const connections = new ConnectionsPage(page);
     await expectNoPageErrors(page, () => connections.goto(), { ready: connections.heading });
+  });
+
+  test("ECON-REG05 — Force integration status failures and verify no phantom connections", async ({
+    page,
+  }) => {
+    const connections = new ConnectionsPage(page);
+    const statusGlob = "**/api/**/integrations/**";
+    await page.route(statusGlob, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ detail: "Injected error" }),
+      }),
+    );
+
+    try {
+      await connections.goto();
+      // The page chrome survives the failures — no white screen or error boundary.
+      await expect(connections.heading).toBeVisible();
+      await expect(connections.integrationsTab).toBeVisible();
+      await expect(errorBoundaryIndicators(page)).toHaveCount(0);
+      // No provider is presented as connected when its status request failed.
+      await expect(page.getByText("Connected", { exact: true })).toHaveCount(0);
+    } finally {
+      await page.unroute(statusGlob);
+    }
   });
 });

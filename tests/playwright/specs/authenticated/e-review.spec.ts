@@ -294,4 +294,50 @@ test.describe("Review Settings", () => {
     const review = new ReviewSettingsPage(page);
     await expectNoPageErrors(page, () => review.goto(), { ready: review.heading });
   });
+
+  test("REV-REG08 — Force save failure on an auto-saving toggle", async ({ page }) => {
+    const review = new ReviewSettingsPage(page);
+    await review.goto();
+    const toggle = review.prDescriptionsSwitch.getByRole("switch");
+    await expect(toggle).toBeVisible();
+    const initial = await toggle.getAttribute("aria-checked");
+    const saveGlob = "**/api/pr-review/settings/insert-link";
+
+    await page.route(saveGlob, async (route) => {
+      if (route.request().method() === "PUT") {
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ detail: "Simulated save failure" }),
+        });
+      } else {
+        await route.fallback();
+      }
+    });
+
+    try {
+      const [response] = await Promise.all([
+        page.waitForResponse(
+          (res) =>
+            res.request().method() === "PUT" &&
+            res.url().includes("/api/pr-review/settings/insert-link"),
+        ),
+        toggle.click(),
+      ]);
+      expect(response.status()).toBe(500);
+
+      // A clear error toast is shown and the toggle reverts.
+      await expect(page.getByText("Failed to update setting").first()).toBeVisible();
+      await expect(toggle).toHaveAttribute("aria-checked", initial);
+    } finally {
+      await page.unroute(saveGlob);
+    }
+
+    // The server state is unchanged — a reload shows the original value.
+    await page.reload({ waitUntil: "networkidle" });
+    await expect(review.prDescriptionsSwitch.getByRole("switch")).toHaveAttribute(
+      "aria-checked",
+      initial,
+    );
+  });
 });
