@@ -665,7 +665,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Enterprise Settings",
+      "navigation": "Settings -> Enterprise -> Enterprise Settings",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -712,7 +712,7 @@
       "riskTags": ["security-injection"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Enterprise Settings",
+      "navigation": "Settings -> Enterprise -> Enterprise Settings",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {

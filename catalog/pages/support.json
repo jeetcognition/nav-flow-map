@@ -381,7 +381,7 @@
       "riskTags": ["navigation"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Support",
+      "navigation": "Settings -> Enterprise -> Support",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -429,7 +429,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Support",
+      "navigation": "Settings -> Enterprise -> Support",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {

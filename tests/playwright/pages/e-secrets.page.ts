@@ -3,7 +3,7 @@ import { SecretsPage } from "./s-secrets.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
 /**
- * Enterprise Settings → Enterprise → Secrets page.
+ * Enterprise Settings -> Enterprise -> Secrets page.
  *
  * The enterprise page renders the same secrets form as the sub-org page, so the
  * locators are inherited; only the route and the enterprise-only chrome differ.

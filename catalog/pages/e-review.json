@@ -438,7 +438,7 @@
       "riskTags": ["navigation"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Devin Review",
+      "navigation": "Settings -> Enterprise -> Devin Review",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -486,7 +486,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Devin Review",
+      "navigation": "Settings -> Enterprise -> Devin Review",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -533,7 +533,7 @@
       "riskTags": ["error-handling"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Devin Review",
+      "navigation": "Settings -> Enterprise -> Devin Review",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {

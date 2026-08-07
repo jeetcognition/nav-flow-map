@@ -18,7 +18,7 @@
       "riskTags": ["navigation", "error-detection"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Security (route does not exist)",
+      "navigation": "Settings -> Enterprise -> Security (route does not exist)",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "cleanup": {
         "required": false,
@@ -65,7 +65,7 @@
       "riskTags": ["page-load"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Security (route does not exist)",
+      "navigation": "Settings -> Enterprise -> Security (route does not exist)",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "cleanup": {
         "required": false,

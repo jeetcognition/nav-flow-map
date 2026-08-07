@@ -432,7 +432,7 @@
       "riskTags": ["navigation"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Guardrails",
+      "navigation": "Settings -> Enterprise -> Guardrails",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -480,7 +480,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Guardrails",
+      "navigation": "Settings -> Enterprise -> Guardrails",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {

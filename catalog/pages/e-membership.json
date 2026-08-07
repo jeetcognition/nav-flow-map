@@ -662,7 +662,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Membership",
+      "navigation": "Settings -> Enterprise -> Membership",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -709,7 +709,7 @@
       "riskTags": ["navigation"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Settings → Enterprise → Membership",
+      "navigation": "Settings -> Enterprise -> Membership",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
