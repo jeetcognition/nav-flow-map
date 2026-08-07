@@ -1,9 +1,17 @@
-// One coverage-gap pattern: collapsed single line, expandable to the full
-// what-breaks / what-to-test / evidence / actions body (QA-DEC-027 UI).
+// One coverage-gap pattern: collapsed single line, expandable to a story rail
+// (what breaks → evidence → what to test, user-picked design 2026-08-07).
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CaretDown, CheckCircle, Prohibit, Sparkle, TrendUp } from "@phosphor-icons/react";
+import {
+  CaretDown,
+  CheckCircle,
+  Fire,
+  Prohibit,
+  Sparkle,
+  Ticket,
+  TrendUp,
+} from "@phosphor-icons/react";
 import { getSurfaces, patternIncidents, setPatternCoverage } from "../../data/dataService";
 import { useApp } from "../../hooks/useApp";
 import { rowFadeUp } from "../../lib/motion";
@@ -108,15 +116,27 @@ export function PatternCard({
 
       {open && (
         <div className="pat-body">
-          <div className="pat-grid">
-            <section>
-              <h4 className="pat-sec-title">What breaks</h4>
-              <p className="pat-desc">
-                {pattern.flow} — {top?.description || pattern.label}
-              </p>
+          <div className="pat-chap">
+            <div className="pat-chap-ico ico-breaks">
+              <Fire size={15} weight="duotone" />
+            </div>
+            <div className="pat-chap-main">
+              <div className="pat-chap-h">What breaks · {pattern.flow}</div>
+              <p className="pat-desc">{top?.description || pattern.label}</p>
               <p className="pat-reason">{pattern.priorityReason}</p>
+            </div>
+          </div>
+
+          <div className="pat-chap">
+            <div className="pat-chap-ico ico-evid">
+              <Ticket size={15} weight="duotone" />
+            </div>
+            <div className="pat-chap-main">
+              <div className="pat-chap-h">
+                Evidence · {pattern.total} ticket{pattern.total === 1 ? "" : "s"}
+                {pattern.evidence.length > 5 ? ", top 5" : ""}
+              </div>
               <div className="pat-evidence">
-                <span className="pat-evidence-label">Evidence</span>
                 {pattern.evidence.slice(0, 5).map((ev) => {
                   const inner = (
                     <>
@@ -127,7 +147,7 @@ export function PatternCard({
                   return ev.link ? (
                     <a
                       key={ev.number}
-                      className="pat-ticket-line"
+                      className="pat-ev-row"
                       href={ev.link}
                       target="_blank"
                       rel="noreferrer"
@@ -136,81 +156,100 @@ export function PatternCard({
                       {inner}
                     </a>
                   ) : (
-                    <span key={ev.number} className="pat-ticket-line">
+                    <span key={ev.number} className="pat-ev-row">
                       {inner}
                     </span>
                   );
                 })}
               </div>
-            </section>
-            <section>
-              <h4 className="pat-sec-title">
-                <Sparkle size={12} weight="duotone" /> What to test
+              {members.length > 0 && (
+                <details className="pat-tickets">
+                  <summary>All linked tickets in the feed ({members.length})</summary>
+                  <div className="pat-ticket-list">
+                    {members.map((inc, i) => (
+                      <IncidentCard
+                        key={inc.id}
+                        incident={inc}
+                        index={i}
+                        onCreateTestcase={onCreateTestcase}
+                      />
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          </div>
+
+          <div className="pat-chap">
+            <div className="pat-chap-ico ico-test">
+              <Sparkle size={15} weight="duotone" />
+            </div>
+            <div className="pat-chap-main">
+              <div className="pat-chap-h">
+                What to test
                 <span className="pat-id mono">{pattern.id.replace(/^PAT-/, "")}</span>
-              </h4>
-              <p className="pat-test">{pattern.suggestedTest}</p>
+              </div>
+              <ol className="pat-steps">
+                {pattern.suggestedTest
+                  .replace(/^Reproduce: /, "")
+                  .split("→")
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+                  .map((step, i) => (
+                    <li key={i} className="pat-step">
+                      <span className="pat-step-no num">{i + 1}</span>
+                      {step}
+                    </li>
+                  ))}
+              </ol>
               {pattern.coveredBy && (
                 <p className="pat-covered-by">
                   covered by <span className="mono">{pattern.coveredBy}</span>
                 </p>
               )}
-            </section>
-          </div>
-
-          <div className="pat-actions">
-            {top && (
-              <button className="btn btn-mini btn-ai-strong" onClick={() => onCreateTestcase(top)}>
-                <Sparkle size={13} weight="duotone" /> Draft testcase
-              </button>
-            )}
-            {covering ? (
-              <CoverForm pattern={pattern} onDone={() => setCovering(false)} />
-            ) : (
-              <button className="btn btn-mini" onClick={() => setCovering(true)}>
-                <CheckCircle size={13} weight="duotone" /> Mark covered…
-              </button>
-            )}
-            {pattern.coverage !== "dismissed" &&
-              (confirmDismiss ? (
-                <span className="pat-confirm">
+              <div className="pat-actions">
+                {top && (
                   <button
-                    className="btn btn-mini btn-danger"
-                    onClick={() => {
-                      setPatternCoverage(pattern.id, "dismissed", null, user.id);
-                      setConfirmDismiss(false);
-                    }}
+                    className="btn btn-mini btn-ai-strong"
+                    onClick={() => onCreateTestcase(top)}
                   >
-                    Confirm dismiss
+                    <Sparkle size={13} weight="duotone" /> Draft testcase
                   </button>
-                  <button className="btn btn-mini" onClick={() => setConfirmDismiss(false)}>
-                    Keep
+                )}
+                {covering ? (
+                  <CoverForm pattern={pattern} onDone={() => setCovering(false)} />
+                ) : (
+                  <button className="btn btn-mini" onClick={() => setCovering(true)}>
+                    <CheckCircle size={13} weight="duotone" /> Mark covered…
                   </button>
-                </span>
-              ) : (
-                <button className="btn btn-mini" onClick={() => setConfirmDismiss(true)}>
-                  <Prohibit size={13} weight="duotone" /> Dismiss as noise
-                </button>
-              ))}
-            <Link className="link-chip" to={`/navflow?node=${pattern.nodeId}`}>
-              Open in Flow Map
-            </Link>
-          </div>
-
-          {members.length > 0 && (
-            <details className="pat-tickets">
-              <summary>Individual tickets ({members.length})</summary>
-              <div className="pat-ticket-list">
-                {members.map((inc, i) => (
-                  <IncidentCard
-                    key={inc.id}
-                    incident={inc}
-                    index={i}
-                    onCreateTestcase={onCreateTestcase}
-                  />
-                ))}
+                )}
+                {pattern.coverage !== "dismissed" &&
+                  (confirmDismiss ? (
+                    <span className="pat-confirm">
+                      <button
+                        className="btn btn-mini btn-danger"
+                        onClick={() => {
+                          setPatternCoverage(pattern.id, "dismissed", null, user.id);
+                          setConfirmDismiss(false);
+                        }}
+                      >
+                        Confirm dismiss
+                      </button>
+                      <button className="btn btn-mini" onClick={() => setConfirmDismiss(false)}>
+                        Keep
+                      </button>
+                    </span>
+                  ) : (
+                    <button className="btn btn-mini" onClick={() => setConfirmDismiss(true)}>
+                      <Prohibit size={13} weight="duotone" /> Dismiss as noise
+                    </button>
+                  ))}
+                <Link className="link-chip" to={`/navflow?node=${pattern.nodeId}`}>
+                  Open in Flow Map
+                </Link>
               </div>
-            </details>
-          )}
+            </div>
+          </div>
         </div>
       )}
     </motion.article>

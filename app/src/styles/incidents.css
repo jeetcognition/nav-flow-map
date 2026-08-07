@@ -708,20 +708,44 @@
 }
 .pat-body {
   border-top: 1px solid var(--border);
-  padding: var(--sp-4) var(--sp-4) var(--sp-4);
+  padding: 0 var(--sp-4) var(--sp-4);
 }
-.pat-grid {
+
+/* story rail: what breaks → evidence → what to test (design pick 2026-08-07) */
+.pat-chap {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--sp-4);
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 0 var(--sp-3);
+  padding: var(--sp-4) 0;
 }
-@media (max-width: 720px) {
-  .pat-grid {
-    grid-template-columns: 1fr;
-  }
+.pat-chap + .pat-chap {
+  border-top: 1px dashed var(--border);
 }
-.pat-sec-title {
-  margin: 0 0 var(--sp-2);
+.pat-chap-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ico-breaks {
+  background: var(--danger-tint);
+  color: var(--red-soft);
+}
+.ico-evid {
+  background: var(--info-tint);
+  color: var(--blue-soft);
+}
+.ico-test {
+  background: var(--ai-tint);
+  color: var(--purple-soft);
+}
+.pat-chap-main {
+  min-width: 0;
+}
+.pat-chap-h {
+  margin: 5px 0 6px;
   font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -732,17 +756,8 @@
 }
 .pat-desc {
   margin: 0;
-  color: var(--text-2);
+  color: var(--text);
   font-size: var(--fs-sm);
-}
-.pat-test {
-  margin: 0;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: var(--fs-sm);
-  color: var(--text-2);
 }
 .pat-covered-by {
   margin: var(--sp-2) 0 0;
@@ -769,38 +784,28 @@
 .pat-evidence {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-top: var(--sp-3);
 }
-.pat-evidence-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-3);
-  margin-bottom: 1px;
-}
-.pat-ticket-line {
+.pat-ev-row {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
-  padding: 5px 10px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-xs);
-  text-decoration: none;
-  transition: border-color var(--dur-fast) var(--ease-out);
-}
-a.pat-ticket-line:hover {
-  border-color: var(--border-strong);
+  padding: 6px 0;
+  font-size: var(--fs-sm);
   text-decoration: none;
 }
-a.pat-ticket-line:hover .pat-ticket-title {
+.pat-ev-row + .pat-ev-row {
+  border-top: 1px solid var(--grid-line);
+}
+a.pat-ev-row:hover {
+  text-decoration: none;
+}
+a.pat-ev-row:hover .pat-ticket-title {
   color: var(--text);
 }
 .pat-ticket-num {
   font-family: var(--font-mono);
+  font-size: var(--fs-xs);
   color: var(--blue-soft);
   white-space: nowrap;
   flex-shrink: 0;
@@ -811,6 +816,36 @@ a.pat-ticket-line:hover .pat-ticket-title {
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+}
+.pat-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pat-step {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 0;
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+}
+.pat-step + .pat-step {
+  border-top: 1px solid var(--grid-line);
+}
+.pat-step-no {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ai-tint);
+  color: var(--purple-soft);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 3px;
 }
 .pat-actions {
   display: flex;
@@ -844,9 +879,7 @@ a.pat-ticket-line:hover .pat-ticket-title {
   width: 210px;
 }
 .pat-tickets {
-  margin-top: var(--sp-4);
-  border-top: 1px dashed var(--border);
-  padding-top: var(--sp-3);
+  margin-top: var(--sp-2);
 }
 .pat-tickets summary {
   cursor: pointer;
