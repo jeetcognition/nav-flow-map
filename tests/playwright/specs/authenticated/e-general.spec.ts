@@ -224,7 +224,9 @@ test.describe("Enterprise General settings", () => {
 
     await general.goto();
     await expect(general.breadcrumbNav).toBeVisible();
-    await expect(await general.breadcrumbLabels()).toEqual(["Settings", "Enterprise", "General"]);
+    await expect
+      .poll(() => general.breadcrumbLabels())
+      .toEqual(["Settings", "Enterprise", "General"]);
     await expect(general.lastBreadcrumbLink).toHaveCount(0);
 
     await general.breadcrumbCrumb("Settings").click();
