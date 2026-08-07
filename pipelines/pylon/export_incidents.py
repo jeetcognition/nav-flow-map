@@ -95,15 +95,22 @@ def _strip_noise(s: str) -> str:
     return LONG_HEX_RE.sub("", s)
 
 
+def _junky(s: str) -> bool:
+    """Nothing a human can read: masked PII remnants ("o: •••@•••") or fewer
+    than six letters overall (any script)."""
+    return "•••" in s or len(re.findall(r"[^\W\d_]", s)) < 6
+
+
 def display_title(r: dict, limit: int = 120) -> str:
     """Readable incident title, ported from the report parser's display_title:
-    greeting-only titles fall back to the first meaningful body sentence,
-    link/id noise is stripped, and truncation lands on a word boundary."""
+    greeting-only / masked-out titles fall back to the first meaningful body
+    sentence, link/id noise is stripped, truncation lands on a word boundary."""
     s = sanitize(_strip_noise(r.get("title") or ""))
-    if not s or s.lower().strip(" .!,¡¿?") in GENERIC_TITLES or len(s) < 8:
+    if not s or s.lower().strip(" .!,¡¿?") in GENERIC_TITLES or len(s) < 8 or _junky(s):
         body = sanitize(_strip_noise(r.get("body_snippet") or ""))
-        sentences = [x.strip() for x in re.split(r"[.!?\n]", body) if len(x.strip()) > 20]
-        s = sentences[0] if sentences else s
+        sentences = [x.strip() for x in re.split(r"[.!?\n]", body)
+                     if len(x.strip()) > 20 and not _junky(x)]
+        s = sentences[0] if sentences else ("" if _junky(s) else s)
     s = " ".join(s.split()).strip(" .,;:-–—")
     if s.isupper() and len(s) > 4:
         s = s.capitalize()
@@ -177,7 +184,7 @@ def export_patterns(rows: list[dict], incident_ids: set[str], out_path: Path) ->
 
     out = []
     for p in build_patterns(kept):
-        label = sanitize(p["label"])[:120] or p["flow"]
+        label = sanitize(p["label"])[:140] or p["flow"]
         member_ids = [f"INC-{r['number']}" for r in p["items"]]
         member_ids = [i for i in member_ids if i in incident_ids]
         ranked = sorted(p["items"], key=lambda r: -r["_score"])

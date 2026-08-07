@@ -141,6 +141,36 @@ check("suggested-test-flow", "20 standard user actions" in big["suggestedTest"],
 pats2 = build_patterns(same + other, now=NOW)
 check("deterministic-ids", {p["id"] for p in pats} == {p["id"] for p in pats2})
 
+print("detect_surface() — product beats inbox brand (parser bucket() parity)")
+check("cli-beats-devin-brand",
+      classify(t("Devin CLI error after reinstall", brand="Devin"))["surface"] == "devin-cli")
+check("cli-beats-windsurf-brand",
+      classify(t("Users report they lost access to the CLI", brand="Windsurf"))["surface"] == "devin-cli")
+check("cascade-is-windsurf",
+      classify(t("At @ symbol button closes cascade window", brand="Devin"))["surface"] == "windsurf")
+check("windsurf-brand-sticks",
+      classify(t("Editor theme renders wrong colors", brand="windsurf_eu"))["surface"] == "windsurf")
+check("ide-needs-word-boundary",
+      classify(t("please provide the sidebar video", brand="Devin"))["surface"] != "windsurf")
+check("integrated-terminal-stays-ide",
+      classify(t("At @ symbol button closes cascade window",
+                 body="clicking the @ symbol from a terminal window closes my cascade panel",
+                 brand="Fedramp"))["surface"] == "windsurf")
+check("bare-terminal-still-cli",
+      classify(t("Crashes on multi-file pasteboard drop in the terminal", brand="Devin"))["surface"] == "devin-cli")
+check("ent-plan-wins",
+      classify({**t("billing question", brand="Devin"), "plan_tier": "enterprise"})["surface"] == "enterprise")
+check("ent-identity-beats-quoted-docs-link",
+      classify({**t("Devin SSO setup",
+                    body="on an enterprise plan; your docs say go to windsurf.com/team/settings to configure saml",
+                    brand="Devin"), "plan_tier": "enterprise"})["surface"] == "enterprise")
+check("fedramp-is-enterprise",
+      classify(t("cannot access our fedramp instance", brand=""))["surface"] == "enterprise")
+check("devin-brand-is-retail",
+      classify(t("payment not reflected in my account", brand="Devin"))["surface"] == "retail")
+check("unknown-defaults-enterprise",
+      classify(t("random unrelated note", brand=""))["surface"] == "enterprise")
+
 print("display_title() — readable incident titles")
 from export_incidents import display_title
 
@@ -154,6 +184,16 @@ dt_out = display_title(long_title)
 check("word-boundary-ellipsis", dt_out.endswith("…") and " " not in dt_out[-12:-1].split()[-1], dt_out)
 check("caps-normalized", display_title({"title": "PAYMENT PAGE IS BROKEN"}) == "Payment page is broken")
 check("empty-falls-back", display_title({"title": "", "body_snippet": "", "number": 42}) == "Pylon ticket #42")
+masked = display_title({"title": "To: user@example.com",
+                        "body_snippet": "The CLI login fails with a 403 error every single time."})
+check("masked-title-uses-body", "cli login fails" in masked.lower(), masked)
+check("masked-title-no-remnant", "•••" not in masked, masked)
+
+from pattern_headlines import excerpt
+check("excerpt-skips-masked-email",
+      excerpt([{"title": "To: user@example.com", "_score": 1}], "o", "CLI") == "")
+check("excerpt-falls-to-title",
+      "quota" in excerpt([{"title": "Quota resets but balance is wrong", "_score": 1}], "o", "CLI").lower())
 
 print("headline() — pattern labels read as user-action → failure")
 from pattern_headlines import headline

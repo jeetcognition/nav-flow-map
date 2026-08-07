@@ -46,16 +46,26 @@ def is_generic(h: str) -> bool:
 
 def excerpt(items: list[dict], key: str, flow: str, limit: int = 40) -> str:
     """Short distinguishing fragment for generic-headline clusters: the raw
-    cluster key when it carries signal, else the top ticket's title."""
-    s = (key or "").strip()
-    if len(s) < 8 or s.lower() in _JUNK_KEYS or s.lower() == flow.lower():
-        top = max(items, key=lambda r: r.get("_score", 0), default={})
-        s = (top.get("title") or top.get("body_snippet") or "").strip()
-    s = re.sub(r"https?://\S+", "", s)
-    s = re.sub(r"\s+", " ", s).strip(" .,;:-–—")
-    if len(s) > limit:
-        s = s[:limit].rsplit(" ", 1)[0].rstrip(" .,;:-–—") + "…"
-    return s
+    cluster key when it carries signal, else the top ticket's title/body.
+    Returns "" when no candidate is human-readable (caller omits the quote)."""
+    top = max(items, key=lambda r: r.get("_score", 0), default={})
+    for cand in (key, top.get("title"), top.get("body_snippet")):
+        s = (cand or "").strip()
+        if len(s) < 8 or s.lower() in _JUNK_KEYS or s.lower() == flow.lower():
+            continue
+        s = re.sub(r"https?://\S+", "", s)
+        s = re.sub(r"[\w.+-]+@[\w.-]+", "", s)  # emails would export as "•••@•••"
+        s = re.sub(r"\[[^\]]*\]", " ", s)  # bracketed senders/tags
+        # repeated / mangled mail-header prefixes: "Re: To: …", "o: Subject: …"
+        s = re.sub(r"^(\W*(to|from|cc|re|fwd?|fw|subject|\w{1,2}):\s*)+", "", s, flags=re.I)
+        s = re.sub(r"^\W*(hello|hi|hey|greetings|good (morning|afternoon|evening))\b[\s,!.]*", "", s, flags=re.I)
+        s = re.sub(r"\s+", " ", s).strip(" .,;:-–—")
+        if len(re.findall(r"[^\W\d_]", s)) < 6:  # fewer than six letters = junk
+            continue
+        if len(s) > limit:
+            s = s[:limit].rsplit(" ", 1)[0].rstrip(" .,;:-–—") + "…"
+        return s
+    return ""
 
 
 def headline(items: list[dict], flow: str, key: str) -> str:

@@ -602,3 +602,27 @@
   a word boundary with an ellipsis.
 - 16 new unit tests (display_title edge cases, headline mapping, merge
   vs. no-merge semantics); all gates green; fixtures re-exported.
+
+## 2026-08-07 — content-first surface detection (fixes CLI→Enterprise misfiles)
+
+- Root cause of "Devin CLI ticket marked Enterprise": surface was assigned
+  purely from Pylon's `brand` field (`BRAND_SURFACE`), and Pylon has NO CLI
+  brand — only Devin/Windsurf/empty — so CLI tickets inherited the surface
+  of whichever inbox they arrived in.
+- Ported the report parser's `bucket()` as `detect_surface()` in
+  `ticket_classifier.py`: content beats brand, ordered CLI → Windsurf/IDE →
+  Enterprise (fedramp or ent plan) → Retail (consumer Devin) → enterprise
+  default. Three deliberate deviations from the parser, each fixing a
+  misfile class it shares: (1) word-boundaried hints (its bare `"ide"`
+  substring matches "provide"/"sidebar"); (2) bare "terminal" demoted to a
+  weak CLI hint that never outranks desktop signals (IDE users say
+  "terminal window" about the integrated terminal); (3) Devin-brand +
+  enterprise-plan identity beats a stray quoted windsurf.com docs link
+  (the SSO-setup case).
+- Surfaces went from 2 used (enterprise/windsurf) to all 4:
+  enterprise 92 / windsurf 51 / retail 33 / devin-cli 19 incidents.
+  12 new detect_surface unit tests; eval gate unaffected (verdicts don't
+  read surface).
+- Also hardened excerpt/title junk handling: masked-PII remnants
+  ("o: •••@•••") and mangled mail-header prefixes never surface as labels;
+  export label cap 120→140 so the closing excerpt quote survives.

@@ -214,7 +214,8 @@ def build_patterns(rows: list[dict], now: datetime | None = None) -> list[dict]:
         # identity stays keyed on the raw error-sig/norm-title, so coverage
         # ledger entries survive future headline-wording tweaks
         key = _cluster_key(items, flow)
-        label = h if not is_generic(h) else f"{h} · “{excerpt(items, key, flow)}”"
+        ex = excerpt(items, key, flow) if is_generic(h) else ""
+        label = f"{h} · “{ex}”" if ex else h
         pid = hashlib.sha1(f"{surface}|{flow}|{key}".encode()).hexdigest()[:12]
 
         created = sorted(r.get("created_at") or "" for r in items)
