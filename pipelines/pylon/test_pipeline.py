@@ -141,6 +141,50 @@ check("suggested-test-flow", "20 standard user actions" in big["suggestedTest"],
 pats2 = build_patterns(same + other, now=NOW)
 check("deterministic-ids", {p["id"] for p in pats} == {p["id"] for p in pats2})
 
+print("display_title() — readable incident titles")
+from export_incidents import display_title
+
+check("generic-title-uses-body",
+      "quota" in display_title({"title": "Hello", "body_snippet": "Hello team. My quota resets but credits are still not applied to the account."}).lower(),
+      display_title({"title": "Hello", "body_snippet": "Hello team. My quota resets but credits are still not applied to the account."}))
+check("strips-urls", "http" not in display_title({"title": "Login fails at https://example.com/callback?code=x every time"}))
+check("strips-uuid", "9f8b" not in display_title({"title": "Session 9f8b1c2d-1111-2222-3333-444455556666 crashes on start"}))
+long_title = {"title": "I noticed this morning credits are being charged so I am trying to use the model however what I am experiencing today is that everything hangs"}
+dt_out = display_title(long_title)
+check("word-boundary-ellipsis", dt_out.endswith("…") and " " not in dt_out[-12:-1].split()[-1], dt_out)
+check("caps-normalized", display_title({"title": "PAYMENT PAGE IS BROKEN"}) == "Payment page is broken")
+check("empty-falls-back", display_title({"title": "", "body_snippet": "", "number": 42}) == "Pylon ticket #42")
+
+print("headline() — pattern labels read as user-action → failure")
+from pattern_headlines import headline
+
+check("trace-id-readable",
+      "trace id" in headline([t("Permission denied: internal error")], "Permissions/Rate limits", "trace id: <id>").lower())
+check("rate-limit-readable",
+      headline([], "Permissions/Rate limits", "permission denied: reached message rate limit").startswith("Send messages"))
+check("billing-refid-readable",
+      "→" in headline([t("发票问题 ORFVDYCI-0011")], "Billing/Account", "orfvdyci-0011"))
+check("fallback-has-arrow", "→" in headline([], "Other", "zzz"))
+
+# same story told by two different keys in one surface+flow → one pattern
+dupes = [pt(21, "Permission denied: reached message rate limit for the model"),
+         pt(22, "permission denied — message rate limit reached", body="ERR_LIMIT trace"),
+         pt(23, "Rate limited on messages again", body="permission denied: reached message rate limit")]
+merged_pats = build_patterns(dupes, now=NOW)
+check("same-headline-merges", len(merged_pats) == 1, f"expected 1 pattern, got {len(merged_pats)}")
+check("labels-are-headlines", all("→" in p["label"] for p in build_patterns(same + other, now=NOW)))
+
+# clusters that only share a GENERIC fallback headline stay separate, with a
+# distinguishing excerpt so the rows never render identically
+gen = [pt(31, "Cascade behaving weird lately", body="output looks wrong"),
+       pt(32, "Windsurf theme odd colors", body="colors render wrong")]
+gen_pats = build_patterns(gen, now=NOW)
+check("generic-not-merged", len(gen_pats) == 2, f"expected 2 patterns, got {len(gen_pats)}")
+check("generic-labels-distinct", len({p["label"] for p in gen_pats}) == 2,
+      str([p["label"] for p in gen_pats]))
+check("generic-label-has-excerpt", all("“" in p["label"] for p in gen_pats),
+      str([p["label"] for p in gen_pats]))
+
 print("pending verdicts + coverage ledger — the worker→pipeline contract (QA-DEC-028)")
 import tempfile
 from pathlib import Path

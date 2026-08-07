@@ -578,3 +578,27 @@
   pipeline README invariant reworded (pipeline writes open PRs; human
   verdict relay is the documented exception), AGENTS.md data-access rule
   extended with `verdictsService`.
+
+## 2026-08-07 — readable titles + pattern headlines (parser parity)
+
+- Pattern labels no longer show raw cluster keys ("trace id: <id>",
+  "external-58564", "hello"). New `pattern_headlines.py` ports the report
+  parser's `infer_user_flow` cascade: every pattern renders as a
+  "user action → what breaks" sentence (specific rules → flow rules →
+  cross-flow signals → language-agnostic content checks → per-flow
+  fallback).
+- Same-surface clusters whose headlines agree on a SPECIFIC story merge
+  (parser stage-3 dedup); clusters sharing only a GENERIC fallback stay
+  separate and get a distinguishing excerpt appended — first attempt merged
+  everything by headline and produced useless 418-ticket blobs, hence the
+  generic/specific split (mirrors the parser's `is_generic_uf` heuristic).
+  Pattern ids stay keyed on the raw signature so coverage verdicts survive
+  wording changes. Cross-surface label repeats are intentional (different
+  products, distinguished by the surface chip).
+- Incident titles go through a ported `display_title`: greeting-only titles
+  fall back to the first meaningful body sentence, URLs/UUIDs/long hex are
+  stripped BEFORE `sanitize()` (its phone masking otherwise eats UUID digit
+  groups and leaves the hex head), ALL-CAPS normalized, truncation lands on
+  a word boundary with an ellipsis.
+- 16 new unit tests (display_title edge cases, headline mapping, merge
+  vs. no-merge semantics); all gates green; fixtures re-exported.

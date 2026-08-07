@@ -70,7 +70,13 @@ node ../../scripts/validate-data.js
 `pattern_engine.py` clusters classifier-approved tickets (definite/possible
 only) into coverage-gap patterns — union-find over normalized titles,
 language-agnostic error signatures (ids/codes/stack shapes), and token
-overlap — then ranks by impact × growth. Temporal memory (first_seen, 24h
+overlap — then ranks by impact × growth. Humans never see the raw cluster
+keys: `pattern_headlines.py` (ported from the report parser's
+`infer_user_flow`) renders every pattern as a "user action → what breaks"
+sentence, merges same-surface clusters that tell the same specific story,
+and appends a distinguishing excerpt when only a generic fallback matched.
+Pattern ids stay keyed on the raw signature, so coverage verdicts survive
+headline-wording changes. Temporal memory (first_seen, 24h
 growth) is derived from the 60-day window every run, so nothing stateful has
 to survive CI. Human verdicts live in the committed `coverage.json` ledger
 ({pattern_id → uncovered/weak/covered/dismissed}); dismissed patterns never

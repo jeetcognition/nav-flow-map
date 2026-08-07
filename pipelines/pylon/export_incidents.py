@@ -81,6 +81,37 @@ def sanitize(text: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+# Titles that carry no signal — fall back to the body (upstream parser trick).
+GENERIC_TITLES = {"hi", "hello", "hey", "error", "an error occurred", "bug", "bug report", "help", "urgent", "issue", "question"}
+UUID_RE = re.compile(r"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}", re.I)
+LONG_HEX_RE = re.compile(r"[A-Fa-f0-9]{16,}")
+
+
+def _strip_noise(s: str) -> str:
+    """Drop links and machine ids BEFORE sanitize() — its phone masking would
+    otherwise eat the numeric tail of a UUID and leave the hex head behind."""
+    s = re.sub(r"https?://\S+", "", s)
+    s = UUID_RE.sub("", s)
+    return LONG_HEX_RE.sub("", s)
+
+
+def display_title(r: dict, limit: int = 120) -> str:
+    """Readable incident title, ported from the report parser's display_title:
+    greeting-only titles fall back to the first meaningful body sentence,
+    link/id noise is stripped, and truncation lands on a word boundary."""
+    s = sanitize(_strip_noise(r.get("title") or ""))
+    if not s or s.lower().strip(" .!,¡¿?") in GENERIC_TITLES or len(s) < 8:
+        body = sanitize(_strip_noise(r.get("body_snippet") or ""))
+        sentences = [x.strip() for x in re.split(r"[.!?\n]", body) if len(x.strip()) > 20]
+        s = sentences[0] if sentences else s
+    s = " ".join(s.split()).strip(" .,;:-–—")
+    if s.isupper() and len(s) > 4:
+        s = s.capitalize()
+    if len(s) > limit:
+        s = s[:limit].rsplit(" ", 1)[0].rstrip(" .,;:-–—") + "…"
+    return s or f"Pylon ticket #{r.get('number')}"
+
+
 # ---------------------------------------------------------------------------
 # Ticket → NavFlow node mapping (36 nodes; keyword table, first match wins).
 # Tickets about the IDE/Desktop/billing don't have a natural node in the
@@ -208,7 +239,7 @@ def run(out_path: Path, patterns_path: Path | None = None) -> None:
             if when < cutoff:
                 continue
 
-        title = sanitize(r["title"] or "")[:140] or f"Pylon ticket #{r['number']}"
+        title = display_title(r)
         desc = sanitize(r["body_snippet"] or "")[:300]
         node, mapped = map_node(f"{title} {desc}")
         rationale = (

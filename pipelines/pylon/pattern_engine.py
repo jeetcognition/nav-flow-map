@@ -24,6 +24,8 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from pattern_headlines import excerpt, headline, is_generic
+
 COVERAGE_PATH = Path(__file__).parent / "coverage.json"
 COVERAGE_STATUSES = {"uncovered", "weak", "covered", "dismissed"}
 OPEN_STATES = {"new", "waiting_on_you", "on_hold"}
@@ -178,6 +180,13 @@ def _iso(dt: datetime) -> str:
     return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _cluster_key(items: list[dict], flow: str) -> str:
+    """The raw signature a cluster formed around — the pattern's stable identity."""
+    top = max(items, key=lambda r: r["_score"])
+    key = top["_sig"] or top["_norm"] or (top.get("title") or "")[:80].lower()
+    return key if len(key.strip()) >= 5 else flow.lower()
+
+
 def build_patterns(rows: list[dict], now: datetime | None = None) -> list[dict]:
     """rows: classified tickets (verdict + surface already attached by caller
     as _verdict/_surface/_score). Returns ranked pattern dicts (unsanitized)."""
@@ -185,15 +194,28 @@ def build_patterns(rows: list[dict], now: datetime | None = None) -> list[dict]:
     cut24, cut48 = _iso(now - timedelta(hours=24)), _iso(now - timedelta(hours=48))
     coverage = load_coverage()
 
-    patterns = []
+    # Two clusters formed around different keys can still tell the same human
+    # story — merge those (same surface+flow+SPECIFIC headline), like the
+    # upstream report parser. Clusters that only share a GENERIC fallback
+    # headline are different stories: they stay separate and get a
+    # distinguishing excerpt appended so rows never render identically.
+    merged: dict[tuple, list[dict]] = {}
     for items in cluster(rows):
         flow = Counter(r["_flow"] for r in items).most_common(1)[0][0]
         surface = Counter(r["_surface"] for r in items).most_common(1)[0][0]
-        top = max(items, key=lambda r: r["_score"])
-        label = top["_sig"] or top["_norm"] or (top.get("title") or "")[:80].lower()
-        if len(label.strip()) < 5:
-            label = flow.lower()
-        pid = hashlib.sha1(f"{surface}|{flow}|{label}".encode()).hexdigest()[:12]
+        key = _cluster_key(items, flow)
+        h = headline(items, flow, key)
+        bucket = (surface, flow, h) if not is_generic(h) else (surface, flow, h, key)
+        merged.setdefault(bucket, []).extend(items)
+
+    patterns = []
+    for bucket, items in merged.items():
+        surface, flow, h = bucket[0], bucket[1], bucket[2]
+        # identity stays keyed on the raw error-sig/norm-title, so coverage
+        # ledger entries survive future headline-wording tweaks
+        key = _cluster_key(items, flow)
+        label = h if not is_generic(h) else f"{h} · “{excerpt(items, key, flow)}”"
+        pid = hashlib.sha1(f"{surface}|{flow}|{key}".encode()).hexdigest()[:12]
 
         created = sorted(r.get("created_at") or "" for r in items)
         count24 = sum(1 for r in items if (r.get("created_at") or "") >= cut24)

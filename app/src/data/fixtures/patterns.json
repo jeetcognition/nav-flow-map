@@ -1,17 +1,77 @@
 [
   {
+    "id": "PAT-8bc51324580a",
+    "label": "Run automated workflow with external APIs → sandbox blocks outbound access",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "automations",
+    "total": 35,
+    "open": 8,
+    "definite": 8,
+    "count24h": 1,
+    "growth24h": 0,
+    "firstSeen": "2026-06-11T18:54:59Z",
+    "score": 232.4,
+    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [
+      "INC-64602",
+      "INC-60974",
+      "INC-59566",
+      "INC-58727",
+      "INC-57758",
+      "INC-57707",
+      "INC-56447"
+    ],
+    "evidence": [
+      {
+        "number": 55775,
+        "link": "https://app.usepylon.com/issues?issueNumber=55775"
+      },
+      {
+        "number": 57707,
+        "link": "https://app.usepylon.com/issues?issueNumber=57707"
+      },
+      {
+        "number": 63740,
+        "link": "https://app.usepylon.com/issues?issueNumber=63740"
+      },
+      {
+        "number": 63113,
+        "link": "https://app.usepylon.com/issues?issueNumber=63113"
+      },
+      {
+        "number": 63533,
+        "link": "https://app.usepylon.com/issues?issueNumber=63533"
+      },
+      {
+        "number": 64602,
+        "link": "https://app.usepylon.com/issues?issueNumber=64602"
+      },
+      {
+        "number": 62503,
+        "link": "https://app.usepylon.com/issues?issueNumber=62503"
+      },
+      {
+        "number": 56597,
+        "link": "https://app.usepylon.com/issues?issueNumber=56597"
+      }
+    ]
+  },
+  {
     "id": "PAT-761573153cda",
-    "label": "trace id: <id>",
+    "label": "Use the IDE normally → \"Permission denied: internal error\" with a trace ID",
     "surfaceId": "windsurf",
     "flow": "IDE/Desktop",
     "nodeId": "landing",
-    "total": 22,
+    "total": 25,
     "open": 0,
-    "definite": 14,
+    "definite": 16,
     "count24h": 0,
     "growth24h": -1,
     "firstSeen": "2026-06-10T18:00:59Z",
-    "score": 197.5,
+    "score": 211.6,
     "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
     "coverage": "uncovered",
     "coveredBy": null,
@@ -38,32 +98,32 @@
         "link": "https://app.usepylon.com/issues?issueNumber=57022"
       },
       {
+        "number": 56192,
+        "link": "https://app.usepylon.com/issues?issueNumber=56192"
+      },
+      {
+        "number": 56191,
+        "link": "https://app.usepylon.com/issues?issueNumber=56191"
+      },
+      {
         "number": 63972,
         "link": "https://app.usepylon.com/issues?issueNumber=63972"
-      },
-      {
-        "number": 55835,
-        "link": "https://app.usepylon.com/issues?issueNumber=55835"
-      },
-      {
-        "number": 64928,
-        "link": "https://app.usepylon.com/issues?issueNumber=64928"
       }
     ]
   },
   {
     "id": "PAT-32f2cc0b9117",
-    "label": "permission denied: reached message rate limit for this model",
+    "label": "Send messages at normal pace → unexpectedly blocked by message rate limit",
     "surfaceId": "windsurf",
     "flow": "Permissions/Rate limits",
     "nodeId": "landing",
-    "total": 16,
+    "total": 19,
     "open": 1,
-    "definite": 10,
+    "definite": 11,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-10T09:48:01Z",
-    "score": 185.6,
+    "firstSeen": "2026-06-09T17:55:40Z",
+    "score": 194.5,
     "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
     "coverage": "uncovered",
     "coveredBy": null,
@@ -82,6 +142,10 @@
         "link": "https://app.usepylon.com/issues?issueNumber=58023"
       },
       {
+        "number": 57529,
+        "link": "https://app.usepylon.com/issues?issueNumber=57529"
+      },
+      {
         "number": 62443,
         "link": "https://app.usepylon.com/issues?issueNumber=62443"
       },
@@ -96,16 +160,532 @@
       {
         "number": 60894,
         "link": "https://app.usepylon.com/issues?issueNumber=60894"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1cee061cc4f9",
+    "label": "Buy or track usage/credits → purchase not reflected in account",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 27,
+    "open": 2,
+    "definite": 6,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-08T17:34:24Z",
+    "score": 172.5,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62031", "INC-59541"],
+    "evidence": [
+      {
+        "number": 64704,
+        "link": "https://app.usepylon.com/issues?issueNumber=64704"
       },
       {
-        "number": 57303,
-        "link": "https://app.usepylon.com/issues?issueNumber=57303"
+        "number": 62031,
+        "link": "https://app.usepylon.com/issues?issueNumber=62031"
+      },
+      {
+        "number": 56105,
+        "link": "https://app.usepylon.com/issues?issueNumber=56105"
+      },
+      {
+        "number": 64736,
+        "link": "https://app.usepylon.com/issues?issueNumber=64736"
+      },
+      {
+        "number": 56107,
+        "link": "https://app.usepylon.com/issues?issueNumber=56107"
+      },
+      {
+        "number": 54904,
+        "link": "https://app.usepylon.com/issues?issueNumber=54904"
+      },
+      {
+        "number": 55394,
+        "link": "https://app.usepylon.com/issues?issueNumber=55394"
+      },
+      {
+        "number": 56329,
+        "link": "https://app.usepylon.com/issues?issueNumber=56329"
+      }
+    ]
+  },
+  {
+    "id": "PAT-a3597a61a943",
+    "label": "Use the IDE → editor freezes, crashes, or loses the conversation",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 15,
+    "open": 2,
+    "definite": 8,
+    "count24h": 0,
+    "growth24h": -1,
+    "firstSeen": "2026-06-16T11:45:38Z",
+    "score": 167.6,
+    "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63892"],
+    "evidence": [
+      {
+        "number": 57083,
+        "link": "https://app.usepylon.com/issues?issueNumber=57083"
+      },
+      {
+        "number": 59899,
+        "link": "https://app.usepylon.com/issues?issueNumber=59899"
+      },
+      {
+        "number": 56643,
+        "link": "https://app.usepylon.com/issues?issueNumber=56643"
+      },
+      {
+        "number": 59785,
+        "link": "https://app.usepylon.com/issues?issueNumber=59785"
+      },
+      {
+        "number": 64955,
+        "link": "https://app.usepylon.com/issues?issueNumber=64955"
+      },
+      {
+        "number": 61228,
+        "link": "https://app.usepylon.com/issues?issueNumber=61228"
+      },
+      {
+        "number": 61190,
+        "link": "https://app.usepylon.com/issues?issueNumber=61190"
+      },
+      {
+        "number": 57094,
+        "link": "https://app.usepylon.com/issues?issueNumber=57094"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c886eda5cd9d",
+    "label": "Use a model at normal pace → blocked by rate limit / high-demand throttle",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "login",
+    "total": 12,
+    "open": 0,
+    "definite": 7,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T15:12:31Z",
+    "score": 160.4,
+    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 64672,
+        "link": "https://app.usepylon.com/issues?issueNumber=64672"
+      },
+      {
+        "number": 55401,
+        "link": "https://app.usepylon.com/issues?issueNumber=55401"
+      },
+      {
+        "number": 64645,
+        "link": "https://app.usepylon.com/issues?issueNumber=64645"
+      },
+      {
+        "number": 56395,
+        "link": "https://app.usepylon.com/issues?issueNumber=56395"
+      },
+      {
+        "number": 58554,
+        "link": "https://app.usepylon.com/issues?issueNumber=58554"
+      },
+      {
+        "number": 55127,
+        "link": "https://app.usepylon.com/issues?issueNumber=55127"
+      },
+      {
+        "number": 56901,
+        "link": "https://app.usepylon.com/issues?issueNumber=56901"
+      },
+      {
+        "number": 55520,
+        "link": "https://app.usepylon.com/issues?issueNumber=55520"
+      }
+    ]
+  },
+  {
+    "id": "PAT-5a79d3ae748c",
+    "label": "Run a session → session crashes, fails, or disappears",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "session",
+    "total": 13,
+    "open": 4,
+    "definite": 5,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-17T16:49:48Z",
+    "score": 151.3,
+    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63729", "INC-62278", "INC-58321", "INC-57023"],
+    "evidence": [
+      {
+        "number": 57023,
+        "link": "https://app.usepylon.com/issues?issueNumber=57023"
+      },
+      {
+        "number": 58735,
+        "link": "https://app.usepylon.com/issues?issueNumber=58735"
+      },
+      {
+        "number": 63729,
+        "link": "https://app.usepylon.com/issues?issueNumber=63729"
+      },
+      {
+        "number": 58742,
+        "link": "https://app.usepylon.com/issues?issueNumber=58742"
+      },
+      {
+        "number": 58321,
+        "link": "https://app.usepylon.com/issues?issueNumber=58321"
+      },
+      {
+        "number": 62247,
+        "link": "https://app.usepylon.com/issues?issueNumber=62247"
+      },
+      {
+        "number": 61477,
+        "link": "https://app.usepylon.com/issues?issueNumber=61477"
+      },
+      {
+        "number": 59301,
+        "link": "https://app.usepylon.com/issues?issueNumber=59301"
+      }
+    ]
+  },
+  {
+    "id": "PAT-38caa4516b89",
+    "label": "Pay for a plan → plan features not activated despite successful payment",
+    "surfaceId": "enterprise",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 17,
+    "open": 0,
+    "definite": 5,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-11T09:27:20Z",
+    "score": 149.6,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 59885,
+        "link": "https://app.usepylon.com/issues?issueNumber=59885"
+      },
+      {
+        "number": 62173,
+        "link": "https://app.usepylon.com/issues?issueNumber=62173"
+      },
+      {
+        "number": 62019,
+        "link": "https://app.usepylon.com/issues?issueNumber=62019"
+      },
+      {
+        "number": 62458,
+        "link": "https://app.usepylon.com/issues?issueNumber=62458"
+      },
+      {
+        "number": 55532,
+        "link": "https://app.usepylon.com/issues?issueNumber=55532"
+      },
+      {
+        "number": 61070,
+        "link": "https://app.usepylon.com/issues?issueNumber=61070"
+      },
+      {
+        "number": 64140,
+        "link": "https://app.usepylon.com/issues?issueNumber=64140"
+      },
+      {
+        "number": 63108,
+        "link": "https://app.usepylon.com/issues?issueNumber=63108"
+      }
+    ]
+  },
+  {
+    "id": "PAT-68d92cadde55",
+    "label": "Review billing → unexpected charges or invoice discrepancies",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 25,
+    "open": 2,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T08:58:31Z",
+    "score": 148.0,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63242", "INC-55107"],
+    "evidence": [
+      {
+        "number": 56545,
+        "link": "https://app.usepylon.com/issues?issueNumber=56545"
+      },
+      {
+        "number": 63242,
+        "link": "https://app.usepylon.com/issues?issueNumber=63242"
+      },
+      {
+        "number": 55051,
+        "link": "https://app.usepylon.com/issues?issueNumber=55051"
+      },
+      {
+        "number": 63586,
+        "link": "https://app.usepylon.com/issues?issueNumber=63586"
+      },
+      {
+        "number": 60501,
+        "link": "https://app.usepylon.com/issues?issueNumber=60501"
+      },
+      {
+        "number": 55283,
+        "link": "https://app.usepylon.com/issues?issueNumber=55283"
+      },
+      {
+        "number": 60431,
+        "link": "https://app.usepylon.com/issues?issueNumber=60431"
+      },
+      {
+        "number": 56260,
+        "link": "https://app.usepylon.com/issues?issueNumber=56260"
+      }
+    ]
+  },
+  {
+    "id": "PAT-9aeeadecc492",
+    "label": "Review billing → unexpected charges or invoice discrepancies",
+    "surfaceId": "enterprise",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 19,
+    "open": 3,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": -2,
+    "firstSeen": "2026-06-09T16:03:19Z",
+    "score": 146.9,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62394", "INC-60750", "INC-55135"],
+    "evidence": [
+      {
+        "number": 62082,
+        "link": "https://app.usepylon.com/issues?issueNumber=62082"
+      },
+      {
+        "number": 57773,
+        "link": "https://app.usepylon.com/issues?issueNumber=57773"
+      },
+      {
+        "number": 64262,
+        "link": "https://app.usepylon.com/issues?issueNumber=64262"
+      },
+      {
+        "number": 62394,
+        "link": "https://app.usepylon.com/issues?issueNumber=62394"
+      },
+      {
+        "number": 62361,
+        "link": "https://app.usepylon.com/issues?issueNumber=62361"
+      },
+      {
+        "number": 55936,
+        "link": "https://app.usepylon.com/issues?issueNumber=55936"
+      },
+      {
+        "number": 56487,
+        "link": "https://app.usepylon.com/issues?issueNumber=56487"
+      },
+      {
+        "number": 64487,
+        "link": "https://app.usepylon.com/issues?issueNumber=64487"
+      }
+    ]
+  },
+  {
+    "id": "PAT-5721fa5a0bc6",
+    "label": "Set up an OAuth/MCP integration → credentials not accepted or connection fails",
+    "surfaceId": "enterprise",
+    "flow": "Other",
+    "nodeId": "session",
+    "total": 17,
+    "open": 3,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": -1,
+    "firstSeen": "2026-06-15T13:37:49Z",
+    "score": 143.8,
+    "suggestedTest": "Reproduce the reported scenario end-to-end → verify correct behavior and no console/network errors",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63405", "INC-62542", "INC-57127"],
+    "evidence": [
+      {
+        "number": 60219,
+        "link": "https://app.usepylon.com/issues?issueNumber=60219"
+      },
+      {
+        "number": 62542,
+        "link": "https://app.usepylon.com/issues?issueNumber=62542"
+      },
+      {
+        "number": 56362,
+        "link": "https://app.usepylon.com/issues?issueNumber=56362"
+      },
+      {
+        "number": 56652,
+        "link": "https://app.usepylon.com/issues?issueNumber=56652"
+      },
+      {
+        "number": 63405,
+        "link": "https://app.usepylon.com/issues?issueNumber=63405"
+      },
+      {
+        "number": 64921,
+        "link": "https://app.usepylon.com/issues?issueNumber=64921"
+      },
+      {
+        "number": 64131,
+        "link": "https://app.usepylon.com/issues?issueNumber=64131"
+      },
+      {
+        "number": 60211,
+        "link": "https://app.usepylon.com/issues?issueNumber=60211"
+      }
+    ]
+  },
+  {
+    "id": "PAT-ee2542bad171",
+    "label": "Use Devin Review → review fails or produces incorrect results",
+    "surfaceId": "enterprise",
+    "flow": "Review/GitHub",
+    "nodeId": "review",
+    "total": 21,
+    "open": 4,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": -1,
+    "firstSeen": "2026-06-12T04:07:26Z",
+    "score": 141.5,
+    "suggestedTest": "Open a PR with review enabled → verify comments post and every citation link scrolls to the cited range",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-60517", "INC-59896", "INC-57353", "INC-55918"],
+    "evidence": [
+      {
+        "number": 56286,
+        "link": "https://app.usepylon.com/issues?issueNumber=56286"
+      },
+      {
+        "number": 60517,
+        "link": "https://app.usepylon.com/issues?issueNumber=60517"
+      },
+      {
+        "number": 55940,
+        "link": "https://app.usepylon.com/issues?issueNumber=55940"
+      },
+      {
+        "number": 55751,
+        "link": "https://app.usepylon.com/issues?issueNumber=55751"
+      },
+      {
+        "number": 57750,
+        "link": "https://app.usepylon.com/issues?issueNumber=57750"
+      },
+      {
+        "number": 59896,
+        "link": "https://app.usepylon.com/issues?issueNumber=59896"
+      },
+      {
+        "number": 60220,
+        "link": "https://app.usepylon.com/issues?issueNumber=60220"
+      },
+      {
+        "number": 64931,
+        "link": "https://app.usepylon.com/issues?issueNumber=64931"
+      }
+    ]
+  },
+  {
+    "id": "PAT-93aa4aa15ac2",
+    "label": "Buy or track usage/credits → purchase not reflected in account",
+    "surfaceId": "enterprise",
+    "flow": "Billing/Account",
+    "nodeId": "ent",
+    "total": 27,
+    "open": 1,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-11T16:58:23Z",
+    "score": 140.7,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-61113"],
+    "evidence": [
+      {
+        "number": 56609,
+        "link": "https://app.usepylon.com/issues?issueNumber=56609"
+      },
+      {
+        "number": 59357,
+        "link": "https://app.usepylon.com/issues?issueNumber=59357"
+      },
+      {
+        "number": 56486,
+        "link": "https://app.usepylon.com/issues?issueNumber=56486"
+      },
+      {
+        "number": 58619,
+        "link": "https://app.usepylon.com/issues?issueNumber=58619"
+      },
+      {
+        "number": 62246,
+        "link": "https://app.usepylon.com/issues?issueNumber=62246"
+      },
+      {
+        "number": 58231,
+        "link": "https://app.usepylon.com/issues?issueNumber=58231"
+      },
+      {
+        "number": 62252,
+        "link": "https://app.usepylon.com/issues?issueNumber=62252"
+      },
+      {
+        "number": 59489,
+        "link": "https://app.usepylon.com/issues?issueNumber=59489"
       }
     ]
   },
   {
     "id": "PAT-d42c33a62cd5",
-    "label": "external-58564",
+    "label": "Complete payment or plan change → account state not updated correctly · “external-58564”",
     "surfaceId": "enterprise",
     "flow": "Billing/Account",
     "nodeId": "wiki",
@@ -156,58 +736,214 @@
     ]
   },
   {
-    "id": "PAT-c886eda5cd9d",
-    "label": "permission denied: we're currently facing high demand for this model",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "login",
-    "total": 5,
-    "open": 0,
+    "id": "PAT-68ea6bb22033",
+    "label": "Use the product normally → becomes stuck or unresponsive",
+    "surfaceId": "enterprise",
+    "flow": "Other",
+    "nodeId": "landing",
+    "total": 9,
+    "open": 4,
+    "definite": 2,
+    "count24h": 1,
+    "growth24h": 1,
+    "firstSeen": "2026-06-09T21:46:27Z",
+    "score": 128.3,
+    "suggestedTest": "Reproduce the reported scenario end-to-end → verify correct behavior and no console/network errors",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-61372", "INC-57862", "INC-57821", "INC-55197"],
+    "evidence": [
+      {
+        "number": 58240,
+        "link": "https://app.usepylon.com/issues?issueNumber=58240"
+      },
+      {
+        "number": 57862,
+        "link": "https://app.usepylon.com/issues?issueNumber=57862"
+      },
+      {
+        "number": 62250,
+        "link": "https://app.usepylon.com/issues?issueNumber=62250"
+      },
+      {
+        "number": 57821,
+        "link": "https://app.usepylon.com/issues?issueNumber=57821"
+      },
+      {
+        "number": 61372,
+        "link": "https://app.usepylon.com/issues?issueNumber=61372"
+      },
+      {
+        "number": 58502,
+        "link": "https://app.usepylon.com/issues?issueNumber=58502"
+      },
+      {
+        "number": 57163,
+        "link": "https://app.usepylon.com/issues?issueNumber=57163"
+      },
+      {
+        "number": 55197,
+        "link": "https://app.usepylon.com/issues?issueNumber=55197"
+      }
+    ]
+  },
+  {
+    "id": "PAT-6747c9e29f56",
+    "label": "Start or resume a session → blocked by a false permission error",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "automations",
+    "total": 6,
+    "open": 2,
     "definite": 2,
     "count24h": 0,
+    "growth24h": -1,
+    "firstSeen": "2026-06-22T22:35:47Z",
+    "score": 127.3,
+    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-57444"],
+    "evidence": [
+      {
+        "number": 60785,
+        "link": "https://app.usepylon.com/issues?issueNumber=60785"
+      },
+      {
+        "number": 58372,
+        "link": "https://app.usepylon.com/issues?issueNumber=58372"
+      },
+      {
+        "number": 64919,
+        "link": "https://app.usepylon.com/issues?issueNumber=64919"
+      },
+      {
+        "number": 64470,
+        "link": "https://app.usepylon.com/issues?issueNumber=64470"
+      },
+      {
+        "number": 57444,
+        "link": "https://app.usepylon.com/issues?issueNumber=57444"
+      },
+      {
+        "number": 62648,
+        "link": "https://app.usepylon.com/issues?issueNumber=62648"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c824de813dbd",
+    "label": "Use plan features → plan quota not consumed, on-demand credits charged instead",
+    "surfaceId": "windsurf",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 9,
+    "open": 0,
+    "definite": 3,
+    "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-10T19:55:31Z",
-    "score": 117.0,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "firstSeen": "2026-06-08T22:11:41Z",
+    "score": 126.7,
+    "suggestedTest": "Record ACU balance → run a short session → verify the deduction matches expected usage",
     "coverage": "uncovered",
     "coveredBy": null,
     "incidentIds": [],
     "evidence": [
       {
-        "number": 64672,
-        "link": "https://app.usepylon.com/issues?issueNumber=64672"
+        "number": 57104,
+        "link": "https://app.usepylon.com/issues?issueNumber=57104"
       },
       {
-        "number": 64645,
-        "link": "https://app.usepylon.com/issues?issueNumber=64645"
+        "number": 63757,
+        "link": "https://app.usepylon.com/issues?issueNumber=63757"
       },
       {
-        "number": 55520,
-        "link": "https://app.usepylon.com/issues?issueNumber=55520"
+        "number": 64524,
+        "link": "https://app.usepylon.com/issues?issueNumber=64524"
       },
       {
-        "number": 55408,
-        "link": "https://app.usepylon.com/issues?issueNumber=55408"
+        "number": 55374,
+        "link": "https://app.usepylon.com/issues?issueNumber=55374"
       },
       {
-        "number": 63503,
-        "link": "https://app.usepylon.com/issues?issueNumber=63503"
+        "number": 55370,
+        "link": "https://app.usepylon.com/issues?issueNumber=55370"
+      },
+      {
+        "number": 55369,
+        "link": "https://app.usepylon.com/issues?issueNumber=55369"
+      },
+      {
+        "number": 59688,
+        "link": "https://app.usepylon.com/issues?issueNumber=59688"
+      },
+      {
+        "number": 58130,
+        "link": "https://app.usepylon.com/issues?issueNumber=58130"
+      }
+    ]
+  },
+  {
+    "id": "PAT-8465a6128f6e",
+    "label": "Attempt plan change (upgrade/downgrade) → action fails or state inconsistent",
+    "surfaceId": "enterprise",
+    "flow": "Billing/Account",
+    "nodeId": "auth",
+    "total": 7,
+    "open": 1,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-10T13:25:49Z",
+    "score": 123.4,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 64205,
+        "link": "https://app.usepylon.com/issues?issueNumber=64205"
+      },
+      {
+        "number": 58235,
+        "link": "https://app.usepylon.com/issues?issueNumber=58235"
+      },
+      {
+        "number": 59790,
+        "link": "https://app.usepylon.com/issues?issueNumber=59790"
+      },
+      {
+        "number": 55322,
+        "link": "https://app.usepylon.com/issues?issueNumber=55322"
+      },
+      {
+        "number": 64832,
+        "link": "https://app.usepylon.com/issues?issueNumber=64832"
+      },
+      {
+        "number": 62528,
+        "link": "https://app.usepylon.com/issues?issueNumber=62528"
+      },
+      {
+        "number": 60648,
+        "link": "https://app.usepylon.com/issues?issueNumber=60648"
       }
     ]
   },
   {
     "id": "PAT-d5f0e5a968d2",
-    "label": "trace id: <id>",
+    "label": "Attempt to sign in → \"Permission denied: internal error\" with a trace ID",
     "surfaceId": "windsurf",
     "flow": "Login/Auth",
     "nodeId": "login",
-    "total": 6,
+    "total": 7,
     "open": 0,
-    "definite": 2,
+    "definite": 3,
     "count24h": 0,
     "growth24h": 0,
     "firstSeen": "2026-06-12T23:23:30Z",
-    "score": 112.1,
+    "score": 120.4,
     "suggestedTest": "Attempt login via SSO and email+OTP → verify redirect completes and a session is established → verify no redirect loop or rejected code",
     "coverage": "uncovered",
     "coveredBy": null,
@@ -220,6 +956,10 @@
       {
         "number": 56038,
         "link": "https://app.usepylon.com/issues?issueNumber=56038"
+      },
+      {
+        "number": 60056,
+        "link": "https://app.usepylon.com/issues?issueNumber=60056"
       },
       {
         "number": 62261,
@@ -240,8 +980,356 @@
     ]
   },
   {
+    "id": "PAT-0375f4d31213",
+    "label": "Attempt payment → payment fails or card declined",
+    "surfaceId": "enterprise",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 8,
+    "open": 2,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T08:53:31Z",
+    "score": 117.6,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63385"],
+    "evidence": [
+      {
+        "number": 57359,
+        "link": "https://app.usepylon.com/issues?issueNumber=57359"
+      },
+      {
+        "number": 63385,
+        "link": "https://app.usepylon.com/issues?issueNumber=63385"
+      },
+      {
+        "number": 63531,
+        "link": "https://app.usepylon.com/issues?issueNumber=63531"
+      },
+      {
+        "number": 58192,
+        "link": "https://app.usepylon.com/issues?issueNumber=58192"
+      },
+      {
+        "number": 55050,
+        "link": "https://app.usepylon.com/issues?issueNumber=55050"
+      },
+      {
+        "number": 57499,
+        "link": "https://app.usepylon.com/issues?issueNumber=57499"
+      },
+      {
+        "number": 64643,
+        "link": "https://app.usepylon.com/issues?issueNumber=64643"
+      },
+      {
+        "number": 64828,
+        "link": "https://app.usepylon.com/issues?issueNumber=64828"
+      }
+    ]
+  },
+  {
+    "id": "PAT-cbf598b515a8",
+    "label": "Send multiple messages in Cascade → AI loses context from earlier turns",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-07-09T07:08:18Z",
+    "score": 114.2,
+    "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 60831,
+        "link": "https://app.usepylon.com/issues?issueNumber=60831"
+      },
+      {
+        "number": 61931,
+        "link": "https://app.usepylon.com/issues?issueNumber=61931"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c677e479f13e",
+    "label": "Create/review PR → GitHub integration fails or PR actions error",
+    "surfaceId": "enterprise",
+    "flow": "Review/GitHub",
+    "nodeId": "review",
+    "total": 4,
+    "open": 2,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-16T18:54:09Z",
+    "score": 113.9,
+    "suggestedTest": "Open a PR with review enabled → verify comments post and every citation link scrolls to the cited range",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-64565", "INC-64295"],
+    "evidence": [
+      {
+        "number": 64565,
+        "link": "https://app.usepylon.com/issues?issueNumber=64565"
+      },
+      {
+        "number": 64295,
+        "link": "https://app.usepylon.com/issues?issueNumber=64295"
+      },
+      {
+        "number": 60751,
+        "link": "https://app.usepylon.com/issues?issueNumber=60751"
+      },
+      {
+        "number": 56591,
+        "link": "https://app.usepylon.com/issues?issueNumber=56591"
+      }
+    ]
+  },
+  {
+    "id": "PAT-d96685009c47",
+    "label": "Install the CLI fresh → first run hangs or crashes before becoming usable",
+    "surfaceId": "windsurf",
+    "flow": "CLI",
+    "nodeId": "landing",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-24T06:45:10Z",
+    "score": 111.4,
+    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57643,
+        "link": "https://app.usepylon.com/issues?issueNumber=57643"
+      },
+      {
+        "number": 61738,
+        "link": "https://app.usepylon.com/issues?issueNumber=61738"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1807d01305a3",
+    "label": "Perform a normal operation → \"Permission denied: internal error\" with a trace ID",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 3,
+    "open": 0,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T03:51:49Z",
+    "score": 110.4,
+    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57227,
+        "link": "https://app.usepylon.com/issues?issueNumber=57227"
+      },
+      {
+        "number": 55018,
+        "link": "https://app.usepylon.com/issues?issueNumber=55018"
+      },
+      {
+        "number": 56112,
+        "link": "https://app.usepylon.com/issues?issueNumber=56112"
+      }
+    ]
+  },
+  {
+    "id": "PAT-b505edeaf873",
+    "label": "Use the IDE plugin → plugin crashes or fails to connect",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "login",
+    "total": 7,
+    "open": 1,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-15T16:30:42Z",
+    "score": 110.2,
+    "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62502"],
+    "evidence": [
+      {
+        "number": 60545,
+        "link": "https://app.usepylon.com/issues?issueNumber=60545"
+      },
+      {
+        "number": 57431,
+        "link": "https://app.usepylon.com/issues?issueNumber=57431"
+      },
+      {
+        "number": 62502,
+        "link": "https://app.usepylon.com/issues?issueNumber=62502"
+      },
+      {
+        "number": 57314,
+        "link": "https://app.usepylon.com/issues?issueNumber=57314"
+      },
+      {
+        "number": 60712,
+        "link": "https://app.usepylon.com/issues?issueNumber=60712"
+      },
+      {
+        "number": 57054,
+        "link": "https://app.usepylon.com/issues?issueNumber=57054"
+      },
+      {
+        "number": 56389,
+        "link": "https://app.usepylon.com/issues?issueNumber=56389"
+      }
+    ]
+  },
+  {
+    "id": "PAT-bb0951c79825",
+    "label": "Send messages at normal pace → unexpectedly blocked by message rate limit",
+    "surfaceId": "enterprise",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 6,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T11:20:58Z",
+    "score": 110.1,
+    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57285,
+        "link": "https://app.usepylon.com/issues?issueNumber=57285"
+      },
+      {
+        "number": 64257,
+        "link": "https://app.usepylon.com/issues?issueNumber=64257"
+      },
+      {
+        "number": 58044,
+        "link": "https://app.usepylon.com/issues?issueNumber=58044"
+      },
+      {
+        "number": 57194,
+        "link": "https://app.usepylon.com/issues?issueNumber=57194"
+      },
+      {
+        "number": 56335,
+        "link": "https://app.usepylon.com/issues?issueNumber=56335"
+      },
+      {
+        "number": 55079,
+        "link": "https://app.usepylon.com/issues?issueNumber=55079"
+      }
+    ]
+  },
+  {
+    "id": "PAT-9ab8c74006e2",
+    "label": "Check usage/credits → incorrect balance shown or credits not applied",
+    "surfaceId": "enterprise",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 11,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T21:31:01Z",
+    "score": 109.2,
+    "suggestedTest": "Record ACU balance → run a short session → verify the deduction matches expected usage",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-64364"],
+    "evidence": [
+      {
+        "number": 64364,
+        "link": "https://app.usepylon.com/issues?issueNumber=64364"
+      },
+      {
+        "number": 60594,
+        "link": "https://app.usepylon.com/issues?issueNumber=60594"
+      },
+      {
+        "number": 55194,
+        "link": "https://app.usepylon.com/issues?issueNumber=55194"
+      },
+      {
+        "number": 63739,
+        "link": "https://app.usepylon.com/issues?issueNumber=63739"
+      },
+      {
+        "number": 55667,
+        "link": "https://app.usepylon.com/issues?issueNumber=55667"
+      },
+      {
+        "number": 57610,
+        "link": "https://app.usepylon.com/issues?issueNumber=57610"
+      },
+      {
+        "number": 55349,
+        "link": "https://app.usepylon.com/issues?issueNumber=55349"
+      },
+      {
+        "number": 60200,
+        "link": "https://app.usepylon.com/issues?issueNumber=60200"
+      }
+    ]
+  },
+  {
+    "id": "PAT-25bb60543d29",
+    "label": "Run a CLI command → CLI hangs or becomes unresponsive",
+    "surfaceId": "enterprise",
+    "flow": "CLI",
+    "nodeId": "session",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-07-13T04:18:18Z",
+    "score": 109.0,
+    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 61333,
+        "link": "https://app.usepylon.com/issues?issueNumber=61333"
+      },
+      {
+        "number": 61399,
+        "link": "https://app.usepylon.com/issues?issueNumber=61399"
+      }
+    ]
+  },
+  {
     "id": "PAT-b0398fea384c",
-    "label": "trace id: <id>",
+    "label": "Run a CLI command → blocked by a false permission error with a trace ID",
     "surfaceId": "windsurf",
     "flow": "CLI",
     "nodeId": "landing",
@@ -280,40 +1368,112 @@
     ]
   },
   {
-    "id": "PAT-6747c9e29f56",
-    "label": "403 error",
-    "surfaceId": "enterprise",
-    "flow": "Sessions/Automation",
-    "nodeId": "automations",
-    "total": 3,
-    "open": 1,
+    "id": "PAT-9e1aa90bcb93",
+    "label": "Pay for a plan → plan features not activated despite successful payment",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 9,
+    "open": 0,
     "definite": 1,
     "count24h": 0,
-    "growth24h": -1,
-    "firstSeen": "2026-07-08T22:17:21Z",
-    "score": 106.6,
-    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T05:12:06Z",
+    "score": 108.3,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
     "coverage": "uncovered",
     "coveredBy": null,
     "incidentIds": [],
     "evidence": [
       {
-        "number": 60785,
-        "link": "https://app.usepylon.com/issues?issueNumber=60785"
+        "number": 60820,
+        "link": "https://app.usepylon.com/issues?issueNumber=60820"
       },
       {
-        "number": 64919,
-        "link": "https://app.usepylon.com/issues?issueNumber=64919"
+        "number": 62370,
+        "link": "https://app.usepylon.com/issues?issueNumber=62370"
       },
       {
-        "number": 62648,
-        "link": "https://app.usepylon.com/issues?issueNumber=62648"
+        "number": 58299,
+        "link": "https://app.usepylon.com/issues?issueNumber=58299"
+      },
+      {
+        "number": 58245,
+        "link": "https://app.usepylon.com/issues?issueNumber=58245"
+      },
+      {
+        "number": 56084,
+        "link": "https://app.usepylon.com/issues?issueNumber=56084"
+      },
+      {
+        "number": 56081,
+        "link": "https://app.usepylon.com/issues?issueNumber=56081"
+      },
+      {
+        "number": 55026,
+        "link": "https://app.usepylon.com/issues?issueNumber=55026"
+      },
+      {
+        "number": 55245,
+        "link": "https://app.usepylon.com/issues?issueNumber=55245"
+      }
+    ]
+  },
+  {
+    "id": "PAT-498c0d186bd9",
+    "label": "Check usage/credits → incorrect balance shown or credits not applied",
+    "surfaceId": "windsurf",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 15,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-09T19:21:47Z",
+    "score": 106.8,
+    "suggestedTest": "Record ACU balance → run a short session → verify the deduction matches expected usage",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 55569,
+        "link": "https://app.usepylon.com/issues?issueNumber=55569"
+      },
+      {
+        "number": 64498,
+        "link": "https://app.usepylon.com/issues?issueNumber=64498"
+      },
+      {
+        "number": 56954,
+        "link": "https://app.usepylon.com/issues?issueNumber=56954"
+      },
+      {
+        "number": 62034,
+        "link": "https://app.usepylon.com/issues?issueNumber=62034"
+      },
+      {
+        "number": 55970,
+        "link": "https://app.usepylon.com/issues?issueNumber=55970"
+      },
+      {
+        "number": 64750,
+        "link": "https://app.usepylon.com/issues?issueNumber=64750"
+      },
+      {
+        "number": 63124,
+        "link": "https://app.usepylon.com/issues?issueNumber=63124"
+      },
+      {
+        "number": 59914,
+        "link": "https://app.usepylon.com/issues?issueNumber=59914"
       }
     ]
   },
   {
     "id": "PAT-bee90c326b2e",
-    "label": "hello",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “Hello”",
     "surfaceId": "windsurf",
     "flow": "IDE/Desktop",
     "nodeId": "e-membership",
@@ -356,48 +1516,8 @@
     ]
   },
   {
-    "id": "PAT-0375f4d31213",
-    "label": "payment failed",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 5,
-    "open": 1,
-    "definite": 2,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-09T08:53:31Z",
-    "score": 105.6,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": ["INC-63385"],
-    "evidence": [
-      {
-        "number": 57359,
-        "link": "https://app.usepylon.com/issues?issueNumber=57359"
-      },
-      {
-        "number": 63385,
-        "link": "https://app.usepylon.com/issues?issueNumber=63385"
-      },
-      {
-        "number": 63531,
-        "link": "https://app.usepylon.com/issues?issueNumber=63531"
-      },
-      {
-        "number": 58192,
-        "link": "https://app.usepylon.com/issues?issueNumber=58192"
-      },
-      {
-        "number": 55050,
-        "link": "https://app.usepylon.com/issues?issueNumber=55050"
-      }
-    ]
-  },
-  {
     "id": "PAT-741cc295c5d0",
-    "label": "500 error",
+    "label": "Use GitHub integration → request fails with a server error",
     "surfaceId": "enterprise",
     "flow": "Review/GitHub",
     "nodeId": "review",
@@ -429,7 +1549,7 @@
   },
   {
     "id": "PAT-a81466cb6b81",
-    "label": "pro plan paid and activated but account reverted to free urgent",
+    "label": "Complete payment or plan change → account state not updated correctly · “pro plan paid and activated but account…”",
     "surfaceId": "windsurf",
     "flow": "Billing/Account",
     "nodeId": "landing",
@@ -457,7 +1577,7 @@
   },
   {
     "id": "PAT-09db6487fb61",
-    "label": "uploaded file",
+    "label": "Upload or reference a file → file lost or inaccessible to the agent · “uploaded file”",
     "surfaceId": "windsurf",
     "flow": "Files/Attachments",
     "nodeId": "landing",
@@ -508,60 +1628,8 @@
     ]
   },
   {
-    "id": "PAT-8e52f7e0bb58",
-    "label": "hi today i have bought extra usage but extra usage not being reflected",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 10,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-29T01:23:28Z",
-    "score": 103.5,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 59357,
-        "link": "https://app.usepylon.com/issues?issueNumber=59357"
-      },
-      {
-        "number": 62246,
-        "link": "https://app.usepylon.com/issues?issueNumber=62246"
-      },
-      {
-        "number": 58231,
-        "link": "https://app.usepylon.com/issues?issueNumber=58231"
-      },
-      {
-        "number": 59742,
-        "link": "https://app.usepylon.com/issues?issueNumber=59742"
-      },
-      {
-        "number": 61426,
-        "link": "https://app.usepylon.com/issues?issueNumber=61426"
-      },
-      {
-        "number": 60961,
-        "link": "https://app.usepylon.com/issues?issueNumber=60961"
-      },
-      {
-        "number": 60744,
-        "link": "https://app.usepylon.com/issues?issueNumber=60744"
-      },
-      {
-        "number": 60058,
-        "link": "https://app.usepylon.com/issues?issueNumber=60058"
-      }
-    ]
-  },
-  {
     "id": "PAT-8c23a307806f",
-    "label": "external-57993",
+    "label": "Complete payment or plan change → account state not updated correctly · “external-57993”",
     "surfaceId": "windsurf",
     "flow": "Billing/Account",
     "nodeId": "landing",
@@ -596,32 +1664,60 @@
     ]
   },
   {
-    "id": "PAT-cbf598b515a8",
-    "label": "bug report windsurf freezes on cascade connection drops and lost conversation hi",
+    "id": "PAT-c6e4a6ec7ad4",
+    "label": "Attempt plan change (upgrade/downgrade) → action fails or state inconsistent",
     "surfaceId": "windsurf",
-    "flow": "IDE/Desktop",
+    "flow": "Billing/Account",
     "nodeId": "landing",
-    "total": 1,
+    "total": 17,
     "open": 0,
-    "definite": 1,
+    "definite": 0,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-07-09T07:08:18Z",
-    "score": 101.2,
-    "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
+    "firstSeen": "2026-06-13T06:08:35Z",
+    "score": 102.0,
+    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
     "coverage": "uncovered",
     "coveredBy": null,
     "incidentIds": [],
     "evidence": [
       {
-        "number": 60831,
-        "link": "https://app.usepylon.com/issues?issueNumber=60831"
+        "number": 57664,
+        "link": "https://app.usepylon.com/issues?issueNumber=57664"
+      },
+      {
+        "number": 57660,
+        "link": "https://app.usepylon.com/issues?issueNumber=57660"
+      },
+      {
+        "number": 57659,
+        "link": "https://app.usepylon.com/issues?issueNumber=57659"
+      },
+      {
+        "number": 56695,
+        "link": "https://app.usepylon.com/issues?issueNumber=56695"
+      },
+      {
+        "number": 57775,
+        "link": "https://app.usepylon.com/issues?issueNumber=57775"
+      },
+      {
+        "number": 56089,
+        "link": "https://app.usepylon.com/issues?issueNumber=56089"
+      },
+      {
+        "number": 61055,
+        "link": "https://app.usepylon.com/issues?issueNumber=61055"
+      },
+      {
+        "number": 59697,
+        "link": "https://app.usepylon.com/issues?issueNumber=59697"
       }
     ]
   },
   {
     "id": "PAT-c4f559d6877a",
-    "label": "hello i am having an issue upgrading my plan i want to purchase the max plan for",
+    "label": "Complete payment or plan change → account state not updated correctly · “hello i am having an issue upgrading my…”",
     "surfaceId": "enterprise",
     "flow": "Billing/Account",
     "nodeId": "landing",
@@ -645,7 +1741,7 @@
   },
   {
     "id": "PAT-e219966442ad",
-    "label": "trace id: <id>",
+    "label": "Complete payment or plan change → account state not updated correctly · “trace id: <id>”",
     "surfaceId": "windsurf",
     "flow": "Billing/Account",
     "nodeId": "login",
@@ -676,40 +1772,8 @@
     ]
   },
   {
-    "id": "PAT-685f14c1a4a4",
-    "label": "daily usage quota reset issue and incorrect date",
-    "surfaceId": "windsurf",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 3,
-    "open": 0,
-    "definite": 2,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-13T08:23:02Z",
-    "score": 100.0,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 56105,
-        "link": "https://app.usepylon.com/issues?issueNumber=56105"
-      },
-      {
-        "number": 56107,
-        "link": "https://app.usepylon.com/issues?issueNumber=56107"
-      },
-      {
-        "number": 61167,
-        "link": "https://app.usepylon.com/issues?issueNumber=61167"
-      }
-    ]
-  },
-  {
     "id": "PAT-bded01d5fa3b",
-    "label": "vpn client tls handshake failure on udp outbound",
+    "label": "Start a session → session unresponsive or fails to initialize · “vpn client tls handshake failure on udp…”",
     "surfaceId": "enterprise",
     "flow": "Sessions/Automation",
     "nodeId": "session",
@@ -733,7 +1797,7 @@
   },
   {
     "id": "PAT-339288d1ad68",
-    "label": "bug report",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “bug report”",
     "surfaceId": "windsurf",
     "flow": "IDE/Desktop",
     "nodeId": "landing",
@@ -764,32 +1828,52 @@
     ]
   },
   {
-    "id": "PAT-d96685009c47",
-    "label": "devin cli installation failed system error",
-    "surfaceId": "windsurf",
-    "flow": "CLI",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 0,
+    "id": "PAT-b1011b4cdd52",
+    "label": "Open workspace → workspace fails to load or loses state",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "auth",
+    "total": 6,
+    "open": 1,
     "definite": 1,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-24T06:45:10Z",
-    "score": 98.4,
-    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
+    "firstSeen": "2026-06-09T21:48:22Z",
+    "score": 98.7,
+    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
     "coverage": "uncovered",
     "coveredBy": null,
-    "incidentIds": [],
+    "incidentIds": ["INC-55199"],
     "evidence": [
       {
-        "number": 57643,
-        "link": "https://app.usepylon.com/issues?issueNumber=57643"
+        "number": 57868,
+        "link": "https://app.usepylon.com/issues?issueNumber=57868"
+      },
+      {
+        "number": 56104,
+        "link": "https://app.usepylon.com/issues?issueNumber=56104"
+      },
+      {
+        "number": 55199,
+        "link": "https://app.usepylon.com/issues?issueNumber=55199"
+      },
+      {
+        "number": 56102,
+        "link": "https://app.usepylon.com/issues?issueNumber=56102"
+      },
+      {
+        "number": 60962,
+        "link": "https://app.usepylon.com/issues?issueNumber=60962"
+      },
+      {
+        "number": 59237,
+        "link": "https://app.usepylon.com/issues?issueNumber=59237"
       }
     ]
   },
   {
     "id": "PAT-90676e140112",
-    "label": "permission issue when using devin user freezing endpoints forbidden",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “permission issue when using devin user…”",
     "surfaceId": "enterprise",
     "flow": "Permissions/Rate limits",
     "nodeId": "landing",
@@ -812,60 +1896,40 @@
     ]
   },
   {
-    "id": "PAT-b8524e20f57a",
-    "label": "permission denied: internal server error: error number 13 (trace id: <id>",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "landing",
-    "total": 2,
+    "id": "PAT-b9a6ff8404b8",
+    "label": "Create new org → stuck in \"Setting up\" / \"Deciding action\" loop",
+    "surfaceId": "enterprise",
+    "flow": "Onboarding/Setup",
+    "nodeId": "session",
+    "total": 3,
     "open": 0,
     "definite": 2,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-09T03:51:49Z",
-    "score": 97.0,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "firstSeen": "2026-06-17T16:53:08Z",
+    "score": 96.0,
+    "suggestedTest": "Create a new org → complete the setup wizard → verify transition out of 'setting up' within 60s",
     "coverage": "uncovered",
     "coveredBy": null,
     "incidentIds": [],
     "evidence": [
       {
-        "number": 55018,
-        "link": "https://app.usepylon.com/issues?issueNumber=55018"
+        "number": 56767,
+        "link": "https://app.usepylon.com/issues?issueNumber=56767"
       },
       {
-        "number": 56112,
-        "link": "https://app.usepylon.com/issues?issueNumber=56112"
-      }
-    ]
-  },
-  {
-    "id": "PAT-25bb60543d29",
-    "label": "hi my session with id is stuck i cannot reboot it either can you please reboot o",
-    "surfaceId": "enterprise",
-    "flow": "CLI",
-    "nodeId": "session",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-13T04:18:18Z",
-    "score": 96.0,
-    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
+        "number": 56765,
+        "link": "https://app.usepylon.com/issues?issueNumber=56765"
+      },
       {
-        "number": 61333,
-        "link": "https://app.usepylon.com/issues?issueNumber=61333"
+        "number": 56774,
+        "link": "https://app.usepylon.com/issues?issueNumber=56774"
       }
     ]
   },
   {
     "id": "PAT-7e84b3074274",
-    "label": "i ve tried to pay for the pro subscription a few times but each time it says my",
+    "label": "Complete payment or plan change → account state not updated correctly · “i ve tried to pay for the pro…”",
     "surfaceId": "enterprise",
     "flow": "Billing/Account",
     "nodeId": "landing",
@@ -900,32 +1964,8 @@
     ]
   },
   {
-    "id": "PAT-4fb472dcc434",
-    "label": "stalled incomplete responses",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "session",
-    "total": 1,
-    "open": 1,
-    "definite": 1,
-    "count24h": 1,
-    "growth24h": 1,
-    "firstSeen": "2026-08-06T14:46:18Z",
-    "score": 95.4,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": ["INC-65022"],
-    "evidence": [
-      {
-        "number": 65022,
-        "link": "https://app.usepylon.com/issues?issueNumber=65022"
-      }
-    ]
-  },
-  {
     "id": "PAT-ff9cf8ef4623",
-    "label": "unauthorized api write across sessions",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “unauthorized api write across sessions”",
     "surfaceId": "enterprise",
     "flow": "Permissions/Rate limits",
     "nodeId": "automations",
@@ -949,7 +1989,7 @@
   },
   {
     "id": "PAT-1b49506aaebd",
-    "label": "hi how s it going i wanted to report a small error today my boss mentioned that",
+    "label": "Complete payment or plan change → account state not updated correctly · “hi how s it going i wanted to report a…”",
     "surfaceId": "windsurf",
     "flow": "Billing/Account",
     "nodeId": "landing",
@@ -973,7 +2013,7 @@
   },
   {
     "id": "PAT-682df897680d",
-    "label": "404 error",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “404 error”",
     "surfaceId": "enterprise",
     "flow": "IDE/Desktop",
     "nodeId": "landing",
@@ -1000,60 +2040,112 @@
     ]
   },
   {
-    "id": "PAT-8388d7a1c11a",
-    "label": "permission denied: permission denied: we're currently facing high demand for",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "landing",
-    "total": 2,
-    "open": 0,
-    "definite": 2,
+    "id": "PAT-6daa610f7405",
+    "label": "Enter the emailed verification code → code rejected or never arrives",
+    "surfaceId": "enterprise",
+    "flow": "Login/Auth",
+    "nodeId": "auth",
+    "total": 4,
+    "open": 1,
+    "definite": 1,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-09T15:12:31Z",
-    "score": 94.6,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "firstSeen": "2026-06-15T11:24:37Z",
+    "score": 94.1,
+    "suggestedTest": "Attempt login via SSO and email+OTP → verify redirect completes and a session is established → verify no redirect loop or rejected code",
     "coverage": "uncovered",
     "coveredBy": null,
-    "incidentIds": [],
+    "incidentIds": ["INC-62486"],
     "evidence": [
       {
-        "number": 56395,
-        "link": "https://app.usepylon.com/issues?issueNumber=56395"
+        "number": 58560,
+        "link": "https://app.usepylon.com/issues?issueNumber=58560"
       },
       {
-        "number": 55127,
-        "link": "https://app.usepylon.com/issues?issueNumber=55127"
+        "number": 56344,
+        "link": "https://app.usepylon.com/issues?issueNumber=56344"
+      },
+      {
+        "number": 64551,
+        "link": "https://app.usepylon.com/issues?issueNumber=64551"
+      },
+      {
+        "number": 62486,
+        "link": "https://app.usepylon.com/issues?issueNumber=62486"
       }
     ]
   },
   {
-    "id": "PAT-d3dac0881903",
-    "label": "permission denied: we're currently facing high demand for this model\"",
+    "id": "PAT-a59bf7382ac4",
+    "label": "Run a CLI command → unexpected error or command hangs · “o: •••@•••”",
     "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
+    "flow": "CLI",
     "nodeId": "landing",
-    "total": 1,
-    "open": 0,
+    "total": 4,
+    "open": 1,
     "definite": 1,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-10T19:20:26Z",
-    "score": 92.0,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
+    "firstSeen": "2026-06-09T05:08:45Z",
+    "score": 93.7,
+    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
     "coverage": "uncovered",
     "coveredBy": null,
-    "incidentIds": [],
+    "incidentIds": ["INC-64555"],
     "evidence": [
       {
-        "number": 55401,
-        "link": "https://app.usepylon.com/issues?issueNumber=55401"
+        "number": 64555,
+        "link": "https://app.usepylon.com/issues?issueNumber=64555"
+      },
+      {
+        "number": 60999,
+        "link": "https://app.usepylon.com/issues?issueNumber=60999"
+      },
+      {
+        "number": 55034,
+        "link": "https://app.usepylon.com/issues?issueNumber=55034"
+      },
+      {
+        "number": 55025,
+        "link": "https://app.usepylon.com/issues?issueNumber=55025"
+      }
+    ]
+  },
+  {
+    "id": "PAT-b5f849883a9e",
+    "label": "Type code → autocomplete suggestions flicker, disappear, or fail to appear",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "ent",
+    "total": 3,
+    "open": 2,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "firstSeen": "2026-06-20T00:30:59Z",
+    "score": 92.8,
+    "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-57685", "INC-57158"],
+    "evidence": [
+      {
+        "number": 57685,
+        "link": "https://app.usepylon.com/issues?issueNumber=57685"
+      },
+      {
+        "number": 63147,
+        "link": "https://app.usepylon.com/issues?issueNumber=63147"
+      },
+      {
+        "number": 57158,
+        "link": "https://app.usepylon.com/issues?issueNumber=57158"
       }
     ]
   },
   {
     "id": "PAT-75cd5f16de62",
-    "label": "unable to access devin academy",
+    "label": "Attempt to authenticate → login fails or session not established · “unable to access devin academy”",
     "surfaceId": "enterprise",
     "flow": "Login/Auth",
     "nodeId": "login",
@@ -1077,7 +2169,7 @@
   },
   {
     "id": "PAT-8820f4493fdf",
-    "label": "403 error",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “403 error”",
     "surfaceId": "enterprise",
     "flow": "Permissions/Rate limits",
     "nodeId": "e-api",
@@ -1101,7 +2193,7 @@
   },
   {
     "id": "PAT-3c9e67e84210",
-    "label": "permission denied: bug!!! hello, using devin versions from 1 day ago and",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “permission denied: bug!!! hello, using…”",
     "surfaceId": "windsurf",
     "flow": "Permissions/Rate limits",
     "nodeId": "session",
@@ -1125,7 +2217,7 @@
   },
   {
     "id": "PAT-8c737703d930",
-    "label": "problem with devin",
+    "label": "Complete payment or plan change → account state not updated correctly · “problem with devin”",
     "surfaceId": "windsurf",
     "flow": "Billing/Account",
     "nodeId": "e-membership",
@@ -1161,7 +2253,7 @@
   },
   {
     "id": "PAT-c522aa1069cc",
-    "label": "hello",
+    "label": "Check usage or consume credits → incorrect balance or quota mismatch · “Hello”",
     "surfaceId": "enterprise",
     "flow": "Quota/Usage",
     "nodeId": "landing",
@@ -1192,32 +2284,36 @@
     ]
   },
   {
-    "id": "PAT-8bc51324580a",
-    "label": "devin automation mcp tool and api errors",
+    "id": "PAT-332b8fab71f3",
+    "label": "Perform a normal operation → \"Permission denied: internal error\" with a trace ID",
     "surfaceId": "enterprise",
-    "flow": "Sessions/Automation",
-    "nodeId": "automations",
-    "total": 1,
-    "open": 0,
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 2,
+    "open": 1,
     "definite": 1,
     "count24h": 0,
     "growth24h": 0,
-    "firstSeen": "2026-06-12T08:29:11Z",
+    "firstSeen": "2026-06-12T20:51:07Z",
     "score": 90.4,
-    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
+    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
     "coverage": "uncovered",
     "coveredBy": null,
-    "incidentIds": [],
+    "incidentIds": ["INC-60128"],
     "evidence": [
       {
-        "number": 55775,
-        "link": "https://app.usepylon.com/issues?issueNumber=55775"
+        "number": 55896,
+        "link": "https://app.usepylon.com/issues?issueNumber=55896"
+      },
+      {
+        "number": 60128,
+        "link": "https://app.usepylon.com/issues?issueNumber=60128"
       }
     ]
   },
   {
     "id": "PAT-93072c721b35",
-    "label": "when approving a read only atlassian cli command from devin chat on windows the",
+    "label": "Run a CLI command → unexpected error or command hangs · “when approving a read only atlassian…”",
     "surfaceId": "enterprise",
     "flow": "CLI",
     "nodeId": "auth",
@@ -1241,7 +2337,7 @@
   },
   {
     "id": "PAT-65678e9ee35a",
-    "label": "can i submit a bug report",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “can i submit a bug report”",
     "surfaceId": "windsurf",
     "flow": "IDE/Desktop",
     "nodeId": "landing",
@@ -1265,7 +2361,7 @@
   },
   {
     "id": "PAT-358752d28e15",
-    "label": "bug report claude sonnet byok returns not found error wrong model id being sent",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “bug report claude sonnet byok returns…”",
     "surfaceId": "windsurf",
     "flow": "IDE/Desktop",
     "nodeId": "e-devin",
@@ -1284,494 +2380,6 @@
       {
         "number": 56504,
         "link": "https://app.usepylon.com/issues?issueNumber=56504"
-      }
-    ]
-  },
-  {
-    "id": "PAT-b1369e962735",
-    "label": "urgent account stuck in org loop paid individual pro user",
-    "surfaceId": "enterprise",
-    "flow": "Onboarding/Setup",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-13T05:41:38Z",
-    "score": 90.0,
-    "suggestedTest": "Create a new org → complete the setup wizard → verify transition out of 'setting up' within 60s",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 56080,
-        "link": "https://app.usepylon.com/issues?issueNumber=56080"
-      }
-    ]
-  },
-  {
-    "id": "PAT-67f49813f149",
-    "label": "permission denied: invalid",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "login",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-08T11:54:25Z",
-    "score": 89.6,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 60661,
-        "link": "https://app.usepylon.com/issues?issueNumber=60661"
-      }
-    ]
-  },
-  {
-    "id": "PAT-1179b462ad30",
-    "label": "issues with devin enterprise in portugal",
-    "surfaceId": "enterprise",
-    "flow": "Sessions/Automation",
-    "nodeId": "e-api",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-02T09:07:37Z",
-    "score": 89.6,
-    "suggestedTest": "Create a scheduled task 5 min out → restart the workspace → verify the schedule still fires and history records the run",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 59654,
-        "link": "https://app.usepylon.com/issues?issueNumber=59654"
-      }
-    ]
-  },
-  {
-    "id": "PAT-194b076a4029",
-    "label": "permission denied: invalid api key”? [hkusoft@gmail",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "login",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-25T05:33:13Z",
-    "score": 89.6,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 57779,
-        "link": "https://app.usepylon.com/issues?issueNumber=57779"
-      }
-    ]
-  },
-  {
-    "id": "PAT-976d743b717e",
-    "label": "permission denied internal server error",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "session",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-17T01:45:55Z",
-    "score": 89.6,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 56639,
-        "link": "https://app.usepylon.com/issues?issueNumber=56639"
-      }
-    ]
-  },
-  {
-    "id": "PAT-bb0951c79825",
-    "label": "permission denied: reached message rate limit for this model",
-    "surfaceId": "enterprise",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "landing",
-    "total": 2,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-20T12:09:56Z",
-    "score": 89.4,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 57285,
-        "link": "https://app.usepylon.com/issues?issueNumber=57285"
-      },
-      {
-        "number": 57194,
-        "link": "https://app.usepylon.com/issues?issueNumber=57194"
-      }
-    ]
-  },
-  {
-    "id": "PAT-ea7c3d4768bc",
-    "label": "users with access to devin cli report they have lost access",
-    "surfaceId": "windsurf",
-    "flow": "CLI",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 1,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-15T19:12:43Z",
-    "score": 89.0,
-    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": ["INC-56417"],
-    "evidence": [
-      {
-        "number": 56417,
-        "link": "https://app.usepylon.com/issues?issueNumber=56417"
-      }
-    ]
-  },
-  {
-    "id": "PAT-ffba069f7931",
-    "label": "mcp oauth flow does not work in cascade",
-    "surfaceId": "windsurf",
-    "flow": "CLI",
-    "nodeId": "e-devin",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-02T17:26:55Z",
-    "score": 88.8,
-    "suggestedTest": "Fresh install on a clean machine → run first command → verify response (or a clear error) within 10s, no hang",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 59734,
-        "link": "https://app.usepylon.com/issues?issueNumber=59734"
-      }
-    ]
-  },
-  {
-    "id": "PAT-8465a6128f6e",
-    "label": "urgent account locked negative balance sync failure after devin upgrade",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "auth",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-31T15:45:29Z",
-    "score": 88.4,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 64205,
-        "link": "https://app.usepylon.com/issues?issueNumber=64205"
-      }
-    ]
-  },
-  {
-    "id": "PAT-6a050f908116",
-    "label": "devin api error detail your organization has a billing error error monthly limit",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "e-api",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-27T03:35:13Z",
-    "score": 88.4,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 63432,
-        "link": "https://app.usepylon.com/issues?issueNumber=63432"
-      }
-    ]
-  },
-  {
-    "id": "PAT-984656c0ca8d",
-    "label": "after i went into settings and added named my organization my pro plan immediate",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "ent",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-06T08:55:21Z",
-    "score": 88.4,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 60144,
-        "link": "https://app.usepylon.com/issues?issueNumber=60144"
-      }
-    ]
-  },
-  {
-    "id": "PAT-c3811b971ade",
-    "label": "permission denied: your subsc",
-    "surfaceId": "windsurf",
-    "flow": "Billing/Account",
-    "nodeId": "auth",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-26T08:54:53Z",
-    "score": 88.4,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 57958,
-        "link": "https://app.usepylon.com/issues?issueNumber=57958"
-      }
-    ]
-  },
-  {
-    "id": "PAT-e2c5070afc52",
-    "label": "browser is not working in devin sessions",
-    "surfaceId": "enterprise",
-    "flow": "IDE/Desktop",
-    "nodeId": "session",
-    "total": 1,
-    "open": 1,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": -1,
-    "firstSeen": "2026-08-06T13:41:50Z",
-    "score": 87.8,
-    "suggestedTest": "Open the IDE → exercise chat + autocomplete for 5 min → verify responses keep arriving with no crash or freeze",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": ["INC-65014"],
-    "evidence": [
-      {
-        "number": 65014,
-        "link": "https://app.usepylon.com/issues?issueNumber=65014"
-      }
-    ]
-  },
-  {
-    "id": "PAT-a6dfc92f2b2b",
-    "label": "permission denied: subscription is not active, please contact your admin or g",
-    "surfaceId": "windsurf",
-    "flow": "Permissions/Rate limits",
-    "nodeId": "landing",
-    "total": 2,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-04T20:51:36Z",
-    "score": 87.8,
-    "suggestedTest": "Perform 20 standard user actions in 60s → verify zero false permission/rate-limit blocks → verify error messages are actionable",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 63264,
-        "link": "https://app.usepylon.com/issues?issueNumber=63264"
-      },
-      {
-        "number": 59987,
-        "link": "https://app.usepylon.com/issues?issueNumber=59987"
-      }
-    ]
-  },
-  {
-    "id": "PAT-20a51a6f7d16",
-    "label": "i just bought credit for extra use and can t use it i checked and its not there",
-    "surfaceId": "windsurf",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 1,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-16T05:00:21Z",
-    "score": 87.8,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": ["INC-62031"],
-    "evidence": [
-      {
-        "number": 62031,
-        "link": "https://app.usepylon.com/issues?issueNumber=62031"
-      }
-    ]
-  },
-  {
-    "id": "PAT-38caa4516b89",
-    "label": "my credit card payment is not working",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-03T19:20:16Z",
-    "score": 87.6,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 59885,
-        "link": "https://app.usepylon.com/issues?issueNumber=59885"
-      }
-    ]
-  },
-  {
-    "id": "PAT-c07c0d3edb67",
-    "label": "there s a bug it says i have the max subscription but that i have no plan and i",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-07-01T16:32:35Z",
-    "score": 87.6,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 59512,
-        "link": "https://app.usepylon.com/issues?issueNumber=59512"
-      }
-    ]
-  },
-  {
-    "id": "PAT-68d92cadde55",
-    "label": "subject refund request recent subscription technical issues",
-    "surfaceId": "windsurf",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-16T14:46:33Z",
-    "score": 87.6,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 56545,
-        "link": "https://app.usepylon.com/issues?issueNumber=56545"
-      }
-    ]
-  },
-  {
-    "id": "PAT-bfa7222fae8d",
-    "label": "second email urgent paid but still free ticket reply to this email",
-    "surfaceId": "enterprise",
-    "flow": "Billing/Account",
-    "nodeId": "landing",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-10T07:07:29Z",
-    "score": 87.6,
-    "suggestedTest": "Complete a Stripe test payment / plan change → verify account state and plan badge update within 30s → verify no stale entitlement",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 55255,
-        "link": "https://app.usepylon.com/issues?issueNumber=55255"
-      }
-    ]
-  },
-  {
-    "id": "PAT-9db760d5cf81",
-    "label": "pylon support cognition ai does not work from dell s network",
-    "surfaceId": "enterprise",
-    "flow": "Login/Auth",
-    "nodeId": "login",
-    "total": 1,
-    "open": 0,
-    "definite": 1,
-    "count24h": 0,
-    "growth24h": 0,
-    "firstSeen": "2026-06-09T19:21:37Z",
-    "score": 87.6,
-    "suggestedTest": "Attempt login via SSO and email+OTP → verify redirect completes and a session is established → verify no redirect loop or rejected code",
-    "coverage": "uncovered",
-    "coveredBy": null,
-    "incidentIds": [],
-    "evidence": [
-      {
-        "number": 55174,
-        "link": "https://app.usepylon.com/issues?issueNumber=55174"
       }
     ]
   }
