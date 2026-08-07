@@ -493,82 +493,6 @@
 
 /* ==== pattern-first layout (QA-DEC-027) ==== */
 
-/* page splits into a view rail + main column */
-.inc-page {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: var(--sp-5);
-  align-items: start;
-}
-@media (max-width: 900px) {
-  .inc-page {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* view rail — the filters ARE the views */
-.inc-rail {
-  position: sticky;
-  top: calc(var(--topbar-h) + var(--sp-4));
-}
-.inc-rail-title {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-3);
-  padding: 0 var(--sp-2) var(--sp-2);
-}
-.inc-rail nav {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-@media (max-width: 900px) {
-  .inc-rail nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-.inc-rail-item {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  color: var(--text-2);
-  padding: 8px 10px;
-  font-size: var(--fs-sm);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  min-height: 36px;
-  transition: background var(--dur-fast) var(--ease-out);
-}
-.inc-rail-item:hover {
-  background: var(--surface-2);
-  color: var(--text);
-}
-.inc-rail-item.active {
-  background: var(--surface-2);
-  color: var(--text);
-  border-color: var(--border);
-  font-weight: 600;
-}
-.inc-rail-count {
-  margin-left: auto;
-  font-size: var(--fs-xs);
-  color: var(--text-3);
-  background: var(--surface-3);
-  border-radius: 999px;
-  padding: 1px 8px;
-}
-.inc-rail-item.active .inc-rail-count.hot {
-  background: var(--danger-tint);
-  color: var(--red-soft);
-}
-
 .inc-main {
   min-width: 0;
 }
@@ -615,32 +539,56 @@
   border-radius: 50%;
 }
 
-/* digest strip — replaces the escaped-defects card + header chips */
-.inc-digest {
+/* view cards — the views ARE the stats (user decision 2026-08-07) */
+.inc-views {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--sp-2);
   margin: var(--sp-4) 0;
 }
-.inc-stat {
+.inc-view-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 9px 12px;
+  text-align: left;
+  font-family: var(--font-sans);
+  color: var(--text-2);
+  cursor: pointer;
+  min-height: 58px;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
 }
-.inc-stat .v {
+.inc-view-card:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.inc-view-card.active {
+  border-color: var(--accent);
+  color: var(--text);
+  box-shadow: var(--glow-accent);
+}
+.inc-view-card .v {
   font-size: var(--fs-lg);
   font-weight: 700;
+  color: var(--text);
 }
-.inc-stat .v.warn {
-  color: var(--amber-soft);
+.inc-view-card.hot .v {
+  color: var(--red-soft);
 }
-.inc-stat .v.ok {
-  color: var(--accent-strong);
-}
-.inc-stat .l {
+.inc-view-card .l {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--text-3);
   font-size: var(--fs-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inc-view-card.active .l {
+  color: var(--text-2);
 }
 
 /* toolbar — one search + one toggle replace the four dropdowns */

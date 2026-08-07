@@ -10,14 +10,13 @@ import {
   Prohibit,
   MagnifyingGlass,
 } from "@phosphor-icons/react";
-import { escapedDefects, getIncidents, getPatterns } from "../data/dataService";
+import { getIncidents, getPatterns } from "../data/dataService";
 import { useDataVersion } from "../hooks/useData";
 import { EmptyState } from "../components/ui/EmptyState";
 import { CreateTestcaseModal } from "../components/incidents/CreateTestcaseModal";
 import { PatternCard } from "../components/incidents/PatternCard";
 import { SurfaceChips } from "../components/incidents/SurfaceChips";
 import { VerifyQueue } from "../components/incidents/VerifyQueue";
-import { pct } from "../lib/format";
 import type { Incident, Pattern, SurfaceId } from "../types";
 import "../styles/incidents.css";
 
@@ -84,13 +83,6 @@ export default function Incidents() {
   const gaps = patterns.filter((p) => p.coverage === "uncovered" || p.coverage === "weak");
   const wins = patterns.filter((p) => p.coverage === "covered" || p.coverage === "weak");
   const noise = patterns.filter((p) => p.coverage === "dismissed");
-  const coveredPct = pct(
-    patterns.filter((p) => p.coverage === "covered").length,
-    patterns.length || 1,
-  );
-  const judgedToday = incidents.filter(
-    (i) => Date.now() - new Date(i.createdAt).getTime() < 24 * 3600e3,
-  ).length;
 
   const surfaceCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -140,26 +132,7 @@ export default function Incidents() {
   };
 
   return (
-    <div className="page inc-page">
-      <aside className="inc-rail" aria-label="Incident views">
-        <div className="inc-rail-title">Incidents</div>
-        <nav>
-          {VIEWS.map((v) => (
-            <button
-              key={v.id}
-              className={`inc-rail-item ${view === v.id ? "active" : ""}`}
-              onClick={() => setView(v.id)}
-              aria-current={view === v.id}
-            >
-              {v.icon} {v.label}
-              <span className={`inc-rail-count num ${v.id === "gaps" ? "hot" : ""}`}>
-                {counts[v.id]}
-              </span>
-            </button>
-          ))}
-        </nav>
-      </aside>
-
+    <div className="page">
       <main className="inc-main">
         <div className="inc-title-row">
           <div>
@@ -180,27 +153,21 @@ export default function Incidents() {
           />
         </div>
 
-        <div className="inc-digest" aria-label="Today's digest">
-          <div className="inc-stat">
-            <div className="v num">{judgedToday}</div>
-            <div className="l">tickets judged today</div>
-          </div>
-          <div className="inc-stat">
-            <div className="v num">{gaps.length}</div>
-            <div className="l">open coverage gaps</div>
-          </div>
-          <div className="inc-stat">
-            <div className="v num warn">{verifyQueue.length}</div>
-            <div className="l">awaiting your verdict</div>
-          </div>
-          <div className="inc-stat">
-            <div className="v num ok">{coveredPct}%</div>
-            <div className="l">patterns covered</div>
-          </div>
-          <div className="inc-stat">
-            <div className="v num">{escapedDefects().length}</div>
-            <div className="l">escaped defects</div>
-          </div>
+        <div className="inc-views" role="tablist" aria-label="Incident views">
+          {VIEWS.map((v) => (
+            <button
+              key={v.id}
+              role="tab"
+              aria-selected={view === v.id}
+              className={`inc-view-card ${view === v.id ? "active" : ""} ${v.id === "gaps" ? "hot" : ""}`}
+              onClick={() => setView(v.id)}
+            >
+              <div className="v num">{counts[v.id]}</div>
+              <div className="l">
+                {v.icon} {v.label}
+              </div>
+            </button>
+          ))}
         </div>
 
         {view !== "verify" && (
