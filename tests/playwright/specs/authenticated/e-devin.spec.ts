@@ -276,4 +276,21 @@ test.describe("Devin settings", () => {
     await reloadAndWait(page, devin);
     await expect(devin.switchFor("ultra")).toHaveAttribute("aria-checked", initial);
   });
+
+  test("DEVIN-SMK01 — Cold-load the page with the full agent-configuration inventory", async ({
+    page,
+  }) => {
+    const devin = new DevinSettingsPage(page);
+    await devin.goto();
+
+    await expect(devin.heading).toBeVisible();
+    await expect(devin.sessionsHeading).toBeVisible();
+
+    // Every documented model/mode and tool control renders with a definite state.
+    for (const id of [...MODEL_MODE_SWITCHES, ...TOOL_SWITCHES]) {
+      const control = devin.switchFor(id);
+      await expect(control).toBeVisible();
+      await expect(control).toHaveAttribute("aria-checked", /^(true|false)$/);
+    }
+  });
 });
