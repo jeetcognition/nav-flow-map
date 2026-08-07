@@ -552,3 +552,29 @@
 - Re-exported both fixtures: 200 incidents (all open — 554 resolved dropped
   at the cap), 52 definite; 60 patterns, all `uncovered` (coverage ledger is
   still empty until verdict persistence lands).
+
+## 2026-08-07 — QA-DEC-028: verdict persistence (UI → worker → committed ledgers)
+
+- New worker route `POST /verdicts`: validates + scrubs verdict batches and
+  read-merge-writes `pipelines/pylon/coverage.json` (pattern verdicts) and
+  `pipelines/pylon/labels/pending_verdicts.json` (ticket verdicts queued for
+  the refiner) via the GitHub contents API. Human verdicts commit directly to
+  main (navmap-edits.json precedent); everything eval-affecting still goes
+  through the refiner's gated PR. Needs `wrangler deploy`.
+- App: `data/verdictsService.ts` wire layer — verdicts still apply to the
+  store instantly, then batch (1.5s debounce), persist in localStorage across
+  reloads, and retry visibly via `VerdictSyncBanner` (Incidents +
+  IncidentDetail). On load both ledgers are overlaid onto the fixtures
+  (`loadVerdictBaselines`), so verdicts survive reloads before the next
+  export re-bakes them. `setPatternCoverage` now records the acting user.
+- Pipeline: `export_incidents.py` applies pending ticket verdicts as
+  `humanCategory`/`overriddenBy` in the exported fixture;
+  `load_pending_verdicts` fails open on malformed data.
+- Tests: `worker/test_verdicts.mjs` (hermetic — GitHub API stubbed; scrub,
+  merge-preserves-existing, invalid-entry drops, 400/403 paths) added to the
+  Validate workflow; `test_pipeline.py` covers both ledger loaders.
+  `scripts/validate-data.js` now shape-checks and PII-scans both ledgers.
+- Docs: QA-DEC-028 in decisions.md, REFINER.md gold-label source updated,
+  pipeline README invariant reworded (pipeline writes open PRs; human
+  verdict relay is the documented exception), AGENTS.md data-access rule
+  extended with `verdictsService`.

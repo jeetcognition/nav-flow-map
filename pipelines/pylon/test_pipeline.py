@@ -141,6 +141,45 @@ check("suggested-test-flow", "20 standard user actions" in big["suggestedTest"],
 pats2 = build_patterns(same + other, now=NOW)
 check("deterministic-ids", {p["id"] for p in pats} == {p["id"] for p in pats2})
 
+print("pending verdicts + coverage ledger — the worker→pipeline contract (QA-DEC-028)")
+import tempfile
+from pathlib import Path
+
+import pattern_engine
+from export_incidents import load_pending_verdicts
+
+with tempfile.TemporaryDirectory() as td:
+    pend = Path(td) / "pending_verdicts.json"
+    pend.write_text(json.dumps({
+        "61158": {"category": "app-bug", "by": "u-jeet", "at": "2026-08-07T12:00:00Z"},
+        "53476": {"category": "customer-doubt", "by": "u-maya", "at": "2026-08-07T12:00:00Z"},
+        "99999": {"category": "invented-category", "by": "u-x", "at": ""},
+        "88888": "not-a-dict",
+    }))
+    loaded = load_pending_verdicts(pend)
+    check("pending-valid-kept", set(loaded) == {"61158", "53476"}, str(set(loaded)))
+    check("pending-category-passthrough", loaded["61158"]["category"] == "app-bug")
+
+    bad = Path(td) / "broken.json"
+    bad.write_text("{not json")
+    check("pending-malformed-fails-open", load_pending_verdicts(bad) == {})
+    check("pending-missing-fails-open", load_pending_verdicts(Path(td) / "nope.json") == {})
+
+    cov = Path(td) / "coverage.json"
+    cov.write_text(json.dumps({
+        "a1b2c3d4e5f6": {"status": "covered", "coveredBy": "ENT-REG12",
+                          "by": "u-jeet", "updatedAt": "2026-08-07T12:00:00Z"},
+        "ffffffffffff": {"status": "wat"},
+    }))
+    orig_cov_path = pattern_engine.COVERAGE_PATH
+    pattern_engine.COVERAGE_PATH = cov
+    try:
+        ledger = pattern_engine.load_coverage()
+    finally:
+        pattern_engine.COVERAGE_PATH = orig_cov_path
+    check("coverage-worker-shape-accepted", ledger.get("a1b2c3d4e5f6", {}).get("coveredBy") == "ENT-REG12")
+    check("coverage-bad-status-dropped", "ffffffffffff" not in ledger)
+
 print("read-only guard — the pipeline must NEVER write to Pylon")
 import pathlib
 

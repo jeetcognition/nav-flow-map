@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CaretDown, CheckCircle, Prohibit, Sparkle, TrendUp } from "@phosphor-icons/react";
 import { getSurfaces, patternIncidents, setPatternCoverage } from "../../data/dataService";
+import { useApp } from "../../hooks/useApp";
 import { rowFadeUp } from "../../lib/motion";
 import { IncidentCard } from "./IncidentCard";
 import type { Incident, Pattern } from "../../types";
@@ -17,6 +18,7 @@ const SURFACE_COLORS: Record<string, string> = {
 };
 
 function CoverForm({ pattern, onDone }: { pattern: Pattern; onDone: () => void }) {
+  const { user } = useApp();
   const [testId, setTestId] = useState(pattern.coveredBy ?? "");
   return (
     <form
@@ -24,7 +26,7 @@ function CoverForm({ pattern, onDone }: { pattern: Pattern; onDone: () => void }
       onSubmit={(e) => {
         e.preventDefault();
         if (!testId.trim()) return;
-        setPatternCoverage(pattern.id, "covered", testId.trim());
+        setPatternCoverage(pattern.id, "covered", testId.trim(), user.id);
         onDone();
       }}
     >
@@ -54,6 +56,7 @@ export function PatternCard({
   index: number;
   onCreateTestcase: (i: Incident) => void;
 }) {
+  const { user } = useApp();
   const [open, setOpen] = useState(false);
   const [covering, setCovering] = useState(false);
   const [confirmDismiss, setConfirmDismiss] = useState(false);
@@ -159,7 +162,7 @@ export function PatternCard({
                   <button
                     className="btn btn-mini btn-danger"
                     onClick={() => {
-                      setPatternCoverage(pattern.id, "dismissed");
+                      setPatternCoverage(pattern.id, "dismissed", null, user.id);
                       setConfirmDismiss(false);
                     }}
                   >

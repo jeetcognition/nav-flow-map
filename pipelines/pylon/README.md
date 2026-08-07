@@ -19,16 +19,19 @@ fetcher.py ─▶ pylon_issues.db (local/CI, gitignored)
                  └─▶ opens a PR (never pushes to main); CI validates
 ```
 
-| File                   | Purpose                                                                  |
-| ---------------------- | ------------------------------------------------------------------------ |
-| `fetcher.py`           | Incremental Pylon API fetch + 60-day backfill (`PYLON_API_KEY`)          |
-| `db.py`                | SQLite storage, 60-day retention                                         |
-| `ticket_classifier.py` | Deterministic verdicts: definite-bug / possible-bug / not-app-issue      |
-| `eval_classifier.py`   | Metrics vs `labels/eval_set.json`; `--gate` exits non-zero on regression |
-| `export_incidents.py`  | Sanitize + node-map + curate → incidents fixture                         |
-| `test_pipeline.py`     | Unit tests on synthetic tickets (sanitizer is a security boundary)       |
-| `labels/eval_set.json` | Append-only hand-labeled ground truth (ticket numbers only, no PII)      |
-| `REFINER.md`           | The LLM rule-refinement loop and its acceptance gates                    |
+| File                           | Purpose                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------ |
+| `fetcher.py`                   | Incremental Pylon API fetch + 60-day backfill (`PYLON_API_KEY`)          |
+| `db.py`                        | SQLite storage, 60-day retention                                         |
+| `ticket_classifier.py`         | Deterministic verdicts: definite-bug / possible-bug / not-app-issue      |
+| `eval_classifier.py`           | Metrics vs `labels/eval_set.json`; `--gate` exits non-zero on regression |
+| `export_incidents.py`          | Sanitize + node-map + curate → incidents fixture                         |
+| `test_pipeline.py`             | Unit tests on synthetic tickets (sanitizer is a security boundary)       |
+| `pattern_engine.py`            | Clusters approved tickets into ranked coverage-gap patterns (QA-DEC-027) |
+| `coverage.json`                | Committed ledger of human pattern verdicts, written by the save worker   |
+| `labels/eval_set.json`         | Append-only hand-labeled ground truth (ticket numbers only, no PII)      |
+| `labels/pending_verdicts.json` | UI ticket verdicts queued for the refiner (QA-DEC-028)                   |
+| `REFINER.md`                   | The LLM rule-refinement loop and its acceptance gates                    |
 
 ## Local run
 
@@ -53,7 +56,11 @@ node ../../scripts/validate-data.js
 - Ticket text is PII: the DB and `.env` never leave the machine/runner;
   everything committed is sanitized and leak-checked by
   `scripts/validate-data.js` in CI.
-- All automated writes open PRs. Nothing pushes to `main`.
+- All **pipeline-automated** writes open PRs; nothing automated pushes to
+  `main`. The one exception is human verdicts relayed by the save worker
+  (QA-DEC-028): `coverage.json` and `labels/pending_verdicts.json` are
+  committed directly — they record human decisions, are shape-validated on
+  write and in CI, and are never read by the eval gate.
 - Eval coverage decays as labeled tickets age past the 60-day fetch window —
   `eval_classifier.py` warns on missing rows; the refiner appends fresh
   labels from UI verifications to compensate.

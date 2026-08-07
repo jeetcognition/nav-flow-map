@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -17,6 +17,7 @@ import {
   getNode,
   getUser,
   incidentCategory,
+  loadVerdictBaselines,
   overrideIncidentCategory,
 } from "../data/dataService";
 import { useDataVersion } from "../hooks/useData";
@@ -26,6 +27,7 @@ import { CATEGORIES, CATEGORY_META } from "../lib/categoryMeta";
 import { EmptyState } from "../components/ui/EmptyState";
 import { WidgetCard } from "../components/ui/WidgetCard";
 import { CreateTestcaseModal } from "../components/incidents/CreateTestcaseModal";
+import { VerdictSyncBanner } from "../components/incidents/VerdictSyncBanner";
 import { formatDate } from "../lib/format";
 import { fadeUp } from "../lib/motion";
 import { SourceChip } from "../components/ui/SourceChip";
@@ -42,6 +44,9 @@ const STATUS_BADGE: Record<Incident["status"], [string, string]> = {
 
 export default function IncidentDetail() {
   useDataVersion();
+  useEffect(() => {
+    void loadVerdictBaselines();
+  }, []);
   const { incidentId } = useParams<{ incidentId: string }>();
   const { user } = useApp();
   const [modalOpen, setModalOpen] = useState(false);
@@ -120,6 +125,8 @@ export default function IncidentDetail() {
       <Link to="/incidents" className="back-link">
         <ArrowLeft size={14} weight="bold" /> Incidents
       </Link>
+
+      <VerdictSyncBanner />
 
       <motion.div className="inc-detail-head" {...fadeUp()}>
         <div>

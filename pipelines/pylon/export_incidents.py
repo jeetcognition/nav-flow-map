@@ -33,6 +33,30 @@ INVESTIGATING_STATES = {"waiting_on_customer"}
 CLOSED_KEEP_DAYS = 14  # resolved incidents younger than this are kept
 MAX_INCIDENTS = 200
 
+# Human ticket verdicts recorded from the Incidents UI (QA-DEC-028), queued
+# for the refiner to fold into labels/eval_set.json. Applied to the exported
+# fixture so verdicts survive the next export instead of resetting to null.
+PENDING_VERDICTS_PATH = HERE / "labels" / "pending_verdicts.json"
+VERDICT_CATEGORIES = {"app-bug", "customer-doubt", "config-issue", "feature-request", "unknown"}
+
+
+def load_pending_verdicts(path: Path = PENDING_VERDICTS_PATH) -> dict:
+    """{ticket_number: {category, by, at}} — malformed entries dropped (fail open)."""
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except ValueError:
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    return {
+        str(k): v
+        for k, v in data.items()
+        if isinstance(v, dict) and v.get("category") in VERDICT_CATEGORIES
+    }
+
+
 # ---------------------------------------------------------------------------
 # Sanitization — the fixture lands in a PUBLIC repo. Strip identities.
 # ---------------------------------------------------------------------------
@@ -167,6 +191,7 @@ def run(out_path: Path, patterns_path: Path | None = None) -> None:
     conn.row_factory = sqlite3.Row
     rows = [dict(r) for r in conn.execute("SELECT * FROM issues ORDER BY created_at DESC")]
 
+    pending = load_pending_verdicts()
     cutoff = datetime.now(timezone.utc) - timedelta(days=CLOSED_KEEP_DAYS)
     incidents = []
     for r in rows:
@@ -190,6 +215,7 @@ def run(out_path: Path, patterns_path: Path | None = None) -> None:
             f"Rules: {', '.join(res['reasons'][:6])}"
             + ("" if mapped else " · node unmapped, defaulted to landing")
         )
+        verdict_h = pending.get(str(r["number"]))
         inc = {
             "id": f"INC-{r['number']}",
             "source": "pylon",
@@ -208,8 +234,8 @@ def run(out_path: Path, patterns_path: Path | None = None) -> None:
                 "confidence": res["confidence"],
                 "rationale": rationale,
             },
-            "humanCategory": None,
-            "overriddenBy": None,
+            "humanCategory": verdict_h["category"] if verdict_h else None,
+            "overriddenBy": (verdict_h.get("by") or None) if verdict_h else None,
             "linkedBugId": None,
             "linkedCaseId": None,
         }

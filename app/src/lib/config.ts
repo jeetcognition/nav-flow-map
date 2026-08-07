@@ -10,6 +10,20 @@ export const EDITS_JSON_URL =
   import.meta.env.VITE_EDITS_JSON_URL ??
   "https://raw.githubusercontent.com/jeetcognition/nav-flow-map/main/navmap-edits.json";
 
+/** Worker route that persists human verdicts into the pipeline ledgers. */
+export const VERDICTS_ENDPOINT =
+  import.meta.env.VITE_VERDICTS_ENDPOINT ?? `${SAVE_ENDPOINT}/verdicts`;
+
+/** Committed pattern-coverage ledger — overlaid on patterns.json at load. */
+export const COVERAGE_JSON_URL =
+  import.meta.env.VITE_COVERAGE_JSON_URL ??
+  "https://raw.githubusercontent.com/jeetcognition/nav-flow-map/main/pipelines/pylon/coverage.json";
+
+/** Committed queue of ticket verdicts awaiting the refiner — overlaid on incidents.json. */
+export const PENDING_VERDICTS_URL =
+  import.meta.env.VITE_PENDING_VERDICTS_URL ??
+  "https://raw.githubusercontent.com/jeetcognition/nav-flow-map/main/pipelines/pylon/labels/pending_verdicts.json";
+
 export const DEFAULT_SURFACE = "enterprise";
 
 /** Base URL for Devin session deep links; the session id is appended. */

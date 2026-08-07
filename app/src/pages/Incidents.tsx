@@ -1,7 +1,7 @@
 // Incidents — pattern-first triage (QA-DEC-027). Structure borrowed from the
 // pylon-report-parser report (view rail + one ranked expandable list), skin is
 // the app's own tokens. Default view: coverage gaps (the money question).
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Fire,
   HandPalm,
@@ -10,12 +10,13 @@ import {
   Prohibit,
   MagnifyingGlass,
 } from "@phosphor-icons/react";
-import { getIncidents, getPatterns } from "../data/dataService";
+import { getIncidents, getPatterns, loadVerdictBaselines } from "../data/dataService";
 import { useDataVersion } from "../hooks/useData";
 import { EmptyState } from "../components/ui/EmptyState";
 import { CreateTestcaseModal } from "../components/incidents/CreateTestcaseModal";
 import { PatternCard } from "../components/incidents/PatternCard";
 import { SurfaceChips } from "../components/incidents/SurfaceChips";
+import { VerdictSyncBanner } from "../components/incidents/VerdictSyncBanner";
 import { VerifyQueue } from "../components/incidents/VerifyQueue";
 import type { Incident, Pattern, SurfaceId } from "../types";
 import "../styles/incidents.css";
@@ -70,6 +71,9 @@ function matchesSearch(p: Pattern, q: string): boolean {
 
 export default function Incidents() {
   useDataVersion();
+  useEffect(() => {
+    void loadVerdictBaselines();
+  }, []);
   const [view, setView] = useState<ViewId>("gaps");
   const [query, setQuery] = useState("");
   const [growingFirst, setGrowingFirst] = useState(true);
@@ -152,6 +156,8 @@ export default function Incidents() {
             }
           />
         </div>
+
+        <VerdictSyncBanner />
 
         <div className="inc-views" role="tablist" aria-label="Incident views">
           {VIEWS.map((v) => (

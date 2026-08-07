@@ -15,7 +15,10 @@ mature.
 
 1. **Gold labels** — human verification decisions from the Incidents UI
    (confirm/reject on `possible-bug`, plus any `definite-bug` that a human
-   rejected). Stored in D1 per QA-DEC-024; exported as `{number: label}`.
+   rejected). The save worker commits them to
+   `labels/pending_verdicts.json` (`{number: {category, by, at}}`,
+   QA-DEC-028); map categories to eval labels as app-bug → `bug`,
+   customer-doubt/config-issue/feature-request → `not`, unknown → `unsure`.
 2. **Disagreements** — tickets where the classifier and a human disagreed.
 3. **Low-confidence band** — recent tickets with score within 0.7 of either
    threshold (`POSSIBLE_AT`, `DEFINITE_AT`).
@@ -23,7 +26,9 @@ mature.
 ## Process (LLM session, e.g. Claude or a Devin task)
 
 1. Append the new gold labels to `labels/eval_set.json` (never overwrite or
-   relabel existing entries — the set is append-only, like the decision log).
+   relabel existing entries — the set is append-only, like the decision log),
+   then empty the folded entries out of `labels/pending_verdicts.json` in the
+   same PR.
 2. Run `python3 eval_classifier.py` → record the BEFORE numbers.
 3. Read the disagreement tickets. Propose edits ONLY to:
    - the `RULES` table (add/remove/reweight patterns),

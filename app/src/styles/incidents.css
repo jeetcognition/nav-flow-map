@@ -862,3 +862,28 @@ a.pat-ticket-chip:hover {
   font-size: var(--fs-xs);
   margin-top: var(--sp-3);
 }
+
+/* ---- verdict sync banner (QA-DEC-028) ---- */
+.verdict-sync {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 6px 12px;
+  margin-bottom: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 8px);
+  background: var(--accent-tint);
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+.verdict-sync.error {
+  background: var(--danger-tint);
+  border-color: var(--danger);
+  color: var(--text);
+}
+.verdict-sync-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+}

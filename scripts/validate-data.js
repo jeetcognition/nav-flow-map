@@ -19,6 +19,14 @@ const incidentsRaw = fs.readFileSync(
 );
 const patternsRaw = fs.readFileSync(path.join(root, "app/src/data/fixtures/patterns.json"), "utf8");
 const edits = readJson("navmap-edits.json");
+// worker-written verdict ledgers (QA-DEC-028)
+const coverageLedger = readJson("pipelines/pylon/coverage.json");
+const pendingVerdicts = readJson("pipelines/pylon/labels/pending_verdicts.json");
+const coverageRaw = fs.readFileSync(path.join(root, "pipelines/pylon/coverage.json"), "utf8");
+const pendingRaw = fs.readFileSync(
+  path.join(root, "pipelines/pylon/labels/pending_verdicts.json"),
+  "utf8",
+);
 
 const errors = [];
 const pageIds = new Set(pages.map((p) => p.id));
@@ -77,10 +85,31 @@ for (const p of patterns) {
       errors.push(`pattern ${p.id} evidence link must be https`);
 }
 
-// PII leak gate: both fixtures are generated from support tickets.
+// Verdict ledgers (QA-DEC-028): worker-written — enforce shape here too.
+const VERDICT_CATEGORIES = new Set([
+  "app-bug",
+  "customer-doubt",
+  "config-issue",
+  "feature-request",
+  "unknown",
+]);
+for (const [pid, v] of Object.entries(coverageLedger)) {
+  if (!/^[0-9a-f]{6,40}$/.test(pid)) errors.push(`coverage.json bad pattern id ${pid}`);
+  if (!COVERAGE.has(v?.status)) errors.push(`coverage.json ${pid} bad status ${v?.status}`);
+}
+for (const [num, v] of Object.entries(pendingVerdicts)) {
+  if (!/^\d{1,10}$/.test(num)) errors.push(`pending_verdicts.json bad ticket number ${num}`);
+  if (!VERDICT_CATEGORIES.has(v?.category))
+    errors.push(`pending_verdicts.json ${num} bad category ${v?.category}`);
+}
+
+// PII leak gate: the fixtures are generated from support tickets, and the
+// verdict ledgers are written by the worker from user input.
 for (const [name, raw] of [
   ["incidents.json", incidentsRaw],
   ["patterns.json", patternsRaw],
+  ["coverage.json", coverageRaw],
+  ["pending_verdicts.json", pendingRaw],
 ]) {
   const scrubbed = raw.replaceAll("•••@•••", "");
   const emailLeak = scrubbed.match(/[\w.+-]+@[\w-]+\.[\w-]{2,}/);
@@ -103,5 +132,6 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `OK: ${pages.length} pages, ${testcases.length} test cases, ${bugs.length} bugs, ${incidents.length} incidents, ${patterns.length} patterns (leak scan clean).`,
+  `OK: ${pages.length} pages, ${testcases.length} test cases, ${bugs.length} bugs, ${incidents.length} incidents, ${patterns.length} patterns, ` +
+    `${Object.keys(coverageLedger).length} coverage verdicts, ${Object.keys(pendingVerdicts).length} pending ticket verdicts (leak scan clean).`,
 );
