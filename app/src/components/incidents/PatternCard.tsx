@@ -116,8 +116,14 @@ export function PatternCard({
               </p>
               <p className="pat-reason">{pattern.priorityReason}</p>
               <div className="pat-evidence">
-                {pattern.evidence.map((ev) => {
-                  const text = ev.title ? `#${ev.number} — ${ev.title}` : `#${ev.number}`;
+                <span className="pat-evidence-label">Evidence</span>
+                {pattern.evidence.slice(0, 5).map((ev) => {
+                  const inner = (
+                    <>
+                      <span className="pat-ticket-num">#{ev.number}</span>
+                      {ev.title && <span className="pat-ticket-title">{ev.title}</span>}
+                    </>
+                  );
                   return ev.link ? (
                     <a
                       key={ev.number}
@@ -125,13 +131,13 @@ export function PatternCard({
                       href={ev.link}
                       target="_blank"
                       rel="noreferrer"
-                      title={text}
+                      title={ev.title ? `#${ev.number} — ${ev.title}` : `#${ev.number}`}
                     >
-                      {text}
+                      {inner}
                     </a>
                   ) : (
-                    <span key={ev.number} className="pat-ticket-line" title={text}>
-                      {text}
+                    <span key={ev.number} className="pat-ticket-line">
+                      {inner}
                     </span>
                   );
                 })}
