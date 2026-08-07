@@ -5,7 +5,7 @@ import {
   McpMarketplacePage,
   TEST_SUBORG_DISPLAY,
 } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 const PROVIDERS = [
   "GitHub",
   "GitLab",
@@ -339,5 +339,12 @@ test.describe("Connections", () => {
       // Safety net: never leave the disposable MCP installed.
       await deleteIfInstalled();
     }
+  });
+
+  test("ECON-REG03 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const connections = new ConnectionsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => connections.goto(), {
+      crumbs: ["Settings", "Enterprise", "Connections"],
+    });
   });
 });

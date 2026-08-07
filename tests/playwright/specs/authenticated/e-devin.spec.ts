@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { DevinSettingsPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "swe-1-7", "fusion"] as const;
 const TOOL_SWITCHES = ["enterprise-secure-mode", "enterprise-web-search"] as const;
 const PR_OPEN_AS_OPTIONS = [
@@ -217,5 +217,12 @@ test.describe("Devin settings", () => {
     // The forged request changed nothing: the real enterprise setting is back to its original value.
     await reloadAndWait(page, devin);
     await expect(devin.webSearchSwitch).toHaveAttribute("aria-checked", webSearchOriginal);
+  });
+
+  test("DEVIN-REG07 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const devin = new DevinSettingsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => devin.goto(), {
+      crumbs: ["Settings", "Enterprise", "Devin"],
+    });
   });
 });

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { SessionsPage, SESSIONS_LIST_API } from "../../pages";
 import { routes } from "../../support/paths";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 /**
  * Captures URL/console/page errors so we can fail on unexpected dialogs
  * (e.g., injection attempts) even when the assertion would otherwise pass.
@@ -308,5 +308,14 @@ test.describe("Enterprise Sessions", () => {
     // Cleanup: with interception removed the list loads normally again.
     await sessions.goto();
     await sessions.expectLoaded();
+  });
+
+  test("SESS-REG06 — Verify breadcrumb navigation", async ({ page }) => {
+    const sessions = new SessionsPage(page);
+    // Observed: the Sessions page has no "Back to enterprise" button.
+    await expectEnterpriseBreadcrumbs(page, () => sessions.goto(), {
+      crumbs: ["Settings", "Enterprise", "Sessions"],
+      backButton: false,
+    });
   });
 });

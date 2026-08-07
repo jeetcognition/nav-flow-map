@@ -1,6 +1,6 @@
 import { test, expect, request } from "@playwright/test";
 import { DevinApiPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Devin API", () => {
   function trackConsoleErrors(page: import("@playwright/test").Page) {
     const errors: string[] = [];
@@ -305,5 +305,12 @@ test.describe("Devin API", () => {
     }
 
     expect(consoleErrors).toEqual([]);
+  });
+
+  test("API-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const api = new DevinApiPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => api.goto(), {
+      crumbs: ["Settings", "Enterprise", "Devin API"],
+    });
   });
 });

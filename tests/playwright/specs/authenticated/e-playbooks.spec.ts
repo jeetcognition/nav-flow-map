@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { PlaybooksPage, DevinSessionPage } from "../../pages";
 import { routes } from "../../support/paths";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Playbooks Page", () => {
   test("PLAY-SMK01 — Load the page cold", async ({ page }) => {
     const playbooks = new PlaybooksPage(page);
@@ -484,5 +484,12 @@ test.describe("Playbooks Page", () => {
     } finally {
       await playbooks.deletePlaybookByName(name);
     }
+  });
+
+  test("PLAY-REG13 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const playbooks = new PlaybooksPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => playbooks.goto(), {
+      crumbs: ["Settings", "Enterprise", "Playbooks"],
+    });
   });
 });

@@ -1,6 +1,6 @@
 import { test, expect, request, type ConsoleMessage } from "@playwright/test";
 import { OrganizationsPage, ENTERPRISE_SLUG, TEST_SUBORG_DISPLAY } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 const PAGINATED_ORGS = "/api/enterprise/all-organizations/paginated";
 
 interface PageInfo {
@@ -434,5 +434,12 @@ test.describe("Organizations", () => {
     await expect(dialog).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
+  });
+
+  test("ORG-REG13 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const orgs = new OrganizationsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => orgs.goto(), {
+      crumbs: ["Settings", "Enterprise", "Organizations"],
+    });
   });
 });

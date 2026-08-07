@@ -524,3 +524,23 @@
 
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
+
+## 2026-08-07 — Automate breadcrumb navigation across enterprise settings pages
+
+### Implemented
+
+- Added a shared `expectEnterpriseBreadcrumbs` helper
+  (`tests/playwright/support/breadcrumbs.ts`) that verifies crumb order, the
+  plain-text last crumb, and Settings/Enterprise/Back-to-enterprise navigation.
+- Added one breadcrumb regression test to each of 14 enterprise settings specs
+  (analytics, connections, devin, devin-api, environment, guardrails,
+  infrastructure, knowledge, organizations, playbooks, review, sessions,
+  skills, support).
+- Added matching catalog entries with active automation metadata for the 12
+  pages that have catalog files (environment and playbooks have none yet).
+
+### Observed product drift (asserted as observed, noted here)
+
+- Analytics renders only `Settings > Enterprise` — no `Analytics` crumb, and
+  the `Enterprise` crumb is plain text rather than a link.
+- Enterprise Sessions has no `Back to enterprise` button.

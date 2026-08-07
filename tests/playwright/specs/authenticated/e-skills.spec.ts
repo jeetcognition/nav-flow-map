@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { SkillsPage, routes } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Skills & Rules", () => {
   function watchErrors(page: Page): string[] {
     const errors: string[] = [];
@@ -147,5 +147,12 @@ test.describe("Skills & Rules", () => {
     await expect(skills.heading).toBeVisible();
 
     expect(errors).toHaveLength(0);
+  });
+
+  test("SKILL-REG05 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const skills = new SkillsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => skills.goto(), {
+      crumbs: ["Settings", "Enterprise", "Skills"],
+    });
   });
 });

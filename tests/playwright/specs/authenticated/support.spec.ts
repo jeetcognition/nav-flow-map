@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { SupportPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Support Page", () => {
   test("SUP-SAN02 — Locate the Documentation card heading", async ({ page }) => {
     const support = new SupportPage(page);
@@ -61,5 +61,12 @@ test.describe("Support Page", () => {
 
     // The original page should still be on the Support page.
     await expect(page).toHaveURL(/\/settings\/support/);
+  });
+
+  test("SUP-REG02 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const support = new SupportPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => support.goto(), {
+      crumbs: ["Settings", "Enterprise", "Support"],
+    });
   });
 });

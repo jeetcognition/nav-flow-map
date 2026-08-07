@@ -11,7 +11,7 @@ import {
   type GuardrailsApiContext,
   type GuardrailViolation,
 } from "../../support/guardrails-api";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Guardrails", () => {
   let errors: string[] = [];
 
@@ -388,5 +388,12 @@ test.describe("Guardrails enforcement and authorization", () => {
       await guardrails.heading.waitFor({ state: "visible" });
       await expect(guardrails.guardrailAction(GUARDRAIL_NAME)).toHaveText(original);
     }
+  });
+
+  test("GUARD-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const guardrails = new GuardrailsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => guardrails.goto(), {
+      crumbs: ["Settings", "Enterprise", "Guardrails"],
+    });
   });
 });

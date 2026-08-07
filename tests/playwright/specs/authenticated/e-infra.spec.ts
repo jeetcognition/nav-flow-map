@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { InfraPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Infrastructure", () => {
   function watchErrors(page: Page): string[] {
     const errors: string[] = [];
@@ -96,5 +96,12 @@ test.describe("Infrastructure", () => {
       expect(body).not.toContain("hypervisor");
       expect(body.toLowerCase()).not.toContain("host");
     }
+  });
+
+  test("INFRA-REG04 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const infra = new InfraPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => infra.goto(), {
+      crumbs: ["Settings", "Enterprise", "Infrastructure"],
+    });
   });
 });

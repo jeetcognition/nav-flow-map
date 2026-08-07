@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { KnowledgePage, DevinSessionPage } from "../../pages";
 import { routes } from "../../support/paths";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 test.describe("Knowledge Page", () => {
   test("KNOW-SMK01 — Load the page cold", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
@@ -931,5 +931,12 @@ test.describe("Knowledge Page", () => {
     } finally {
       await knowledge.deleteEntryByName(name);
     }
+  });
+
+  test("KNOW-REG19 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const knowledge = new KnowledgePage(page);
+    await expectEnterpriseBreadcrumbs(page, () => knowledge.goto(), {
+      crumbs: ["Settings", "Enterprise", "Knowledge"],
+    });
   });
 });
