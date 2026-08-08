@@ -17,9 +17,15 @@ test.describe("Landing Repo Page", () => {
     await suborg.goto();
     await suborg.newSessionLink.waitFor({ state: "visible" });
 
+    // Recent is a collapsible sidebar group labelled with its session count.
     await expect(suborg.recentSection).toBeVisible();
-    await expect(suborg.recentSearchButton).toBeVisible();
-    await expect(suborg.recentOverflowButton).toBeVisible();
+    await expect(suborg.recentGroupToggle).toContainText(/Recent\s*\d+/);
+    await expect(suborg.recentGroupToggle).toHaveAttribute("aria-expanded", "true");
+
+    await suborg.recentGroupToggle.click();
+    await expect(suborg.recentGroupToggle).toHaveAttribute("aria-expanded", "false");
+    await suborg.recentGroupToggle.click();
+    await expect(suborg.recentGroupToggle).toHaveAttribute("aria-expanded", "true");
   });
 
   test("SUB-SAN03 — Inspect the left sidebar navigation", async ({ page }) => {

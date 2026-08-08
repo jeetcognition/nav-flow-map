@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
@@ -18,6 +18,7 @@ export class SkillsPage extends BasePage {
     .first();
   readonly table = this.page.locator("table").first();
   readonly tableRows = this.table.locator("tbody tr");
+  readonly emptyState = this.table.getByText("No skill invocations yet");
   readonly usageChart = this.page.locator("text=Usage over time").first();
   readonly mostInvokedCard = this.page.locator("text=Most invoked skills").first();
   readonly taskTypesCard = this.page.locator("text=Task types").first();
@@ -32,6 +33,25 @@ export class SkillsPage extends BasePage {
 
   skillRow(name: string): Locator {
     return this.table.locator("tr").filter({ hasText: name });
+  }
+
+  /**
+   * Waits for the analytics table to finish loading (rows render as empty
+   * skeletons first) and reports whether it lists any skill.
+   */
+  async hasSkillRows(): Promise<boolean> {
+    await expect(this.tableRows.first()).toContainText(/\S/, { timeout: 30_000 });
+    return (await this.emptyState.count()) === 0;
+  }
+
+  /**
+   * Name of the first listed skill. Which skills appear depends on what ran in
+   * the selected window, so specs read the name instead of hard-coding one.
+   */
+  async firstSkillName(): Promise<string> {
+    const name = ((await this.tableRows.first().locator("td").first().innerText()) ?? "").trim();
+    expect(name.length, "expected the first skill row to name a skill").toBeGreaterThan(0);
+    return name;
   }
 
   async selectRuntime(label: string) {

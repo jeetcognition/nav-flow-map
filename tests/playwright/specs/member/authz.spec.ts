@@ -29,6 +29,13 @@ const DENIED_PAGES = [
 const ALLOWED_PAGES = ["knowledge", "playbooks", "repositories", "analytics", "support"];
 
 test.describe("Non-admin member authorization", () => {
+  // Without DEVIN_MEMBER_EMAIL the member setup skips and .auth/member.json is
+  // never written, so these tests cannot build a member session.
+  test.skip(
+    !(process.env.DEVIN_MEMBER_EMAIL ?? "").trim(),
+    "Set DEVIN_MEMBER_EMAIL and GMAIL_APP_PASSWORD in .env to run the member project.",
+  );
+
   test("MBR-REG01 — Admin-only enterprise settings pages return an Access denied panel", async ({
     page,
   }) => {

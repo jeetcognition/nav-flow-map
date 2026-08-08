@@ -77,6 +77,23 @@ export class OrganizationsPage extends BasePage {
     return response;
   }
 
+  /**
+   * Clears any ACU limit for `name`. Tests that exercise the limit run against
+   * the shared QA tenant, where a cap left behind by a failed run starves every
+   * later session, so cleanup must not depend on the test reaching its end.
+   */
+  async restoreNoAcuLimit(name: string) {
+    await this.goto();
+    await this.searchFor(name);
+    await this.openManageDialog(name);
+    if ((await this.acuInput.inputValue()) !== "") {
+      await this.acuInput.fill("");
+      await this.saveAndWaitForPatch();
+    }
+    await this.page.keyboard.press("Escape");
+    await this.manageDialog.first().waitFor({ state: "hidden" });
+  }
+
   /** Captures the app's bearer token by reloading and sniffing an API request. */
   async captureAuthorizationHeader(): Promise<string> {
     const requestPromise = this.page.waitForRequest(

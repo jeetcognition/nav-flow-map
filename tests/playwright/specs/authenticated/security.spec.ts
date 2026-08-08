@@ -76,7 +76,10 @@ test.describe("Security (Code scan)", () => {
     const profileName = `QA Auto Profile ${Date.now()}`;
     await security.profilesTab.click();
     await security.createProfileButton.click();
-    await security.createManuallyLink.click();
+    await security.createManuallyOption.click();
+    // Manual creation then asks for the profile kind and opens its form page.
+    await security.discoverProfileOption.click();
+    await expect(page).toHaveURL(/\/code-scan\/profiles\/create\?mode=discover/);
     await security.profileNameInput.waitFor({ state: "visible" });
     await security.profileNameInput.fill(profileName);
     await security.profileDescriptionInput.fill("Temporary profile created by SCAN-REG01");

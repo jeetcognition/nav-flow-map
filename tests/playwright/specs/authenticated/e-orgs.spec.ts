@@ -265,22 +265,26 @@ test.describe("Organizations", () => {
     await expect(orgs.acuInput).toHaveValue("1e5");
     await expect(orgs.saveButton).toBeEnabled();
 
-    // Save zero, verify it persists, then a leading-zero value, then restore No limit.
-    await orgs.acuInput.fill("0");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("0");
+    // Save zero, verify it persists, then a leading-zero value, then restore No
+    // limit. A limit left behind would starve every later session in the shared
+    // tenant, so the restore runs even when an assertion above fails.
+    try {
+      await orgs.acuInput.fill("0");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
+      await expect(row.getByRole("cell").nth(4)).toHaveText("0");
 
-    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
-    await expect(orgs.acuInput).toHaveValue("0");
-    await orgs.acuInput.fill("007");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("7");
-
-    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
-    await orgs.acuInput.fill("");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+      await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+      await expect(orgs.acuInput).toHaveValue("0");
+      await orgs.acuInput.fill("007");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      await expect(row.getByRole("cell").nth(4)).toHaveText("7");
+    } finally {
+      await orgs.restoreNoAcuLimit(TEST_SUBORG_DISPLAY);
+    }
+    await expect(orgs.rowByName(TEST_SUBORG_DISPLAY).getByRole("cell").nth(4)).toHaveText(
+      "No limit",
+    );
   });
 
   test("ORG-REG08 — Enter boundary and extremely large positive ACU values, then attempt to save", async ({

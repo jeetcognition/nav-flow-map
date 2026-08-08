@@ -52,6 +52,19 @@ export class ReposPage extends BasePage {
     await this.tableRows.first().waitFor();
   }
 
+  /**
+   * Full name of the first permitted repository. Which repositories the test
+   * sub-org may access changes over time, so specs read one instead of
+   * hard-coding it.
+   */
+  async firstPermissionName(): Promise<string> {
+    const name = (await this.tableRows.first().locator("td").first().innerText()).trim();
+    expect(name.length, "expected the first permission row to name a repository").toBeGreaterThan(
+      0,
+    );
+    return name;
+  }
+
   permissionRow(name: string): Locator {
     return this.table.locator("tr").filter({ hasText: name });
   }

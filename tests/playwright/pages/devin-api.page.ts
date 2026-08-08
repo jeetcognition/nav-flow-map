@@ -28,6 +28,8 @@ export class DevinApiPage extends BasePage {
   /** Empty-state message for the service users list. */
   readonly emptyState: Locator;
 
+  /** Provision service user dialog. */
+  readonly provisionDialog: Locator;
   /** Create service user form. */
   readonly createForm: Locator;
   /** Display name input inside the create form. */
@@ -72,9 +74,12 @@ export class DevinApiPage extends BasePage {
     this.emptyState = page.getByText("No service users yet");
 
     this.createForm = page.locator("main").locator("form").first();
+    this.provisionDialog = page
+      .getByRole("dialog")
+      .filter({ hasText: /Provision (enterprise|organization) service user/ });
     this.nameInput = page.locator('input[placeholder="Enter display name"]').first();
-    this.roleSelector = page.locator('[role="combobox"]').nth(2);
-    this.expiresSelector = page.locator('[role="combobox"]').nth(3);
+    this.roleSelector = this.provisionDialog.getByRole("combobox", { name: /role/i });
+    this.expiresSelector = this.provisionDialog.getByRole("combobox", { name: /Expiration/i });
     this.cancelButton = page.getByRole("button", { name: "Cancel" });
     this.createSubmitButton = page.getByRole("button", { name: "Provision service user" });
 
@@ -91,6 +96,19 @@ export class DevinApiPage extends BasePage {
       exact: true,
     });
     this.deleteCancelButton = this.deleteConfirmDialog.getByRole("button", { name: "Cancel" });
+  }
+
+  /**
+   * Pick an option from one of the provision dialog's comboboxes. The listbox overlays the
+   * dialog's submit button, so the selection is only complete once it has closed and the
+   * trigger shows the chosen value.
+   */
+  async selectProvisionOption(combobox: Locator, option: string | RegExp) {
+    await combobox.click();
+    const listbox = this.page.getByRole("listbox");
+    await listbox.getByRole("option", { name: option }).first().click();
+    await expect(listbox).toBeHidden();
+    await expect(combobox).toContainText(option);
   }
 
   rowByName(name: string): Locator {

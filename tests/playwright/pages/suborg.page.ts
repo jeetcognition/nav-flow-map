@@ -19,12 +19,10 @@ export class SuborgPage extends BasePage {
   readonly reviewLink: Locator;
   /** Wiki sidebar link. */
   readonly wikiLink: Locator;
-  /** Recent section heading. */
+  /** Recent section label. */
   readonly recentSection: Locator;
-  /** Recent section search button. */
-  readonly recentSearchButton: Locator;
-  /** Recent section overflow menu trigger. */
-  readonly recentOverflowButton: Locator;
+  /** Collapsible Recent group control (label + session count). */
+  readonly recentGroupToggle: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -38,9 +36,9 @@ export class SuborgPage extends BasePage {
     this.reviewLink = page.getByRole("link", { name: "Review" });
     this.wikiLink = page.getByRole("link", { name: "Wiki" });
     this.recentSection = page.getByText("Recent").first();
-    const recentGroup = page.getByText("Recent").first().locator("..");
-    this.recentSearchButton = recentGroup.getByRole("button", { name: "Search" });
-    this.recentOverflowButton = recentGroup.getByRole("button", { name: "More" });
+    this.recentGroupToggle = this.recentSection.locator(
+      'xpath=ancestor::*[@role="button" and @aria-expanded][1]',
+    );
   }
 
   /** The currently open top-left organization menu. */

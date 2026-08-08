@@ -33,7 +33,8 @@ export class SecurityPage extends BasePage {
 
   // --- Profiles tab ---
   readonly createProfileButton: Locator;
-  readonly createManuallyLink: Locator;
+  readonly createManuallyOption: Locator;
+  readonly discoverProfileOption: Locator;
   readonly profileNameInput: Locator;
   readonly profileDescriptionInput: Locator;
   readonly submitCreateProfileButton: Locator;
@@ -64,7 +65,8 @@ export class SecurityPage extends BasePage {
     this.runScanButton = this.newScanDialog.getByRole("button", { name: "Run Scan" });
 
     this.createProfileButton = this.content.getByRole("button", { name: "Create profile" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
+    this.createManuallyOption = page.getByRole("button", { name: /Create manually/ });
+    this.discoverProfileOption = page.getByRole("link", { name: /Discover profile/ });
     this.profileNameInput = page.getByPlaceholder("Profile name");
     this.profileDescriptionInput = page.getByPlaceholder(/Describe what this profile scans for/);
     this.submitCreateProfileButton = page.getByRole("button", { name: "Create profile" });

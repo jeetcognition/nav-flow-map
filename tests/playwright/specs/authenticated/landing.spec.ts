@@ -115,9 +115,9 @@ test.describe("Landing Search Page", () => {
     await org.openCommandPalette();
     const dialog = org.commandPalette;
     await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Navigation");
-    await expect(dialog).toContainText("Go to new session");
-    await expect(dialog).toContainText("Settings");
+    await expect(dialog.getByRole("option", { name: "Go to…" })).toBeVisible();
+    await expect(dialog.getByRole("option", { name: "Change theme…" })).toBeVisible();
+    await expect(dialog.getByRole("option", { name: /Toggle sidebar/ })).toBeVisible();
   });
 
   test("ORGSEL-SAN10 — Open the All organizations dropdown", async ({ page }) => {
@@ -328,8 +328,8 @@ test.describe("Landing Search Page", () => {
     await input.fill("new session");
 
     const dialog = org.commandPalette;
-    await expect(dialog).toContainText("Go to new session");
     await expect(dialog).toContainText("Results");
+    await expect(dialog.getByRole("option", { name: /Go to: New session/ })).toBeVisible();
   });
 
   test("ORGSEL-REG13 — Select Switch organization from the command palette", async ({ page }) => {
@@ -337,8 +337,12 @@ test.describe("Landing Search Page", () => {
     await org.goto();
     await org.openCommandPalette();
 
-    const option = org.commandPalette.getByText("Switch organization…").first();
-    await option.click();
+    // "Switch organization…" is only offered once the query matches it.
+    await org.commandPalette.locator('[role="combobox"]').first().fill("switch organization");
+    await org.commandPalette
+      .getByRole("option", { name: /Switch organization…/ })
+      .first()
+      .click();
 
     // Switch organization keeps the user on the valid org-selector page.
     await expect(org.heading).toBeVisible({ timeout: 15_000 });

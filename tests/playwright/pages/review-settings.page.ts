@@ -55,7 +55,7 @@ export class ReviewSettingsPage extends BasePage {
     this.addRepoCancelButton = this.addRepoDialog.getByRole("button", { name: "Cancel" });
     this.addRepoSaveButton = this.addRepoDialog.getByRole("button", { name: /Save changes/ });
     this.addRepoCloseButton = this.addRepoDialog.locator("button").first();
-    this.addRepoListRow = this.addRepoDialog.locator("button[data-index]");
+    this.addRepoListRow = this.addRepoDialog.locator("[data-index]");
   }
 
   async goto(params?: { tab?: "repositories" | "users" }) {
@@ -95,7 +95,7 @@ export class ReviewSettingsPage extends BasePage {
     // until every rendered row matches the query so the toggle cannot land on
     // a recycled row for a different repository.
     await this.page.waitForFunction((g) => {
-      const rows = Array.from(document.querySelectorAll("[role='dialog'] button[data-index]"));
+      const rows = Array.from(document.querySelectorAll("[role='dialog'] [data-index]"));
       return rows.length > 0 && rows.every((r) => (r.textContent ?? "").includes(g));
     }, group);
     // Click the row's checkbox directly (a row click can land on the inline

@@ -86,7 +86,12 @@ export class EnvironmentPage extends BasePage {
   }
 
   mainTabs(): Locator[] {
-    return [this.rolloutTab, this.configurationTab, this.blueprintTab, this.outpostsTab];
+    return [this.rolloutTab, this.configurationTab, this.blueprintTab];
+  }
+
+  /** Outposts moved off this page for some tenants; callers gate on this. */
+  async hasOutpostsTab(): Promise<boolean> {
+    return (await this.outpostsTab.count()) > 0;
   }
 
   /**

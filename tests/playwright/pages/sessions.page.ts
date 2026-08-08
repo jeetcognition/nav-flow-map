@@ -71,6 +71,25 @@ export class SessionsPage extends BasePage {
     return this.sessionRowContainers.nth(nth);
   }
 
+  /** Title of a listed session, taken from the row's overlay link label. */
+  async rowTitle(nth = 0): Promise<string> {
+    const label = await this.row(nth).getAttribute("aria-label");
+    expect(label, "session row should be labelled with its title").toBeTruthy();
+    return label!;
+  }
+
+  /**
+   * A term that matches at least one listed session title. Session titles age
+   * out of the shared QA tenant, so the term is derived from the newest row
+   * instead of being hard-coded.
+   */
+  async matchingSearchTerm(): Promise<string> {
+    const title = await this.rowTitle(0);
+    const word = title.match(/[A-Za-z]{4,}/)?.[0];
+    expect(word, `expected a searchable word in session title "${title}"`).toBeTruthy();
+    return word!;
+  }
+
   async search(term: string) {
     await this.searchInput.fill(term);
     await this.page.waitForLoadState("networkidle").catch(() => {});

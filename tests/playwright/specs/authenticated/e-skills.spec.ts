@@ -42,8 +42,14 @@ test.describe("Skills & Rules", () => {
     await expect(skills.table.locator("th").filter({ hasText: "Users" })).toBeVisible();
     await expect(skills.table.locator("th").filter({ hasText: "Last used" })).toBeVisible();
 
-    const row = skills.tableRows.first();
-    await expect(row).toContainText("View sessions");
+    // The analytics window can legitimately contain no invocations; either the
+    // empty state or a row with a drill-in link must be shown.
+    if (await skills.hasSkillRows()) {
+      await expect(skills.tableRows.first()).toContainText("View sessions");
+    } else {
+      await expect(skills.emptyState).toBeVisible();
+      await expect(skills.table).toContainText("No invocations were observed");
+    }
 
     expect(errors).toHaveLength(0);
   });
@@ -76,7 +82,14 @@ test.describe("Skills & Rules", () => {
     const skills = new SkillsPage(page);
     await skills.goto();
 
-    const knownSkill = "exploratory-webapp-qa";
+    test.skip(
+      !(await skills.hasSkillRows()),
+      "No skill invocations were observed in the selected window on this tenant",
+    );
+
+    // Which skills appear depends on what ran in the window; search for one of
+    // the listed skills instead of a hard-coded name.
+    const knownSkill = await skills.firstSkillName();
     const empty = page.getByText("No skills match your search");
     const knownRow = skills.skillRow(knownSkill);
 
@@ -131,6 +144,12 @@ test.describe("Skills & Rules", () => {
     const skills = new SkillsPage(page);
     await skills.goto();
 
+    test.skip(
+      !(await skills.hasSkillRows()),
+      "No skill invocations were observed in the selected window on this tenant",
+    );
+
+    const skillName = await skills.firstSkillName();
     const link = skills.tableRows.first().getByText("View sessions");
     const href = await link.getAttribute("href");
     expect(href).toMatch(/\/settings\/enterprise-sessions\?skill=/);
@@ -141,7 +160,7 @@ test.describe("Skills & Rules", () => {
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/settings\/enterprise-sessions\?skill=/);
     await expect(page.getByText("Skill", { exact: true })).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/exploratory-webapp-qa/)).toBeVisible();
+    await expect(page.getByText(skillName).first()).toBeVisible();
 
     // Return to the skills analytics page.
     await page.goto(routes.enterpriseSkills());

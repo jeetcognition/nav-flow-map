@@ -82,7 +82,7 @@ test.describe("Enterprise Sessions", () => {
     await sessions.goto();
 
     // Matching title
-    await sessions.search("kuberns");
+    await sessions.search(await sessions.matchingSearchTerm());
     expect(await sessions.sessionRows.count()).toBeGreaterThan(0);
     await sessions.clearSearch();
 
@@ -128,8 +128,9 @@ test.describe("Enterprise Sessions", () => {
     await sessions.goto();
 
     // Combine search + display grouping on top of the default creator/archived/date filters.
-    await sessions.search("kuberns");
-    await expect(page).toHaveURL(/titleSearch=kuberns/);
+    const term = await sessions.matchingSearchTerm();
+    await sessions.search(term);
+    await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`, "i"));
     await sessions.selectDisplayOption("By status");
 
     // Deep-link reload should preserve filter state.
@@ -142,7 +143,7 @@ test.describe("Enterprise Sessions", () => {
     const href = await sessions.openSession(0);
     await page.goBack();
     await expect(page).toHaveURL(/\/enterprise-sessions/);
-    await expect(page).toHaveURL(/titleSearch=kuberns/);
+    await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`, "i"));
     await page.goForward();
     await expect(page).toHaveURL(new RegExp(href.replace("/", "\\/")));
 
@@ -157,15 +158,16 @@ test.describe("Enterprise Sessions", () => {
     const sessions = new SessionsPage(page);
     await sessions.goto();
 
-    await sessions.search("kuberns");
-    await expect(page).toHaveURL(/titleSearch=kuberns/);
+    const term = await sessions.matchingSearchTerm();
+    await sessions.search(term);
+    await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`, "i"));
 
     const href = await sessions.openSession(0);
     const sessionId = href.replace("/sessions/", "");
 
     await page.goBack();
     await expect(page).toHaveURL(/\/enterprise-sessions/);
-    await expect(page).toHaveURL(/titleSearch=kuberns/);
+    await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`, "i"));
     await expect(sessions.sessionRows.first()).toBeVisible();
 
     await page.goForward();
