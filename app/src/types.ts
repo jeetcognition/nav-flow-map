@@ -122,6 +122,34 @@ export interface Incident {
   } | null;
 }
 
+/** human coverage verdict on a pattern — mirrors pipelines/pylon/coverage.json */
+export type PatternCoverage = "uncovered" | "weak" | "covered" | "dismissed";
+
+/** a cluster of related incidents from the Pylon pattern engine (QA-DEC-027) */
+export interface Pattern {
+  id: string;
+  label: string;
+  surfaceId: SurfaceId;
+  flow: string;
+  nodeId: string;
+  total: number;
+  open: number;
+  definite: number;
+  count24h: number;
+  growth24h: number;
+  count14d: number;
+  trend: "new" | "accelerating" | "stable" | "declining";
+  /** why this gap matters, e.g. "6 reports in 14 days (repeat pattern) · 3 still open" */
+  priorityReason: string;
+  firstSeen: string;
+  score: number;
+  suggestedTest: string;
+  coverage: PatternCoverage;
+  coveredBy: string | null;
+  incidentIds: string[];
+  evidence: { number: number; title?: string; link: string | null }[];
+}
+
 export interface User {
   id: string;
   name: string;

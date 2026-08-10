@@ -18,16 +18,44 @@ import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from pattern_engine import build_patterns
 from ticket_classifier import classify
 
 HERE = Path(__file__).parent
 # repo-relative: pipelines/pylon/ -> repo root -> app fixtures
-DEFAULT_OUT = Path(__file__).resolve().parents[2] / "app/src/data/fixtures/incidents.json"
+FIXTURES = Path(__file__).resolve().parents[2] / "app/src/data/fixtures"
+DEFAULT_OUT = FIXTURES / "incidents.json"
+DEFAULT_PATTERNS_OUT = FIXTURES / "patterns.json"
+MAX_PATTERNS = 60
 
 OPEN_STATES = {"new", "waiting_on_you", "on_hold"}
 INVESTIGATING_STATES = {"waiting_on_customer"}
 CLOSED_KEEP_DAYS = 14  # resolved incidents younger than this are kept
 MAX_INCIDENTS = 200
+
+# Human ticket verdicts recorded from the Incidents UI (QA-DEC-028), queued
+# for the refiner to fold into labels/eval_set.json. Applied to the exported
+# fixture so verdicts survive the next export instead of resetting to null.
+PENDING_VERDICTS_PATH = HERE / "labels" / "pending_verdicts.json"
+VERDICT_CATEGORIES = {"app-bug", "customer-doubt", "config-issue", "feature-request", "unknown"}
+
+
+def load_pending_verdicts(path: Path = PENDING_VERDICTS_PATH) -> dict:
+    """{ticket_number: {category, by, at}} — malformed entries dropped (fail open)."""
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except ValueError:
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    return {
+        str(k): v
+        for k, v in data.items()
+        if isinstance(v, dict) and v.get("category") in VERDICT_CATEGORIES
+    }
+
 
 # ---------------------------------------------------------------------------
 # Sanitization — the fixture lands in a PUBLIC repo. Strip identities.
@@ -51,6 +79,44 @@ def sanitize(text: str) -> str:
     t = ENT_HOST.sub("https://•••.devinenterprise.com/•••", t)
     t = PHONE.sub("•••", t)
     return re.sub(r"\s+", " ", t).strip()
+
+
+# Titles that carry no signal — fall back to the body (upstream parser trick).
+GENERIC_TITLES = {"hi", "hello", "hey", "error", "an error occurred", "bug", "bug report", "help", "urgent", "issue", "question"}
+UUID_RE = re.compile(r"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}", re.I)
+LONG_HEX_RE = re.compile(r"[A-Fa-f0-9]{16,}")
+
+
+def _strip_noise(s: str) -> str:
+    """Drop links and machine ids BEFORE sanitize() — its phone masking would
+    otherwise eat the numeric tail of a UUID and leave the hex head behind."""
+    s = re.sub(r"https?://\S+", "", s)
+    s = UUID_RE.sub("", s)
+    return LONG_HEX_RE.sub("", s)
+
+
+def _junky(s: str) -> bool:
+    """Nothing a human can read: masked PII remnants ("o: •••@•••") or fewer
+    than six letters overall (any script)."""
+    return "•••" in s or len(re.findall(r"[^\W\d_]", s)) < 6
+
+
+def display_title(r: dict, limit: int = 120) -> str:
+    """Readable incident title, ported from the report parser's display_title:
+    greeting-only / masked-out titles fall back to the first meaningful body
+    sentence, link/id noise is stripped, truncation lands on a word boundary."""
+    s = sanitize(_strip_noise(r.get("title") or ""))
+    if not s or s.lower().strip(" .!,¡¿?") in GENERIC_TITLES or len(s) < 8 or _junky(s):
+        body = sanitize(_strip_noise(r.get("body_snippet") or ""))
+        sentences = [x.strip() for x in re.split(r"[.!?\n]", body)
+                     if len(x.strip()) > 20 and not _junky(x)]
+        s = sentences[0] if sentences else ("" if _junky(s) else s)
+    s = " ".join(s.split()).strip(" .,;:-–—")
+    if s.isupper() and len(s) > 4:
+        s = s.capitalize()
+    if len(s) > limit:
+        s = s[:limit].rsplit(" ", 1)[0].rstrip(" .,;:-–—") + "…"
+    return s or f"Pylon ticket #{r.get('number')}"
 
 
 # ---------------------------------------------------------------------------
@@ -105,11 +171,72 @@ def draft_testcase(title: str, desc: str, node: str) -> dict:
     }
 
 
-def run(out_path: Path) -> None:
+def export_patterns(rows: list[dict], incident_ids: set[str], out_path: Path) -> None:
+    """Steps 4-8 of QA-DEC-027: cluster the classified tickets into patterns
+    and emit the sanitized fixture the Incidents page renders."""
+    kept = []
+    for r in rows:
+        res = classify(r)
+        if res["verdict"] == "not-app-issue":
+            continue
+        r["_verdict"], r["_surface"], r["_score"] = res["verdict"], res["surface"], res["score"]
+        kept.append(r)
+
+    out = []
+    for p in build_patterns(kept):
+        label = sanitize(p["label"])[:140] or p["flow"]
+        member_ids = [f"INC-{r['number']}" for r in p["items"]]
+        member_ids = [i for i in member_ids if i in incident_ids]
+        ranked = sorted(p["items"], key=lambda r: -r["_score"])
+        evidence = [
+            {
+                "number": r["number"],
+                "title": display_title(r, 100),
+                "link": r["link"] or None,
+            }
+            for r in ranked[:8]
+            if r.get("number")
+        ]
+        top = max(p["items"], key=lambda r: r["_score"])
+        node, _ = map_node(sanitize(f"{top.get('title') or ''} {top.get('body_snippet') or ''}"))
+        out.append({
+            "id": f"PAT-{p['id']}",
+            "label": label,
+            "surfaceId": p["surface"],
+            "flow": p["flow"],
+            "nodeId": node,
+            "total": p["total"],
+            "open": p["open"],
+            "definite": p["definite"],
+            "count24h": p["count24h"],
+            "growth24h": p["growth24h"],
+            "count14d": p["count14d"],
+            "trend": p["trend"],
+            "priorityReason": p["priorityReason"],
+            "firstSeen": p["firstSeen"],
+            "score": p["score"],
+            "suggestedTest": p["suggestedTest"],
+            "coverage": p["coverage"],
+            "coveredBy": p["coveredBy"],
+            "incidentIds": member_ids,
+            "evidence": evidence,
+        })
+
+    out = out[:MAX_PATTERNS]
+    out_path.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
+    by = {}
+    for p in out:
+        by[p["coverage"]] = by.get(p["coverage"], 0) + 1
+    print(f"wrote {len(out)} patterns → {out_path}")
+    print(f"  by coverage: {by}")
+
+
+def run(out_path: Path, patterns_path: Path | None = None) -> None:
     conn = sqlite3.connect(HERE / "pylon_issues.db")
     conn.row_factory = sqlite3.Row
     rows = [dict(r) for r in conn.execute("SELECT * FROM issues ORDER BY created_at DESC")]
 
+    pending = load_pending_verdicts()
     cutoff = datetime.now(timezone.utc) - timedelta(days=CLOSED_KEEP_DAYS)
     incidents = []
     for r in rows:
@@ -126,13 +253,14 @@ def run(out_path: Path) -> None:
             if when < cutoff:
                 continue
 
-        title = sanitize(r["title"] or "")[:140] or f"Pylon ticket #{r['number']}"
+        title = display_title(r)
         desc = sanitize(r["body_snippet"] or "")[:300]
         node, mapped = map_node(f"{title} {desc}")
         rationale = (
             f"Rules: {', '.join(res['reasons'][:6])}"
             + ("" if mapped else " · node unmapped, defaulted to landing")
         )
+        verdict_h = pending.get(str(r["number"]))
         inc = {
             "id": f"INC-{r['number']}",
             "source": "pylon",
@@ -151,8 +279,8 @@ def run(out_path: Path) -> None:
                 "confidence": res["confidence"],
                 "rationale": rationale,
             },
-            "humanCategory": None,
-            "overriddenBy": None,
+            "humanCategory": verdict_h["category"] if verdict_h else None,
+            "overriddenBy": (verdict_h.get("by") or None) if verdict_h else None,
             "linkedBugId": None,
             "linkedCaseId": None,
         }
@@ -177,9 +305,12 @@ def run(out_path: Path) -> None:
     if dropped > 0:
         print(f"  dropped {dropped} lower-priority resolved incidents (cap {MAX_INCIDENTS})")
 
+    export_patterns(rows, {i["id"] for i in incidents}, patterns_path or DEFAULT_PATTERNS_OUT)
+
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--patterns-out", type=Path, default=DEFAULT_PATTERNS_OUT)
     args = ap.parse_args()
-    run(args.out)
+    run(args.out, args.patterns_out)

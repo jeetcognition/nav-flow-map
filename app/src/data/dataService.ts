@@ -6,9 +6,15 @@ import bugsJson from "./fixtures/bugs.json";
 import runsJson from "./fixtures/runs.json";
 import runResultsJson from "./fixtures/runResults.json";
 import incidentsJson from "./fixtures/incidents.json";
+import patternsJson from "./fixtures/patterns.json";
 import sessionsJson from "./fixtures/sessions.json";
 import { SURFACES, USERS } from "./fixtures/static";
 import { devinSessionUrl } from "../lib/config";
+import {
+  enqueueCoverageVerdict,
+  enqueueTicketVerdict,
+  fetchVerdictBaselines,
+} from "./verdictsService";
 import type {
   Bug,
   CaseResult,
@@ -17,6 +23,8 @@ import type {
   IncidentCategory,
   NavNode,
   NodeStats,
+  Pattern,
+  PatternCoverage,
   Run,
   SessionStatus,
   Surface,
@@ -34,6 +42,7 @@ const store = {
   runs: [...(runsJson as Run[])],
   runResults: { ...(runResultsJson as Record<string, CaseResult[]>) },
   incidents: [...(incidentsJson as Incident[])],
+  patterns: [...(patternsJson as Pattern[])],
   sessions: [...(sessionsJson as DevinSession[])],
 };
 
@@ -63,6 +72,10 @@ export const getRunResults = (runId: string): CaseResult[] => store.runResults[r
 export const getIncidents = (): Incident[] => store.incidents;
 export const getIncident = (id: string): Incident | undefined =>
   store.incidents.find((i) => i.id === id);
+export const getPatterns = (): Pattern[] => store.patterns;
+/** member incidents of a pattern that are present in the incidents feed */
+export const patternIncidents = (p: Pattern): Incident[] =>
+  p.incidentIds.map((id) => getIncident(id)).filter((i): i is Incident => !!i);
 export const getSessions = (): DevinSession[] => store.sessions;
 
 export const incidentCategory = (i: Incident): IncidentCategory => i.humanCategory ?? i.ai.category;
@@ -147,12 +160,58 @@ export function escapedDefects(): Incident[] {
 }
 
 // ---- mutations ----
+/** Human coverage verdict on a pattern (step 10 of QA-DEC-027). Applied
+ * locally right away; when `by` is set it is also persisted through the save
+ * worker into the committed pipelines/pylon/coverage.json ledger (QA-DEC-028). */
+export function setPatternCoverage(
+  id: string,
+  coverage: PatternCoverage,
+  coveredBy: string | null = null,
+  by = "",
+) {
+  const p = store.patterns.find((x) => x.id === id);
+  if (!p) return;
+  p.coverage = coverage;
+  p.coveredBy = coveredBy;
+  notify();
+  if (by) enqueueCoverageVerdict(id, { status: coverage, coveredBy, by });
+}
+
 export function overrideIncidentCategory(id: string, category: IncidentCategory, userId: string) {
   const inc = store.incidents.find((i) => i.id === id);
   if (!inc) return;
   inc.humanCategory = category;
   inc.overriddenBy = userId;
   notify();
+  // pipeline tickets feed the refiner's gold labels via the pending queue
+  if (inc.source === "pylon") enqueueTicketVerdict(id, { category, by: userId });
+}
+
+let verdictBaselinesLoaded = false;
+/** Overlay the committed verdict ledgers (coverage.json + pending_verdicts.json)
+ * so verdicts survive reloads before the next pipeline export re-bakes them. */
+export async function loadVerdictBaselines(): Promise<void> {
+  if (verdictBaselinesLoaded) return;
+  verdictBaselinesLoaded = true;
+  const base = await fetchVerdictBaselines();
+  let changed = false;
+  for (const p of store.patterns) {
+    const cov = base.coverage[p.id.replace(/^PAT-/, "")];
+    if (cov && (p.coverage !== cov.status || p.coveredBy !== cov.coveredBy)) {
+      p.coverage = cov.status;
+      p.coveredBy = cov.coveredBy;
+      changed = true;
+    }
+  }
+  for (const i of store.incidents) {
+    const t = base.tickets[i.id.replace(/^INC-/, "")];
+    if (t && !i.humanCategory) {
+      i.humanCategory = t.category;
+      i.overriddenBy = t.by || null;
+      changed = true;
+    }
+  }
+  if (changed) notify();
 }
 
 export function addTestCase(tc: TestCase) {

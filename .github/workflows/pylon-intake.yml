@@ -72,7 +72,7 @@ jobs:
       - name: Format + validate (includes PII leak scan)
         if: steps.secret.outputs.present == 'true'
         run: |
-          npx --yes prettier --write app/src/data/fixtures/incidents.json
+          npx --yes prettier --write app/src/data/fixtures/incidents.json app/src/data/fixtures/patterns.json
           node scripts/validate-data.js
 
       - name: Open PR if the feed changed
@@ -80,7 +80,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.INTAKE_PAT || github.token }}
         run: |
-          if git diff --quiet -- app/src/data/fixtures/incidents.json; then
+          if git diff --quiet -- app/src/data/fixtures/incidents.json app/src/data/fixtures/patterns.json; then
             echo "No incident changes today." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
@@ -88,7 +88,7 @@ jobs:
           git config user.name "pylon-intake[bot]"
           git config user.email "pylon-intake@users.noreply.github.com"
           git checkout -b "$branch"
-          git add app/src/data/fixtures/incidents.json
+          git add app/src/data/fixtures/incidents.json app/src/data/fixtures/patterns.json
           git commit -m "Pylon intake: refresh incidents feed"
           git push origin "$branch"
           gh pr create \

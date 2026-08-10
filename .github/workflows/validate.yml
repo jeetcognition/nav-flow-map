@@ -21,4 +21,6 @@ jobs:
       # pipeline unit tests are hermetic (synthetic tickets, no secrets/DB)
       - run: python3 test_pipeline.py
         working-directory: pipelines/pylon
+      # worker /verdicts contract tests (GitHub API stubbed, no secrets)
+      - run: node worker/test_verdicts.mjs
       - run: npm run catalog:validate

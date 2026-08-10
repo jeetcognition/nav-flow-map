@@ -30,8 +30,11 @@ rest is enforced by review.
   swallowed promises, no `alert()`/`prompt()`/`confirm()` — use inline
   validation, banners, or two-step confirms.
 - **Data access**: components read/write only through `data/dataService.ts`,
-  `data/aiService.ts`, and `data/editsService.ts`. The edits payload shape is
-  a wire contract with the worker — do not rename its keys.
+  `data/aiService.ts`, and `data/editsService.ts`; `data/verdictsService.ts`
+  is the wire layer behind `dataService` verdict mutations (components don't
+  call it directly, except the sync banner reading its status). The edits and
+  verdicts payload shapes are wire contracts with the worker — do not rename
+  their keys.
 - **One concern per PR**, behavior-preserving unless a bug fix is called out
   in the PR title/body. Found an unrelated bug? Separate, labeled PR.
 - **Docs are code**: update `AUDIT.md`/`TODO.md` when debt is added or paid,

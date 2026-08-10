@@ -7,7 +7,7 @@ Living list — update when debt is added or paid down. Larger context in
 
 - [ ] Swap `aiService` mocks for Anthropic API calls (error states already in place)
 - [ ] Real email/OTP backend for login (`app/src/lib/auth.ts` — replace `sendOtp`, remove the on-screen dev hint)
-- [ ] Deploy the worker with the new `/suggest` endpoint (`wrangler deploy`); set `DEVIN_SESSIONS_URL` env var
+- [ ] Deploy the worker with the new `/suggest` and `/verdicts` endpoints (`wrangler deploy`); set `DEVIN_SESSIONS_URL` env var
 - [ ] Worker rate limiting — GitHub commits and paid Devin sessions are unthrottled per allowed origin
 - [ ] Semantic validation of the edits payload in the worker (page ids exist, links acyclic)
 
@@ -26,3 +26,19 @@ Living list — update when debt is added or paid down. Larger context in
       `gh api -X PUT repos/jeetcognition/nav-flow-map/branches/main/protection -F required_status_checks[strict]=true -f 'required_status_checks[checks][][context]=validate' -f 'required_status_checks[checks][][context]=build' -F enforce_admins=false -F required_pull_request_reviews=null -F restrictions=null`
 - [ ] Coverage ratchet — blocked on the (currently descoped) test suite
 - [ ] gitleaks secret scan in CI
+
+## Pattern engine (QA-DEC-027) follow-ups
+
+- [x] Wire UI coverage verdicts (`setPatternCoverage`) and verify-queue
+      confirm/reject through the worker into `pipelines/pylon/coverage.json`
+      and the refiner's pending gold labels (QA-DEC-028; effective after
+      `wrangler deploy`)
+- [ ] Fold `labels/pending_verdicts.json` into `labels/eval_set.json`
+      automatically after ~25 verifications (refiner cadence, REFINER.md) —
+      e.g. a scheduled Devin session following the REFINER.md protocol
+- [ ] Eval set shrinks as the 60-day window rolls (80 of 201 labeled tickets
+      no longer in the DB on 2026-08-07) — pin the labeled tickets' raw rows
+      into `labels/` so the eval stays stable regardless of retention
+- [ ] `pipelines/pylon/pylon_issues.db-shm`/`-wal` are tracked in git (missed
+      by the `*.db` ignore pattern since f010dc9) — `git rm --cached` them
+      and extend `.gitignore` in a separate PR

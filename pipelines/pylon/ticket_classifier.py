@@ -45,6 +45,7 @@ RULES: list[tuple[str, str, float, str]] = [
     ("says-but", r"(says|shows|showing|displays|display)[^.]{0,60}\b(but|yet|even though|although)\b", 1.0, "text"),
     ("otp-failure", r"(not?|n'?t|never) receiv\w*[^.]{0,25}(code|otp|verification|email)|code (is )?not (accepted|working|received)|verification code[^.]{0,30}(invalid|not|error)", 1.6, "text"),
     ("nonenglish-broken", r"не работает|no funciona|não funciona|ne fonctionne pas|funktioniert nicht|çalışmıyor|不能用|无法(使用|登录|访问)|用不了|打不开|自动[^,。]{0,15}(改成|恢复|变成)|还是(显示|个人|我的名字)|为什么[^?？]{0,30}还是", 1.4, "text"),
+    ("ref-id-evidence", r"\b[a-z]{6,}-\d{4,}\b|账单编号|注文番号|订单编?号", 1.0, "text"),
     ("problem-statement", r"\bthe (problem|issue) is\b", 0.8, "text"),
     ("bug-report-doc", r"\bbug report\b|\bsteps?:\b|\bexpected( behavior| result)?:\b|\bactual( behavior| result)?:\b", 1.2, "text"),
 
@@ -90,13 +91,45 @@ TYPE_WEIGHTS["meeting_scheduling"] = -2.0
 DEFINITE_AT = 4.0
 POSSIBLE_AT = 1.3
 
-BRAND_SURFACE = {
-    "Devin": "enterprise",
-    "Fedramp": "enterprise",
-    "Windsurf": "windsurf",
-    "windsurf_self_hosted_hybrid": "windsurf",
-    "windsurf_eu": "windsurf",
-}
+# ---------------------------------------------------------------------------
+# Product/surface detection — ported from the report parser's bucket().
+# Content beats brand: Pylon has NO CLI brand (only Devin/Windsurf/empty), so
+# a Devin CLI ticket otherwise masquerades as the surface of whichever inbox
+# it arrived in. Order matters: CLI → Windsurf/IDE → Enterprise → Retail.
+# ---------------------------------------------------------------------------
+ENT_PLANS = {"teams", "enterprise", "enterprise-saas", "devin-teams",
+             "devin-enterprise", "enterprise-self-serve", "enterprise-hybrid"}
+# word-boundaried where the parser used raw substrings ("ide" matched
+# "provide"/"sidebar"; " cli " missed "CLI:" and line ends). Bare "terminal"
+# is only a WEAK cli hint: IDE users say "terminal window/panel" about the
+# integrated terminal, so it must not outrank desktop signals.
+CLI_STRONG = re.compile(r"\bdevin cli\b|\bcli\b|\bcommand.line\b|@cognition-ai/devin|\bdevin command\b|\bdevin terminal\b", re.I)
+CLI_WEAK = re.compile(r"\bterminal\b", re.I)
+DESKTOP_HINTS = re.compile(r"\bwindsurf\b|\bcascade\b|\bcodeium\b|\bdevin desktop\b|\bdesktop app\b|\bide\b|\bintellij\b|\bandroid studio\b|\bvs ?code\b", re.I)
+RETAIL_HINTS = re.compile(r"app\.devin\.ai|\bdevin review\b|\bdevin session\b", re.I)
+
+
+def detect_surface(ticket: dict, flat_text: str) -> str:
+    brand = (ticket.get("brand") or "").lower()
+    plan = (ticket.get("plan_tier") or "").lower()
+    if CLI_STRONG.search(flat_text):
+        return "devin-cli"
+    if brand.startswith("windsurf"):
+        return "windsurf"
+    # Devin-brand enterprise tickets often QUOTE windsurf.com docs links
+    # (e.g. SSO setup) — brand+plan identity beats a stray content keyword.
+    if brand == "devin" and plan in ENT_PLANS:
+        return "enterprise"
+    if DESKTOP_HINTS.search(flat_text):
+        return "windsurf"
+    if CLI_WEAK.search(flat_text):
+        return "devin-cli"
+    if brand == "fedramp" or "fedramp" in flat_text or plan in ENT_PLANS:
+        return "enterprise"
+    if brand == "devin" or RETAIL_HINTS.search(flat_text):
+        return "retail"
+    return "enterprise"  # unknown brand, no signals — keep on the active surface
+
 
 SEV_BUMP = re.compile(
     r"\b(production|prod|outage|blocked|blocking|whole (org|team|company)|all users|every(one| user)|data loss|locked out|cannot log ?in)\b", re.I
@@ -161,7 +194,7 @@ def classify(ticket: dict) -> dict:
         "confidence": confidence,
         "score": round(score, 2),
         "reasons": reasons,
-        "surface": BRAND_SURFACE.get(ticket.get("brand") or "", "enterprise"),
+        "surface": detect_surface(ticket, f"{title} {body}"),
         "severity": sev,
     }
 

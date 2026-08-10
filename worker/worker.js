@@ -1,5 +1,7 @@
 const REPO = "jeetcognition/nav-flow-map";
 const FILE = "navmap-edits.json";
+const COVERAGE_FILE = "pipelines/pylon/coverage.json";
+const PENDING_VERDICTS_FILE = "pipelines/pylon/labels/pending_verdicts.json";
 const ALLOWED_ORIGINS = [
   "https://jeetcognition.github.io",
   "http://localhost:8898",
@@ -115,6 +117,130 @@ Implement the suggestion in the repo. Work on a feature branch and open a pull r
   return new Response(JSON.stringify({ ok: true, ...result }), { headers });
 }
 
+// ---- verdict persistence (QA-DEC-028) ----------------------------------
+// The Incidents UI posts human verdicts here; they are merged into the two
+// committed pipeline ledgers. Pattern coverage goes to coverage.json (read by
+// pattern_engine.py on the next export); ticket verdicts queue in
+// pending_verdicts.json until a refiner session folds them into the eval set.
+const MAX_VERDICT_BYTES = 32 * 1024;
+const MAX_VERDICT_ENTRIES = 200;
+const COVERAGE_STATUSES = ["uncovered", "weak", "covered", "dismissed"];
+const TICKET_CATEGORIES = [
+  "app-bug",
+  "customer-doubt",
+  "config-issue",
+  "feature-request",
+  "unknown",
+];
+
+// these land in a public repo — mask anything that looks like an identity
+const scrubText = (s, max) =>
+  String(s)
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "•••@•••")
+    .slice(0, max);
+
+function parseVerdicts(body) {
+  const coverage = {};
+  const tickets = {};
+  const now = new Date().toISOString();
+  for (const [id, v] of Object.entries(body.coverage ?? {})) {
+    if (!/^[0-9a-f]{6,40}$/.test(id) || !v || !COVERAGE_STATUSES.includes(v.status)) continue;
+    coverage[id] = {
+      status: v.status,
+      coveredBy: v.coveredBy == null ? null : scrubText(v.coveredBy, 120),
+      by: scrubText(v.by ?? "", 40),
+      updatedAt: now,
+    };
+  }
+  for (const [num, v] of Object.entries(body.tickets ?? {})) {
+    if (!/^\d{1,10}$/.test(num) || !v || !TICKET_CATEGORIES.includes(v.category)) continue;
+    tickets[num] = { category: v.category, by: scrubText(v.by ?? "", 40), at: now };
+  }
+  if (Object.keys(coverage).length + Object.keys(tickets).length > MAX_VERDICT_ENTRIES)
+    return { error: "too many entries" };
+  return { coverage, tickets };
+}
+
+/** read-merge-write a JSON ledger via the contents API; one retry on a sha race */
+async function mergeLedger(env, path, entries, message) {
+  const api = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const gh = {
+    Authorization: `Bearer ${env.GITHUB_TOKEN}`,
+    Accept: "application/vnd.github+json",
+    "User-Agent": "navmap-save-worker",
+  };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let sha,
+      current = {};
+    const cur = await fetch(api, { headers: gh });
+    if (cur.ok) {
+      const data = await cur.json();
+      sha = data.sha;
+      try {
+        current = JSON.parse(atob(data.content.replace(/\n/g, ""))) ?? {};
+      } catch {
+        current = {};
+      }
+    }
+    const bytes = new TextEncoder().encode(
+      JSON.stringify({ ...current, ...entries }, null, 2) + "\n",
+    );
+    let bin = "";
+    for (const b of bytes) bin += String.fromCharCode(b);
+    const body = { message, content: btoa(bin) };
+    if (sha) body.sha = sha;
+    const res = await fetch(api, { method: "PUT", headers: gh, body: JSON.stringify(body) });
+    if (res.ok) return null;
+    if (res.status !== 409 && res.status !== 422) return `GitHub API ${res.status}`;
+  }
+  return "GitHub write conflict";
+}
+
+async function handleVerdicts(request, env, headers) {
+  let body;
+  try {
+    const text = await request.text();
+    if (text.length > MAX_VERDICT_BYTES) throw new Error("payload too large");
+    body = JSON.parse(text);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: "invalid JSON: " + e.message }), {
+      status: 400,
+      headers,
+    });
+  }
+  const parsed = parseVerdicts(body);
+  if (parsed.error) return new Response(JSON.stringify(parsed), { status: 400, headers });
+  const nCov = Object.keys(parsed.coverage).length;
+  const nTix = Object.keys(parsed.tickets).length;
+  if (nCov + nTix === 0)
+    return new Response(JSON.stringify({ error: "no valid verdicts in payload" }), {
+      status: 400,
+      headers,
+    });
+  const errors = [];
+  if (nCov) {
+    const err = await mergeLedger(
+      env,
+      COVERAGE_FILE,
+      parsed.coverage,
+      "Record pattern coverage verdicts from the app",
+    );
+    if (err) errors.push(err);
+  }
+  if (nTix) {
+    const err = await mergeLedger(
+      env,
+      PENDING_VERDICTS_FILE,
+      parsed.tickets,
+      "Queue ticket verdicts from the app for the refiner",
+    );
+    if (err) errors.push(err);
+  }
+  if (errors.length)
+    return new Response(JSON.stringify({ error: errors.join("; ") }), { status: 502, headers });
+  return new Response(JSON.stringify({ ok: true, coverage: nCov, tickets: nTix }), { headers });
+}
+
 async function handleRewrite(env, headers) {
   const cur = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${FILE}`, {
     headers: { "User-Agent": "navmap-save-worker" },
@@ -148,6 +274,7 @@ export default {
     const pathname = new URL(request.url).pathname;
     if (pathname === "/rewrite") return handleRewrite(env, headers);
     if (pathname === "/suggest") return handleSuggest(request, env, headers);
+    if (pathname === "/verdicts") return handleVerdicts(request, env, headers);
 
     let edits;
     try {

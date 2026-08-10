@@ -6,7 +6,14 @@ import json
 import subprocess
 from datetime import datetime, timedelta, timezone
 
-from db import init_db, upsert_issues, log_fetch, get_last_fetch_time, get_issue_count
+from db import (
+    init_db,
+    upsert_issues,
+    log_fetch,
+    get_last_fetch_time,
+    get_issue_count,
+    cleanup_old_issues,
+)
 
 PYLON_API_KEY = os.environ.get("PYLON_API_KEY", "")
 PYLON_BASE_URL = "https://api.usepylon.com/issues"
@@ -48,19 +55,28 @@ def incremental_fetch() -> int:
     else:
         # No previous fetch — just get last 24h (backfill separately)
         start = now - timedelta(hours=24)
-    
-    start_str = start.strftime("%Y-%m-%dT%H:%M:%SZ")
-    end_str = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    
-    print(f"Incremental fetch: {start_str} → {end_str}")
-    issues = fetch_issues(start_str, end_str)
-    print(f"  Fetched {len(issues)} issues")
-    
-    if issues:
-        upsert_issues(issues)
-        log_fetch(start_str, end_str, len(issues))
-    
-    return len(issues)
+
+    # Never fetch beyond the retention window, and chunk long windows
+    # day-by-day so a stale DB doesn't produce one giant API request that
+    # the server may truncate or reject.
+    start = max(start, now - timedelta(days=BACKFILL_DAYS))
+
+    total = 0
+    chunk_start = start
+    while chunk_start < now:
+        chunk_end = min(chunk_start + timedelta(days=1), now)
+        start_str = chunk_start.strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_str = chunk_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+        print(f"Incremental fetch: {start_str} → {end_str}")
+        issues = fetch_issues(start_str, end_str)
+        print(f"  Fetched {len(issues)} issues")
+        if issues:
+            upsert_issues(issues)
+            log_fetch(start_str, end_str, len(issues))
+            total += len(issues)
+        chunk_start = chunk_end
+
+    return total
 
 
 def backfill(days: int = BACKFILL_DAYS) -> int:
@@ -100,11 +116,15 @@ def smart_fetch() -> dict:
     if current_count == 0:
         print("Empty database — performing full backfill...")
         count = backfill()
-        return {"action": "backfill", "issues_fetched": count, "total_in_db": get_issue_count()}
+        action = "backfill"
     else:
         print(f"Database has {current_count} issues — performing incremental fetch...")
         count = incremental_fetch()
-        return {"action": "incremental", "issues_fetched": count, "total_in_db": get_issue_count()}
+        action = "incremental"
+    removed = cleanup_old_issues()
+    if removed:
+        print(f"Retention: removed {removed} issues older than the window")
+    return {"action": action, "issues_fetched": count, "total_in_db": get_issue_count()}
 
 
 if __name__ == "__main__":

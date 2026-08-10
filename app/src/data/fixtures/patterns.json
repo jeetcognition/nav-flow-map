@@ -1,0 +1,2825 @@
+[
+  {
+    "id": "PAT-8bc51324580a",
+    "label": "Run automated workflow with external APIs → sandbox blocks outbound access",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "automations",
+    "total": 33,
+    "open": 8,
+    "definite": 8,
+    "count24h": 1,
+    "growth24h": 0,
+    "count14d": 10,
+    "trend": "accelerating",
+    "priorityReason": "10 reports in 14 days (repeat pattern) · 8 still open · accelerating — growing fast",
+    "firstSeen": "2026-06-11T18:54:59Z",
+    "score": 231.4,
+    "suggestedTest": "Start session with external API call → verify outbound HTTP works from sandbox → verify response is received",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [
+      "INC-64602",
+      "INC-60974",
+      "INC-59566",
+      "INC-58727",
+      "INC-57758",
+      "INC-57707",
+      "INC-56447"
+    ],
+    "evidence": [
+      {
+        "number": 55775,
+        "title": "Devin Automation: MCP tool and API 404 errors",
+        "link": "https://app.usepylon.com/issues?issueNumber=55775"
+      },
+      {
+        "number": 57707,
+        "title": "Automation access error after Devin session",
+        "link": "https://app.usepylon.com/issues?issueNumber=57707"
+      },
+      {
+        "number": 63740,
+        "title": "Automation update error: deletion attempt and hidden secret tags",
+        "link": "https://app.usepylon.com/issues?issueNumber=63740"
+      },
+      {
+        "number": 63113,
+        "title": "Automations not visible to the others",
+        "link": "https://app.usepylon.com/issues?issueNumber=63113"
+      },
+      {
+        "number": 63533,
+        "title": "Bug: Slack notification removed after automation update",
+        "link": "https://app.usepylon.com/issues?issueNumber=63533"
+      },
+      {
+        "number": 64602,
+        "title": "Slack integration failure in automation",
+        "link": "https://app.usepylon.com/issues?issueNumber=64602"
+      },
+      {
+        "number": 62503,
+        "title": "Automation failures with error over last four hours",
+        "link": "https://app.usepylon.com/issues?issueNumber=62503"
+      },
+      {
+        "number": 56597,
+        "title": "Automation failing; troubleshooting required",
+        "link": "https://app.usepylon.com/issues?issueNumber=56597"
+      }
+    ]
+  },
+  {
+    "id": "PAT-761573153cda",
+    "label": "Use the IDE normally → \"Permission denied: internal error\" with a trace ID",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 20,
+    "open": 0,
+    "definite": 13,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 5,
+    "trend": "declining",
+    "priorityReason": "5 reports in 14 days (repeat pattern)",
+    "firstSeen": "2026-06-10T20:43:40Z",
+    "score": 189.9,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 56858,
+        "title": "Gemini Models not working",
+        "link": "https://app.usepylon.com/issues?issueNumber=56858"
+      },
+      {
+        "number": 60170,
+        "title": "after windsurf switch and updates",
+        "link": "https://app.usepylon.com/issues?issueNumber=60170"
+      },
+      {
+        "number": 55613,
+        "title": "Hello Windsurf team",
+        "link": "https://app.usepylon.com/issues?issueNumber=55613"
+      },
+      {
+        "number": 57022,
+        "title": "Hi Windsurf Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=57022"
+      },
+      {
+        "number": 56192,
+        "title": "回复：Re: 回复：Re: 回复：Re: 回复：Re: 回复：Re: 回复：Re: I am getting this error in Windsurf Cascade",
+        "link": "https://app.usepylon.com/issues?issueNumber=56192"
+      },
+      {
+        "number": 56191,
+        "title": "回复：Re: 回复：Re: 回复：Re: 回复：Re: 回复：Re: I am getting this error in Windsurf Cascade",
+        "link": "https://app.usepylon.com/issues?issueNumber=56191"
+      },
+      {
+        "number": 63972,
+        "title": "Windsurf next stuck in the middle of a project",
+        "link": "https://app.usepylon.com/issues?issueNumber=63972"
+      },
+      {
+        "number": 64928,
+        "title": "I am getting the following error : Invalid argument: an internal error occurred (trace ID: )…",
+        "link": "https://app.usepylon.com/issues?issueNumber=64928"
+      }
+    ]
+  },
+  {
+    "id": "PAT-32f2cc0b9117",
+    "label": "Send messages at normal pace → unexpectedly blocked by message rate limit",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 16,
+    "open": 1,
+    "definite": 9,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-09T17:55:40Z",
+    "score": 179.6,
+    "suggestedTest": "Perform 20 standard actions in 60s (normal user pace) → verify zero false rate-limit blocks → check error messages are clear",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-60157"],
+    "evidence": [
+      {
+        "number": 58194,
+        "title": "Hello Cognition Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=58194"
+      },
+      {
+        "number": 57529,
+        "title": "Rate limit issue on Team plan with purchased tokens",
+        "link": "https://app.usepylon.com/issues?issueNumber=57529"
+      },
+      {
+        "number": 62443,
+        "title": "Hello, I'm experiencing an issue with my account. For the past few days, I've been getting the…",
+        "link": "https://app.usepylon.com/issues?issueNumber=62443"
+      },
+      {
+        "number": 55509,
+        "title": "Max Plan Rate Limit Issue – Still Hitting Daily Limits Despite Active Subscription & Balance",
+        "link": "https://app.usepylon.com/issues?issueNumber=55509"
+      },
+      {
+        "number": 57124,
+        "title": "Rate limit error on Devin desktop models",
+        "link": "https://app.usepylon.com/issues?issueNumber=57124"
+      },
+      {
+        "number": 60894,
+        "title": "I need to submit a support ticket",
+        "link": "https://app.usepylon.com/issues?issueNumber=60894"
+      },
+      {
+        "number": 57303,
+        "title": "For several hours now, I've been encountering the following error in Devin Desktop",
+        "link": "https://app.usepylon.com/issues?issueNumber=57303"
+      },
+      {
+        "number": 57089,
+        "title": "Error code",
+        "link": "https://app.usepylon.com/issues?issueNumber=57089"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1cee061cc4f9",
+    "label": "Buy or track usage/credits → purchase not reflected in account",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 28,
+    "open": 2,
+    "definite": 7,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 3,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-08T17:34:24Z",
+    "score": 179.1,
+    "suggestedTest": "Buy extra usage/credits → verify balance updates within 60s → verify purchase reflected on the usage page and invoice",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62031", "INC-59541"],
+    "evidence": [
+      {
+        "number": 64704,
+        "title": "Pro usage not showing in dashboard",
+        "link": "https://app.usepylon.com/issues?issueNumber=64704"
+      },
+      {
+        "number": 62031,
+        "title": "I just bought credit for extra use and can't use it - i checked and its not there",
+        "link": "https://app.usepylon.com/issues?issueNumber=62031"
+      },
+      {
+        "number": 56105,
+        "title": "Daily Usage Quota Reset Issue and Incorrect Date",
+        "link": "https://app.usepylon.com/issues?issueNumber=56105"
+      },
+      {
+        "number": 64736,
+        "title": "My billing cycle renewed on July 9, 2026, and is set to end on August 9, 2026",
+        "link": "https://app.usepylon.com/issues?issueNumber=64736"
+      },
+      {
+        "number": 56609,
+        "title": "On-demand usage issue",
+        "link": "https://app.usepylon.com/issues?issueNumber=56609"
+      },
+      {
+        "number": 56107,
+        "title": "Hello Devin Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=56107"
+      },
+      {
+        "number": 54904,
+        "title": "I paid for additional usage and it's not showing up in my quota",
+        "link": "https://app.usepylon.com/issues?issueNumber=54904"
+      },
+      {
+        "number": 55394,
+        "title": "Missing legacy credits after Windsurf to Devin Desktop migration",
+        "link": "https://app.usepylon.com/issues?issueNumber=55394"
+      }
+    ]
+  },
+  {
+    "id": "PAT-a3597a61a943",
+    "label": "Use the IDE → editor freezes, crashes, or loses the conversation",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 14,
+    "open": 2,
+    "definite": 7,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 4,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-16T11:45:38Z",
+    "score": 160.5,
+    "suggestedTest": "Open IDE → exercise chat + editing for 10 min → verify no freeze or crash → verify conversation history survives restart",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63892"],
+    "evidence": [
+      {
+        "number": 57083,
+        "title": "Devin Desktop 3.2.23 Linux x64 crashes with SIGILL on CPUs without AVX-512 (no runtime dispatch)",
+        "link": "https://app.usepylon.com/issues?issueNumber=57083"
+      },
+      {
+        "number": 59899,
+        "title": "/bug SIGILL crash (exit code 132) — V8 TurboFan corrupts cppgc padding on AMD Strix Halo. 4 crashes…",
+        "link": "https://app.usepylon.com/issues?issueNumber=59899"
+      },
+      {
+        "number": 56643,
+        "title": "Devin Desktop buggy on windows",
+        "link": "https://app.usepylon.com/issues?issueNumber=56643"
+      },
+      {
+        "number": 59785,
+        "title": "Devin Deskop Keeps Crashing",
+        "link": "https://app.usepylon.com/issues?issueNumber=59785"
+      },
+      {
+        "number": 64955,
+        "title": "Devin Out of Memory crash, system unresponsive",
+        "link": "https://app.usepylon.com/issues?issueNumber=64955"
+      },
+      {
+        "number": 61190,
+        "title": "the chat crashes repeatedly. says react error something",
+        "link": "https://app.usepylon.com/issues?issueNumber=61190"
+      },
+      {
+        "number": 57094,
+        "title": "Always Sequential Thinking Freeze",
+        "link": "https://app.usepylon.com/issues?issueNumber=57094"
+      },
+      {
+        "number": 57890,
+        "title": "crashed my computer during error troubleshooting",
+        "link": "https://app.usepylon.com/issues?issueNumber=57890"
+      }
+    ]
+  },
+  {
+    "id": "PAT-68d92cadde55",
+    "label": "Review billing → unexpected charges or invoice discrepancies",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 27,
+    "open": 2,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 6,
+    "trend": "declining",
+    "priorityReason": "6 reports in 14 days (repeat pattern)",
+    "firstSeen": "2026-06-09T08:58:31Z",
+    "score": 149.3,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63242", "INC-55107"],
+    "evidence": [
+      {
+        "number": 56545,
+        "title": "Subject: Refund request - recent subscription, technical issues",
+        "link": "https://app.usepylon.com/issues?issueNumber=56545"
+      },
+      {
+        "number": 63242,
+        "title": "Refund Request – Persistent Bugs, Infinite Loops, and Agent Failures",
+        "link": "https://app.usepylon.com/issues?issueNumber=63242"
+      },
+      {
+        "number": 55051,
+        "title": "After I was charged 20 US dollars, my account is still in the free version instead of Pro",
+        "link": "https://app.usepylon.com/issues?issueNumber=55051"
+      },
+      {
+        "number": 55936,
+        "title": "Urgent Refund Request – Paid but Account Access Blocked",
+        "link": "https://app.usepylon.com/issues?issueNumber=55936"
+      },
+      {
+        "number": 63586,
+        "title": "Invoices",
+        "link": "https://app.usepylon.com/issues?issueNumber=63586"
+      },
+      {
+        "number": 60501,
+        "title": "analytics doesnt work, i cannot check if you overcharge us",
+        "link": "https://app.usepylon.com/issues?issueNumber=60501"
+      },
+      {
+        "number": 55283,
+        "title": "Subject: Urgent Support & Refund/Extension Request: Paid Pro Subscription Unusable (Error Number 12)",
+        "link": "https://app.usepylon.com/issues?issueNumber=55283"
+      },
+      {
+        "number": 60431,
+        "title": "Issue with Pro Plan Limits and Unnotified Additional Charges",
+        "link": "https://app.usepylon.com/issues?issueNumber=60431"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c886eda5cd9d",
+    "label": "Use a model at normal pace → blocked by rate limit / high-demand throttle",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "login",
+    "total": 9,
+    "open": 0,
+    "definite": 5,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 4,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-10T19:20:26Z",
+    "score": 143.9,
+    "suggestedTest": "Perform 20 standard actions in 60s (normal user pace) → verify zero false rate-limit blocks → check error messages are clear",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 64672,
+        "title": "Hello, I'm using Devin Desktop 1",
+        "link": "https://app.usepylon.com/issues?issueNumber=64672"
+      },
+      {
+        "number": 55401,
+        "title": "Payment issue: Pro subscription access denied",
+        "link": "https://app.usepylon.com/issues?issueNumber=55401"
+      },
+      {
+        "number": 64645,
+        "title": "Dear Windsurf Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=64645"
+      },
+      {
+        "number": 56395,
+        "title": "i have lot problem,when try use program they sya Permission denied: Permission denied: We're…",
+        "link": "https://app.usepylon.com/issues?issueNumber=56395"
+      },
+      {
+        "number": 56901,
+        "title": "Permission denied: We're currently facing high demand for this model. Please try again later…",
+        "link": "https://app.usepylon.com/issues?issueNumber=56901"
+      },
+      {
+        "number": 55520,
+        "title": "Pylon ticket #55520",
+        "link": "https://app.usepylon.com/issues?issueNumber=55520"
+      },
+      {
+        "number": 55408,
+        "title": "I was a newer user to Windsurf but was using it for weeks without issue in terms of token access…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55408"
+      },
+      {
+        "number": 63503,
+        "title": "Hello, I'm using Windsurf Free on Windows",
+        "link": "https://app.usepylon.com/issues?issueNumber=63503"
+      }
+    ]
+  },
+  {
+    "id": "PAT-5721fa5a0bc6",
+    "label": "Set up an OAuth/MCP integration → credentials not accepted or connection fails",
+    "surfaceId": "enterprise",
+    "flow": "Other",
+    "nodeId": "session",
+    "total": 15,
+    "open": 3,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 9,
+    "trend": "declining",
+    "priorityReason": "9 reports in 14 days (repeat pattern) · 3 still open",
+    "firstSeen": "2026-06-15T13:37:49Z",
+    "score": 141.8,
+    "suggestedTest": "Reproduce: Set up an OAuth/MCP integration → credentials not accepted or connection fails — verify correct behavior end-to-end",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63405", "INC-62542", "INC-57127"],
+    "evidence": [
+      {
+        "number": 60219,
+        "title": "MCP Linear Integration: Update to HTTP Endpoint (mcp)",
+        "link": "https://app.usepylon.com/issues?issueNumber=60219"
+      },
+      {
+        "number": 62542,
+        "title": "MCP secret linkage issue after edits",
+        "link": "https://app.usepylon.com/issues?issueNumber=62542"
+      },
+      {
+        "number": 56362,
+        "title": "Subject: MCP stdio transport protocol mismatch — Qase MCP server incompatible with Devin's MCP…",
+        "link": "https://app.usepylon.com/issues?issueNumber=56362"
+      },
+      {
+        "number": 56652,
+        "title": "Bug: Wiki MCP tools (read_wiki_structure, read_wiki_contents, generate_wiki) fail via external…",
+        "link": "https://app.usepylon.com/issues?issueNumber=56652"
+      },
+      {
+        "number": 63405,
+        "title": "GDrive MCP Permission Error during OAuth",
+        "link": "https://app.usepylon.com/issues?issueNumber=63405"
+      },
+      {
+        "number": 64921,
+        "title": "BQ Prod MCP integration: opaque 'Please try again' error",
+        "link": "https://app.usepylon.com/issues?issueNumber=64921"
+      },
+      {
+        "number": 64131,
+        "title": "BQ project access error with MCP linkage",
+        "link": "https://app.usepylon.com/issues?issueNumber=64131"
+      },
+      {
+        "number": 64756,
+        "title": "OAuth flow failure in BQ Prod MCP",
+        "link": "https://app.usepylon.com/issues?issueNumber=64756"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1211d8555f5b",
+    "label": "Complete payment or plan change → account state not updated correctly · “external-58564”",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "wiki",
+    "total": 8,
+    "open": 5,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "5 still open",
+    "firstSeen": "2026-06-30T00:36:13Z",
+    "score": 138.2,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-61531", "INC-61529", "INC-61526", "INC-61525", "INC-61523"],
+    "evidence": [
+      {
+        "number": 61525,
+        "title": "Deepwiki Only Custom role permission not working correctly",
+        "link": "https://app.usepylon.com/issues?issueNumber=61525"
+      },
+      {
+        "number": 61523,
+        "title": "Devin ask failing for multiple users",
+        "link": "https://app.usepylon.com/issues?issueNumber=61523"
+      },
+      {
+        "number": 61532,
+        "title": "Build didn't happen on org",
+        "link": "https://app.usepylon.com/issues?issueNumber=61532"
+      },
+      {
+        "number": 61526,
+        "title": "delay in sync between DeepWiki indexed branches and Ask Devin's branch listing API",
+        "link": "https://app.usepylon.com/issues?issueNumber=61526"
+      },
+      {
+        "number": 61531,
+        "title": "ACU org bucket limit didn't kick in",
+        "link": "https://app.usepylon.com/issues?issueNumber=61531"
+      },
+      {
+        "number": 61529,
+        "title": "ask devin issue",
+        "link": "https://app.usepylon.com/issues?issueNumber=61529"
+      },
+      {
+        "number": 58426,
+        "title": "Email update propagation issue in Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=58426"
+      },
+      {
+        "number": 58425,
+        "title": "Indexed branches don't appear as options in Ask Devin (only the default branch is shown)",
+        "link": "https://app.usepylon.com/issues?issueNumber=58425"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1ad9de056672",
+    "label": "Run a session → session crashes, fails, or disappears",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "session",
+    "total": 11,
+    "open": 3,
+    "definite": 4,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "declining",
+    "priorityReason": "3 still open",
+    "firstSeen": "2026-06-17T16:49:48Z",
+    "score": 136.8,
+    "suggestedTest": "Start 5 sessions in sequence → verify all start successfully → verify no crash within first 60s",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63729", "INC-62278", "INC-58321"],
+    "evidence": [
+      {
+        "number": 58735,
+        "title": "Session crash: stuck during pre-call plan",
+        "link": "https://app.usepylon.com/issues?issueNumber=58735"
+      },
+      {
+        "number": 63729,
+        "title": "Session crash with failed recovery attempts",
+        "link": "https://app.usepylon.com/issues?issueNumber=63729"
+      },
+      {
+        "number": 58742,
+        "title": "I saw that the outage was resolved, but my Devin session still keeps crashing and I cannot get it…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58742"
+      },
+      {
+        "number": 58321,
+        "title": "Session crashes and fails to recover on messaging",
+        "link": "https://app.usepylon.com/issues?issueNumber=58321"
+      },
+      {
+        "number": 62247,
+        "title": "VM issues causing Devin session failures",
+        "link": "https://app.usepylon.com/issues?issueNumber=62247"
+      },
+      {
+        "number": 61477,
+        "title": "DevIn Sessions Perma-Crashing",
+        "link": "https://app.usepylon.com/issues?issueNumber=61477"
+      },
+      {
+        "number": 59301,
+        "title": "Session start failures and crashes",
+        "link": "https://app.usepylon.com/issues?issueNumber=59301"
+      },
+      {
+        "number": 56826,
+        "title": "Session disconnect and recurring sign-in failures",
+        "link": "https://app.usepylon.com/issues?issueNumber=56826"
+      }
+    ]
+  },
+  {
+    "id": "PAT-0ef1249087c4",
+    "label": "Pay for a plan → plan features not activated despite successful payment",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 10,
+    "open": 0,
+    "definite": 4,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-22T19:48:15Z",
+    "score": 135.1,
+    "suggestedTest": "Complete Stripe test payment for Pro plan → wait 30s → verify Pro features accessible → verify plan badge shows in UI",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 59885,
+        "title": "My credit card payment is not working",
+        "link": "https://app.usepylon.com/issues?issueNumber=59885"
+      },
+      {
+        "number": 62173,
+        "title": "Billing dispute for overcharged plan payment",
+        "link": "https://app.usepylon.com/issues?issueNumber=62173"
+      },
+      {
+        "number": 62019,
+        "title": "Payment is stuck and can't proceed further",
+        "link": "https://app.usepylon.com/issues?issueNumber=62019"
+      },
+      {
+        "number": 62458,
+        "title": "can you help in payment issuer",
+        "link": "https://app.usepylon.com/issues?issueNumber=62458"
+      },
+      {
+        "number": 61070,
+        "title": "Payment method error",
+        "link": "https://app.usepylon.com/issues?issueNumber=61070"
+      },
+      {
+        "number": 63108,
+        "title": "Hi, I'm unable to add Alipay or WeChat Pay as a payment method",
+        "link": "https://app.usepylon.com/issues?issueNumber=63108"
+      },
+      {
+        "number": 59866,
+        "title": "Hello. I have a PRO subscription and I had entered my payment details for the monthly payment, but…",
+        "link": "https://app.usepylon.com/issues?issueNumber=59866"
+      },
+      {
+        "number": 57673,
+        "title": "Account Plan Not Activated After Successful Payment",
+        "link": "https://app.usepylon.com/issues?issueNumber=57673"
+      }
+    ]
+  },
+  {
+    "id": "PAT-ee2542bad171",
+    "label": "Use Devin Review → review fails or produces incorrect results",
+    "surfaceId": "enterprise",
+    "flow": "Review/GitHub",
+    "nodeId": "review",
+    "total": 17,
+    "open": 3,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 2,
+    "trend": "accelerating",
+    "priorityReason": "3 still open · accelerating — growing fast",
+    "firstSeen": "2026-06-12T04:07:26Z",
+    "score": 133.0,
+    "suggestedTest": "Enable Devin Review on a repo → open PR → verify review comments appear within 5 min → verify comment quality",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-59896", "INC-57353", "INC-55918"],
+    "evidence": [
+      {
+        "number": 56286,
+        "title": "GitHub checks updates failing for Devin Review",
+        "link": "https://app.usepylon.com/issues?issueNumber=56286"
+      },
+      {
+        "number": 55940,
+        "title": "Admin access error in Devin Review",
+        "link": "https://app.usepylon.com/issues?issueNumber=55940"
+      },
+      {
+        "number": 55751,
+        "title": "Devin Review: Github Connect Loop and Commit Status",
+        "link": "https://app.usepylon.com/issues?issueNumber=55751"
+      },
+      {
+        "number": 57750,
+        "title": "Hi. I added my GitLab repo to Devin Review and the Review was made by my user and not Devin's",
+        "link": "https://app.usepylon.com/issues?issueNumber=57750"
+      },
+      {
+        "number": 59896,
+        "title": "Devin Review spams hundreds of duplicate \"session too old to wake\" warning comments on old PRs #357",
+        "link": "https://app.usepylon.com/issues?issueNumber=59896"
+      },
+      {
+        "number": 60220,
+        "title": "PR description guidance mismatch in Devin Review",
+        "link": "https://app.usepylon.com/issues?issueNumber=60220"
+      },
+      {
+        "number": 64931,
+        "title": "Devin Reviews sensitivity increase in feedback iterations",
+        "link": "https://app.usepylon.com/issues?issueNumber=64931"
+      },
+      {
+        "number": 64862,
+        "title": "Repositories enrollment drop in Devin Reviews",
+        "link": "https://app.usepylon.com/issues?issueNumber=64862"
+      }
+    ]
+  },
+  {
+    "id": "PAT-2712635429a9",
+    "label": "Review billing → unexpected charges or invoice discrepancies",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 12,
+    "open": 1,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 3,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-16T18:18:40Z",
+    "score": 129.4,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-60750"],
+    "evidence": [
+      {
+        "number": 62082,
+        "title": "Follow-up on ticket 62081 - this is URGENT and time-sensitive. We are still being charged for a…",
+        "link": "https://app.usepylon.com/issues?issueNumber=62082"
+      },
+      {
+        "number": 57773,
+        "title": "Invoices for May 2026 and June 2026",
+        "link": "https://app.usepylon.com/issues?issueNumber=57773"
+      },
+      {
+        "number": 64262,
+        "title": "Attempts still being made to charge me AFTER I've cancelled my subscription?",
+        "link": "https://app.usepylon.com/issues?issueNumber=64262"
+      },
+      {
+        "number": 62361,
+        "title": "Abnormal recharge consumption",
+        "link": "https://app.usepylon.com/issues?issueNumber=62361"
+      },
+      {
+        "number": 64487,
+        "title": "Urgent: Repeated automatic $1 credit recharges",
+        "link": "https://app.usepylon.com/issues?issueNumber=64487"
+      },
+      {
+        "number": 64883,
+        "title": "I request a refund as my max account is not working",
+        "link": "https://app.usepylon.com/issues?issueNumber=64883"
+      },
+      {
+        "number": 60750,
+        "title": "Hello, I’ve been charged for the Pro plan on my card for the past three months, yet my account…",
+        "link": "https://app.usepylon.com/issues?issueNumber=60750"
+      },
+      {
+        "number": 56587,
+        "title": "Dear Cognition AI / Devin AI Support Team, I am writing to formally request a full refund of $459",
+        "link": "https://app.usepylon.com/issues?issueNumber=56587"
+      }
+    ]
+  },
+  {
+    "id": "PAT-9ae65ae699cb",
+    "label": "Attempt plan change (upgrade/downgrade) → action fails or state inconsistent",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "auth",
+    "total": 18,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "declining",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-13T06:08:35Z",
+    "score": 127.4,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 64205,
+        "title": "URGENT: Account Locked / Negative Balance Sync Failure after Devin Upgrade",
+        "link": "https://app.usepylon.com/issues?issueNumber=64205"
+      },
+      {
+        "number": 57664,
+        "title": "Billing upgrade not reflected on Devin Desktop account",
+        "link": "https://app.usepylon.com/issues?issueNumber=57664"
+      },
+      {
+        "number": 57660,
+        "title": "Billing upgrade not reflected on account balance",
+        "link": "https://app.usepylon.com/issues?issueNumber=57660"
+      },
+      {
+        "number": 57659,
+        "title": "Billing upgrade not reflected in account",
+        "link": "https://app.usepylon.com/issues?issueNumber=57659"
+      },
+      {
+        "number": 56695,
+        "title": "Failure to upgrade",
+        "link": "https://app.usepylon.com/issues?issueNumber=56695"
+      },
+      {
+        "number": 57775,
+        "title": "unable to downgrade my plan",
+        "link": "https://app.usepylon.com/issues?issueNumber=57775"
+      },
+      {
+        "number": 56089,
+        "title": "Immediate Refund Demand - Paid Account Downgraded to Free Plan",
+        "link": "https://app.usepylon.com/issues?issueNumber=56089"
+      },
+      {
+        "number": 61055,
+        "title": "Unable to upgrade",
+        "link": "https://app.usepylon.com/issues?issueNumber=61055"
+      }
+    ]
+  },
+  {
+    "id": "PAT-6747c9e29f56",
+    "label": "Start or resume a session → blocked by a false permission error",
+    "surfaceId": "enterprise",
+    "flow": "Sessions/Automation",
+    "nodeId": "automations",
+    "total": 6,
+    "open": 2,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 2,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-22T22:35:47Z",
+    "score": 127.3,
+    "suggestedTest": "Start fresh Enterprise session → interact continuously for 5 min → verify response time stays under 5s throughout",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-57444"],
+    "evidence": [
+      {
+        "number": 60785,
+        "title": "Automation creation 403 error on session",
+        "link": "https://app.usepylon.com/issues?issueNumber=60785"
+      },
+      {
+        "number": 58372,
+        "title": "▎ Subject: Slack install/re-auth broken — \"Unapproved permissions requested: channels:join\"",
+        "link": "https://app.usepylon.com/issues?issueNumber=58372"
+      },
+      {
+        "number": 64919,
+        "title": "Automation update 403 error troubleshooting",
+        "link": "https://app.usepylon.com/issues?issueNumber=64919"
+      },
+      {
+        "number": 64470,
+        "title": "Devin API Permissions",
+        "link": "https://app.usepylon.com/issues?issueNumber=64470"
+      },
+      {
+        "number": 57444,
+        "title": "Enterprise plan RBAC: enable ViewAccount permissions for service user",
+        "link": "https://app.usepylon.com/issues?issueNumber=57444"
+      },
+      {
+        "number": 62648,
+        "title": "403 Error Creating Personal Automations",
+        "link": "https://app.usepylon.com/issues?issueNumber=62648"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c824de813dbd",
+    "label": "Use plan features → plan quota not consumed, on-demand credits charged instead",
+    "surfaceId": "windsurf",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 9,
+    "open": 0,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-08T22:11:41Z",
+    "score": 126.7,
+    "suggestedTest": "Check current ACU balance → run short session → re-check balance → verify deduction matches expected usage",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57104,
+        "title": "Daily usage quota not resetting / stuck at 0%",
+        "link": "https://app.usepylon.com/issues?issueNumber=57104"
+      },
+      {
+        "number": 63757,
+        "title": "Subject: Daily quota stuck as exhausted since July 18th — not resetting",
+        "link": "https://app.usepylon.com/issues?issueNumber=63757"
+      },
+      {
+        "number": 64524,
+        "title": "Issue with Usage Limit Reset / Account Quota Not Refreshing",
+        "link": "https://app.usepylon.com/issues?issueNumber=64524"
+      },
+      {
+        "number": 55374,
+        "title": "Issue with Fable High and XHigh Not Responding While Quota Is Consumed",
+        "link": "https://app.usepylon.com/issues?issueNumber=55374"
+      },
+      {
+        "number": 55370,
+        "title": "Dear Devi Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=55370"
+      },
+      {
+        "number": 55369,
+        "title": "Dear Devi Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=55369"
+      },
+      {
+        "number": 59688,
+        "title": "your shitty AI just wasted all of my daily quota for no reason, by not doing what i told it to do",
+        "link": "https://app.usepylon.com/issues?issueNumber=59688"
+      },
+      {
+        "number": 58130,
+        "title": "was not given daily free usage quota - was supposed to refresh at 1am, log in this am and says…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58130"
+      }
+    ]
+  },
+  {
+    "id": "PAT-55f05e82a05e",
+    "label": "Buy or track usage/credits → purchase not reflected in account",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 19,
+    "open": 1,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-12T11:04:28Z",
+    "score": 124.9,
+    "suggestedTest": "Buy extra usage/credits → verify balance updates within 60s → verify purchase reflected on the usage page and invoice",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-61113"],
+    "evidence": [
+      {
+        "number": 59357,
+        "title": "hi today i have bought 15$ extra usage but extra usage not being reflected",
+        "link": "https://app.usepylon.com/issues?issueNumber=59357"
+      },
+      {
+        "number": 56486,
+        "title": "Hi, I just bought extra credits and they simply disappeared",
+        "link": "https://app.usepylon.com/issues?issueNumber=56486"
+      },
+      {
+        "number": 58619,
+        "title": "I'm trying to use my credit card, but the purchase isn't going through",
+        "link": "https://app.usepylon.com/issues?issueNumber=58619"
+      },
+      {
+        "number": 62246,
+        "title": "hello have purchase pro plan but my account still on free mode",
+        "link": "https://app.usepylon.com/issues?issueNumber=62246"
+      },
+      {
+        "number": 58231,
+        "title": "Pylon ticket #58231",
+        "link": "https://app.usepylon.com/issues?issueNumber=58231"
+      },
+      {
+        "number": 59742,
+        "title": "hi the prior ACUs I purchased I dont seem to be able to finish using them?",
+        "link": "https://app.usepylon.com/issues?issueNumber=59742"
+      },
+      {
+        "number": 61113,
+        "title": "I am supposed to have credits that I received from Lenny's product pass, how come I cannot see them…",
+        "link": "https://app.usepylon.com/issues?issueNumber=61113"
+      },
+      {
+        "number": 61076,
+        "title": "Seems like I ran out extraordinarily quick from the usage credits I had stashed, also I'm currently…",
+        "link": "https://app.usepylon.com/issues?issueNumber=61076"
+      }
+    ]
+  },
+  {
+    "id": "PAT-68ea6bb22033",
+    "label": "Use the product normally → becomes stuck or unresponsive",
+    "surfaceId": "enterprise",
+    "flow": "Other",
+    "nodeId": "landing",
+    "total": 8,
+    "open": 3,
+    "definite": 2,
+    "count24h": 1,
+    "growth24h": 1,
+    "count14d": 1,
+    "trend": "stable",
+    "priorityReason": "3 still open",
+    "firstSeen": "2026-06-09T21:46:27Z",
+    "score": 121.4,
+    "suggestedTest": "Reproduce: Use the product normally → becomes stuck or unresponsive — verify correct behavior end-to-end",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-61372", "INC-57862", "INC-55197"],
+    "evidence": [
+      {
+        "number": 58240,
+        "title": "Websocket/Provider Connectivity Issues and Loader Hang",
+        "link": "https://app.usepylon.com/issues?issueNumber=58240"
+      },
+      {
+        "number": 57862,
+        "title": "Agent getting stuck bug",
+        "link": "https://app.usepylon.com/issues?issueNumber=57862"
+      },
+      {
+        "number": 62250,
+        "title": "users are getting this error today despite us making zero configuration changes on our end, is…",
+        "link": "https://app.usepylon.com/issues?issueNumber=62250"
+      },
+      {
+        "number": 61372,
+        "title": "Devin not resuming after Save and Sleep for network change",
+        "link": "https://app.usepylon.com/issues?issueNumber=61372"
+      },
+      {
+        "number": 58502,
+        "title": "VM deployment changes causing missing VMs",
+        "link": "https://app.usepylon.com/issues?issueNumber=58502"
+      },
+      {
+        "number": 57163,
+        "title": "Update branch button triggers ownership change warnings",
+        "link": "https://app.usepylon.com/issues?issueNumber=57163"
+      },
+      {
+        "number": 55197,
+        "title": "Change Affects All Users: Breakage Report",
+        "link": "https://app.usepylon.com/issues?issueNumber=55197"
+      },
+      {
+        "number": 65119,
+        "title": "Model change disabled prompt caching in Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=65119"
+      }
+    ]
+  },
+  {
+    "id": "PAT-d5f0e5a968d2",
+    "label": "Attempt to sign in → \"Permission denied: internal error\" with a trace ID",
+    "surfaceId": "windsurf",
+    "flow": "Login/Auth",
+    "nodeId": "login",
+    "total": 7,
+    "open": 0,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-12T23:23:30Z",
+    "score": 120.4,
+    "suggestedTest": "Attempt login via SSO/email → verify redirect completes → verify session established → verify no redirect loop",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 55960,
+        "title": "not able to login to Devin IDE",
+        "link": "https://app.usepylon.com/issues?issueNumber=55960"
+      },
+      {
+        "number": 56038,
+        "title": "URGENT: Paid Windsurf account migrated into empty Devin account / original org missing",
+        "link": "https://app.usepylon.com/issues?issueNumber=56038"
+      },
+      {
+        "number": 60056,
+        "title": "You're using macOS",
+        "link": "https://app.usepylon.com/issues?issueNumber=60056"
+      },
+      {
+        "number": 62261,
+        "title": "SWE 1.7 Medium Model is returning \"Unauthenticated: an internal error occurred\" message",
+        "link": "https://app.usepylon.com/issues?issueNumber=62261"
+      },
+      {
+        "number": 55916,
+        "title": "*I am using Devin Desktop and I received message like Invalid argument: This request was refused by…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55916"
+      },
+      {
+        "number": 55914,
+        "title": "I do have a problem related Claude Fable 5 Medium",
+        "link": "https://app.usepylon.com/issues?issueNumber=55914"
+      },
+      {
+        "number": 55911,
+        "title": "I can not use fable 5 medium",
+        "link": "https://app.usepylon.com/issues?issueNumber=55911"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1807d01305a3",
+    "label": "Perform a normal operation → \"Permission denied: internal error\" with a trace ID",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 4,
+    "open": 0,
+    "definite": 4,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-09T03:51:49Z",
+    "score": 120.3,
+    "suggestedTest": "Perform 10 common operations (file edit, terminal, AI chat) → verify zero \"Permission denied: internal error\" responses",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57227,
+        "title": "回复：Re: 回复：Re: 回复：I am getting this error in Windsurf Cascade",
+        "link": "https://app.usepylon.com/issues?issueNumber=57227"
+      },
+      {
+        "number": 55018,
+        "title": "Pylon ticket #55018",
+        "link": "https://app.usepylon.com/issues?issueNumber=55018"
+      },
+      {
+        "number": 55896,
+        "title": "Permission denied: internal error occurred in Cascade",
+        "link": "https://app.usepylon.com/issues?issueNumber=55896"
+      },
+      {
+        "number": 56112,
+        "title": "回复：Re: 回复：Re: 回复：Re: 回复：Re: I am getting this error in Windsurf Cascade",
+        "link": "https://app.usepylon.com/issues?issueNumber=56112"
+      }
+    ]
+  },
+  {
+    "id": "PAT-23d8e07d2c9c",
+    "label": "Install the CLI fresh → first run hangs or crashes before becoming usable",
+    "surfaceId": "devin-cli",
+    "flow": "CLI",
+    "nodeId": "landing",
+    "total": 3,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-24T06:45:10Z",
+    "score": 116.4,
+    "suggestedTest": "Fresh install on clean machine → run first command → verify response within 10s → no crash/hang in first 60s",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57643,
+        "title": "Devin CLI Installation Failed - System Error",
+        "link": "https://app.usepylon.com/issues?issueNumber=57643"
+      },
+      {
+        "number": 61738,
+        "title": "Hello, i can not use swe-1.7 lightning, it is consistent i tried restarting, reinstalling and…",
+        "link": "https://app.usepylon.com/issues?issueNumber=61738"
+      },
+      {
+        "number": 60433,
+        "title": "I connected (installed) the git organization with devin. but it is not showing on devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=60433"
+      }
+    ]
+  },
+  {
+    "id": "PAT-8245bbeec058",
+    "label": "Run a CLI command → blocked by a false permission error with a trace ID",
+    "surfaceId": "devin-cli",
+    "flow": "CLI",
+    "nodeId": "landing",
+    "total": 6,
+    "open": 1,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-12T04:22:34Z",
+    "score": 116.3,
+    "suggestedTest": "Run 10 common CLI commands → verify each responds correctly → verify no hangs or panics",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62431"],
+    "evidence": [
+      {
+        "number": 61012,
+        "title": "Invalid argument: an internal error occurred (trace ID: )",
+        "link": "https://app.usepylon.com/issues?issueNumber=61012"
+      },
+      {
+        "number": 58043,
+        "title": "Protocol error on prompt sending in Devin tools",
+        "link": "https://app.usepylon.com/issues?issueNumber=58043"
+      },
+      {
+        "number": 59724,
+        "title": "I have error Invalid argument: an internal error occurred (trace ID: )",
+        "link": "https://app.usepylon.com/issues?issueNumber=59724"
+      },
+      {
+        "number": 62431,
+        "title": "Hi, I am getting Not found: an internal error occurred (error ID: ) (trace ID: ) er",
+        "link": "https://app.usepylon.com/issues?issueNumber=62431"
+      },
+      {
+        "number": 56503,
+        "title": "Invalid argument: an internal error occurred (trace ID: )",
+        "link": "https://app.usepylon.com/issues?issueNumber=56503"
+      },
+      {
+        "number": 55754,
+        "title": "I keep getting the error \"Invalid argument: an internal error occurred (trace ID: )\" for any query…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55754"
+      }
+    ]
+  },
+  {
+    "id": "PAT-9e1aa90bcb93",
+    "label": "Pay for a plan → plan features not activated despite successful payment",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 10,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-09T05:12:06Z",
+    "score": 115.9,
+    "suggestedTest": "Complete Stripe test payment for Pro plan → wait 30s → verify Pro features accessible → verify plan badge shows in UI",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 60820,
+        "title": "Unable to Access Service After Payment",
+        "link": "https://app.usepylon.com/issues?issueNumber=60820"
+      },
+      {
+        "number": 55532,
+        "title": "Remove payment method / Stuck in Invalid Plan loop",
+        "link": "https://app.usepylon.com/issues?issueNumber=55532"
+      },
+      {
+        "number": 62370,
+        "title": "Issue updating payment method / Unexpected plan change to $20",
+        "link": "https://app.usepylon.com/issues?issueNumber=62370"
+      },
+      {
+        "number": 58299,
+        "title": "Payment successful but pro plan not showing",
+        "link": "https://app.usepylon.com/issues?issueNumber=58299"
+      },
+      {
+        "number": 58245,
+        "title": "Payment not reflecting on Windsurf account",
+        "link": "https://app.usepylon.com/issues?issueNumber=58245"
+      },
+      {
+        "number": 56084,
+        "title": "Hi Windsurf Support Team, I am writing to report a critical issue with my Pro subscription",
+        "link": "https://app.usepylon.com/issues?issueNumber=56084"
+      },
+      {
+        "number": 56081,
+        "title": "Hi Windsurf Support Team",
+        "link": "https://app.usepylon.com/issues?issueNumber=56081"
+      },
+      {
+        "number": 55026,
+        "title": "Cancellation billing issue and payment method removal",
+        "link": "https://app.usepylon.com/issues?issueNumber=55026"
+      }
+    ]
+  },
+  {
+    "id": "PAT-cbf598b515a8",
+    "label": "Send multiple messages in Cascade → AI loses context from earlier turns",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-09T07:08:18Z",
+    "score": 114.2,
+    "suggestedTest": "Open IDE → exercise chat + editing for 10 min → verify no freeze or crash → verify conversation history survives restart",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 60831,
+        "title": "Bug Report: Windsurf Freezes on Cascade, Connection Drops, and Lost Conversation History on Devin…",
+        "link": "https://app.usepylon.com/issues?issueNumber=60831"
+      },
+      {
+        "number": 61931,
+        "title": "Urgent — recover missing Cascade conversation Hello",
+        "link": "https://app.usepylon.com/issues?issueNumber=61931"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c677e479f13e",
+    "label": "Create/review PR → GitHub integration fails or PR actions error",
+    "surfaceId": "enterprise",
+    "flow": "Review/GitHub",
+    "nodeId": "review",
+    "total": 4,
+    "open": 2,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-16T18:54:09Z",
+    "score": 113.9,
+    "suggestedTest": "Create PR via Devin session → verify PR appears on GitHub → verify review comments can be posted",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-64565", "INC-64295"],
+    "evidence": [
+      {
+        "number": 64565,
+        "title": "Several rounds of Auto-Review - sessions crashed leaving PR failing lint and unit tests",
+        "link": "https://app.usepylon.com/issues?issueNumber=64565"
+      },
+      {
+        "number": 64295,
+        "title": "Devin error failures in task automation (PR creation)",
+        "link": "https://app.usepylon.com/issues?issueNumber=64295"
+      },
+      {
+        "number": 60751,
+        "title": "Repository Rename Causes Devin Errors and PR 500s",
+        "link": "https://app.usepylon.com/issues?issueNumber=60751"
+      },
+      {
+        "number": 56591,
+        "title": "Session-PR association failure in Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=56591"
+      }
+    ]
+  },
+  {
+    "id": "PAT-b505edeaf873",
+    "label": "Use the IDE plugin → plugin crashes or fails to connect",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "login",
+    "total": 8,
+    "open": 1,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-12T19:44:24Z",
+    "score": 112.2,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62502"],
+    "evidence": [
+      {
+        "number": 60545,
+        "title": "Login authentication issue with Windsurf VS Code plugin on Windows",
+        "link": "https://app.usepylon.com/issues?issueNumber=60545"
+      },
+      {
+        "number": 57431,
+        "title": "Windsurf Plugin (Codeium) for VS Code — login never completes; auth never returns token to the…",
+        "link": "https://app.usepylon.com/issues?issueNumber=57431"
+      },
+      {
+        "number": 62502,
+        "title": "i cannot authenticate vs code windurf plugin. i get redirected to",
+        "link": "https://app.usepylon.com/issues?issueNumber=62502"
+      },
+      {
+        "number": 57314,
+        "title": "windsurf plugin not work with jetbrain2026.1",
+        "link": "https://app.usepylon.com/issues?issueNumber=57314"
+      },
+      {
+        "number": 60712,
+        "title": "I am having issues loging in to the windsurf plugin on vscode. The link provided opens on the…",
+        "link": "https://app.usepylon.com/issues?issueNumber=60712"
+      },
+      {
+        "number": 55882,
+        "title": "Android Studio Integration",
+        "link": "https://app.usepylon.com/issues?issueNumber=55882"
+      },
+      {
+        "number": 57054,
+        "title": "Objet : Plugin Windsurf VS Code — boucle de connexion infinie, le navigateur redirige vers…",
+        "link": "https://app.usepylon.com/issues?issueNumber=57054"
+      },
+      {
+        "number": 56389,
+        "title": "Windsurf extension plugin for VS code",
+        "link": "https://app.usepylon.com/issues?issueNumber=56389"
+      }
+    ]
+  },
+  {
+    "id": "PAT-e219966442ad",
+    "label": "Complete payment or plan change → account state not updated correctly · “trace id: <id>”",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "login",
+    "total": 4,
+    "open": 0,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "declining",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-10T10:11:29Z",
+    "score": 110.7,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 56077,
+        "title": "Subscription Cancellation Request & Login Error",
+        "link": "https://app.usepylon.com/issues?issueNumber=56077"
+      },
+      {
+        "number": 63274,
+        "title": "Failed to log in: [permission_denied] api server wire error: subscription is not active, please…",
+        "link": "https://app.usepylon.com/issues?issueNumber=63274"
+      },
+      {
+        "number": 55286,
+        "title": "Hello, I already added Key at but in plugin got errors \"Failed precondition: model requires BY",
+        "link": "https://app.usepylon.com/issues?issueNumber=55286"
+      },
+      {
+        "number": 62231,
+        "title": "Please cancel my subscription for windsurf",
+        "link": "https://app.usepylon.com/issues?issueNumber=62231"
+      }
+    ]
+  },
+  {
+    "id": "PAT-3ed71c36333b",
+    "label": "Send messages at normal pace → unexpectedly blocked by message rate limit",
+    "surfaceId": "devin-cli",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 5,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-09T11:20:58Z",
+    "score": 109.0,
+    "suggestedTest": "Perform 20 standard actions in 60s (normal user pace) → verify zero false rate-limit blocks → check error messages are clear",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 62579,
+        "title": "CLI stuck on \"message rate limit for this model\" — all models, quota free",
+        "link": "https://app.usepylon.com/issues?issueNumber=62579"
+      },
+      {
+        "number": 58023,
+        "title": "Rate-limit error blocking all models in Devin Desktop and Devin CLI",
+        "link": "https://app.usepylon.com/issues?issueNumber=58023"
+      },
+      {
+        "number": 57417,
+        "title": "Account/org-level message rate limit blocking ALL Devin CLI usage — critical",
+        "link": "https://app.usepylon.com/issues?issueNumber=57417"
+      },
+      {
+        "number": 57194,
+        "title": "Issue with model access despite available quota",
+        "link": "https://app.usepylon.com/issues?issueNumber=57194"
+      },
+      {
+        "number": 55079,
+        "title": "it's give me: \"Permission denied: Permission denied: Reached overall message rate limit for your…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55079"
+      }
+    ]
+  },
+  {
+    "id": "PAT-c2f64e64e1c2",
+    "label": "Run a CLI command → CLI hangs or becomes unresponsive",
+    "surfaceId": "devin-cli",
+    "flow": "CLI",
+    "nodeId": "session",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-13T04:18:18Z",
+    "score": 109.0,
+    "suggestedTest": "Run 10 common CLI commands → verify each responds correctly → verify no hangs or panics",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 61333,
+        "title": "Hi, my session with ID is stuck. I cannot reboot it either. Can you please reboot on your end?",
+        "link": "https://app.usepylon.com/issues?issueNumber=61333"
+      },
+      {
+        "number": 61399,
+        "title": "Are you guys experiencing downtime? A lot of our chat are just hanging",
+        "link": "https://app.usepylon.com/issues?issueNumber=61399"
+      }
+    ]
+  },
+  {
+    "id": "PAT-0e5ab2fa1a11",
+    "label": "Use the IDE normally → \"Permission denied: internal error\" with a trace ID",
+    "surfaceId": "devin-cli",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 6,
+    "open": 0,
+    "definite": 3,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-10T18:00:59Z",
+    "score": 108.5,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 62496,
+        "title": "here is the error again i cannot start cascade Invalid argument: an internal error occurred (trace…",
+        "link": "https://app.usepylon.com/issues?issueNumber=62496"
+      },
+      {
+        "number": 55835,
+        "title": "I am getting this error \"Welcome to Devin CLI!",
+        "link": "https://app.usepylon.com/issues?issueNumber=55835"
+      },
+      {
+        "number": 60614,
+        "title": "Invalid argument: an internal error occurred (trace ID: )",
+        "link": "https://app.usepylon.com/issues?issueNumber=60614"
+      },
+      {
+        "number": 57611,
+        "title": "Every time I try to ask the Devin Local agent to continue what it was doing, an orange banner comes…",
+        "link": "https://app.usepylon.com/issues?issueNumber=57611"
+      },
+      {
+        "number": 55379,
+        "title": "I upgraded to Devin.ai desktop and am now getting an error of: Not found: an internal error…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55379"
+      },
+      {
+        "number": 56070,
+        "title": "Unauthenticated: failed to fetch Devin user info: Windsurf integration is currently in limited…",
+        "link": "https://app.usepylon.com/issues?issueNumber=56070"
+      }
+    ]
+  },
+  {
+    "id": "PAT-498c0d186bd9",
+    "label": "Check usage/credits → incorrect balance shown or credits not applied",
+    "surfaceId": "windsurf",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 15,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-09T19:21:47Z",
+    "score": 106.8,
+    "suggestedTest": "Check current ACU balance → run short session → re-check balance → verify deduction matches expected usage",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 55569,
+        "title": "hi, i just topped up extra use credits and they are not showing and i cannot use. it prompted me to…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55569"
+      },
+      {
+        "number": 64498,
+        "title": "Hello, Devin went on infinite loop and ate all my ACU credits for the month on 7/29. It happened…",
+        "link": "https://app.usepylon.com/issues?issueNumber=64498"
+      },
+      {
+        "number": 56954,
+        "title": "If i have a free plan and my free credits run out, how long do i need to wait until they reset",
+        "link": "https://app.usepylon.com/issues?issueNumber=56954"
+      },
+      {
+        "number": 62034,
+        "title": "why would it not let me buy credits",
+        "link": "https://app.usepylon.com/issues?issueNumber=62034"
+      },
+      {
+        "number": 55970,
+        "title": "HELP! Urgent: Sudden Logout & Unable to Log Back In — Risk of Losing Paid Credits",
+        "link": "https://app.usepylon.com/issues?issueNumber=55970"
+      },
+      {
+        "number": 64750,
+        "title": "Support Request Regarding ACU Charges for SWE Model Usage",
+        "link": "https://app.usepylon.com/issues?issueNumber=64750"
+      },
+      {
+        "number": 63124,
+        "title": "Es ya el tercer o el cuarto día consecutivo que tengo que acudir al soporte por la misma causa, y…",
+        "link": "https://app.usepylon.com/issues?issueNumber=63124"
+      },
+      {
+        "number": 59914,
+        "title": "I have purchases some addtional usage credit for delvin ide but I am getting the following message",
+        "link": "https://app.usepylon.com/issues?issueNumber=59914"
+      }
+    ]
+  },
+  {
+    "id": "PAT-a81466cb6b81",
+    "label": "Complete payment or plan change → account state not updated correctly · “pro plan paid and activated but account…”",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 2,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-28T11:21:41Z",
+    "score": 105.0,
+    "suggestedTest": "Complete Stripe test payment for Pro plan → wait 30s → verify Pro features accessible → verify plan badge shows in UI",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 58184,
+        "title": "Pro plan paid and activated, but account reverted to Free - URGENT",
+        "link": "https://app.usepylon.com/issues?issueNumber=58184"
+      },
+      {
+        "number": 58185,
+        "title": "I paid for the Pro plan today. It activated and I worked on it for several hours. Then I got a…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58185"
+      }
+    ]
+  },
+  {
+    "id": "PAT-8c23a307806f",
+    "label": "Complete payment or plan change → account state not updated correctly · “external-57993”",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 4,
+    "open": 2,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-08T18:50:34Z",
+    "score": 103.1,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-54951", "INC-54952"],
+    "evidence": [
+      {
+        "number": 54951,
+        "title": "I noticed this morning credits are being charged so I am trying to use SWE-1.6 however what I am…",
+        "link": "https://app.usepylon.com/issues?issueNumber=54951"
+      },
+      {
+        "number": 54952,
+        "title": "need to raise a bug",
+        "link": "https://app.usepylon.com/issues?issueNumber=54952"
+      },
+      {
+        "number": 54949,
+        "title": "request was flagged by Anthropic's cyber verification policy",
+        "link": "https://app.usepylon.com/issues?issueNumber=54949"
+      },
+      {
+        "number": 54954,
+        "title": "One specific MCP server is not being allowed",
+        "link": "https://app.usepylon.com/issues?issueNumber=54954"
+      }
+    ]
+  },
+  {
+    "id": "PAT-bee90c326b2e",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “Devin Desktop repeatedly crashes with…”",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "e-membership",
+    "total": 5,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-15T17:29:05Z",
+    "score": 103.0,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 64408,
+        "title": "Hello, Devin Desktop repeatedly crashes with the following error: “Something went wrong — Maximum…",
+        "link": "https://app.usepylon.com/issues?issueNumber=64408"
+      },
+      {
+        "number": 62529,
+        "title": "Hello, I’m experiencing repeated crashes of Devin Desktop on macOS",
+        "link": "https://app.usepylon.com/issues?issueNumber=62529"
+      },
+      {
+        "number": 61493,
+        "title": "Today, on July 13th, I submitted only ONE prompt to the Cascade agent",
+        "link": "https://app.usepylon.com/issues?issueNumber=61493"
+      },
+      {
+        "number": 56397,
+        "title": "Hello, I'm using the Windsurf plugin in Android Studio on the Free plan",
+        "link": "https://app.usepylon.com/issues?issueNumber=56397"
+      },
+      {
+        "number": 58547,
+        "title": "Hello, I'm reaching out because the LuaHelper extension (yinfei",
+        "link": "https://app.usepylon.com/issues?issueNumber=58547"
+      }
+    ]
+  },
+  {
+    "id": "PAT-b5f849883a9e",
+    "label": "Type code → autocomplete suggestions flicker, disappear, or fail to appear",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "ent",
+    "total": 4,
+    "open": 2,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-20T00:30:59Z",
+    "score": 102.7,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-57685", "INC-57158"],
+    "evidence": [
+      {
+        "number": 57685,
+        "title": "Autocomplete not working in a specific project",
+        "link": "https://app.usepylon.com/issues?issueNumber=57685"
+      },
+      {
+        "number": 61416,
+        "title": "Windsurf Plugins Autocomplete Does Not Work",
+        "link": "https://app.usepylon.com/issues?issueNumber=61416"
+      },
+      {
+        "number": 63147,
+        "title": "Autocomplete not working",
+        "link": "https://app.usepylon.com/issues?issueNumber=63147"
+      },
+      {
+        "number": 57158,
+        "title": "Since upgrading from Windsurf to Devin, autocomplete no longer works: fireSupercompleteV2 err…",
+        "link": "https://app.usepylon.com/issues?issueNumber=57158"
+      }
+    ]
+  },
+  {
+    "id": "PAT-8c07199e8e63",
+    "label": "Complete payment or plan change → account state not updated correctly · “i am having an issue upgrading my plan…”",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-30T03:14:44Z",
+    "score": 101.2,
+    "suggestedTest": "Complete Stripe test payment for Pro plan → wait 30s → verify Pro features accessible → verify plan badge shows in UI",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 58467,
+        "title": "Hello, I am having an issue upgrading my plan. I want to purchase the Max plan for $200 USD, but…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58467"
+      }
+    ]
+  },
+  {
+    "id": "PAT-84ac1f37c0cb",
+    "label": "Attempt payment → payment fails or card declined",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "e-membership",
+    "total": 4,
+    "open": 2,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-23T08:49:43Z",
+    "score": 100.7,
+    "suggestedTest": "Attempt Stripe payment with valid test card → verify payment succeeds → attempt with declined card → verify clear error message",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-63385"],
+    "evidence": [
+      {
+        "number": 63385,
+        "title": "Subscription Reactivation",
+        "link": "https://app.usepylon.com/issues?issueNumber=63385"
+      },
+      {
+        "number": 58192,
+        "title": "Auto Recharge Payment Failed",
+        "link": "https://app.usepylon.com/issues?issueNumber=58192"
+      },
+      {
+        "number": 57499,
+        "title": "I am not able to renew my subscription after failed payment",
+        "link": "https://app.usepylon.com/issues?issueNumber=57499"
+      },
+      {
+        "number": 64828,
+        "title": "Payment failure after completion",
+        "link": "https://app.usepylon.com/issues?issueNumber=64828"
+      }
+    ]
+  },
+  {
+    "id": "PAT-93afc3ae3ab2",
+    "label": "Start a session → session unresponsive or fails to initialize · “vpn client tls handshake failure on udp…”",
+    "surfaceId": "retail",
+    "flow": "Sessions/Automation",
+    "nodeId": "session",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-22T06:57:48Z",
+    "score": 100.0,
+    "suggestedTest": "Start fresh Devin session → interact continuously for 5 min → verify response time stays under 5s throughout",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57322,
+        "title": "VPN Client: TLS handshake failure on UDP 443 outbound",
+        "link": "https://app.usepylon.com/issues?issueNumber=57322"
+      }
+    ]
+  },
+  {
+    "id": "PAT-e75fc909c747",
+    "label": "Run a CLI command → unexpected error or command hangs · “Devin CLI killed repeatedly by macOS…”",
+    "surfaceId": "devin-cli",
+    "flow": "CLI",
+    "nodeId": "landing",
+    "total": 6,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-09T05:08:45Z",
+    "score": 99.5,
+    "suggestedTest": "Run 10 common CLI commands → verify each responds correctly → verify no hangs or panics",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-64555"],
+    "evidence": [
+      {
+        "number": 64555,
+        "title": "After investigation, I've identified the root cause: the Devin CLI is writing unbounded amounts of…",
+        "link": "https://app.usepylon.com/issues?issueNumber=64555"
+      },
+      {
+        "number": 60999,
+        "title": "Pylon ticket #60999",
+        "link": "https://app.usepylon.com/issues?issueNumber=60999"
+      },
+      {
+        "number": 59644,
+        "title": "Pylon ticket #59644",
+        "link": "https://app.usepylon.com/issues?issueNumber=59644"
+      },
+      {
+        "number": 64766,
+        "title": "Pylon ticket #64766",
+        "link": "https://app.usepylon.com/issues?issueNumber=64766"
+      },
+      {
+        "number": 55034,
+        "title": "Pylon ticket #55034",
+        "link": "https://app.usepylon.com/issues?issueNumber=55034"
+      },
+      {
+        "number": 55025,
+        "title": "التطبيق بيفتح كذا نافذه + واجهه ترتيب التطبيق ملغبه عايز ارجع التطبيق طبيعي",
+        "link": "https://app.usepylon.com/issues?issueNumber=55025"
+      }
+    ]
+  },
+  {
+    "id": "PAT-e9510de0b410",
+    "label": "Use a model at normal pace → blocked by rate limit / high-demand throttle",
+    "surfaceId": "devin-cli",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 3,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-09T15:12:31Z",
+    "score": 98.8,
+    "suggestedTest": "Perform 20 standard actions in 60s (normal user pace) → verify zero false rate-limit blocks → check error messages are clear",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 58554,
+        "title": "Devin CLI issue --> reimburse?",
+        "link": "https://app.usepylon.com/issues?issueNumber=58554"
+      },
+      {
+        "number": 55127,
+        "title": "When i send i message it often says Permission denied: Permission denied: We're currently facing…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55127"
+      },
+      {
+        "number": 61869,
+        "title": "Permission denied: model rate limit reset",
+        "link": "https://app.usepylon.com/issues?issueNumber=61869"
+      }
+    ]
+  },
+  {
+    "id": "PAT-e690bded7c35",
+    "label": "Attempt plan change (upgrade/downgrade) → action fails or state inconsistent",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 5,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-10T13:25:49Z",
+    "score": 98.0,
+    "suggestedTest": "Complete Stripe test payment for Pro plan → wait 30s → verify Pro features accessible → verify plan badge shows in UI",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 58235,
+        "title": "Please upgrade me to the free plan. I no longer plan to pay for the pro plan. When I try to upgrade…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58235"
+      },
+      {
+        "number": 55322,
+        "title": "Mensagem de erro \"Invalid plan\" ao tentar realizar downgrade para o plano gratuito",
+        "link": "https://app.usepylon.com/issues?issueNumber=55322"
+      },
+      {
+        "number": 64832,
+        "title": "My plan is not getting upgraded its in scheduled status from last 2 months",
+        "link": "https://app.usepylon.com/issues?issueNumber=64832"
+      },
+      {
+        "number": 62528,
+        "title": "Unable to downgrade, can't cancel sub",
+        "link": "https://app.usepylon.com/issues?issueNumber=62528"
+      },
+      {
+        "number": 60648,
+        "title": "HI I am unable to clear invoice or upgrade please check",
+        "link": "https://app.usepylon.com/issues?issueNumber=60648"
+      }
+    ]
+  },
+  {
+    "id": "PAT-5edf47a461ef",
+    "label": "Check usage/credits → incorrect balance shown or credits not applied",
+    "surfaceId": "retail",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 5,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "accelerating",
+    "priorityReason": "accelerating — growing fast",
+    "firstSeen": "2026-06-11T18:37:15Z",
+    "score": 97.2,
+    "suggestedTest": "Check current ACU balance → run short session → re-check balance → verify deduction matches expected usage",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-64364"],
+    "evidence": [
+      {
+        "number": 64364,
+        "title": "Hello Cognition Support Team, I am writing to demand a full refund of my wasted credits",
+        "link": "https://app.usepylon.com/issues?issueNumber=64364"
+      },
+      {
+        "number": 60594,
+        "title": "Someone is literally draining my account right now of my usage credits and there's nothing I can…",
+        "link": "https://app.usepylon.com/issues?issueNumber=60594"
+      },
+      {
+        "number": 55667,
+        "title": "major bug using Claude Fable outputting no response but consuming credits. I tried 7x thinking it…",
+        "link": "https://app.usepylon.com/issues?issueNumber=55667"
+      },
+      {
+        "number": 60200,
+        "title": "Quota Exhaustion: ACU Runout and Session Suspension",
+        "link": "https://app.usepylon.com/issues?issueNumber=60200"
+      },
+      {
+        "number": 64285,
+        "title": "Request for Credit Refund Due to Repeated Execution Failures",
+        "link": "https://app.usepylon.com/issues?issueNumber=64285"
+      }
+    ]
+  },
+  {
+    "id": "PAT-90676e140112",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “permission issue when using devin user…”",
+    "surfaceId": "enterprise",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "landing",
+    "total": 1,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-21T20:56:28Z",
+    "score": 97.0,
+    "suggestedTest": "Authenticate as valid user → perform standard actions (edit, save, chat) → verify no false permission denials",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62678"],
+    "evidence": [
+      {
+        "number": 62678,
+        "title": "Permission Issue When Using Devin User Freezing Endpoints (403 Forbidden)",
+        "link": "https://app.usepylon.com/issues?issueNumber=62678"
+      }
+    ]
+  },
+  {
+    "id": "PAT-729f134f7c21",
+    "label": "Complete payment or plan change → account state not updated correctly · “i ve tried to pay for the pro…”",
+    "surfaceId": "retail",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 4,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-29T07:57:46Z",
+    "score": 95.5,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 58512,
+        "title": "I've tried to pay for the Pro subscription a few times, but each time it says my credit card is…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58512"
+      },
+      {
+        "number": 58513,
+        "title": "I've tried to pay for the Pro subscription a few times, but each time it says my credit card is…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58513"
+      },
+      {
+        "number": 58511,
+        "title": "I've tried to pay for the Pro subscription a few times, but each time it says my credit card is…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58511"
+      },
+      {
+        "number": 58261,
+        "title": "I've tried to pay for the Pro subscription but each time it says my credit card is declined, even…",
+        "link": "https://app.usepylon.com/issues?issueNumber=58261"
+      }
+    ]
+  },
+  {
+    "id": "PAT-ff9cf8ef4623",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “unauthorized api write across sessions”",
+    "surfaceId": "enterprise",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "automations",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-14T09:32:11Z",
+    "score": 95.2,
+    "suggestedTest": "Authenticate as valid user → perform standard actions (edit, save, chat) → verify no false permission denials",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 61775,
+        "title": "Unauthorized API write across sessions",
+        "link": "https://app.usepylon.com/issues?issueNumber=61775"
+      }
+    ]
+  },
+  {
+    "id": "PAT-1b49506aaebd",
+    "label": "Complete payment or plan change → account state not updated correctly · “how s it going i wanted to report a…”",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "landing",
+    "total": 1,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-08T18:12:52Z",
+    "score": 95.0,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-60745"],
+    "evidence": [
+      {
+        "number": 60745,
+        "title": "Hi, how's it going? I wanted to report a small error. Today my boss mentioned that he had paid for…",
+        "link": "https://app.usepylon.com/issues?issueNumber=60745"
+      }
+    ]
+  },
+  {
+    "id": "PAT-741cc295c5d0",
+    "label": "Use GitHub integration → request fails with a server error",
+    "surfaceId": "enterprise",
+    "flow": "Review/GitHub",
+    "nodeId": "review",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-11T16:13:24Z",
+    "score": 94.6,
+    "suggestedTest": "Create PR via Devin session → verify PR appears on GitHub → verify review comments can be posted",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 56664,
+        "title": "Server error on pr-review org endpoint",
+        "link": "https://app.usepylon.com/issues?issueNumber=56664"
+      },
+      {
+        "number": 55612,
+        "title": "Devin Review: 500 Error When Accessing Review Homepage from Main Interface",
+        "link": "https://app.usepylon.com/issues?issueNumber=55612"
+      }
+    ]
+  },
+  {
+    "id": "PAT-15cd1a74644f",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “bug report”",
+    "surfaceId": "devin-cli",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-04T09:08:41Z",
+    "score": 94.2,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 60726,
+        "title": "bug report",
+        "link": "https://app.usepylon.com/issues?issueNumber=60726"
+      },
+      {
+        "number": 59939,
+        "title": "Bug report created with devin local with GLM 5",
+        "link": "https://app.usepylon.com/issues?issueNumber=59939"
+      }
+    ]
+  },
+  {
+    "id": "PAT-09db6487fb61",
+    "label": "Upload or reference a file → file lost or inaccessible to the agent · “uploaded file”",
+    "surfaceId": "windsurf",
+    "flow": "Files/Attachments",
+    "nodeId": "landing",
+    "total": 8,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 2,
+    "trend": "declining",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-16T16:23:50Z",
+    "score": 93.8,
+    "suggestedTest": "Start session → upload 3 file types (txt, png, pdf) → reference each in prompt → verify agent can read all three",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-59359"],
+    "evidence": [
+      {
+        "number": 56573,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=56573"
+      },
+      {
+        "number": 59904,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=59904"
+      },
+      {
+        "number": 57363,
+        "title": "I'm using devin. since today, nearly 95% of the requests I do to ANY agent produces an error, like…",
+        "link": "https://app.usepylon.com/issues?issueNumber=57363"
+      },
+      {
+        "number": 64171,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=64171"
+      },
+      {
+        "number": 61238,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=61238"
+      },
+      {
+        "number": 63996,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=63996"
+      },
+      {
+        "number": 56914,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=56914"
+      },
+      {
+        "number": 59359,
+        "title": "Uploaded file",
+        "link": "https://app.usepylon.com/issues?issueNumber=59359"
+      }
+    ]
+  },
+  {
+    "id": "PAT-75cd5f16de62",
+    "label": "Attempt to authenticate → login fails or session not established · “unable to access devin academy”",
+    "surfaceId": "enterprise",
+    "flow": "Login/Auth",
+    "nodeId": "login",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-13T15:30:56Z",
+    "score": 91.6,
+    "suggestedTest": "Attempt login via SSO/email → verify redirect completes → verify session established → verify no redirect loop",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 61406,
+        "title": "Unable to access Devin Academy",
+        "link": "https://app.usepylon.com/issues?issueNumber=61406"
+      }
+    ]
+  },
+  {
+    "id": "PAT-8820f4493fdf",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “403 error while creating Devin API Key”",
+    "surfaceId": "enterprise",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "e-api",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "declining",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-29T04:49:54Z",
+    "score": 91.2,
+    "suggestedTest": "Authenticate as valid user → perform standard actions (edit, save, chat) → verify no false permission denials",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 63772,
+        "title": "403 error while creating Devin API Key",
+        "link": "https://app.usepylon.com/issues?issueNumber=63772"
+      }
+    ]
+  },
+  {
+    "id": "PAT-3c9e67e84210",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “permission denied: bug!!! hello, using…”",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "session",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-20T03:38:36Z",
+    "score": 91.2,
+    "suggestedTest": "Authenticate as valid user → perform standard actions (edit, save, chat) → verify no false permission denials",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 62437,
+        "title": "Permission denied: BUG!!!",
+        "link": "https://app.usepylon.com/issues?issueNumber=62437"
+      }
+    ]
+  },
+  {
+    "id": "PAT-b9a6ff8404b8",
+    "label": "Create new org → stuck in \"Setting up\" / \"Deciding action\" loop",
+    "surfaceId": "enterprise",
+    "flow": "Onboarding/Setup",
+    "nodeId": "session",
+    "total": 2,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-17T16:53:08Z",
+    "score": 91.0,
+    "suggestedTest": "Create new org → complete setup wizard → verify org transitions from \"Setting up\" to active within 60s",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 56767,
+        "title": "Devin sessions stuck in 'Setting up...' or crashing",
+        "link": "https://app.usepylon.com/issues?issueNumber=56767"
+      },
+      {
+        "number": 56765,
+        "title": "Session crash and setup stuck on Setting up",
+        "link": "https://app.usepylon.com/issues?issueNumber=56765"
+      }
+    ]
+  },
+  {
+    "id": "PAT-8c737703d930",
+    "label": "Complete payment or plan change → account state not updated correctly · “problem with devin”",
+    "surfaceId": "windsurf",
+    "flow": "Billing/Account",
+    "nodeId": "e-membership",
+    "total": 4,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-26T01:35:31Z",
+    "score": 90.7,
+    "suggestedTest": "Navigate to Settings → Plans → complete plan change → verify account state updates within 30s → verify no stale billing state",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 57924,
+        "title": "Problem with Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=57924"
+      },
+      {
+        "number": 57931,
+        "title": "Problem with Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=57931"
+      },
+      {
+        "number": 57927,
+        "title": "Problem with Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=57927"
+      },
+      {
+        "number": 57926,
+        "title": "Problem with Devin",
+        "link": "https://app.usepylon.com/issues?issueNumber=57926"
+      }
+    ]
+  },
+  {
+    "id": "PAT-30f70e31bd18",
+    "label": "Check usage or consume credits → incorrect balance or quota mismatch · “My free tier quota has been stuck at…”",
+    "surfaceId": "retail",
+    "flow": "Quota/Usage",
+    "nodeId": "landing",
+    "total": 3,
+    "open": 0,
+    "definite": 2,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-08T00:45:19Z",
+    "score": 90.4,
+    "suggestedTest": "Check current ACU balance → run short session → re-check balance → verify deduction matches expected usage",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 60577,
+        "title": "Hello, My free tier quota has been stuck at -0",
+        "link": "https://app.usepylon.com/issues?issueNumber=60577"
+      },
+      {
+        "number": 60576,
+        "title": "Free tier quota stuck at -0.78 since June 29 update",
+        "link": "https://app.usepylon.com/issues?issueNumber=60576"
+      },
+      {
+        "number": 62534,
+        "title": "Hello, I'd like to report what appears to be a billing issue",
+        "link": "https://app.usepylon.com/issues?issueNumber=62534"
+      }
+    ]
+  },
+  {
+    "id": "PAT-6daa610f7405",
+    "label": "Enter the emailed verification code → code rejected or never arrives",
+    "surfaceId": "enterprise",
+    "flow": "Login/Auth",
+    "nodeId": "auth",
+    "total": 3,
+    "open": 1,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 1,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-30T11:51:46Z",
+    "score": 90.2,
+    "suggestedTest": "Request email verification code → verify it arrives within 60s → enter it → verify login completes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": ["INC-62486"],
+    "evidence": [
+      {
+        "number": 58560,
+        "title": "Unable to receive verification code for my Devin account",
+        "link": "https://app.usepylon.com/issues?issueNumber=58560"
+      },
+      {
+        "number": 64551,
+        "title": "Devin verification code: 274061",
+        "link": "https://app.usepylon.com/issues?issueNumber=64551"
+      },
+      {
+        "number": 62486,
+        "title": "Portal - Verification code goes to junk and has no reference to Cognition",
+        "link": "https://app.usepylon.com/issues?issueNumber=62486"
+      }
+    ]
+  },
+  {
+    "id": "PAT-65678e9ee35a",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “can i submit a bug report”",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "landing",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": -1,
+    "count14d": 1,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-08-06T01:48:04Z",
+    "score": 90.0,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 64952,
+        "title": "Can i submit a bug report",
+        "link": "https://app.usepylon.com/issues?issueNumber=64952"
+      }
+    ]
+  },
+  {
+    "id": "PAT-358752d28e15",
+    "label": "Use AI coding features → incorrect output or feature unavailable · “bug report claude sonnet byok returns…”",
+    "surfaceId": "windsurf",
+    "flow": "IDE/Desktop",
+    "nodeId": "e-devin",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-16T11:22:23Z",
+    "score": 90.0,
+    "suggestedTest": "Open IDE → start AI chat → send 5 messages → verify each gets valid response → verify no crashes or freezes",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 56504,
+        "title": "Bug Report: Claude Sonnet 4 BYOK Returns 'Not Found' Error — Wrong Model ID Being Sent",
+        "link": "https://app.usepylon.com/issues?issueNumber=56504"
+      }
+    ]
+  },
+  {
+    "id": "PAT-fbe50b7b344e",
+    "label": "Create new org or start first session → stuck in setup or fails to initialize · “urgent account stuck in org loop paid…”",
+    "surfaceId": "retail",
+    "flow": "Onboarding/Setup",
+    "nodeId": "landing",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-06-13T05:41:38Z",
+    "score": 90.0,
+    "suggestedTest": "Create new org → complete setup wizard → verify org transitions from \"Setting up\" to active within 60s",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 56080,
+        "title": "Urgent: Account Stuck in Org Loop / Paid Individual Pro User",
+        "link": "https://app.usepylon.com/issues?issueNumber=56080"
+      }
+    ]
+  },
+  {
+    "id": "PAT-67f49813f149",
+    "label": "Perform allowed action → unexpectedly denied (false permission block) · “permission denied: invalid”",
+    "surfaceId": "windsurf",
+    "flow": "Permissions/Rate limits",
+    "nodeId": "login",
+    "total": 1,
+    "open": 0,
+    "definite": 1,
+    "count24h": 0,
+    "growth24h": 0,
+    "count14d": 0,
+    "trend": "stable",
+    "priorityReason": "emerging pattern",
+    "firstSeen": "2026-07-08T11:54:25Z",
+    "score": 89.6,
+    "suggestedTest": "Authenticate as valid user → perform standard actions (edit, save, chat) → verify no false permission denials",
+    "coverage": "uncovered",
+    "coveredBy": null,
+    "incidentIds": [],
+    "evidence": [
+      {
+        "number": 60661,
+        "title": "Can't login to windsurf, can't say your transition has been smooth",
+        "link": "https://app.usepylon.com/issues?issueNumber=60661"
+      }
+    ]
+  }
+]

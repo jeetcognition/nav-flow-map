@@ -525,6 +525,142 @@
 - PR #34: `Add canonical QA catalog foundation`
 - Decisions QA-DEC-001, QA-DEC-002, QA-DEC-003, and QA-DEC-008.
 
+## 2026-08-07 — QA-DEC-027: pattern engine + pattern-first Incidents rebuild
+
+- Ported the graph-clustering idea from `ent-qa/pylon-report-parser` into
+  `pipelines/pylon/pattern_engine.py`, gated behind the deterministic
+  classifier (only `definite-bug`/`possible-bug` tickets cluster). Memory is
+  derived per run from the 60-day window; human coverage verdicts live in the
+  committed `coverage.json` ledger.
+- Hardened `fetcher.py`: incremental fetches are clamped to the retention
+  window and chunked day-by-day (upstream parity), and retention cleanup now
+  actually runs each fetch.
+- Added the `ref-id-evidence` language-agnostic rule per the refiner protocol.
+  Eval: recall 98% → 100% (the known Chinese-invoice FN is now caught), no
+  regressions, gate green.
+- Rebuilt the Incidents page pattern-first (Lavish-reviewed mockup, user
+  decisions applied: Coverage gaps default view, tickets folded inside
+  patterns only, breakdown charts dropped, product chips top-right).
+  `IncidentBreakdown.tsx` deleted; page split into
+  `PatternCard`/`VerifyQueue`/`SurfaceChips`.
+- Extended `validate-data.js` (patterns referential checks + PII scan on
+  patterns.json) and `pylon-intake.yml` (exports + diffs both fixtures).
+- Gates at time of commit: pipeline unit tests green, eval gate green,
+  validate-data green, oxlint 0/0, tsc -b clean, vite build ok, prettier
+  clean, catalog validation green.
+
+## 2026-08-07 — fixture refresh from the daily DB snapshot
+
+- Merged the `ent-qa/pylon-report-parser` `data`-branch snapshot (1,940
+  tickets, Jul 24 → Aug 7) into the local pipeline DB and applied 60-day
+  retention: now 9,020 tickets spanning Jun 8 → Aug 7. Known gap: Jul 22–23
+  is in neither source (needs a `PYLON_API_KEY` fetch to backfill).
+- Re-ran classifier eval on the merged window: precision 97%, recall 100%,
+  F1 0.99, definite band 10/10 — gate green. 80 labeled tickets have aged
+  out of the window and no longer score (eval set shrinks as the window
+  rolls; see TODO).
+- Re-exported both fixtures: 200 incidents (all open — 554 resolved dropped
+  at the cap), 52 definite; 60 patterns, all `uncovered` (coverage ledger is
+  still empty until verdict persistence lands).
+
+## 2026-08-07 — QA-DEC-028: verdict persistence (UI → worker → committed ledgers)
+
+- New worker route `POST /verdicts`: validates + scrubs verdict batches and
+  read-merge-writes `pipelines/pylon/coverage.json` (pattern verdicts) and
+  `pipelines/pylon/labels/pending_verdicts.json` (ticket verdicts queued for
+  the refiner) via the GitHub contents API. Human verdicts commit directly to
+  main (navmap-edits.json precedent); everything eval-affecting still goes
+  through the refiner's gated PR. Needs `wrangler deploy`.
+- App: `data/verdictsService.ts` wire layer — verdicts still apply to the
+  store instantly, then batch (1.5s debounce), persist in localStorage across
+  reloads, and retry visibly via `VerdictSyncBanner` (Incidents +
+  IncidentDetail). On load both ledgers are overlaid onto the fixtures
+  (`loadVerdictBaselines`), so verdicts survive reloads before the next
+  export re-bakes them. `setPatternCoverage` now records the acting user.
+- Pipeline: `export_incidents.py` applies pending ticket verdicts as
+  `humanCategory`/`overriddenBy` in the exported fixture;
+  `load_pending_verdicts` fails open on malformed data.
+- Tests: `worker/test_verdicts.mjs` (hermetic — GitHub API stubbed; scrub,
+  merge-preserves-existing, invalid-entry drops, 400/403 paths) added to the
+  Validate workflow; `test_pipeline.py` covers both ledger loaders.
+  `scripts/validate-data.js` now shape-checks and PII-scans both ledgers.
+- Docs: QA-DEC-028 in decisions.md, REFINER.md gold-label source updated,
+  pipeline README invariant reworded (pipeline writes open PRs; human
+  verdict relay is the documented exception), AGENTS.md data-access rule
+  extended with `verdictsService`.
+
+## 2026-08-07 — readable titles + pattern headlines (parser parity)
+
+- Pattern labels no longer show raw cluster keys ("trace id: <id>",
+  "external-58564", "hello"). New `pattern_headlines.py` ports the report
+  parser's `infer_user_flow` cascade: every pattern renders as a
+  "user action → what breaks" sentence (specific rules → flow rules →
+  cross-flow signals → language-agnostic content checks → per-flow
+  fallback).
+- Same-surface clusters whose headlines agree on a SPECIFIC story merge
+  (parser stage-3 dedup); clusters sharing only a GENERIC fallback stay
+  separate and get a distinguishing excerpt appended — first attempt merged
+  everything by headline and produced useless 418-ticket blobs, hence the
+  generic/specific split (mirrors the parser's `is_generic_uf` heuristic).
+  Pattern ids stay keyed on the raw signature so coverage verdicts survive
+  wording changes. Cross-surface label repeats are intentional (different
+  products, distinguished by the surface chip).
+- Incident titles go through a ported `display_title`: greeting-only titles
+  fall back to the first meaningful body sentence, URLs/UUIDs/long hex are
+  stripped BEFORE `sanitize()` (its phone masking otherwise eats UUID digit
+  groups and leaves the hex head), ALL-CAPS normalized, truncation lands on
+  a word boundary with an ellipsis.
+- 16 new unit tests (display_title edge cases, headline mapping, merge
+  vs. no-merge semantics); all gates green; fixtures re-exported.
+
+## 2026-08-07 — content-first surface detection (fixes CLI→Enterprise misfiles)
+
+- Root cause of "Devin CLI ticket marked Enterprise": surface was assigned
+  purely from Pylon's `brand` field (`BRAND_SURFACE`), and Pylon has NO CLI
+  brand — only Devin/Windsurf/empty — so CLI tickets inherited the surface
+  of whichever inbox they arrived in.
+- Ported the report parser's `bucket()` as `detect_surface()` in
+  `ticket_classifier.py`: content beats brand, ordered CLI → Windsurf/IDE →
+  Enterprise (fedramp or ent plan) → Retail (consumer Devin) → enterprise
+  default. Three deliberate deviations from the parser, each fixing a
+  misfile class it shares: (1) word-boundaried hints (its bare `"ide"`
+  substring matches "provide"/"sidebar"); (2) bare "terminal" demoted to a
+  weak CLI hint that never outranks desktop signals (IDE users say
+  "terminal window" about the integrated terminal); (3) Devin-brand +
+  enterprise-plan identity beats a stray quoted windsurf.com docs link
+  (the SSO-setup case).
+- Surfaces went from 2 used (enterprise/windsurf) to all 4:
+  enterprise 92 / windsurf 51 / retail 33 / devin-cli 19 incidents.
+  12 new detect_surface unit tests; eval gate unaffected (verdicts don't
+  read surface).
+- Also hardened excerpt/title junk handling: masked-PII remnants
+  ("o: •••@•••") and mangled mail-header prefixes never surface as labels;
+  export label cap 120→140 so the closing excerpt quote survives.
+
+## 2026-08-07 — parser gap-card parity: suggested tests, trend, evidence titles
+
+- `pattern_tests.py` (NEW): port of the parser's `suggest_test` cascade —
+  suggested tests are now cluster-specific step chains ("Enable Devin Review
+  on a repo → open PR → verify review comments appear within 5 min…")
+  instead of one static sentence per flow; the static `SUGGESTED_TESTS`
+  table is gone. Fallback reproduces the pattern headline.
+- Trend per pattern, derived from the 60-day window (the parser reads its
+  `pattern_history` table; we keep the no-cross-run-state invariant):
+  `new` (first seen <24h), `accelerating` (last 7d > 1.2× previous 7d),
+  `declining` (< 0.8×), else `stable`. Plus the parser's
+  `priority_reason` line ("6 reports in 14 days (repeat pattern) · 3 still
+  open · accelerating — growing fast", fallback "emerging pattern") and
+  `count14d` frequency.
+- Evidence entries now carry sanitized ticket titles — the UI shows
+  "#64565 — Several rounds of Auto-Review…" lines instead of bare number
+  chips (parser evidence shape).
+- PatternCard: trend badges (accelerating/new/declining), meta shows
+  "N in 14d · M open", priority reason under What-breaks, bare pattern id
+  next to What-to-test (it is the coverage.json key), "Growing first" →
+  "Trending first" with the parser's trend sort order.
+- `validate-data.js` checks the new fields; 11 new pipeline tests
+  (suggest_test branches, trend derivation, count14d, emerging fallback).
+
 ## 2026-08-07 — Automate breadcrumb navigation across enterprise settings pages
 
 ### Implemented

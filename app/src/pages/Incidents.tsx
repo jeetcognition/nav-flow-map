@@ -1,170 +1,225 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Fire } from "@phosphor-icons/react";
-import { escapedDefects, getIncidents, incidentCategory } from "../data/dataService";
+// Incidents — pattern-first triage (QA-DEC-027). Structure borrowed from the
+// pylon-report-parser report (view rail + one ranked expandable list), skin is
+// the app's own tokens. Default view: coverage gaps (the money question).
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  Fire,
+  HandPalm,
+  Rows,
+  CheckCircle,
+  Prohibit,
+  MagnifyingGlass,
+} from "@phosphor-icons/react";
+import { getIncidents, getPatterns, loadVerdictBaselines } from "../data/dataService";
 import { useDataVersion } from "../hooks/useData";
-import { CATEGORIES, CATEGORY_META } from "../lib/categoryMeta";
-import { SEVERITIES } from "../lib/severity";
-import { fadeUp } from "../lib/motion";
-import { SourceChip } from "../components/ui/SourceChip";
 import { EmptyState } from "../components/ui/EmptyState";
 import { CreateTestcaseModal } from "../components/incidents/CreateTestcaseModal";
-import { IncidentCard } from "../components/incidents/IncidentCard";
-import { IncidentBreakdown } from "../components/incidents/IncidentBreakdown";
-import { pct } from "../lib/format";
-import type { Incident } from "../types";
+import { PatternCard } from "../components/incidents/PatternCard";
+import { SurfaceChips } from "../components/incidents/SurfaceChips";
+import { VerdictSyncBanner } from "../components/incidents/VerdictSyncBanner";
+import { VerifyQueue } from "../components/incidents/VerifyQueue";
+import type { Incident, Pattern, SurfaceId } from "../types";
 import "../styles/incidents.css";
+
+type ViewId = "gaps" | "verify" | "all" | "wins" | "noise";
+
+interface ViewMeta {
+  id: ViewId;
+  label: string;
+  icon: ReactNode;
+  sub: string;
+}
+
+// non-empty tuple, same convention as SURFACES in fixtures/static.ts
+const VIEWS: [ViewMeta, ...ViewMeta[]] = [
+  {
+    id: "gaps",
+    label: "Coverage gaps",
+    icon: <Fire size={15} weight="duotone" />,
+    sub: "what customers hit that we have no test for — ranked by impact × growth",
+  },
+  {
+    id: "verify",
+    label: "Verify queue",
+    icon: <HandPalm size={15} weight="duotone" />,
+    sub: "the AI wasn't sure — your verdict trains tomorrow's classifier",
+  },
+  {
+    id: "all",
+    label: "All patterns",
+    icon: <Rows size={15} weight="duotone" />,
+    sub: "every pattern, including covered and dismissed",
+  },
+  {
+    id: "wins",
+    label: "Covered wins",
+    icon: <CheckCircle size={15} weight="duotone" />,
+    sub: "patterns that stopped hurting because a test now guards them",
+  },
+  {
+    id: "noise",
+    label: "Dismissed noise",
+    icon: <Prohibit size={15} weight="duotone" />,
+    sub: "ruled out by a human — audited here, never resurfaces",
+  },
+];
+
+function matchesSearch(p: Pattern, q: string): boolean {
+  const hay = `${p.label} ${p.flow}`.toLowerCase();
+  return hay.includes(q);
+}
 
 export default function Incidents() {
   useDataVersion();
-  const [catFilter, setCatFilter] = useState<string>("all");
-  const [srcFilter, setSrcFilter] = useState<string>("all");
-  const [sevFilter, setSevFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  useEffect(() => {
+    void loadVerdictBaselines();
+  }, []);
+  const [view, setView] = useState<ViewId>("gaps");
+  const [query, setQuery] = useState("");
+  const [growingFirst, setGrowingFirst] = useState(true);
+  const [offSurfaces, setOffSurfaces] = useState<Set<SurfaceId>>(new Set());
   const [modalIncident, setModalIncident] = useState<Incident | null>(null);
 
   const incidents = getIncidents();
-  const pylonCount = incidents.filter((i) => i.source === "pylon").length;
-  const datadogCount = incidents.length - pylonCount;
+  const patterns = getPatterns();
 
-  const escaped = escapedDefects();
-  const appBugs = incidents.filter((i) => incidentCategory(i) === "app-bug");
-  const converted = appBugs.filter((i) => i.linkedCaseId).length;
-  const conversionPct = pct(converted, appBugs.length);
+  const verifyQueue = incidents.filter((i) => i.verdict === "possible-bug" && !i.humanCategory);
+  const gaps = patterns.filter((p) => p.coverage === "uncovered" || p.coverage === "weak");
+  const wins = patterns.filter((p) => p.coverage === "covered" || p.coverage === "weak");
+  const noise = patterns.filter((p) => p.coverage === "dismissed");
 
-  const filtered = incidents
-    .filter((i) => catFilter === "all" || incidentCategory(i) === catFilter)
-    .filter((i) => srcFilter === "all" || i.source === srcFilter)
-    .filter((i) => sevFilter === "all" || i.severity === sevFilter)
-    .filter((i) => statusFilter === "all" || i.status === statusFilter)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const surfaceCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const p of patterns) counts[p.surfaceId] = (counts[p.surfaceId] ?? 0) + 1;
+    return counts;
+  }, [patterns]);
+  const activeSurfaces = new Set(
+    (Object.keys(surfaceCounts) as SurfaceId[]).filter((s) => !offSurfaces.has(s)),
+  );
+
+  const q = query.trim().toLowerCase();
+  // same ordering as the report parser's "Sort: Trending"
+  const TREND_ORDER = { accelerating: 3, new: 2, stable: 1, declining: 0 } as const;
+  const visible = (list: Pattern[]) => {
+    const filtered = list
+      .filter((p) => activeSurfaces.has(p.surfaceId))
+      .filter((p) => !q || matchesSearch(p, q));
+    return growingFirst
+      ? [...filtered].sort(
+          (a, b) => (TREND_ORDER[b.trend] ?? 1) - (TREND_ORDER[a.trend] ?? 1) || b.score - a.score,
+        )
+      : filtered;
+  };
+
+  const meta = VIEWS.find((v) => v.id === view) ?? VIEWS[0];
+  const counts: Record<ViewId, number> = {
+    gaps: gaps.length,
+    verify: verifyQueue.length,
+    all: patterns.length,
+    wins: wins.length,
+    noise: noise.length,
+  };
+
+  const renderPatterns = (list: Pattern[], emptyHint: string) => {
+    const shown = visible(list);
+    if (shown.length === 0)
+      return (
+        <EmptyState
+          icon={<Fire size={28} weight="duotone" />}
+          title="Nothing here"
+          hint={emptyHint}
+        />
+      );
+    return (
+      <div className="pat-list">
+        {shown.map((p, i) => (
+          <PatternCard key={p.id} pattern={p} index={i} onCreateTestcase={setModalIncident} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="page">
-      <div className="page-head">
-        <div>
-          <h1 className="page-title">Incidents</h1>
-          <p className="page-sub">
-            Review the AI&apos;s triage, fix wrong calls, and turn real bugs into regression tests.
-            <span className="inc-sub-chips">
-              <SourceChip source="pylon" count={pylonCount} />
-              <SourceChip source="datadog" count={datadogCount} />
-            </span>
-          </p>
-        </div>
-      </div>
-
-      {/* escaped defect strip */}
-      <motion.div className="card inc-escaped" {...fadeUp(0.06)}>
-        <div className="inc-escaped-main">
-          <Fire size={24} weight="duotone" color="var(--danger)" />
+      <main className="inc-main">
+        <div className="inc-title-row">
           <div>
-            <div className="inc-escaped-count">
-              {escaped.length} escaped defect{escaped.length === 1 ? "" : "s"}
-            </div>
-            <div className="inc-escaped-desc">app-bug incidents with no linked testcase</div>
+            <h1 className="page-title">{meta.label}</h1>
+            <p className="page-sub">{meta.sub}</p>
           </div>
+          <SurfaceChips
+            counts={surfaceCounts}
+            active={activeSurfaces}
+            onToggle={(id) =>
+              setOffSurfaces((prev) => {
+                const next = new Set(prev);
+                if (next.has(id)) next.delete(id);
+                else next.add(id);
+                return next;
+              })
+            }
+          />
         </div>
-        <div className="inc-escaped-conv">
-          <div className="inc-escaped-conv-label">
-            {converted} of {appBugs.length} app-bug incidents converted to regression tests ·{" "}
-            <span className="num">{conversionPct}%</span>
-          </div>
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${conversionPct}%`, background: "var(--ai)" }}
-            />
-          </div>
-        </div>
-      </motion.div>
 
-      {/* filter bar */}
-      <div className="inc-filters">
-        <label className="inc-filter">
-          Category
-          <select
-            aria-label="Filter by category"
-            value={catFilter}
-            onChange={(e) => setCatFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {CATEGORY_META[c].label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="inc-filter">
-          Source
-          <select
-            aria-label="Filter by source"
-            value={srcFilter}
-            onChange={(e) => setSrcFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="pylon">Pylon</option>
-            <option value="datadog">Datadog</option>
-          </select>
-        </label>
-        <label className="inc-filter">
-          Severity
-          <select
-            aria-label="Filter by severity"
-            value={sevFilter}
-            onChange={(e) => setSevFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            {SEVERITIES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="inc-filter">
-          Status
-          <select
-            aria-label="Filter by status"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="open">Open</option>
-            <option value="investigating">Investigating</option>
-            <option value="resolved">Resolved</option>
-          </select>
-        </label>
-        <span className="inc-filter-count num">
-          {filtered.length} of {incidents.length} incidents
-        </span>
-      </div>
+        <VerdictSyncBanner />
 
-      {/* feed */}
-      {filtered.length === 0 ? (
-        <EmptyState
-          icon={<Fire size={28} weight="duotone" />}
-          title="No incidents match these filters"
-          hint="Try widening the category, source, severity, or status filters."
-        />
-      ) : (
-        <div className="inc-feed" key={`${catFilter}-${srcFilter}-${sevFilter}-${statusFilter}`}>
-          {filtered.map((incident, idx) => (
-            <IncidentCard
-              key={incident.id}
-              incident={incident}
-              index={idx}
-              onCreateTestcase={setModalIncident}
-            />
+        <div className="inc-views" role="tablist" aria-label="Incident views">
+          {VIEWS.map((v) => (
+            <button
+              key={v.id}
+              role="tab"
+              aria-selected={view === v.id}
+              className={`inc-view-card ${view === v.id ? "active" : ""} ${v.id === "gaps" ? "hot" : ""}`}
+              onClick={() => setView(v.id)}
+            >
+              <div className="v num">{counts[v.id]}</div>
+              <div className="l">
+                {v.icon} {v.label}
+              </div>
+            </button>
           ))}
         </div>
-      )}
 
-      {/* secondary charts — collapsed so the feed stays the focus */}
-      <IncidentBreakdown incidents={incidents} />
+        {view !== "verify" && (
+          <div className="inc-tools">
+            <label className="inc-search">
+              <MagnifyingGlass size={14} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search patterns, flows…"
+                aria-label="Search patterns"
+              />
+            </label>
+            <button
+              className={`inc-toggle ${growingFirst ? "on" : ""}`}
+              onClick={() => setGrowingFirst((g) => !g)}
+              aria-pressed={growingFirst}
+            >
+              Trending first
+            </button>
+          </div>
+        )}
 
-      <CreateTestcaseModal incident={modalIncident} onClose={() => setModalIncident(null)} />
+        {view === "gaps" &&
+          renderPatterns(gaps, "No uncovered patterns match — the money question is answered.")}
+        {view === "verify" &&
+          (verifyQueue.length === 0 ? (
+            <EmptyState
+              icon={<HandPalm size={28} weight="duotone" />}
+              title="Verify queue is clear"
+              hint="No possible-bug incidents are waiting on a human verdict."
+            />
+          ) : (
+            <VerifyQueue incidents={verifyQueue.filter((i) => activeSurfaces.has(i.surfaceId))} />
+          ))}
+        {view === "all" && renderPatterns(patterns, "No patterns match the current filters.")}
+        {view === "wins" &&
+          renderPatterns(wins, "No covered patterns yet — mark gaps covered as tests land.")}
+        {view === "noise" && renderPatterns(noise, "Nothing dismissed yet.")}
+
+        <CreateTestcaseModal incident={modalIncident} onClose={() => setModalIncident(null)} />
+      </main>
     </div>
   );
 }
