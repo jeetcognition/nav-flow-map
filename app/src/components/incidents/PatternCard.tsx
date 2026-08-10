@@ -1,5 +1,5 @@
 // One coverage-gap pattern: collapsed single line, expandable to a story rail
-// (what breaks → evidence → what to test, user-picked design 2026-08-07).
+// (what breaks → what to test → evidence, user-picked design 2026-08-07).
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -15,7 +15,6 @@ import {
 import { getSurfaces, patternIncidents, setPatternCoverage } from "../../data/dataService";
 import { useApp } from "../../hooks/useApp";
 import { rowFadeUp } from "../../lib/motion";
-import { IncidentCard } from "./IncidentCard";
 import type { Incident, Pattern } from "../../types";
 
 const SURFACE_COLORS: Record<string, string> = {
@@ -128,59 +127,6 @@ export function PatternCard({
           </div>
 
           <div className="pat-chap">
-            <div className="pat-chap-ico ico-evid">
-              <Ticket size={15} weight="duotone" />
-            </div>
-            <div className="pat-chap-main">
-              <div className="pat-chap-h">
-                Evidence · {pattern.total} ticket{pattern.total === 1 ? "" : "s"}
-                {pattern.evidence.length > 5 ? ", top 5" : ""}
-              </div>
-              <div className="pat-evidence">
-                {pattern.evidence.slice(0, 5).map((ev) => {
-                  const inner = (
-                    <>
-                      <span className="pat-ticket-num">#{ev.number}</span>
-                      {ev.title && <span className="pat-ticket-title">{ev.title}</span>}
-                    </>
-                  );
-                  return ev.link ? (
-                    <a
-                      key={ev.number}
-                      className="pat-ev-row"
-                      href={ev.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      title={ev.title ? `#${ev.number} — ${ev.title}` : `#${ev.number}`}
-                    >
-                      {inner}
-                    </a>
-                  ) : (
-                    <span key={ev.number} className="pat-ev-row">
-                      {inner}
-                    </span>
-                  );
-                })}
-              </div>
-              {members.length > 0 && (
-                <details className="pat-tickets">
-                  <summary>All linked tickets in the feed ({members.length})</summary>
-                  <div className="pat-ticket-list">
-                    {members.map((inc, i) => (
-                      <IncidentCard
-                        key={inc.id}
-                        incident={inc}
-                        index={i}
-                        onCreateTestcase={onCreateTestcase}
-                      />
-                    ))}
-                  </div>
-                </details>
-              )}
-            </div>
-          </div>
-
-          <div className="pat-chap">
             <div className="pat-chap-ico ico-test">
               <Sparkle size={15} weight="duotone" />
             </div>
@@ -248,6 +194,43 @@ export function PatternCard({
                   Open in Flow Map
                 </Link>
               </div>
+            </div>
+          </div>
+
+          <div className="pat-chap">
+            <div className="pat-chap-ico ico-evid">
+              <Ticket size={15} weight="duotone" />
+            </div>
+            <div className="pat-chap-main">
+              <details className="pat-tickets">
+                <summary>Show evidence</summary>
+                <div className="pat-evidence">
+                  {pattern.evidence.slice(0, 5).map((ev) => {
+                    const inner = (
+                      <>
+                        <span className="pat-ticket-num">#{ev.number}</span>
+                        {ev.title && <span className="pat-ticket-title">{ev.title}</span>}
+                      </>
+                    );
+                    return ev.link ? (
+                      <a
+                        key={ev.number}
+                        className="pat-ev-row"
+                        href={ev.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={ev.title ? `#${ev.number} — ${ev.title}` : `#${ev.number}`}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <span key={ev.number} className="pat-ev-row">
+                        {inner}
+                      </span>
+                    );
+                  })}
+                </div>
+              </details>
             </div>
           </div>
         </div>

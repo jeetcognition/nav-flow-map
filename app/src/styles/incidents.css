@@ -709,9 +709,11 @@
 .pat-body {
   border-top: 1px solid var(--border);
   padding: 0 var(--sp-4) var(--sp-4);
+  background: var(--bg);
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
-/* story rail: what breaks → evidence → what to test (design pick 2026-08-07) */
+/* story rail: what breaks → what to test → evidence (design pick 2026-08-07) */
 .pat-chap {
   display: grid;
   grid-template-columns: 34px minmax(0, 1fr);
@@ -886,11 +888,8 @@ a.pat-ev-row:hover .pat-ticket-title {
   color: var(--text-3);
   font-size: var(--fs-sm);
 }
-.pat-ticket-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  margin-top: var(--sp-3);
+.pat-tickets .pat-evidence {
+  margin-top: var(--sp-2);
 }
 
 /* verify queue — one-click verdicts */
