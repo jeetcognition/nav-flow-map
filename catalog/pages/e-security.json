@@ -1,0 +1,106 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-security",
+    "name": "Enterprise Security settings",
+    "route": "/org/{tenant}/settings/security",
+    "prefixes": ["ESECU"]
+  },
+  "testcases": [
+    {
+      "id": "ESECU-REG01",
+      "pageId": "e-security",
+      "surface": "webapp",
+      "title": "The security route renders the in-app 404 and no hub entry exists.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation", "error-detection"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Security (route does not exist)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07",
+      "steps": [
+        {
+          "number": 1,
+          "action": "Navigate to /settings/security and then to the enterprise settings hub."
+        }
+      ],
+      "assertions": [
+        "the route renders the in-app 404 panel",
+        "the settings hub lists no Security entry"
+      ],
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-security.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills/devin-enterprise-web-settings-security/SKILL.md"
+      }
+    },
+    {
+      "id": "ESECU-REG02",
+      "pageId": "e-security",
+      "surface": "webapp",
+      "title": "Security page functional coverage (TC-SECU-001…009).",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["page-load"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Security (route does not exist)",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07",
+      "steps": [
+        {
+          "number": 1,
+          "action": "Exercise the security controls described by the source skill (controls inventory, IP allowlist validation, toggle race/persistence, numeric boundaries, save failure, admin-only authz/CSRF, no errors)."
+        }
+      ],
+      "assertions": [
+        "blocked: the enterprise Security settings page does not exist in the current product"
+      ],
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "blocked",
+        "blockedReason": "Product drift: /org/{enterprise}/settings/security renders the in-app 404 and the settings hub has no Security entry, so none of the skill's controls exist to automate."
+      },
+      "automation": {
+        "status": "manual",
+        "specPath": null
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills/devin-enterprise-web-settings-security/SKILL.md"
+      }
+    }
+  ]
+}

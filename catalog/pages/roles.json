@@ -18,7 +18,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy"],
       "owner": "maya",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -64,7 +64,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "jeet",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -110,7 +110,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "jeet",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -156,7 +156,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "jeet",
-      "navigation": "Roles → Create for enterprise",
+      "navigation": "Roles \u2192 Create for enterprise",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -202,7 +202,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "jeet",
-      "navigation": "Roles → Create for organizations",
+      "navigation": "Roles \u2192 Create for organizations",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -242,13 +242,13 @@
       "id": "ROLE-REG01",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "Search with matching/no-match, whitespace, Unicode, long, HTML-like, and injection-like…",
+      "title": "Search with matching/no-match, whitespace, Unicode, long, HTML-like, and injection-like\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["navigation", "ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -296,7 +296,7 @@
       "riskTags": ["navigation", "ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -344,7 +344,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "jeet",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -385,13 +385,13 @@
       "id": "ROLE-REG04",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "Attempt creation with blank, duplicate-within-scope, long, whitespace-only, Unicode, em…",
+      "title": "Attempt creation with blank, duplicate-within-scope, long, whitespace-only, Unicode, em\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Roles → Create role",
+      "navigation": "Roles \u2192 Create role",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -440,7 +440,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Roles → Create role",
+      "navigation": "Roles \u2192 Create role",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -482,18 +482,18 @@
       "id": "ROLE-REG06",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions → verify → edit n…",
+      "title": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions \u2192 verify \u2192 edit n\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "jeet",
-      "navigation": "Roles → Create for enterprise",
+      "navigation": "Roles \u2192 Create for enterprise",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
           "number": 1,
-          "action": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions → verify → edit name/permissions → reload → delete."
+          "action": "Create `qa-temp-enterprise-role-<timestamp>` with minimal permissions \u2192 verify \u2192 edit name/permissions \u2192 reload \u2192 delete."
         }
       ],
       "assertions": [
@@ -529,18 +529,18 @@
       "id": "ROLE-REG07",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "Create `qa-temp-org-role-<timestamp>` → assign to a disposable organization/member → ed…",
+      "title": "Create `qa-temp-org-role-<timestamp>` \u2192 assign to a disposable organization/member \u2192 ed\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "jeet",
-      "navigation": "Roles → Create for organizations",
+      "navigation": "Roles \u2192 Create for organizations",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
           "number": 1,
-          "action": "Create `qa-temp-org-role-<timestamp>` → assign to a disposable organization/member → edit → unassign → delete."
+          "action": "Create `qa-temp-org-role-<timestamp>` \u2192 assign to a disposable organization/member \u2192 edit \u2192 unassign \u2192 delete."
         }
       ],
       "assertions": [
@@ -583,7 +583,7 @@
       "riskTags": ["navigation", "ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "jeet",
-      "navigation": "Roles → Create or edit role",
+      "navigation": "Roles \u2192 Create or edit role",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -624,7 +624,7 @@
       "id": "ROLE-REG09",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "Delete an unassigned role, then attempt deletion while another disposable role is assig…",
+      "title": "Delete an unassigned role, then attempt deletion while another disposable role is assig\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
@@ -673,13 +673,13 @@
       "id": "ROLE-REG10",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "As a restricted admin or with a tampered role ID, attempt view/create/edit/delete or gr…",
+      "title": "As a restricted admin or with a tampered role ID, attempt view/create/edit/delete or gr\u2026",
       "type": "Regression",
       "priority": "P0",
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "jeet",
-      "navigation": "Membership → Roles",
+      "navigation": "Membership \u2192 Roles",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -719,18 +719,18 @@
       "id": "ROLE-E2E01",
       "pageId": "roles",
       "surface": "webapp",
-      "title": "Create a minimal disposable role → assign it to a disposable member → verify one allowe…",
+      "title": "Create a minimal disposable role \u2192 assign it to a disposable member \u2192 verify one allowe\u2026",
       "type": "E2E",
       "priority": "P0",
       "riskTags": ["ui-rendering"],
       "cadence": ["weekly"],
       "owner": "arjun",
-      "navigation": "Roles → Membership",
+      "navigation": "Roles \u2192 Membership",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
           "number": 1,
-          "action": "Create a minimal disposable role → assign it to a disposable member → verify one allowed and one denied operation → edit permissions and retest → unassign and delete."
+          "action": "Create a minimal disposable role \u2192 assign it to a disposable member \u2192 verify one allowed and one denied operation \u2192 edit permissions and retest \u2192 unassign and delete."
         }
       ],
       "assertions": [
@@ -763,6 +763,53 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "ROLE-REG11",
+      "pageId": "roles",
+      "surface": "webapp",
+      "title": "Open the organization-role create form and cancel without a mutation.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["crud-create"],
+      "cadence": ["weekly"],
+      "owner": "arjun",
+      "navigation": "Roles \u2192 Membership",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Open Create role \u2192 Create for organizations, inspect the form, then Cancel."
+        }
+      ],
+      "assertions": [
+        "form is at /settings/roles/organization/add with name input and permission matrix",
+        "Cancel returns to the list with no role created"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/roles.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

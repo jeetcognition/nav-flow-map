@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { ReposPage, DevinSessionPage, ALT_SUBORG_NAME } from "../../pages";
 import { DISPOSABLE_REPO, DISPOSABLE_REPO_SEARCH } from "../../pages/repos.page";
 
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Repositories", () => {
   function watchErrors(page: Page): string[] {
     const errors: string[] = [];
@@ -252,5 +253,12 @@ test.describe("Repositories", () => {
     } finally {
       await repos.ensureNoPermission(DISPOSABLE_REPO);
     }
+  });
+
+  test("REPO-REG05 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const repos = new ReposPage(page);
+    await expectNoPageErrors(page, () => repos.goto(), { ready: repos.heading });
   });
 });

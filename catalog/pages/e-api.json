@@ -18,7 +18,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy"],
       "owner": "maya",
-      "navigation": "Settings → Devin API",
+      "navigation": "Settings \u2192 Devin API",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -64,7 +64,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "arjun",
-      "navigation": "Devin API → Service users",
+      "navigation": "Devin API \u2192 Service users",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -110,7 +110,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "priya",
-      "navigation": "Devin API → Legacy API",
+      "navigation": "Devin API \u2192 Legacy API",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -157,7 +157,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy", "nightly"],
       "owner": "priya",
-      "navigation": "Devin API → Provision",
+      "navigation": "Devin API \u2192 Provision",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -197,13 +197,13 @@
       "id": "API-REG01",
       "pageId": "e-api",
       "surface": "webapp",
-      "title": "Search and filter by organization/role with no-match, whitespace, Unicode, long, duplic…",
+      "title": "Search and filter by organization/role with no-match, whitespace, Unicode, long, duplic\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["navigation", "ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "arjun",
-      "navigation": "Devin API → Search/filter",
+      "navigation": "Devin API \u2192 Search/filter",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -244,13 +244,13 @@
       "id": "API-REG02",
       "pageId": "e-api",
       "surface": "webapp",
-      "title": "With approval, test blank, duplicate, long, Unicode, HTML-like names; invalid scope/rol…",
+      "title": "With approval, test blank, duplicate, long, Unicode, HTML-like names; invalid scope/rol\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Devin API → Provision",
+      "navigation": "Devin API \u2192 Provision",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -292,7 +292,7 @@
       "id": "API-REG03",
       "pageId": "e-api",
       "surface": "webapp",
-      "title": "With approval, create a disposable service user and inspect UI, DOM, console, network, …",
+      "title": "With approval, create a disposable service user and inspect UI, DOM, console, network, \u2026",
       "type": "Regression",
       "priority": "P0",
       "riskTags": ["ui-rendering"],
@@ -345,7 +345,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Devin API → Delete",
+      "navigation": "Devin API \u2192 Delete",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -387,7 +387,7 @@
       "id": "API-REG05",
       "pageId": "e-api",
       "surface": "webapp",
-      "title": "As non-admin or with tampered service-user/enterprise IDs, attempt list/create/delete/l…",
+      "title": "As non-admin or with tampered service-user/enterprise IDs, attempt list/create/delete/l\u2026",
       "type": "Regression",
       "priority": "P0",
       "riskTags": ["ui-rendering"],
@@ -428,6 +428,145 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "API-REG06",
+      "pageId": "e-api",
+      "surface": "webapp",
+      "title": "Verify breadcrumb and Back to enterprise navigation.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings \u2192 Enterprise \u2192 Devin API",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Verify breadcrumb crumbs and Back to enterprise navigation."
+        }
+      ],
+      "assertions": [
+        "Settings, Enterprise, and Devin API appear in order",
+        "the last crumb is plain text",
+        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-api.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills breadcrumb navigation cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "API-REG07",
+      "pageId": "e-api",
+      "surface": "webapp",
+      "title": "Verify the page loads without console errors or error boundaries.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings \u2192 Enterprise \u2192 Devin API",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page and check for error boundaries and console JS errors."
+        }
+      ],
+      "assertions": [
+        "no error boundary is rendered",
+        "no console errors or uncaught page errors occur"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-api.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills page-has-no-errors cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "API-REG08",
+      "pageId": "e-api",
+      "surface": "webapp",
+      "title": "Cold-load each tab through its ?tab= deep link.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings \u2192 Enterprise \u2192 Devin API",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Deep-link to service-users, pat-policies, and legacy-api tabs."
+        }
+      ],
+      "assertions": ["each deep link selects the matching tab on a cold load"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-api.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

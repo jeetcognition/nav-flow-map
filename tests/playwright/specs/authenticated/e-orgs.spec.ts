@@ -1,6 +1,8 @@
 import { test, expect, request, type ConsoleMessage } from "@playwright/test";
 import { OrganizationsPage, ENTERPRISE_SLUG, TEST_SUBORG_DISPLAY } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
+import { errorBoundaryIndicators } from "../../support/errors";
 const PAGINATED_ORGS = "/api/enterprise/all-organizations/paginated";
 
 interface PageInfo {
@@ -434,5 +436,47 @@ test.describe("Organizations", () => {
     await expect(dialog).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
+  });
+
+  test("ORG-REG13 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const orgs = new OrganizationsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => orgs.goto(), {
+      crumbs: ["Settings", "Enterprise", "Organizations"],
+    });
+  });
+
+  test("ORG-REG14 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const orgs = new OrganizationsPage(page);
+    await expectNoPageErrors(page, () => orgs.goto(), { ready: orgs.heading });
+  });
+
+  test("ORG-REG15 — Force list fetch failure and verify graceful degradation", async ({ page }) => {
+    const orgs = new OrganizationsPage(page);
+    await page.route(`**${PAGINATED_ORGS}*`, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ detail: "Injected error" }),
+      }),
+    );
+
+    try {
+      await orgs.goto();
+      // The page chrome survives the failure — no white screen or error boundary.
+      await expect(orgs.heading).toBeVisible();
+      await expect(orgs.createButton).toBeVisible();
+      await expect(errorBoundaryIndicators(page)).toHaveCount(0);
+      // No organization data is presented as loaded.
+      await expect(orgs.rowByName(TEST_SUBORG_DISPLAY)).toHaveCount(0);
+      // Known gap: no explicit error/retry message is rendered — the table
+      // stays in its skeleton state. Reported as a product bug.
+    } finally {
+      await page.unroute(`**${PAGINATED_ORGS}*`);
+      // The injected 500 necessarily logs a resource error; drop it so the
+      // file-wide console check only flags unexpected errors.
+      errors = errors.filter((text) => !text.includes("status of 500"));
+    }
   });
 });

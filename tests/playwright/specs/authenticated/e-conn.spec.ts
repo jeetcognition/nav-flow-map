@@ -5,7 +5,9 @@ import {
   McpMarketplacePage,
   TEST_SUBORG_DISPLAY,
 } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
+import { errorBoundaryIndicators } from "../../support/errors";
 const PROVIDERS = [
   "GitHub",
   "GitLab",
@@ -338,6 +340,46 @@ test.describe("Connections", () => {
     } finally {
       // Safety net: never leave the disposable MCP installed.
       await deleteIfInstalled();
+    }
+  });
+
+  test("ECON-REG03 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const connections = new ConnectionsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => connections.goto(), {
+      crumbs: ["Settings", "Enterprise", "Connections"],
+    });
+  });
+
+  test("ECON-REG04 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const connections = new ConnectionsPage(page);
+    await expectNoPageErrors(page, () => connections.goto(), { ready: connections.heading });
+  });
+
+  test("ECON-REG05 — Force integration status failures and verify no phantom connections", async ({
+    page,
+  }) => {
+    const connections = new ConnectionsPage(page);
+    const statusGlob = "**/api/**/integrations/**";
+    await page.route(statusGlob, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ detail: "Injected error" }),
+      }),
+    );
+
+    try {
+      await connections.goto();
+      // The page chrome survives the failures — no white screen or error boundary.
+      await expect(connections.heading).toBeVisible();
+      await expect(connections.integrationsTab).toBeVisible();
+      await expect(errorBoundaryIndicators(page)).toHaveCount(0);
+      // No provider is presented as connected when its status request failed.
+      await expect(page.getByText("Connected", { exact: true })).toHaveCount(0);
+    } finally {
+      await page.unroute(statusGlob);
     }
   });
 });

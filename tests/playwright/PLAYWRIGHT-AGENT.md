@@ -16,12 +16,13 @@ one concern per PR, prettier gate) apply here too.
 ```text
 tests/playwright/
 ├── PLAYWRIGHT-AGENT.md   # this file
-├── playwright.config.ts  # projects: setup / unauthenticated / authenticated; list+html+json reporters
+├── playwright.config.ts  # projects: setup / unauthenticated / authenticated / member; list+html+json reporters
 ├── pages/                # page objects — one class per page + barrel index.ts
 ├── specs/
-│   ├── auth.setup.ts     # captures .auth/admin.json storage state (run via `npm run auth`)
+│   ├── auth.setup.ts     # captures .auth/admin.json + .auth/member.json (run via `npm run auth`)
 │   ├── unauthenticated/  # public pages (login)
-│   └── authenticated/    # reuse the saved admin storage state
+│   ├── authenticated/    # reuse the saved admin storage state
+│   └── member/           # reuse the saved NON-ADMIN member state (authorization)
 ├── support/              # paths.ts (routes/slugs from env), gmail-otp.ts, gitlab.ts, guardrails-api.ts
 ├── memory/               # one committed md per agent run (see "Per-run memory")
 └── .env                  # local only — never commit
@@ -159,6 +160,7 @@ cd tests/playwright
 npm install && npx playwright install chromium   # first time
 npm run auth                                     # once, to capture .auth/admin.json
 npx playwright test                              # full suite
+npx playwright test --project=member             # non-admin authorization only
 npx playwright test specs/authenticated/e-sessions.spec.ts   # one page
 ```
 

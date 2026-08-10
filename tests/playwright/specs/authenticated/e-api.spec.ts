@@ -1,6 +1,8 @@
 import { test, expect, request } from "@playwright/test";
 import { DevinApiPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
+import { routes } from "../../support/paths";
 test.describe("Devin API", () => {
   function trackConsoleErrors(page: import("@playwright/test").Page) {
     const errors: string[] = [];
@@ -305,5 +307,35 @@ test.describe("Devin API", () => {
     }
 
     expect(consoleErrors).toEqual([]);
+  });
+
+  test("API-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const api = new DevinApiPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => api.goto(), {
+      crumbs: ["Settings", "Enterprise", "Devin API"],
+    });
+  });
+
+  test("API-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const api = new DevinApiPage(page);
+    await expectNoPageErrors(page, () => api.goto(), { ready: api.heading });
+  });
+
+  test("API-REG08 — Cold-load each tab through its ?tab= deep link", async ({ page }) => {
+    const api = new DevinApiPage(page);
+    const selectedTab = page.locator("[role='tab'][aria-selected='true']");
+    const tabs = [
+      { param: "service-users", label: /Service users/ },
+      { param: "pat-policies", label: /PAT policies/ },
+      { param: "legacy-api", label: /Legacy API/ },
+    ];
+
+    for (const { param, label } of tabs) {
+      await page.goto(`${routes.devinApi()}?tab=${param}`);
+      await api.heading.waitFor({ state: "visible" });
+      await expect(selectedTab).toHaveText(label);
+    }
   });
 });

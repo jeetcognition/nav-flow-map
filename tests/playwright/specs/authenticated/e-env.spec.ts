@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { EnvironmentPage, routes } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 // Enterprise → Environment (e-env). Read-only against the shared QA tenant:
 // nothing is saved, built, or reset; blueprint edits are always discarded.
 test.describe("Environment", () => {
@@ -251,5 +252,97 @@ test.describe("Environment", () => {
     } finally {
       await anonContext.close();
     }
+  });
+
+  test("ENV-REG08 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const env = new EnvironmentPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => env.goto(), {
+      crumbs: ["Settings", "Enterprise", "Environment"],
+    });
+  });
+
+  test("ENV-REG09 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const env = new EnvironmentPage(page);
+    await expectNoPageErrors(page, () => env.goto(), { ready: env.heading });
+  });
+
+  test("ENV-REG10 — Blueprint editor unsaved-changes guard on tab switch and reload", async ({
+    page,
+  }) => {
+    // Known product gap: dirty blueprint edits are silently discarded — no
+    // unsaved-changes warning, no beforeunload prompt, and the edit does not
+    // survive a tab switch or reload. This test pins that behavior; if the
+    // product adds a guard (the desired behavior), the dialog handler or the
+    // survival assertions will flag the change for review.
+    const dialogs: string[] = [];
+    page.on("dialog", async (dialog) => {
+      dialogs.push(dialog.type());
+      await dialog.dismiss();
+    });
+
+    const env = new EnvironmentPage(page);
+    await env.goto("blueprint");
+    await expect(env.blueprintEditor).toBeVisible();
+    await expect(env.saveBlueprintButton).toBeDisabled();
+
+    // Dirty the editor with a recognizable marker.
+    await env.blueprintEditorContent.click();
+    await page.keyboard.press("Control+End");
+    await page.keyboard.insertText("\nAAA_QA_MARKER: 1");
+    await expect(env.saveBlueprintButton).toBeEnabled();
+
+    // Switch to Configuration and back: no warning fires and the edit is
+    // silently dropped; the editor returns pristine.
+    await env.configurationTab.click();
+    await expect(env.snapshotBuildsHeading).toBeVisible();
+    await env.blueprintTab.click();
+    await expect(env.blueprintEditor).toBeVisible();
+    await expect(env.blueprintEditorContent).not.toContainText("AAA_QA_MARKER");
+    await expect(env.saveBlueprintButton).toBeDisabled();
+
+    // Dirty again and reload: no beforeunload prompt, edit is dropped.
+    await env.blueprintEditorContent.click();
+    await page.keyboard.press("Control+End");
+    await page.keyboard.insertText("\nAAA_QA_MARKER: 2");
+    await expect(env.saveBlueprintButton).toBeEnabled();
+    await page.reload();
+    await expect(env.blueprintEditor).toBeVisible();
+    await expect(env.blueprintEditorContent).not.toContainText("AAA_QA_MARKER");
+    await expect(env.saveBlueprintButton).toBeDisabled();
+
+    expect(dialogs).toEqual([]);
+  });
+
+  test("ENV-REG11 — Blueprint editor invalid-YAML gating and discard recovery", async ({
+    page,
+  }) => {
+    const env = new EnvironmentPage(page);
+    await env.goto("blueprint");
+    await expect(env.blueprintEditor).toBeVisible();
+    const original = await env.blueprintText();
+
+    // Replace the buffer with clearly invalid YAML.
+    await env.replaceBlueprintText("bad: [unclosed\n: : ::: not yaml @@@]");
+
+    // Known product gap: no inline error markers render and Save blueprint
+    // stays ENABLED on syntactically invalid YAML — the editor performs no
+    // client-side YAML validation. This pins that behavior (we never click
+    // Save on the shared enterprise blueprint).
+    await expect(env.saveBlueprintButton).toBeEnabled();
+    expect(await page.locator(".monaco-editor .squiggly-error").count()).toBe(0);
+
+    // The caret responds to keyboard navigation and typing lands at the caret.
+    await page.keyboard.press("Control+Home");
+    await page.keyboard.press("End");
+    await page.keyboard.insertText(" # caret-check");
+    await expect(env.blueprintEditorContent).toContainText("bad: [unclosed # caret-check");
+
+    // Discard restores the pristine buffer exactly and re-gates the actions.
+    await env.discardButton.click();
+    await expect(env.saveBlueprintButton).toBeDisabled();
+    await expect(env.discardButton).toBeDisabled();
+    expect(await env.blueprintText()).toBe(original);
   });
 });

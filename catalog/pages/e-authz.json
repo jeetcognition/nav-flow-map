@@ -1,0 +1,329 @@
+{
+  "$schema": "../schema/page-catalog.schema.json",
+  "schemaVersion": 1,
+  "page": {
+    "id": "e-authz",
+    "name": "Non-admin member authorization",
+    "route": "/org/{tenant}/settings/*",
+    "prefixes": ["MBR"]
+  },
+  "testcases": [
+    {
+      "id": "MBR-REG01",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "Admin-only enterprise settings pages return an Access denied panel.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["authorization"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a Member, visit each admin-only enterprise settings route."
+        }
+      ],
+      "assertions": [
+        "every admin-only route renders the Access denied panel",
+        "no admin page chrome leaks through the gate"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MBR-REG02",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "Member-readable enterprise pages load normally.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["authorization"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a Member, visit knowledge, playbooks, repositories, analytics, and support."
+        }
+      ],
+      "assertions": ["each page renders without an Access denied panel"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MBR-REG03",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "The settings hub hides admin-only entries from a member.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["authorization"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a Member, load the enterprise settings hub."
+        }
+      ],
+      "assertions": [
+        "member-readable entries are listed",
+        "admin-only entries are absent, matching the route gate"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MBR-REG04",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "The enterprise General page silently redirects a member to the hub.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["authorization"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a Member, visit the enterprise General settings route."
+        }
+      ],
+      "assertions": ["the route redirects to the settings hub instead of showing Access denied"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MBR-REG05",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "A member keeps access to their own organization's settings.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["authorization"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "As a Member, visit the sub-org members and secrets pages."
+        }
+      ],
+      "assertions": ["both pages render for the organization the member belongs to"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MBR-REG06",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "Enterprise admin APIs reject the member's own bearer token.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["authorization", "idor"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Capture the member's bearer token from its own request, then replay it against admin-only enterprise endpoints."
+        }
+      ],
+      "assertions": ["each admin-only endpoint responds 403 for a member token"],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "MBR-REG07",
+      "pageId": "e-authz",
+      "surface": "webapp",
+      "title": "Organization listings are scoped to the member's own memberships.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["authorization", "idor"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Sign in as a non-admin enterprise Member, then visit enterprise settings",
+      "preconditions": ["A non-admin enterprise Member session is captured in .auth/member.json"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Replay the member's token against the enterprise organizations endpoint."
+        }
+      ],
+      "assertions": [
+        "the response contains only organizations the member belongs to",
+        "the full enterprise tenant list is not returned"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["member"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/member/authz.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills (non-admin authorization cases across enterprise settings skills)"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    }
+  ]
+}

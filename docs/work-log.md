@@ -1,5 +1,15 @@
 # Work log
 
+## 2026-08-07 — Automate GEN-REG06 breadcrumb navigation
+
+### Implemented
+
+- Added Playwright coverage for the General settings breadcrumb sequence and the
+  Settings, Enterprise, and Back to enterprise navigation controls.
+- Added scoped breadcrumb locators to the General settings page object.
+- Added GEN-REG06 to the canonical e-general catalog with active Playwright
+  automation metadata.
+
 ## 2026-07-29 — Playwright agent playbook + per-run memory
 
 ### Requested
@@ -650,3 +660,176 @@
   "Trending first" with the parser's trend sort order.
 - `validate-data.js` checks the new fields; 11 new pipeline tests
   (suggest_test branches, trend derivation, count14d, emerging fallback).
+
+## 2026-08-07 — Automate breadcrumb navigation across enterprise settings pages
+
+### Implemented
+
+- Added a shared `expectEnterpriseBreadcrumbs` helper
+  (`tests/playwright/support/breadcrumbs.ts`) that verifies crumb order, the
+  plain-text last crumb, and Settings/Enterprise/Back-to-enterprise navigation.
+- Added one breadcrumb regression test to each of 14 enterprise settings specs
+  (analytics, connections, devin, devin-api, environment, guardrails,
+  infrastructure, knowledge, organizations, playbooks, review, sessions,
+  skills, support).
+- Added matching catalog entries with active automation metadata for the 12
+  pages that have catalog files (environment and playbooks have none yet).
+
+### Observed product drift (asserted as observed, noted here)
+
+- Analytics renders only `Settings > Enterprise` — no `Analytics` crumb, and
+  the `Enterprise` crumb is plain text rather than a link.
+- Enterprise Sessions has no `Back to enterprise` button.
+
+## 2026-08-07 — Automate "page has no errors" checks across enterprise settings pages
+
+### Implemented
+
+- Added a shared error-collection helper (`tests/playwright/support/errors.ts`)
+  with `watchPageErrors` (console + pageerror with an ignore list) and
+  `expectNoPageErrors` (load, settle, assert no error boundary and no errors).
+- Added one no-errors regression test to 18 specs covering every enterprise
+  settings page (membership sweeps the Members/Roles/Groups tabs).
+- The Support page ignores the known Decagon support-chat auth-token 404 —
+  a third-party widget failure on the QA tenant.
+- Added matching catalog entries for the 16 pages with catalog files.
+
+## 2026-08-07 — Automate save/fetch failure-handling cases
+
+### Implemented
+
+- DEVIN-REG09: settings toggle with the enterprise settings PUT forced to 500
+  — asserts the error toast, unreverted UI state, and reload-stable server state.
+- REV-REG08: auto-saving Devin Review toggle with the save PUT forced to 500 —
+  asserts the error toast, reverted state, and reload-stable server state.
+- ORG-REG15: organizations paginated fetch forced to 500 — asserts the page
+  chrome survives with no error boundary and no data presented as loaded.
+- INFRA-REG06: five rapid refreshes plus a 500 on the VPC health request —
+  asserts idempotent refresh and graceful failure.
+- ECON-REG05: all integration status requests forced to 500 — asserts no error
+  boundary and no phantom "Connected" state.
+
+### Observed product gaps (asserted as observed, noted here)
+
+- Organizations shows no error/retry message on a failed list fetch — the
+  table stays in its skeleton state.
+- Infrastructure shows no error indicator on a failed refresh.
+
+## 2026-08-07 — Automate tab-param tampering and settings-search injection
+
+### Implemented
+
+- MEMB-REG10: membership tab switching updates `?tab=`, Back/Forward and
+  refresh restore the correct tab, tampered `?tab=` values (script, SQL-like,
+  unknown, empty) fall back safely to Members, and the Learn more docs link is
+  `target=_blank rel=noopener`. In-page tab clicks replace the history entry,
+  so the test creates a real entry with a direct navigation first.
+- ENTSET-REG10: settings sidebar search with whitespace, Unicode, SQL-like,
+  and HTML-like payloads renders literal, inert results.
+
+### Skill cases found already covered or not applicable
+
+- TC-DAPI-006 (API search injection) — covered by API-REG01.
+- TC-CONN-007 (MCP search injection) — covered by ECON-REG02.
+- TC-SESS-006 (sessions text-field injection) — covered by SESS-REG01; the
+  page has no config fields.
+- TC-GRP-005 (group search) — the QA tenant has zero IdP groups and the
+  Groups tab renders no search control.
+- TC-GEN-004 (enterprise name injection) — the General page renders no
+  enterprise-name field.
+- TC-ANLY-009 (CSV formula injection) — needs seeded session data containing
+  formula-like names; not automatable against the shared tenant yet.
+
+## 2026-08-07 — Enterprise Secrets page: catalog page + Playwright spec
+
+New `e-secrets` catalog page and `EnterpriseSecretsPage` (extends the sub-org
+`SecretsPage` — same component, enterprise route). Implemented ESEC-SMK01
+(load/empty state), ESEC-REG01 (breadcrumbs), ESEC-REG02 (add-panel fields,
+255-char name cap, literal note payloads, Redact default ON, reset on reopen),
+ESEC-REG03 (bulk-import per-line inline errors + disabled Store), ESEC-REG04
+(search injection), ESEC-REG05 (no errors). ESEC-REG06 (store/delete race +
+encryption) is manual — enterprise-wide mutation on the shared tenant; ESEC-REG07
+(non-admin authz/IDOR) is blocked on a non-admin auth fixture.
+
+## 2026-08-07 — Misc per-page gaps: tab deep links, Devin smoke, org-role form, playbook history
+
+- API-REG08: `?tab=` deep links (service-users / pat-policies / legacy-api) each
+  select the right tab on a cold load.
+- DEVIN-SMK01: cold-load smoke — heading, Sessions section, and every model/mode
+  and tool switch with a definite aria-checked state.
+- ROLE-REG11: organization-role create form renders the permission matrix at
+  /settings/roles/organization/add; Cancel creates nothing.
+- PLAY-REG15: playbook detail Version history tab renders Date/Title/Author/
+  Source/Status with the Active version (no catalog page exists for e-playbooks).
+- TC-GRP-003 (Groups empty state) found already covered by IDP-SMK01.
+
+## 2026-08-07 — Enterprise Security drift + blueprint-editor deep cases
+
+### Enterprise Security (TC-SECU-001…009)
+
+The skill assumes an enterprise Security settings page, but the product has
+none: /org/{enterprise}/settings/security renders the in-app 404 and the
+settings hub lists no Security entry. Added ESECU-REG01 to pin that drift and
+a new `e-security` catalog page; the functional cases are cataloged as blocked
+(product drift). Sub-org code-scan Security coverage is a different surface
+and was not substituted.
+
+### Blueprint editor (TC-ENV-016/017/018/019)
+
+- ENV-REG10: pins two product gaps found live — dirty blueprint edits are
+  silently discarded on tab switch and on reload, with no unsaved-changes
+  warning or beforeunload prompt.
+- ENV-REG11: pins that invalid YAML shows no inline error markers and leaves
+  Save blueprint ENABLED (no client-side validation); also covers caret and
+  keyboard navigation and exact discard recovery. Save is never clicked on the
+  shared enterprise blueprint.
+- TC-ENV-018 dirty-tracking/discard was already covered by ENV-REG02; the
+  save round-trip half needs a disposable non-inherited scope and stays manual.
+
+### Consolidated blocked-case summary
+
+- Non-admin authorization (TC-GEN-008, TC-HUB-008, TC-SEC-011 UI half, …):
+  blocked until auth.setup.ts captures a second, non-admin session.
+- CSRF assertions on mutations: need request-forging fixtures outside the
+  authenticated browser context.
+- Cross-tenant IDOR mutation probes: need a second disposable tenant.
+- Analytics CSV formula injection (TC-ANLY-009): needs seeded formula-like
+  session names.
+- Enterprise secret store/delete race (TC-SEC-006/008/010): enterprise-wide
+  mutation on the shared tenant; run manually via the skill.
+
+## 2026-08-07 — Non-admin (Member) authorization fixture + coverage
+
+Previously blocked because only an admin session existed. Set up a real
+non-admin identity end to end:
+
+- Invited `jeet.qa.secondary+nonadmin@gmail.com` (a plus-alias of the OTP
+  inbox, so the code lands in the same mailbox) as a plain enterprise **Member**
+  and added it to `TEST_SUBORG`. An enterprise-only invite is not enough — the
+  user is parked on the org-selector with "contact your enterprise
+  administrator" until it belongs to at least one organization.
+- `auth.setup.ts` gained an "authenticate as member" setup writing
+  `.auth/member.json`, keyed on `DEVIN_MEMBER_EMAIL`; the OTP lookup
+  disambiguates on the `To:` header. It waits for the app shell and the
+  `is.authenticated` cookie before saving — saving on the first non-login URL
+  yields a state with only Auth0 cookies and no app session.
+- New `member` Playwright project runs `specs/member/*.spec.ts`.
+
+Observed authorization behavior (new `e-authz` catalog page, MBR-REG01…07):
+
+- Access denied panel: connections, enterprise-devin, review,
+  enterprise-environment, membership, organizations, devin-api, guardrails,
+  infrastructure, usage-policies, secrets.
+- Readable by a member: knowledge, playbooks, repositories, analytics, support.
+- `settings/general` **redirects to the hub** instead of showing Access denied —
+  inconsistent with every other admin-only route.
+- The hub hides admin-only entries, matching the route gate.
+- API layer: the app authenticates with a bearer token, so a cookie-only
+  `fetch()` is always 401 and proves nothing. Replaying the member's own
+  captured token gives 403 on `/api/enterprise/idp-groups` and
+  `/api/enterprise/all-organizations/paginated`, while
+  `/api/enterprise/organizations` returns only the member's 2 organizations
+  versus 148 for an admin — no cross-tenant leak.
+
+Still blocked: CSRF (needs request forging outside a browser context) and
+cross-tenant IDOR _mutations_ (needs a second disposable tenant).

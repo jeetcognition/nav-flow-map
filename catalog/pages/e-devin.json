@@ -18,7 +18,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["deploy"],
       "owner": "jeet",
-      "navigation": "Settings → Devin",
+      "navigation": "Settings \u2192 Devin",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -39,11 +39,11 @@
       },
       "executors": {
         "devinBrowser": "required",
-        "playwright": "unsupported"
+        "playwright": "eligible"
       },
       "automation": {
-        "status": "manual",
-        "specPath": null
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-devin.spec.ts"
       },
       "source": {
         "type": "migration",
@@ -52,7 +52,7 @@
       "linkedBugIds": [],
       "externalReferences": [],
       "version": 1,
-      "lastReviewed": "2026-07-21"
+      "lastReviewed": "2026-08-07"
     },
     {
       "id": "DEVIN-SAN01",
@@ -105,13 +105,13 @@
       "id": "DEVIN-REG01",
       "pageId": "e-devin",
       "surface": "webapp",
-      "title": "With approval, toggle Ultra/Fast/SWE/GPT/Fusion settings one at a time, reload, then re…",
+      "title": "With approval, toggle Ultra/Fast/SWE/GPT/Fusion settings one at a time, reload, then re\u2026",
       "type": "Regression",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Devin → model/mode settings",
+      "navigation": "Devin \u2192 model/mode settings",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -158,7 +158,7 @@
       "riskTags": ["navigation", "ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "priya",
-      "navigation": "Devin → tools/deployments",
+      "navigation": "Devin \u2192 tools/deployments",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -205,7 +205,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Devin → Git commit attribution",
+      "navigation": "Devin \u2192 Git commit attribution",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -253,7 +253,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "maya",
-      "navigation": "Devin → Commit email",
+      "navigation": "Devin \u2192 Commit email",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -300,7 +300,7 @@
       "riskTags": ["ui-rendering"],
       "cadence": ["nightly", "weekly"],
       "owner": "arjun",
-      "navigation": "Devin → PR behavior",
+      "navigation": "Devin \u2192 PR behavior",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -386,13 +386,13 @@
       "id": "DEVIN-E2E01",
       "pageId": "e-devin",
       "surface": "webapp",
-      "title": "With approval, set disposable git/PR behavior, create a session that opens a PR, then r…",
+      "title": "With approval, set disposable git/PR behavior, create a session that opens a PR, then r\u2026",
       "type": "E2E",
       "priority": "P1",
       "riskTags": ["ui-rendering"],
       "cadence": ["weekly"],
       "owner": "priya",
-      "navigation": "Devin → new session → PR",
+      "navigation": "Devin \u2192 new session \u2192 PR",
       "preconditions": ["User is authenticated as an enterprise admin"],
       "steps": [
         {
@@ -428,6 +428,149 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "DEVIN-REG07",
+      "pageId": "e-devin",
+      "surface": "webapp",
+      "title": "Verify breadcrumb and Back to enterprise navigation.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings \u2192 Enterprise \u2192 Devin",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Verify breadcrumb crumbs and Back to enterprise navigation."
+        }
+      ],
+      "assertions": [
+        "Settings, Enterprise, and Devin appear in order",
+        "the last crumb is plain text",
+        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-devin.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills breadcrumb navigation cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "DEVIN-REG08",
+      "pageId": "e-devin",
+      "surface": "webapp",
+      "title": "Verify the page loads without console errors or error boundaries.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings \u2192 Enterprise \u2192 Devin",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page and check for error boundaries and console JS errors."
+        }
+      ],
+      "assertions": [
+        "no error boundary is rendered",
+        "no console errors or uncaught page errors occur"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-devin.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills page-has-no-errors cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "DEVIN-REG09",
+      "pageId": "e-devin",
+      "surface": "webapp",
+      "title": "Force save failure on a settings toggle.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["error-handling"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings \u2192 Enterprise \u2192 Devin",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Toggle a setting with the settings save intercepted to return 500."
+        }
+      ],
+      "assertions": [
+        "a 500 on the settings PUT shows a clear error toast",
+        "the toggle keeps its original state",
+        "a reload shows the original value"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-devin.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills save/fetch failure-handling cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

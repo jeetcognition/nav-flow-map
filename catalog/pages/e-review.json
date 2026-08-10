@@ -427,6 +427,149 @@
       "externalReferences": [],
       "version": 1,
       "lastReviewed": "2026-07-21"
+    },
+    {
+      "id": "REV-REG06",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Verify breadcrumb and Back to enterprise navigation.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["navigation"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Devin Review",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Verify breadcrumb crumbs and Back to enterprise navigation."
+        }
+      ],
+      "assertions": [
+        "Settings, Enterprise, and Devin Review appear in order",
+        "the last crumb is plain text",
+        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills breadcrumb navigation cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "REV-REG07",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Verify the page loads without console errors or error boundaries.",
+      "type": "Regression",
+      "priority": "P0",
+      "riskTags": ["ui-rendering"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Devin Review",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Load the page and check for error boundaries and console JS errors."
+        }
+      ],
+      "assertions": [
+        "no error boundary is rendered",
+        "no console errors or uncaught page errors occur"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills page-has-no-errors cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
+    },
+    {
+      "id": "REV-REG08",
+      "pageId": "e-review",
+      "surface": "webapp",
+      "title": "Force save failure on an auto-saving toggle.",
+      "type": "Regression",
+      "priority": "P1",
+      "riskTags": ["error-handling"],
+      "cadence": ["nightly", "weekly"],
+      "owner": "priya",
+      "navigation": "Settings → Enterprise → Devin Review",
+      "preconditions": ["User is authenticated as an enterprise admin"],
+      "steps": [
+        {
+          "number": 1,
+          "action": "Flip an auto-saving toggle with the save request intercepted to return 500."
+        }
+      ],
+      "assertions": [
+        "a 500 on the auto-save PUT shows a clear error toast",
+        "the toggle reverts to its original state",
+        "a reload shows the original value"
+      ],
+      "cleanup": {
+        "required": false,
+        "steps": []
+      },
+      "environment": {
+        "targets": ["desktop-chrome"],
+        "roles": ["enterprise-admin"]
+      },
+      "executors": {
+        "devinBrowser": "required",
+        "playwright": "eligible"
+      },
+      "automation": {
+        "status": "active",
+        "specPath": "tests/playwright/specs/authenticated/e-review.spec.ts"
+      },
+      "source": {
+        "type": "manual",
+        "reference": "fuzzy-dollop/.agents/skills save/fetch failure-handling cases"
+      },
+      "linkedBugIds": [],
+      "externalReferences": [],
+      "version": 1,
+      "lastReviewed": "2026-08-07"
     }
   ]
 }

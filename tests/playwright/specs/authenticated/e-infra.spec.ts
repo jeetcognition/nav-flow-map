@@ -1,6 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 import { InfraPage } from "../../pages";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
+import { errorBoundaryIndicators } from "../../support/errors";
 test.describe("Infrastructure", () => {
   function watchErrors(page: Page): string[] {
     const errors: string[] = [];
@@ -95,6 +97,58 @@ test.describe("Infrastructure", () => {
       expect(body).not.toContain("tenants");
       expect(body).not.toContain("hypervisor");
       expect(body.toLowerCase()).not.toContain("host");
+    }
+  });
+
+  test("INFRA-REG04 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const infra = new InfraPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => infra.goto(), {
+      crumbs: ["Settings", "Enterprise", "Infrastructure"],
+    });
+  });
+
+  test("INFRA-REG05 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const infra = new InfraPage(page);
+    await expectNoPageErrors(page, () => infra.goto(), { ready: infra.heading });
+  });
+
+  test("INFRA-REG06 — Refresh is idempotent and degrades gracefully on failure", async ({
+    page,
+  }) => {
+    const infra = new InfraPage(page);
+    const vpcPattern = /\/api\/enterprise\/[^/]+\/vpc/;
+    await infra.goto();
+    await expect(infra.heading).toBeVisible();
+    await expect(infra.noVpcData).toBeVisible();
+
+    // Rapid repeated refreshes leave the page in a consistent, non-stuck state.
+    for (let i = 0; i < 5; i++) {
+      await infra.refreshButton.first().click();
+    }
+    await expect(infra.refreshButton.first()).toBeEnabled();
+    await expect(infra.heading).toBeVisible();
+    await expect(infra.noVpcData).toBeVisible();
+    await expect(errorBoundaryIndicators(page)).toHaveCount(0);
+
+    // A failing health request does not crash the page or present stale data as fresh.
+    await page.route(vpcPattern, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ detail: "Injected error" }),
+      }),
+    );
+    try {
+      await infra.refreshButton.first().click();
+      await expect(infra.heading).toBeVisible();
+      await expect(infra.noVpcData).toBeVisible();
+      await expect(errorBoundaryIndicators(page)).toHaveCount(0);
+      // Known gap: no explicit error indicator is rendered on a failed
+      // refresh. Reported as a product bug.
+    } finally {
+      await page.unroute(vpcPattern);
     }
   });
 });

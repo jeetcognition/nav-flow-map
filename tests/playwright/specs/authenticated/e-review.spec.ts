@@ -9,7 +9,8 @@ import {
   closeDisposableMr,
   DisposableMr,
 } from "../../support/gitlab";
-
+import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { expectNoPageErrors } from "../../support/errors";
 test.describe("Review Settings", () => {
   test("REV-SMK01 — Load cold", async ({ page }) => {
     const review = new ReviewSettingsPage(page);
@@ -278,5 +279,65 @@ test.describe("Review Settings", () => {
     } finally {
       await anonContext.close();
     }
+  });
+
+  test("REV-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
+    const review = new ReviewSettingsPage(page);
+    await expectEnterpriseBreadcrumbs(page, () => review.goto(), {
+      crumbs: ["Settings", "Enterprise", "Devin Review"],
+    });
+  });
+
+  test("REV-REG07 — Verify the page loads without console errors or error boundaries", async ({
+    page,
+  }) => {
+    const review = new ReviewSettingsPage(page);
+    await expectNoPageErrors(page, () => review.goto(), { ready: review.heading });
+  });
+
+  test("REV-REG08 — Force save failure on an auto-saving toggle", async ({ page }) => {
+    const review = new ReviewSettingsPage(page);
+    await review.goto();
+    const toggle = review.prDescriptionsSwitch.getByRole("switch");
+    await expect(toggle).toBeVisible();
+    const initial = await toggle.getAttribute("aria-checked");
+    const saveGlob = "**/api/pr-review/settings/insert-link";
+
+    await page.route(saveGlob, async (route) => {
+      if (route.request().method() === "PUT") {
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ detail: "Simulated save failure" }),
+        });
+      } else {
+        await route.fallback();
+      }
+    });
+
+    try {
+      const [response] = await Promise.all([
+        page.waitForResponse(
+          (res) =>
+            res.request().method() === "PUT" &&
+            res.url().includes("/api/pr-review/settings/insert-link"),
+        ),
+        toggle.click(),
+      ]);
+      expect(response.status()).toBe(500);
+
+      // A clear error toast is shown and the toggle reverts.
+      await expect(page.getByText("Failed to update setting").first()).toBeVisible();
+      await expect(toggle).toHaveAttribute("aria-checked", initial);
+    } finally {
+      await page.unroute(saveGlob);
+    }
+
+    // The server state is unchanged — a reload shows the original value.
+    await page.reload({ waitUntil: "networkidle" });
+    await expect(review.prDescriptionsSwitch.getByRole("switch")).toHaveAttribute(
+      "aria-checked",
+      initial,
+    );
   });
 });
