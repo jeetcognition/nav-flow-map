@@ -30,7 +30,7 @@ jobs:
         working-directory: app
       # SPA fallback so deep links like /nav-flow-map/runs load the app
       - run: cp app/dist/index.html app/dist/404.html
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: app/dist
 
