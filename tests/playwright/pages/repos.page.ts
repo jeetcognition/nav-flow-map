@@ -56,6 +56,17 @@ export class ReposPage extends BasePage {
     return this.table.locator("tr").filter({ hasText: name });
   }
 
+  /**
+   * Repository/organization name of the first granted permission. Search tests
+   * derive their query from the live permission list rather than assuming a
+   * specific repository is still granted to the test sub-org.
+   */
+  async firstPermissionName(): Promise<string> {
+    const name = (await this.tableRows.first().locator("td").first().innerText()).trim();
+    expect(name, "permissions table lists at least one granted entry").not.toBe("");
+    return name;
+  }
+
   /** True when the permissions table currently lists a row for `name`. */
   async hasPermission(name: string): Promise<boolean> {
     return (await this.permissionRow(name).count()) > 0;

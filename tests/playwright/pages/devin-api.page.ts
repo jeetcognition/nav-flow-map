@@ -128,10 +128,14 @@ export class DevinApiPage extends BasePage {
 
   async ensureDeleted(name: string) {
     await this.goto();
+    await this.heading.waitFor({ state: "visible" });
     await this.searchInput.fill(name);
-    await this.page.waitForLoadState("networkidle");
     const row = this.rowByName(name).first();
-    if (!(await row.isVisible().catch(() => false))) return;
+    const present = await row
+      .waitFor({ state: "visible", timeout: 15_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!present) return;
     await row.getByRole("button", { name: "Delete service user" }).click();
     await this.deleteConfirmButton.click();
     await expect(row).toHaveCount(0);

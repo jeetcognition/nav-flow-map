@@ -54,6 +54,18 @@ export class ConnectionsPage extends BasePage {
     await this.page.goto(routes.connections(slug));
   }
 
+  /**
+   * Numeric badge rendered at the end of a tab label (e.g. "MCP servers 160").
+   * The enterprise MCP/integration inventory changes over time, so tests assert
+   * on this live count instead of a hardcoded total.
+   */
+  async tabCount(tab: Locator): Promise<number> {
+    // The badge is appended once the inventory request resolves.
+    const label = async () => (await tab.innerText()).replace(/\s+/g, " ").trim();
+    await expect.poll(label, { timeout: 15_000 }).toMatch(/\d+$/);
+    return Number((await label()).match(/(\d+)$/)![1]);
+  }
+
   providerCard(name: Provider | string): Locator {
     return this.page.getByRole("link", { name: new RegExp(`^${name}`) }).first();
   }

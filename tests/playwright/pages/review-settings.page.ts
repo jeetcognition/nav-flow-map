@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
 
@@ -55,7 +55,10 @@ export class ReviewSettingsPage extends BasePage {
     this.addRepoCancelButton = this.addRepoDialog.getByRole("button", { name: "Cancel" });
     this.addRepoSaveButton = this.addRepoDialog.getByRole("button", { name: /Save changes/ });
     this.addRepoCloseButton = this.addRepoDialog.locator("button").first();
-    this.addRepoListRow = this.addRepoDialog.locator("button[data-index]");
+    // Each repository row is a toggle button wrapping the selection checkbox.
+    this.addRepoListRow = this.addRepoDialog
+      .getByRole("button")
+      .filter({ has: page.getByRole("checkbox") });
   }
 
   async goto(params?: { tab?: "repositories" | "users" }) {
@@ -94,10 +97,15 @@ export class ReviewSettingsPage extends BasePage {
     // The list is virtualized and re-renders while the search settles; wait
     // until every rendered row matches the query so the toggle cannot land on
     // a recycled row for a different repository.
-    await this.page.waitForFunction((g) => {
-      const rows = Array.from(document.querySelectorAll("[role='dialog'] button[data-index]"));
-      return rows.length > 0 && rows.every((r) => (r.textContent ?? "").includes(g));
-    }, group);
+    await expect
+      .poll(
+        async () => {
+          const rows = await this.addRepoListRow.allInnerTexts();
+          return rows.length > 0 && rows.every((text) => text.includes(group));
+        },
+        { timeout: 30_000 },
+      )
+      .toBe(true);
     // Click the row's checkbox directly (a row click can land on the inline
     // visibility button) and confirm the toggle registered before saving.
     const row = this.addRepoListRow.filter({ hasText: group }).first();

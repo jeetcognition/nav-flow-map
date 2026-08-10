@@ -72,9 +72,11 @@ test.describe("Repositories", () => {
 
     await expect(repos.searchInput).toBeVisible();
 
-    // Match: should narrow visible rows.
-    await repos.searchInput.fill("primary-project");
-    await expect(repos.permissionRow("primary-project")).toBeVisible();
+    // Match: should narrow visible rows. The query comes from a permission the
+    // sub-org currently holds.
+    const granted = await repos.firstPermissionName();
+    await repos.searchInput.fill(granted);
+    await expect(repos.permissionRow(granted)).toBeVisible();
 
     // No-match literal.
     await repos.searchInput.fill("no-such-repo-12345");
@@ -90,7 +92,7 @@ test.describe("Repositories", () => {
 
     // Clearing restores rows.
     await repos.searchInput.fill("");
-    await expect(repos.permissionRow("primary-project")).toBeVisible();
+    await expect(repos.permissionRow(granted)).toBeVisible();
 
     expect(errors).toHaveLength(0);
   });
@@ -109,9 +111,10 @@ test.describe("Repositories", () => {
     ]);
     const body = (await resp.json()) as { data?: { path: string }[] };
     const paths = (body.data ?? []).map((repo) => repo.path);
-    // Baseline permission that is always granted to the test sub-org — proves
-    // the composer repo list loaded before presence/absence assertions.
-    expect(paths).toContain("jeet-devin-qa/primary-project");
+    // The sub-org always holds at least one repository permission, so a
+    // non-empty list proves the composer data loaded before presence/absence
+    // assertions run against it.
+    expect(paths.length, "session composer repository list loaded").toBeGreaterThan(0);
     return paths;
   }
 

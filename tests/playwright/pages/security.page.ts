@@ -33,7 +33,8 @@ export class SecurityPage extends BasePage {
 
   // --- Profiles tab ---
   readonly createProfileButton: Locator;
-  readonly createManuallyLink: Locator;
+  readonly createManuallyOption: Locator;
+  readonly discoverProfileOption: Locator;
   readonly profileNameInput: Locator;
   readonly profileDescriptionInput: Locator;
   readonly submitCreateProfileButton: Locator;
@@ -64,7 +65,8 @@ export class SecurityPage extends BasePage {
     this.runScanButton = this.newScanDialog.getByRole("button", { name: "Run Scan" });
 
     this.createProfileButton = this.content.getByRole("button", { name: "Create profile" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
+    this.createManuallyOption = page.getByRole("button", { name: /Create manually/ });
+    this.discoverProfileOption = page.getByRole("link", { name: /^Discover profile/ });
     this.profileNameInput = page.getByPlaceholder("Profile name");
     this.profileDescriptionInput = page.getByPlaceholder(/Describe what this profile scans for/);
     this.submitCreateProfileButton = page.getByRole("button", { name: "Create profile" });
@@ -76,6 +78,17 @@ export class SecurityPage extends BasePage {
     await this.sidebarSecurityLink.waitFor({ state: "visible" });
     await this.sidebarSecurityLink.click();
     await this.heading.waitFor({ state: "visible" });
+  }
+
+  /**
+   * Walk the Create profile dialog to the manual editor: the dialog first asks
+   * how to create the profile, then which profile type to create.
+   */
+  async openManualProfileEditor() {
+    await this.createProfileButton.click();
+    await this.createManuallyOption.click();
+    await this.discoverProfileOption.click();
+    await this.profileNameInput.waitFor({ state: "visible" });
   }
 
   /** Open the New Scan dialog from the Scans tab. */

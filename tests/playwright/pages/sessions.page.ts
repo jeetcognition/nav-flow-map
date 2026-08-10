@@ -40,7 +40,7 @@ export class SessionsPage extends BasePage {
       .locator('button[data-dd-action-name="Edit filter"]')
       .filter({ hasText: /^[^A-Z ]+$/ });
     this.archivedFilter = page.getByRole("button", { name: "Not Archived" });
-    this.updatedDateFilter = page.getByRole("button", { name: /After Jul \d+/ });
+    this.updatedDateFilter = page.getByRole("button", { name: /After [A-Z][a-z]{2} \d+/ });
     this.clearFilters = page.getByRole("button", { name: "Clear filters" });
     this.inactiveSessionsText = page.getByText(/Inactive sessions/).first();
     this.noSessionsText = page.getByText("No sessions found");
@@ -69,6 +69,28 @@ export class SessionsPage extends BasePage {
 
   rowContainer(nth = 0): Locator {
     return this.sessionRowContainers.nth(nth);
+  }
+
+  /**
+   * Title of a session row, exposed as the overlay link's accessible name.
+   * Search tests derive their query from live rows instead of assuming a
+   * specific session still exists in the enterprise.
+   */
+  async rowTitle(nth = 0): Promise<string> {
+    const title = ((await this.row(nth).getAttribute("aria-label")) ?? "").trim();
+    expect(title, "session row exposes a title").not.toBe("");
+    return title;
+  }
+
+  /** Longest word of a row title, used as a matching search term. */
+  async searchTermFromRow(nth = 0): Promise<string> {
+    const title = await this.rowTitle(nth);
+    const term = title
+      .split(/\s+/)
+      .filter((word) => /^[\w-]{4,}$/.test(word))
+      .sort((a, b) => b.length - a.length)[0];
+    expect(term, `row title "${title}" yields a searchable term`).toBeTruthy();
+    return term;
   }
 
   async search(term: string) {

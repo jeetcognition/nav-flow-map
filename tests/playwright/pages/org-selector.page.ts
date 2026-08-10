@@ -93,6 +93,20 @@ export class OrgSelectorPage extends BasePage {
     await this.commandPalette.waitFor({ state: "visible", timeout: 10_000 });
   }
 
+  /** Palette search field. */
+  paletteInput(): Locator {
+    return this.commandPalette.getByRole("combobox").first();
+  }
+
+  /**
+   * Drill into the palette's "Go to…" action, which holds the navigation
+   * destinations (New session, Settings, Switch organization…).
+   */
+  async openPaletteGoTo() {
+    await this.commandPalette.getByRole("option", { name: /^Go to…/ }).click();
+    await this.commandPalette.getByRole("button", { name: "Back" }).waitFor();
+  }
+
   /** Current rendered width of the sidebar, in pixels. */
   async sidebarWidth(): Promise<number> {
     return this.sidebar.evaluate((el) => el.getBoundingClientRect().width);

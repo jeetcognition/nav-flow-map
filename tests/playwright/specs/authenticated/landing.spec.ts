@@ -115,9 +115,19 @@ test.describe("Landing Search Page", () => {
     await org.openCommandPalette();
     const dialog = org.commandPalette;
     await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Navigation");
-    await expect(dialog).toContainText("Go to new session");
-    await expect(dialog).toContainText("Settings");
+    // The palette opens on its Actions group; navigation destinations live one
+    // level down, behind the "Go to…" action.
+    await expect(dialog.getByRole("group", { name: "Actions" })).toBeVisible();
+    for (const action of ["Go to…", "Change theme…", "Toggle sidebar"]) {
+      await expect(dialog.getByRole("option", { name: new RegExp(`^${action}`) })).toBeVisible();
+    }
+
+    await org.openPaletteGoTo();
+    for (const destination of ["New session", "Settings", "Switch organization…"]) {
+      await expect(
+        dialog.getByRole("option", { name: new RegExp(`^${destination}`) }),
+      ).toBeVisible();
+    }
   });
 
   test("ORGSEL-SAN10 — Open the All organizations dropdown", async ({ page }) => {
@@ -324,20 +334,20 @@ test.describe("Landing Search Page", () => {
     await org.goto();
     await org.openCommandPalette();
 
-    const input = org.commandPalette.locator('[role="combobox"]').first();
-    await input.fill("new session");
+    await org.paletteInput().fill("new session");
 
     const dialog = org.commandPalette;
-    await expect(dialog).toContainText("Go to new session");
-    await expect(dialog).toContainText("Results");
+    await expect(dialog.getByRole("group", { name: "Results" })).toBeVisible();
+    await expect(dialog.getByRole("option", { name: "Go to: New session" })).toBeVisible();
   });
 
   test("ORGSEL-REG13 — Select Switch organization from the command palette", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     await org.openCommandPalette();
+    await org.openPaletteGoTo();
 
-    const option = org.commandPalette.getByText("Switch organization…").first();
+    const option = org.commandPalette.getByRole("option", { name: /^Switch organization…/ });
     await option.click();
 
     // Switch organization keeps the user on the valid org-selector page.

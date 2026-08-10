@@ -533,6 +533,8 @@ test.describe("Playbooks Page", () => {
     // Switching back to Details restores the read-only overview.
     await detailsTab.click();
     await expect(detailsTab).toHaveAttribute("aria-selected", "true");
-    await expect(page.getByText("Overview", { exact: true })).toBeVisible();
+    await expect(page.getByRole("tabpanel", { name: "Details" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Macro", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Devin mode", exact: true })).toBeVisible();
   });
 });

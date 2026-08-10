@@ -17,9 +17,22 @@ test.describe("Landing Repo Page", () => {
     await suborg.goto();
     await suborg.newSessionLink.waitFor({ state: "visible" });
 
+    // The Recent group is a collapse toggle labelled with its session count;
+    // list controls sit on the Sessions label row above the groups.
     await expect(suborg.recentSection).toBeVisible();
-    await expect(suborg.recentSearchButton).toBeVisible();
-    await expect(suborg.recentOverflowButton).toBeVisible();
+    await expect(suborg.recentSection).toHaveAttribute("aria-expanded", "true");
+    await expect(suborg.recentSessionRows.first()).toBeVisible();
+    await expect(suborg.sessionsSearchButton).toBeVisible();
+    await expect(suborg.sessionsFilterButton).toBeVisible();
+    await expect(suborg.sessionsOverflowButton).toBeVisible();
+
+    await suborg.recentSection.click();
+    await expect(suborg.recentSection).toHaveAttribute("aria-expanded", "false");
+    await expect(suborg.recentSessionRows).toHaveCount(0);
+
+    await suborg.recentSection.click();
+    await expect(suborg.recentSection).toHaveAttribute("aria-expanded", "true");
+    await expect(suborg.recentSessionRows.first()).toBeVisible();
   });
 
   test("SUB-SAN03 — Inspect the left sidebar navigation", async ({ page }) => {

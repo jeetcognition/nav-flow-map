@@ -146,11 +146,14 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("heading", { name: "Agent mode" })).toBeVisible();
+    // Agent mode and Run as are labelled comboboxes in the Agent definition
+    // section; the remaining controls render as section headings.
+    await expect(page.getByText("Agent mode", { exact: true })).toBeVisible();
+    await expect(page.getByText("Launch sessions using this agent mode")).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Run as creator" })).toBeVisible();
+    await expect(page.getByRole("combobox", { name: "Run as" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "MCPs" })).toBeVisible();
     await expect(automations.manageMcpsButton).toBeVisible();
     await expect(page.getByRole("heading", { name: "Network policy" })).toBeVisible();

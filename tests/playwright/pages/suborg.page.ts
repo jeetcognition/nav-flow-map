@@ -19,12 +19,14 @@ export class SuborgPage extends BasePage {
   readonly reviewLink: Locator;
   /** Wiki sidebar link. */
   readonly wikiLink: Locator;
-  /** Recent section heading. */
+  /** Recent group header: a collapse toggle labelled "Recent <count>". */
   readonly recentSection: Locator;
-  /** Recent section search button. */
-  readonly recentSearchButton: Locator;
-  /** Recent section overflow menu trigger. */
-  readonly recentOverflowButton: Locator;
+  /** Search/filter/overflow controls on the sidebar Sessions label row. */
+  readonly sessionsSearchButton: Locator;
+  readonly sessionsFilterButton: Locator;
+  readonly sessionsOverflowButton: Locator;
+  /** Session rows listed under the Recent group. */
+  readonly recentSessionRows: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -37,10 +39,21 @@ export class SuborgPage extends BasePage {
     this.securityLink = page.getByRole("link", { name: "Security" });
     this.reviewLink = page.getByRole("link", { name: "Review" });
     this.wikiLink = page.getByRole("link", { name: "Wiki" });
-    this.recentSection = page.getByText("Recent").first();
-    const recentGroup = page.getByText("Recent").first().locator("..");
-    this.recentSearchButton = recentGroup.getByRole("button", { name: "Search" });
-    this.recentOverflowButton = recentGroup.getByRole("button", { name: "More" });
+    const sidebar = page.locator("#sidebar");
+    const recentGroup = sidebar
+      .locator('[data-slot="sidebar-group"]')
+      .filter({ hasText: "Recent" })
+      .first();
+    this.recentSection = recentGroup.getByRole("button", { name: /^Recent \d+$/ });
+    this.recentSessionRows = recentGroup.locator('a[href^="/sessions/"]');
+    // Session list controls live on the Sessions label row above the groups.
+    const sessionsLabelRow = sidebar
+      .locator('[data-slot="sidebar-label-row"]')
+      .filter({ hasText: "Sessions" })
+      .first();
+    this.sessionsSearchButton = sessionsLabelRow.getByRole("button", { name: "Search" });
+    this.sessionsFilterButton = sessionsLabelRow.getByRole("button", { name: "Filter" });
+    this.sessionsOverflowButton = sessionsLabelRow.getByRole("button", { name: "More" });
   }
 
   /** The currently open top-left organization menu. */
