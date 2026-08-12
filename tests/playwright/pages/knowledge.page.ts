@@ -23,6 +23,10 @@ export class KnowledgePage extends BasePage {
   readonly systemFolder: Locator;
   /** Enterprise knowledge folder row. */
   readonly enterpriseFolder: Locator;
+  /** Repo indexes folder row, nested under System knowledge. */
+  readonly repoIndexesFolder: Locator;
+  /** Auto-generated repo index entry rows inside the Repo indexes folder. */
+  readonly repoIndexEntries: Locator;
   /** Empty-state message when a search returns no results. */
   readonly noResults: Locator;
 
@@ -77,6 +81,8 @@ export class KnowledgePage extends BasePage {
     this.tableRows = this.table.locator("tbody tr");
     this.systemFolder = this.tableRows.filter({ hasText: "System knowledge" });
     this.enterpriseFolder = this.tableRows.filter({ hasText: "Enterprise knowledge" });
+    this.repoIndexesFolder = this.tableRows.filter({ hasText: "Repo indexes" }).first();
+    this.repoIndexEntries = this.tableRows.filter({ hasText: /Auto-generated .* index of / });
     this.noResults = page.getByText("No knowledge found");
 
     this.creationPanel = page.getByRole("heading", { name: "Knowledge creation" });
@@ -112,6 +118,24 @@ export class KnowledgePage extends BasePage {
   async toggleFolder(name: "System knowledge" | "Enterprise knowledge") {
     const row = this.tableRows.filter({ hasText: name }).first();
     await row.click();
+  }
+
+  /** Expand System knowledge and open its read-only Repo indexes folder. */
+  async openRepoIndexes() {
+    await this.toggleFolder("System knowledge");
+    await this.repoIndexesFolder.click();
+  }
+
+  /**
+   * Name of the first auto-generated repo index entry. The tenant's indexed
+   * repositories change over time, so the name is read instead of hard-coded.
+   */
+  async firstRepoIndexName(): Promise<string> {
+    await this.repoIndexEntries.first().waitFor({ state: "visible" });
+    const text = (await this.repoIndexEntries.first().innerText()).trim();
+    const match = text.match(/Auto-generated[^\t\n]*index of [^\t\n]+/);
+    if (!match) throw new Error(`Unexpected repo index row: ${JSON.stringify(text)}`);
+    return match[0].trim();
   }
 
   /** Click a knowledge entry row that contains the given text and wait for navigation. */

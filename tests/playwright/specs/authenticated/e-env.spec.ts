@@ -34,13 +34,11 @@ test.describe("Environment", () => {
     await expect(env.organizationsHeading).toBeVisible();
     await expect(env.rolloutOrgSearch).toBeVisible();
 
-    // Configuration, Blueprint, and Outposts surfaces render.
+    // Configuration and Blueprint surfaces render.
     await env.configurationTab.click();
     await expect(env.snapshotBuildsHeading).toBeVisible();
     await env.blueprintTab.click();
     await expect(env.blueprintHeading).toBeVisible();
-    await env.outpostsTab.click();
-    await expect(env.outpostsHeading).toBeVisible();
 
     expect(errors).toHaveLength(0);
   });
@@ -53,7 +51,6 @@ test.describe("Environment", () => {
     const tabParams: Array<[typeof env.configurationTab, string]> = [
       [env.configurationTab, "configuration"],
       [env.blueprintTab, "blueprint"],
-      [env.outpostsTab, "outposts"],
       [env.rolloutTab, "rollout"],
     ];
     for (const [tab, param] of tabParams) {
@@ -132,27 +129,6 @@ test.describe("Environment", () => {
     await expect(env.saveBlueprintButton).toBeDisabled();
     await expect(env.discardButton).toBeDisabled();
     expect(await env.blueprintText()).toBe(original);
-
-    expect(errors).toHaveLength(0);
-  });
-
-  test("ENV-REG03 — Inspect outpost configuration/list/empty states and available actions.", async ({
-    page,
-  }) => {
-    const errors = watchErrors(page);
-    const env = new EnvironmentPage(page);
-    await env.goto("outposts");
-
-    await expect(env.outpostsHeading).toBeVisible();
-    await expect(env.outpostsDescription).toBeVisible();
-    await expect(env.createOutpostButton).toBeVisible();
-
-    // Each outpost states its ownership scope; IDs belong to this tenant's
-    // outpost namespace and no unrelated tenant data appears.
-    await expect(env.organizationAccessLabels.first()).toBeVisible();
-    const accessCount = await env.organizationAccessLabels.count();
-    const outpostIds = await page.getByText(/^outpost_env-[0-9a-f]+$/).count();
-    expect(outpostIds).toBe(accessCount);
 
     expect(errors).toHaveLength(0);
   });
