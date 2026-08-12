@@ -3,8 +3,8 @@ import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
 // Enterprise → Environment (…/settings/enterprise-environment).
-// Main tabs: Rollout | Configuration | Blueprint | Outposts. Rollout is the
-// default tab and shows build health plus a per-organization rollout table.
+// Main tabs: Rollout | Configuration | Blueprint. Rollout is the default tab
+// and shows build health plus a per-organization rollout table.
 export class EnvironmentPage extends BasePage {
   protected readonly path = routes.environment();
 
@@ -17,7 +17,6 @@ export class EnvironmentPage extends BasePage {
   readonly rolloutTab = this.page.getByRole("tab", { name: "Rollout" });
   readonly configurationTab = this.page.getByRole("tab", { name: "Configuration" });
   readonly blueprintTab = this.page.getByRole("tab", { name: "Blueprint" });
-  readonly outpostsTab = this.page.getByRole("tab", { name: "Outposts" });
   readonly goldenSnapshotTab = this.page.getByRole("tab", { name: "Golden snapshot (legacy)" });
 
   // Rollout tab
@@ -41,14 +40,6 @@ export class EnvironmentPage extends BasePage {
   readonly blueprintEditorContent = this.page.locator(".monaco-editor .view-lines").first();
   readonly saveBlueprintButton = this.page.getByRole("button", { name: "Save blueprint" });
   readonly discardButton = this.page.getByRole("button", { name: "Discard", exact: true });
-
-  // Outposts tab
-  readonly outpostsHeading = this.page.getByRole("heading", { name: "Outposts", exact: true });
-  readonly outpostsDescription = this.page.getByText(
-    "Manage outposts for running Devin sessions on your own machines.",
-  );
-  readonly createOutpostButton = this.page.getByRole("button", { name: "Create outpost" });
-  readonly organizationAccessLabels = this.page.getByText("Organization access", { exact: true });
 
   // Golden snapshot (legacy) tab
   readonly machineSnapshotHeading = this.page.getByRole("heading", {
@@ -86,7 +77,7 @@ export class EnvironmentPage extends BasePage {
   }
 
   mainTabs(): Locator[] {
-    return [this.rolloutTab, this.configurationTab, this.blueprintTab, this.outpostsTab];
+    return [this.rolloutTab, this.configurationTab, this.blueprintTab];
   }
 
   /**

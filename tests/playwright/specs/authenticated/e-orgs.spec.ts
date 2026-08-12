@@ -53,8 +53,8 @@ test.describe("Organizations", () => {
     const row = orgs.rowByName("jeet-devin-qa");
     await row.getByRole("button", { name: "Update name and limits" }).click();
 
-    await expect(page.locator("#displayName")).toHaveValue("jeet-devin-qa");
-    await expect(page.locator("#maxAcuLimit")).toHaveAttribute("placeholder", "No limit");
+    await expect(orgs.nameInput).toHaveValue("jeet-devin-qa");
+    await expect(orgs.acuInput).toHaveAttribute("placeholder", "No limit");
     await expect(page.getByRole("button", { name: "Save changes" })).toBeVisible();
 
     await page.keyboard.press("Escape");
@@ -428,7 +428,7 @@ test.describe("Organizations", () => {
 
     const row = orgs.rowByName("jeet-devin-qa");
     await row.getByRole("button", { name: "Update name and limits" }).click();
-    await expect(page.locator("#displayName")).toHaveValue("jeet-devin-qa");
+    await expect(orgs.nameInput).toHaveValue("jeet-devin-qa");
     await page.keyboard.press("Escape");
 
     await row.getByRole("button", { name: "Delete" }).click();

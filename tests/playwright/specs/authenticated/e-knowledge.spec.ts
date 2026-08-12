@@ -37,22 +37,16 @@ test.describe("Knowledge Page", () => {
     await knowledge.heading.waitFor({ state: "visible" });
 
     await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    const repoIndexes = knowledge.tableRows.filter({ hasText: "Repo indexes" }).first();
-    await expect(builtIn).toBeVisible();
-    await expect(repoIndexes).toBeVisible();
+    await expect(knowledge.repoIndexesFolder).toBeVisible();
 
-    await builtIn.click();
-    const workflow = knowledge.tableRows
-      .filter({ hasText: "Backend Development & Deployment Workflow" })
-      .first();
-    await expect(workflow).toBeVisible();
-    await builtIn.click();
-    await expect(workflow).toBeHidden();
+    await knowledge.repoIndexesFolder.click();
+    const repoIndex = knowledge.repoIndexEntries.first();
+    await expect(repoIndex).toBeVisible();
+    await knowledge.repoIndexesFolder.click();
+    await expect(repoIndex).toBeHidden();
 
     await knowledge.toggleFolder("System knowledge");
-    await expect(builtIn).toBeHidden();
-    await expect(repoIndexes).toBeHidden();
+    await expect(knowledge.repoIndexesFolder).toBeHidden();
 
     await knowledge.toggleFolder("Enterprise knowledge");
     const enterpriseEntry = knowledge.tableRows.filter({ hasText: "backend based code" }).first();
@@ -199,25 +193,34 @@ test.describe("Knowledge Page", () => {
     }
   });
 
-  test("KNOW-SAN07 — Open a built-in System knowledge entry", async ({ page }) => {
+  test("KNOW-SAN07 — Open a read-only System knowledge entry", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openRepoIndexes();
+    const name = await knowledge.firstRepoIndexName();
+    await knowledge.openEntry(name);
 
     await expect(knowledge.backToKnowledge).toBeVisible();
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    // The header states the author and the creation date.
+    await expect(page.locator("main").getByText("Unknown", { exact: true })).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Backend Development & Deployment Workflow", exact: true }),
+      page
+        .locator("main")
+        .getByText(/^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
+        .first(),
     ).toBeVisible();
-    await expect(page.locator("main").getByText("Cognition", { exact: true })).toBeVisible();
-    await expect(page.locator("main").getByText("Dec 19, 2025", { exact: true })).toBeVisible();
     await expect(knowledge.detailsTab).toHaveAttribute("aria-selected", "true");
     await expect(knowledge.usageTab).toBeVisible();
-    await expect(page.getByText("Cognition's built-in knowledge cannot be edited")).toBeVisible();
+    await expect(page.getByText("Automatically generated knowledge")).toBeVisible();
+    await expect(
+      page.getByText("This piece of knowledge is automatically generated"),
+    ).toBeVisible();
+    // System knowledge is read-only: no editing affordances are offered.
+    await expect(knowledge.saveButton).toHaveCount(0);
+    await expect(knowledge.deleteButton).toHaveCount(0);
 
     await knowledge.backToKnowledge.click();
     await expect(page).toHaveURL(/\/settings\/knowledge$/);
@@ -250,10 +253,8 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openRepoIndexes();
+    await knowledge.openEntry(await knowledge.firstRepoIndexName());
 
     await knowledge.usageTab.click();
     await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
@@ -305,10 +306,8 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openRepoIndexes();
+    await knowledge.openEntry(await knowledge.firstRepoIndexName());
 
     await knowledge.usageTab.click();
     await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");

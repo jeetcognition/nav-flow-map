@@ -1739,7 +1739,7 @@
     "reach": "Environment → Outposts",
     "steps": "Inspect outpost configuration/list/empty states and available actions.",
     "expected": "Outpost state, ownership, and disabled controls are clear; no unrelated tenant data appears.",
-    "automation": "automated",
+    "automation": "not-automatable",
     "flaky": false,
     "createdBy": "u-jeet",
     "source": "authored"
