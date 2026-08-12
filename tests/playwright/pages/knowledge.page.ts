@@ -123,7 +123,7 @@ export class KnowledgePage extends BasePage {
   /** Use the list search to find and open an entry. */
   async openEntryByName(name: string) {
     await this.searchInput.fill(name);
-    await this.page.getByRole("cell", { name, exact: true }).first().click();
+    await this.cellByName(name).click();
     await this.page.waitForURL(/\/settings\/knowledge\/.+/);
   }
 
@@ -280,9 +280,21 @@ export class KnowledgePage extends BasePage {
     await this.searchInput.fill(name);
   }
 
+  /**
+   * The name cell for an entry. The cell also holds the row's selection
+   * checkbox, so its accessible name is not the entry name; match on the
+   * exact rendered text instead.
+   */
+  cellByName(name: string): Locator {
+    return this.page
+      .getByRole("cell")
+      .filter({ has: this.page.getByText(name, { exact: true }) })
+      .first();
+  }
+
   /** Assert that a table cell with the exact entry name is visible. */
   async expectEntryVisible(name: string) {
-    await expect(this.page.getByRole("cell", { name, exact: true }).first()).toBeVisible();
+    await expect(this.cellByName(name)).toBeVisible();
   }
 
   /** Reload the knowledge list and wait for the heading to reappear. */
@@ -306,7 +318,7 @@ export class KnowledgePage extends BasePage {
       await this.goto(slug);
       await this.heading.waitFor({ state: "visible" });
       await this.searchFor(name);
-      const cell = this.page.getByRole("cell", { name, exact: true }).first();
+      const cell = this.cellByName(name);
       if (await cell.isVisible().catch(() => false)) {
         await cell.click();
         await this.page.waitForURL(/\/settings\/knowledge\/.+/);

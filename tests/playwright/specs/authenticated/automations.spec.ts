@@ -146,11 +146,12 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("heading", { name: "Agent mode" })).toBeVisible();
+    // Agent mode and Run as are labelled selects, the rest are section headings.
+    await expect(page.getByText("Agent mode", { exact: true })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Run as creator" })).toBeVisible();
+    await expect(page.getByText("Run as", { exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "MCPs" })).toBeVisible();
     await expect(automations.manageMcpsButton).toBeVisible();
     await expect(page.getByRole("heading", { name: "Network policy" })).toBeVisible();

@@ -54,6 +54,17 @@ export class ConnectionsPage extends BasePage {
     await this.page.goto(routes.connections(slug));
   }
 
+  /**
+   * The badge count on the MCP servers tab. The tenant's catalogue grows over
+   * time, so tests read it instead of hard-coding a total.
+   */
+  async mcpServerCount(): Promise<number> {
+    const text = (await this.mcpServersTab.textContent()) ?? "";
+    const match = text.match(/MCP servers\s+(\d+)/);
+    if (!match) throw new Error(`MCP servers tab has no count badge: ${JSON.stringify(text)}`);
+    return Number(match[1]);
+  }
+
   providerCard(name: Provider | string): Locator {
     return this.page.getByRole("link", { name: new RegExp(`^${name}`) }).first();
   }
