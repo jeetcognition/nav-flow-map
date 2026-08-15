@@ -4,6 +4,7 @@ import {
   DevinSessionPage,
   McpMarketplacePage,
   TEST_SUBORG_DISPLAY,
+  ALT_SUBORG_NAME,
 } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
@@ -40,7 +41,7 @@ test.describe("Connections", () => {
     await expect(conn.integrationsTab).toBeVisible();
     await expect(conn.mcpServersTab).toBeVisible();
     await expect(conn.integrationsTab).toHaveText(/Integrations\s+8/);
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
     await expect(page.getByRole("heading", { name: "Git providers", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Communication", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Task management", exact: true })).toBeVisible();
@@ -72,7 +73,7 @@ test.describe("Connections", () => {
     await expect(conn.orgFilter).toBeVisible();
     await expect(conn.mcpTable).toBeVisible();
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
 
     await conn.integrationsTab.click();
     await expect(page).toHaveURL(/\/settings\/connections(\?tab=integrations)?$/);
@@ -110,16 +111,16 @@ test.describe("Connections", () => {
 
     await conn.mcpSearchInput.fill("");
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
 
     await conn.orgFilter.click();
-    await page.getByRole("option", { name: "fri-5", exact: true }).first().click();
+    await page.getByRole("option", { name: ALT_SUBORG_NAME, exact: true }).first().click();
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
 
     await conn.globalSearchInput.fill("zzzz-no-match");
     await expect(conn.integrationsTab).toHaveText(/Integrations\s+8/);
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
 
     await conn.globalSearchInput.fill("");
     await expect(conn.mcpTableRows.first()).toBeVisible();

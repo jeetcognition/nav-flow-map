@@ -146,12 +146,15 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("heading", { name: "Agent mode" })).toBeVisible();
+    // Agent mode / Run as / the MCP picker are labelled rows inside "Agent
+    // definition", not headings, so they are asserted by their visible label.
+    const main = page.locator("main");
+    await expect(main.getByText("Agent mode", { exact: true })).toBeVisible();
+    await expect(automations.agentModeSelect).toBeVisible();
+    await expect(main.getByText("Run as", { exact: true })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Run as creator" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "MCPs" })).toBeVisible();
     await expect(automations.manageMcpsButton).toBeVisible();
     await expect(page.getByRole("heading", { name: "Network policy" })).toBeVisible();
     await expect(automations.addDomainButton).toBeVisible();

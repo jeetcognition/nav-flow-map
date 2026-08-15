@@ -29,12 +29,12 @@ export class AutomationsPage extends BasePage {
   readonly analyticsButton: Locator;
   /** "Create automation" button on the list page (and create-page banner). */
   readonly createAutomationButton: Locator;
-  /** "Create manually" link (empty state and create dialog). */
-  readonly createManuallyLink: Locator;
-  /** "Start from template" link. */
-  readonly startFromTemplateLink: Locator;
-  /** "Generate with Devin" option. */
-  readonly generateWithDevinButton: Locator;
+  /** "Manual" item in the Create automation menu. */
+  readonly createManuallyMenuItem: Locator;
+  /** "Template" item in the Create automation menu. */
+  readonly startFromTemplateMenuItem: Locator;
+  /** "Generate with Devin" item in the Create automation menu. */
+  readonly generateWithDevinMenuItem: Locator;
 
   /** Automation name input on the create/edit form. */
   readonly nameInput: Locator;
@@ -90,7 +90,7 @@ export class AutomationsPage extends BasePage {
 
   /** Detail page Edit button. */
   readonly editButton: Locator;
-  /** Detail page Run now button. */
+  /** Detail page "Run automation" button. */
   readonly runNowButton: Locator;
   /** Detail page More actions menu button. */
   readonly moreActionsButton: Locator;
@@ -111,9 +111,12 @@ export class AutomationsPage extends BasePage {
     this.searchButton = page.locator("main").getByRole("button", { name: "Search", exact: true });
     this.analyticsButton = page.getByRole("button", { name: "Analytics", exact: true });
     this.createAutomationButton = page.getByRole("button", { name: "Create automation" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
-    this.startFromTemplateLink = page.getByRole("link", { name: /Start from template/ });
-    this.generateWithDevinButton = page.getByRole("button", { name: /Generate with Devin/ });
+    this.createManuallyMenuItem = page.getByRole("menuitem", { name: "Manual", exact: true });
+    this.startFromTemplateMenuItem = page.getByRole("menuitem", { name: "Template", exact: true });
+    this.generateWithDevinMenuItem = page.getByRole("menuitem", {
+      name: "Generate with Devin",
+      exact: true,
+    });
 
     this.nameInput = page.getByRole("textbox", { name: "Automation name" });
     this.triggersHeading = page.getByRole("heading", { name: "Triggers" });
@@ -154,7 +157,7 @@ export class AutomationsPage extends BasePage {
     this.applyScheduleButton = this.scheduleDialog.getByRole("button", { name: "Apply" });
 
     this.editButton = page.getByRole("button", { name: "Edit", exact: true });
-    this.runNowButton = page.getByRole("button", { name: "Run now" });
+    this.runNowButton = page.getByRole("button", { name: "Run automation" });
     this.moreActionsButton = page.getByRole("button", { name: "More actions" });
     this.saveButton = page.getByRole("button", { name: "Save", exact: true });
     this.eventsHeading = page.getByRole("heading", { name: "Events" });
@@ -172,7 +175,7 @@ export class AutomationsPage extends BasePage {
   /** Open the manual-create form from the list page. */
   async openCreateForm() {
     await this.createAutomationButton.first().click();
-    await this.createManuallyLink.click();
+    await this.createManuallyMenuItem.click();
     await this.page.waitForURL(/\/automations\/create$/);
     await this.triggersHeading.waitFor({ state: "visible" });
   }
@@ -188,7 +191,12 @@ export class AutomationsPage extends BasePage {
     await this.addTriggerButton.click();
     await this.page.getByRole("menuitem", { name: type, exact: true }).hover();
     const submenu = this.page.getByRole("menu", { name: type });
-    await submenu.getByRole("menuitem", { name: event, exact: true }).click();
+    await submenu.waitFor({ state: "visible" });
+    const item = submenu.getByRole("menuitem", { name: event, exact: true });
+    await item.waitFor({ state: "visible" });
+    // force: the submenu keeps remounting its items while the popup repositions,
+    // so Playwright's stability check never settles and detaches mid-click.
+    await item.click({ force: true });
   }
 
   /** Remove every configured trigger row. */

@@ -40,7 +40,7 @@ export class SessionsPage extends BasePage {
       .locator('button[data-dd-action-name="Edit filter"]')
       .filter({ hasText: /^[^A-Z ]+$/ });
     this.archivedFilter = page.getByRole("button", { name: "Not Archived" });
-    this.updatedDateFilter = page.getByRole("button", { name: /After Jul \d+/ });
+    this.updatedDateFilter = page.getByRole("button", { name: /After [A-Z][a-z]{2} \d+/ });
     this.clearFilters = page.getByRole("button", { name: "Clear filters" });
     this.inactiveSessionsText = page.getByText(/Inactive sessions/).first();
     this.noSessionsText = page.getByText("No sessions found");
@@ -88,12 +88,32 @@ export class SessionsPage extends BasePage {
     await expect(this.sessionRows.first()).toBeVisible({ timeout: 15_000 });
   }
 
-  /** Open a Base UI filter menu and return the menu/portal locator. */
+  /**
+   * Open a Base UI filter menu and return its popup locator. Base UI also renders an
+   * empty `[data-open]` backdrop, so only the visible menu/listbox/dialog popup is used.
+   */
   async openFilterMenu(filter: Locator) {
     await filter.click();
-    const menu = this.page.getByRole("menu").or(this.page.locator("[data-open]"));
-    await expect(menu.first()).toBeVisible();
-    return menu.first();
+    const menu = this.page
+      .getByRole("menu")
+      .or(this.page.getByRole("listbox"))
+      .or(this.page.getByRole("dialog"))
+      .filter({ visible: true })
+      .first();
+    await expect(menu).toBeVisible();
+    return menu;
+  }
+
+  /**
+   * A search term that matches at least one existing session: a word taken from the
+   * newest row's title. The enterprise list is shared/live, so terms are never hardcoded.
+   */
+  async searchTermFromNewestRow(): Promise<string> {
+    await expect(this.sessionRows.first()).toBeVisible({ timeout: 15_000 });
+    const title = (await this.rowContainer(0).innerText()).split("\n")[0].trim();
+    const word = title.split(/\s+/).find((w) => /^[A-Za-z0-9]{5,}$/.test(w));
+    if (!word) throw new Error(`No searchable word in newest session title: ${title}`);
+    return word;
   }
 
   async selectDisplayOption(option: string) {

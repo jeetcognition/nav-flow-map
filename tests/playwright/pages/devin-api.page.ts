@@ -93,6 +93,28 @@ export class DevinApiPage extends BasePage {
     this.deleteCancelButton = this.deleteConfirmDialog.getByRole("button", { name: "Cancel" });
   }
 
+  /**
+   * Open a combobox and pick its first option. Closed popups leave hidden
+   * `role=option` nodes in the DOM, so the choice is scoped to visible options.
+   */
+  private async chooseFirstOption(trigger: Locator) {
+    await trigger.click();
+    const option = this.page.locator('[role="option"]:visible').first();
+    await option.waitFor({ state: "visible" });
+    await option.click();
+    await expect(option).toBeHidden();
+  }
+
+  /** Pick the first available role in the provision form. */
+  async selectFirstRole() {
+    await this.chooseFirstOption(this.roleSelector);
+  }
+
+  /** Pick the first available expiry in the provision form. */
+  async selectFirstExpiry() {
+    await this.chooseFirstOption(this.expiresSelector);
+  }
+
   rowByName(name: string): Locator {
     return this.tableRows.filter({ hasText: new RegExp(name, "i") });
   }

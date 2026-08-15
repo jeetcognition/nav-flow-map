@@ -35,7 +35,11 @@ export class OrgSelectorPage extends BasePage {
     this.heading = page.getByText("Choose an organization to continue");
     this.allOrganizationsButton = page.getByRole("button", { name: /All organizations/ }).first();
     this.searchInput = page.locator('input[placeholder*="Search for an organization"]').first();
-    this.firstOverflowButton = page.getByRole("button", { name: "More options" }).first();
+    // Exact match: the org row is itself a `role=button` whose accessible name
+    // contains the nested trigger's "More options" label.
+    this.firstOverflowButton = page
+      .getByRole("button", { name: "More options", exact: true })
+      .first();
     this.sidebarToggle = page
       .locator('[data-testid="sidebar"] button[data-slot="sidebar-trigger"]')
       .first();
@@ -73,7 +77,7 @@ export class OrgSelectorPage extends BasePage {
 
   /** The overflow button inside a named org row. */
   overflowFor(name: string): Locator {
-    return this.orgRow(name).getByRole("button", { name: "More options" });
+    return this.orgRow(name).getByRole("button", { name: "More options", exact: true });
   }
 
   /** The currently open org row overflow menu. */
@@ -116,6 +120,11 @@ export class OrgSelectorPage extends BasePage {
   async selectOrgFromMenuBySlug(slug: string) {
     const item = this.topLeftMenu().locator(`a[href="/org/${slug}/"]`).first();
     await item.click();
+  }
+
+  /** Select an organization from the open top-left menu by its visible name. */
+  async selectOrgFromMenuByName(name: string) {
+    await this.topLeftMenu().getByRole("menuitemradio", { name, exact: true }).first().click();
   }
 
   /** Click the Create organization (+) control in the open top-left menu. */
