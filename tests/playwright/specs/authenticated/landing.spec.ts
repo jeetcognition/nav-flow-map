@@ -1,6 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage, OrgSelectorPage } from "../../pages";
-import { routes } from "../../support/paths";
+import { routes, ALT_SUBORG, ALT_SUBORG_NAME, TEST_SUBORG_DISPLAY } from "../../support/paths";
+
+/** Shared leading token of the QA sub-org names, used for partial-match search. */
+const SEARCH_PREFIX = ALT_SUBORG_NAME.split("-")[0];
 
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
@@ -57,8 +60,8 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-SAN03 — Inspect organization rows", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
-    const row = org.orgRow("fri-5");
-    await expect(row).toContainText("fri-5");
+    const row = org.orgRow(ALT_SUBORG_NAME);
+    await expect(row).toContainText(ALT_SUBORG_NAME);
     await expect(row).toContainText(/members?/i);
     await expect(org.firstOverflowButton).toBeVisible();
   });
@@ -66,7 +69,7 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-SAN04 — Open an organization row overflow menu", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
-    await org.openOverflowFor("fri-5");
+    await org.openOverflowFor(ALT_SUBORG_NAME);
     const menu = org.overflowMenu();
     await expect(menu).toBeVisible();
     // Depending on persisted pin state, the menu may read "Pin" or "Unpin".
@@ -115,9 +118,13 @@ test.describe("Landing Search Page", () => {
     await org.openCommandPalette();
     const dialog = org.commandPalette;
     await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Navigation");
-    await expect(dialog).toContainText("Go to new session");
-    await expect(dialog).toContainText("Settings");
+    await expect(dialog).toContainText("Actions");
+    await expect(org.paletteOption("Go to…")).toBeVisible();
+
+    // The navigation targets moved one level down, behind the "Go to…" action.
+    await org.openPaletteGoTo();
+    await expect(org.paletteOption(/New session/)).toBeVisible();
+    await expect(org.paletteOption("Settings")).toBeVisible();
   });
 
   test("ORGSEL-SAN10 — Open the All organizations dropdown", async ({ page }) => {
@@ -132,9 +139,10 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-REG01 — Search for a valid organization", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
-    await org.searchFor("fri");
-    await expect(page.getByText("fri-5")).toBeVisible();
-    await expect(page.getByText("kush-fri-12")).toBeVisible();
+    // Prefix shared by the QA sub-orgs, so a partial term matches several rows.
+    await org.searchFor(SEARCH_PREFIX);
+    await expect(page.getByText(ALT_SUBORG_NAME)).toBeVisible();
+    await expect(page.getByText(TEST_SUBORG_DISPLAY)).toBeVisible();
   });
 
   test("ORGSEL-REG02 — Search with non-matching text", async ({ page }) => {
@@ -143,7 +151,7 @@ test.describe("Landing Search Page", () => {
     await org.searchFor("zzznotfound");
     await expect(page.getByText("No organizations found")).toBeVisible();
     await expect(page.getByText("Try adjusting your search")).toBeVisible();
-    await expect(page.getByText("fri-5")).not.toBeVisible();
+    await expect(page.getByText(ALT_SUBORG_NAME)).not.toBeVisible();
   });
 
   const EDGE_INPUTS = [
@@ -173,7 +181,7 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-REG04 — Click an organization row", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
-    const target = "fri-5";
+    const target = ALT_SUBORG_NAME;
     await org.orgCard(target).click();
     await page.waitForURL(new RegExp(`/org/${target}`), { timeout: 15_000 });
     await expect(page).toHaveURL(new RegExp(`/org/${target}`));
@@ -182,7 +190,7 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-REG05 — Click an organization overflow menu", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
-    await org.openOverflowFor("fri-5");
+    await org.openOverflowFor(ALT_SUBORG_NAME);
     const menu = org.overflowMenu();
     await expect(menu).toBeVisible();
     // Overflow state may already be pinned from a previous run; either label is acceptable.
@@ -193,7 +201,7 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-REG06 — Refresh or use browser back/forward", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
-    const target = "fri-5";
+    const target = ALT_SUBORG_NAME;
     await org.orgCard(target).click();
     await page.waitForURL(new RegExp(`/org/${target}`), { timeout: 15_000 });
 
@@ -220,12 +228,12 @@ test.describe("Landing Search Page", () => {
     await expect(org.heading).toBeVisible({ timeout: 25_000 });
     await assertNoLeaks(page, consoleLogs, pageErrors);
 
-    await org.searchFor("fri");
-    await expect(org.orgCard("fri-5")).toBeVisible();
+    await org.searchFor(SEARCH_PREFIX);
+    await expect(org.orgCard(ALT_SUBORG_NAME)).toBeVisible();
     await assertNoLeaks(page, consoleLogs, pageErrors);
 
-    await org.orgCard("fri-5").click();
-    await page.waitForURL(new RegExp(`/org/fri-5`), { timeout: 15_000 });
+    await org.orgCard(ALT_SUBORG_NAME).click();
+    await page.waitForURL(new RegExp(`/org/${ALT_SUBORG_NAME}`), { timeout: 15_000 });
     await assertNoLeaks(page, consoleLogs, pageErrors);
   });
 
@@ -235,7 +243,7 @@ test.describe("Landing Search Page", () => {
     const menu = org.overflowMenu();
 
     // Ensure we start from an unpinned state, then pin, then restore.
-    await org.openOverflowFor("fri-5");
+    await org.openOverflowFor(ALT_SUBORG_NAME);
     if (
       await menu
         .getByText("Unpin organization")
@@ -244,20 +252,20 @@ test.describe("Landing Search Page", () => {
     ) {
       await menu.getByText("Unpin organization").click();
       await expect(menu).toBeHidden();
-      await org.openOverflowFor("fri-5");
+      await org.openOverflowFor(ALT_SUBORG_NAME);
     }
 
     await menu.getByText("Pin organization").click();
     await expect(menu).toBeHidden();
 
-    await org.openOverflowFor("fri-5");
+    await org.openOverflowFor(ALT_SUBORG_NAME);
     await expect(menu.getByText("Unpin organization")).toBeVisible();
 
     // Reset state
     await menu.getByText("Unpin organization").click();
     await expect(menu).toBeHidden();
 
-    await org.openOverflowFor("fri-5");
+    await org.openOverflowFor(ALT_SUBORG_NAME);
     await expect(menu.getByText("Pin organization")).toBeVisible();
   });
 
@@ -265,10 +273,10 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
 
-    await org.openOverflowFor("fri-5");
+    await org.openOverflowFor(ALT_SUBORG_NAME);
     await page.getByText("Manage settings").click();
-    await page.waitForURL(new RegExp(`/org/fri-5/settings`), { timeout: 15_000 });
-    await expect(page).toHaveURL(new RegExp(`/org/fri-5/settings`));
+    await page.waitForURL(new RegExp(`/org/${ALT_SUBORG_NAME}/settings`), { timeout: 15_000 });
+    await expect(page).toHaveURL(new RegExp(`/org/${ALT_SUBORG_NAME}/settings`));
   });
 
   test("ORGSEL-REG10 — Click each help menu item", async ({ page }) => {
@@ -323,22 +331,20 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     await org.openCommandPalette();
-
-    const input = org.commandPalette.locator('[role="combobox"]').first();
-    await input.fill("new session");
+    await org.paletteInput.fill("new session");
 
     const dialog = org.commandPalette;
-    await expect(dialog).toContainText("Go to new session");
     await expect(dialog).toContainText("Results");
+    await expect(org.paletteOption(/New session/)).toBeVisible();
   });
 
   test("ORGSEL-REG13 — Select Switch organization from the command palette", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     await org.openCommandPalette();
+    await org.openPaletteGoTo();
 
-    const option = org.commandPalette.getByText("Switch organization…").first();
-    await option.click();
+    await org.paletteOption(/Switch organization/).click();
 
     // Switch organization keeps the user on the valid org-selector page.
     await expect(org.heading).toBeVisible({ timeout: 15_000 });
@@ -349,9 +355,10 @@ test.describe("Landing Search Page", () => {
     await org.goto();
     await org.openAllOrganizationsMenu();
 
-    await page.getByRole("menuitem", { name: /fri-5/ }).first().click();
-    await page.waitForURL(new RegExp(`/org/fri-5`), { timeout: 15_000 });
-    await expect(page).toHaveURL(new RegExp(`/org/fri-5`));
+    // Org entries in this menu are plain anchors to `/org/<slug>/`, not menu items.
+    await org.selectOrgFromMenuBySlug(ALT_SUBORG);
+    await page.waitForURL(new RegExp(`/org/${ALT_SUBORG_NAME}`), { timeout: 15_000 });
+    await expect(page).toHaveURL(new RegExp(`/org/${ALT_SUBORG_NAME}`));
   });
 
   test("ORGSEL-REG15 — Click Enterprise settings and Invite members in the dropdown", async ({

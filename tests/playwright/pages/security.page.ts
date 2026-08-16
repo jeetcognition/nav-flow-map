@@ -33,7 +33,14 @@ export class SecurityPage extends BasePage {
 
   // --- Profiles tab ---
   readonly createProfileButton: Locator;
+  /** Create-profile dialog. */
+  readonly createProfileDialog: Locator;
+  /** "Create manually" option inside the create-profile dialog. */
   readonly createManuallyLink: Locator;
+  /** "Discover profile" scan-type card on the profile-type step. */
+  readonly discoverProfileOption: Locator;
+  /** "Ingestion profile" scan-type card on the profile-type step. */
+  readonly ingestionProfileOption: Locator;
   readonly profileNameInput: Locator;
   readonly profileDescriptionInput: Locator;
   readonly submitCreateProfileButton: Locator;
@@ -64,10 +71,31 @@ export class SecurityPage extends BasePage {
     this.runScanButton = this.newScanDialog.getByRole("button", { name: "Run Scan" });
 
     this.createProfileButton = this.content.getByRole("button", { name: "Create profile" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
+    this.createProfileDialog = page.getByRole("dialog").filter({ hasText: "Create profile" });
+    this.createManuallyLink = this.createProfileDialog.getByRole("button", {
+      name: /Create manually/,
+    });
+    this.discoverProfileOption = this.createProfileDialog.getByText("Discover profile");
+    this.ingestionProfileOption = this.createProfileDialog.getByText("Ingestion profile");
     this.profileNameInput = page.getByPlaceholder("Profile name");
     this.profileDescriptionInput = page.getByPlaceholder(/Describe what this profile scans for/);
     this.submitCreateProfileButton = page.getByRole("button", { name: "Create profile" });
+  }
+
+  /**
+   * Open the manual profile form: Create profile → Create manually → scan-type
+   * step (Discover). The scan-type step is only shown when both scan types are
+   * offered, so it is selected when present.
+   */
+  async startManualProfileCreation() {
+    await this.createProfileButton.click();
+    await this.createManuallyLink.click();
+    const typeStepShown = await this.discoverProfileOption
+      .waitFor({ state: "visible", timeout: 5_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (typeStepShown) await this.discoverProfileOption.click();
+    await this.profileNameInput.waitFor({ state: "visible" });
   }
 
   /** Navigate: sub-org home → sidebar Security link → wait for the page heading. */

@@ -43,7 +43,7 @@ test.describe("Personal Preferences", () => {
     await expect(prefs.combobox("Git commit email")).toBeVisible();
     await expect(prefs.combobox("Pull request links open...")).toBeVisible();
     await expect(prefs.switch("Open pull requests as drafts")).toBeVisible();
-    await expect(prefs.switch("Auto-approve child sessions")).toBeVisible();
+    await expect(prefs.switch("Auto-approve child sessions and workflows")).toBeVisible();
 
     // Devin Review preferences.
     await expect(prefs.sectionHeading("Devin Review")).toBeVisible();
@@ -92,7 +92,7 @@ test.describe("Personal Preferences", () => {
       "Slack notifications",
       "Newsletter",
       "Open pull requests as drafts",
-      "Auto-approve child sessions",
+      "Auto-approve child sessions and workflows",
     ]) {
       await expect(prefs.switch(row)).toHaveAttribute("aria-checked", /true|false/);
     }
@@ -162,17 +162,24 @@ test.describe("Personal Preferences", () => {
     await expect(prefs.switch("Browser notifications")).toBeDisabled();
     await expect(page.getByRole("link", { name: "Google Chrome" })).toBeVisible();
 
-    const toggles = [
+    const candidates = [
       "Play sound with notifications",
       "In-app notifications",
       "Slack notifications",
       "Newsletter",
-      "Auto-approve child sessions",
+      "Auto-approve child sessions and workflows",
     ];
     const initial: Record<string, "true" | "false"> = {};
-    for (const row of toggles) {
+    // Some rows are gated on an integration (Slack notifications need a linked
+    // Slack account), so they render disabled and must stay unchanged.
+    const toggles: string[] = [];
+    const gated: string[] = [];
+    for (const row of candidates) {
       initial[row] = await prefs.switchState(row);
+      const disabled = (await prefs.switch(row).getAttribute("aria-disabled")) === "true";
+      (disabled ? gated : toggles).push(row);
     }
+    expect(toggles.length, "no editable notification toggles on the page").toBeGreaterThan(0);
 
     try {
       // Flip every toggle, then confirm each flipped state survives a reload.
@@ -184,6 +191,11 @@ test.describe("Personal Preferences", () => {
       for (const row of toggles) {
         const flipped = initial[row] === "true" ? "false" : "true";
         await expect(prefs.switch(row)).toHaveAttribute("aria-checked", flipped);
+      }
+      // Gated rows stay disabled and keep their value while their neighbours flip.
+      for (const row of gated) {
+        await expect(prefs.switch(row)).toBeDisabled();
+        await expect(prefs.switch(row)).toHaveAttribute("aria-checked", initial[row]);
       }
     } finally {
       // Cleanup: restore every toggle to its initial state.

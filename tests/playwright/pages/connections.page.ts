@@ -58,6 +58,20 @@ export class ConnectionsPage extends BasePage {
     return this.page.getByRole("link", { name: new RegExp(`^${name}`) }).first();
   }
 
+  /**
+   * Numeric badge on the MCP servers tab. The marketplace catalog grows over
+   * time, so specs capture this once per run and assert it stays stable across
+   * search/filter interactions instead of pinning a literal total.
+   */
+  async mcpServerCount(): Promise<number> {
+    // The badge renders once the MCP list request resolves, so wait for it.
+    await expect(this.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
+    const text = await this.mcpServersTab.innerText();
+    const match = text.match(/MCP servers\s+(\d+)/);
+    expect(match, `MCP servers tab has no count badge: ${text}`).not.toBeNull();
+    return Number(match?.[1]);
+  }
+
   /** From the MCP servers tab, search for a server and open its enterprise detail page. */
   async openMcpServer(name: string) {
     await this.mcpSearchInput.fill(name);

@@ -50,9 +50,18 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
     await automations.removeAllTriggers();
 
-    await automations.addSubmenuTrigger("Slack", "Message");
-    await expect(page.getByText("in channel")).toBeVisible();
-    await automations.removeAllTriggers();
+    // Provider-backed trigger types are only listed while that integration is
+    // connected for the enterprise, so each one is exercised only when the app
+    // offers it; the run memory records which ones were unavailable.
+    const offered = await automations.availableTriggerTypes();
+    for (const alwaysOffered of ["Schedule", "Webhook", "Security scan", "Snapshot build"]) {
+      expect(offered).toContain(alwaysOffered);
+    }
+
+    if (await automations.addSubmenuTriggerIfOffered("Slack", "Message")) {
+      await expect(page.getByText("in channel")).toBeVisible();
+      await automations.removeAllTriggers();
+    }
 
     await automations.addSubmenuTrigger("GitHub", "Issue comment");
     await expect(page.getByText("in repo")).toBeVisible();
@@ -69,9 +78,10 @@ test.describe("Automations", () => {
     await expect(page.getByText("in team")).toBeVisible();
     await automations.removeAllTriggers();
 
-    await automations.addSubmenuTrigger("Jira", "Issue created");
-    await expect(page.getByText("in project")).toBeVisible();
-    await automations.removeAllTriggers();
+    if (await automations.addSubmenuTriggerIfOffered("Jira", "Issue created")) {
+      await expect(page.getByText("in project")).toBeVisible();
+      await automations.removeAllTriggers();
+    }
 
     await automations.addSubmenuTrigger("Schedule", "Every day");
     await expect(page.getByRole("button", { name: "Every day", exact: true })).toBeVisible();
@@ -146,11 +156,13 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("heading", { name: "Agent mode" })).toBeVisible();
+    // Agent mode and the run identity live in the Agent definition section as
+    // labelled comboboxes; the "Run as creator" switch became a "Run as" picker.
+    await expect(automations.agentModeSelect).toBeVisible();
+    await expect(automations.runAsSelect).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Run as creator" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "MCPs" })).toBeVisible();
     await expect(automations.manageMcpsButton).toBeVisible();
     await expect(page.getByRole("heading", { name: "Network policy" })).toBeVisible();

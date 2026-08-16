@@ -35,7 +35,9 @@ export class OrgSelectorPage extends BasePage {
     this.heading = page.getByText("Choose an organization to continue");
     this.allOrganizationsButton = page.getByRole("button", { name: /All organizations/ }).first();
     this.searchInput = page.locator('input[placeholder*="Search for an organization"]').first();
-    this.firstOverflowButton = page.getByRole("button", { name: "More options" }).first();
+    // The org row itself is role=button and inherits the kebab's accessible
+    // name, so the trigger must be matched on the real <button> element.
+    this.firstOverflowButton = page.locator('button[aria-label="More options"]').first();
     this.sidebarToggle = page
       .locator('[data-testid="sidebar"] button[data-slot="sidebar-trigger"]')
       .first();
@@ -93,6 +95,26 @@ export class OrgSelectorPage extends BasePage {
     await this.commandPalette.waitFor({ state: "visible", timeout: 10_000 });
   }
 
+  /** Query field of the open command palette. */
+  get paletteInput(): Locator {
+    return this.commandPalette.locator('[role="combobox"]').first();
+  }
+
+  /** An option row of the open command palette. */
+  paletteOption(name: string | RegExp): Locator {
+    return this.commandPalette.getByRole("option", { name });
+  }
+
+  /**
+   * Enter the palette's "Go to…" page. The palette root only lists the action
+   * groups (Go to… / Change theme… / Accessibility…); the navigation entries
+   * live one level down.
+   */
+  async openPaletteGoTo() {
+    await this.paletteOption("Go to…").click();
+    await this.paletteOption(/Switch organization/).waitFor({ state: "visible", timeout: 10_000 });
+  }
+
   /** Current rendered width of the sidebar, in pixels. */
   async sidebarWidth(): Promise<number> {
     return this.sidebar.evaluate((el) => el.getBoundingClientRect().width);
@@ -110,6 +132,21 @@ export class OrgSelectorPage extends BasePage {
   async openAllOrganizationsMenu() {
     await this.allOrganizationsButton.click();
     await this.topLeftMenu().waitFor({ state: "visible", timeout: 10_000 });
+  }
+
+  /** Org entry in the open top-left menu. The entries are anchors, not menu items. */
+  orgMenuEntry(slug: string): Locator {
+    return this.topLeftMenu().locator(`a[href="/org/${slug}/"]`).first();
+  }
+
+  /** The "All organizations" entry of the open top-left menu. */
+  allOrganizationsEntry(): Locator {
+    return this.topLeftMenu().locator('a[href$="/org-selector"]').first();
+  }
+
+  /** Every org entry of the open top-left menu. */
+  orgMenuEntries(): Locator {
+    return this.topLeftMenu().locator('a[href^="/org/"][href$="/"]');
   }
 
   /** Select an organization from the open top-left menu by its slug. */

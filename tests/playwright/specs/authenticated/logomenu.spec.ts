@@ -26,10 +26,10 @@ test.describe("Top Left Menu", () => {
     await expect(menu.getByRole("button", { name: "Enterprise settings" })).toBeVisible();
     await expect(menu.getByRole("button", { name: "Invite members" })).toBeVisible();
 
-    // Organization list.
-    await expect(menu.getByRole("menuitem", { name: "All organizations" })).toBeVisible();
-    await expect(menu.getByRole("menuitem", { name: ALT_SUBORG_NAME }).first()).toBeVisible();
-    await expect(menu.getByRole("menuitem", { name: TEST_SUBORG_DISPLAY }).first()).toBeVisible();
+    // Organization list. The entries are anchors to `/org/<slug>/`.
+    await expect(org.allOrganizationsEntry()).toBeVisible();
+    await expect(org.orgMenuEntry(ALT_SUBORG)).toBeVisible();
+    await expect(org.orgMenuEntry(TEST_SUBORG)).toBeVisible();
 
     // Log out entry.
     await expect(menu.getByRole("menuitem", { name: "Log out" })).toBeVisible();
@@ -57,16 +57,16 @@ test.describe("Top Left Menu", () => {
     await expect(menu.getByRole("button", { name: "Search organizations" })).toBeVisible();
 
     // Current selection (All organizations) shows a checkmark.
-    const allOrganizations = menu.getByRole("menuitem", { name: "All organizations" });
+    const allOrganizations = org.allOrganizationsEntry();
     await expect(allOrganizations).toBeVisible();
-    await expect(allOrganizations.locator("svg")).toBeVisible();
+    await expect(allOrganizations.locator("svg").first()).toBeVisible();
 
     // Organization list contains known organizations.
-    await expect(menu.getByRole("menuitem", { name: ALT_SUBORG_NAME }).first()).toBeVisible();
-    await expect(menu.getByRole("menuitem", { name: TEST_SUBORG_DISPLAY }).first()).toBeVisible();
+    await expect(org.orgMenuEntry(ALT_SUBORG)).toBeVisible();
+    await expect(org.orgMenuEntry(TEST_SUBORG)).toBeVisible();
 
     // None of the visible organization-name text is truncated.
-    const menuItems = await menu.getByRole("menuitem").all();
+    const menuItems = await org.orgMenuEntries().all();
     for (const item of menuItems) {
       const textSpan = item.locator("span").first();
       if ((await textSpan.count()) === 0) continue;

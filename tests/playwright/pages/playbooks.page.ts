@@ -141,10 +141,13 @@ export class PlaybooksPage extends BasePage {
     if (macro) await this.macroInput.pressSequentially(macro);
   }
 
-  /** Pick a Devin mode from the dropdown. */
+  /**
+   * Pick a Devin mode from the dropdown. Each option renders the mode name
+   * followed by a description line, so match on the leading mode name only.
+   */
   async selectMode(mode: "Default" | "Normal" | "Fast" | "Ultra" | "Fusion") {
     await this.modeSelect.click();
-    await this.page.getByRole("option", { name: mode, exact: true }).click();
+    await this.page.getByRole("option", { name: new RegExp(`^${mode}\\b`) }).click();
   }
 
   /** Save the create/edit form and wait for the list or detail view to settle. */

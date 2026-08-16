@@ -29,11 +29,11 @@ export class AutomationsPage extends BasePage {
   readonly analyticsButton: Locator;
   /** "Create automation" button on the list page (and create-page banner). */
   readonly createAutomationButton: Locator;
-  /** "Create manually" link (empty state and create dialog). */
+  /** "Manual" item in the Create automation menu. */
   readonly createManuallyLink: Locator;
-  /** "Start from template" link. */
+  /** "Template" item in the Create automation menu. */
   readonly startFromTemplateLink: Locator;
-  /** "Generate with Devin" option. */
+  /** "Generate with Devin" item in the Create automation menu. */
   readonly generateWithDevinButton: Locator;
 
   /** Automation name input on the create/edit form. */
@@ -50,8 +50,10 @@ export class AutomationsPage extends BasePage {
   readonly instructionsEditor: Locator;
   /** Advanced section toggle. */
   readonly advancedToggle: Locator;
-  /** Agent mode combobox inside Advanced. */
+  /** Agent mode combobox in the Agent definition section. */
   readonly agentModeSelect: Locator;
+  /** "Run as" identity combobox in the Agent definition section. */
+  readonly runAsSelect: Locator;
   /** Manage MCPs button inside Advanced. */
   readonly manageMcpsButton: Locator;
   /** MCP search input inside Advanced. */
@@ -90,7 +92,7 @@ export class AutomationsPage extends BasePage {
 
   /** Detail page Edit button. */
   readonly editButton: Locator;
-  /** Detail page Run now button. */
+  /** Detail page "Run automation" button (opens the Run now confirmation). */
   readonly runNowButton: Locator;
   /** Detail page More actions menu button. */
   readonly moreActionsButton: Locator;
@@ -111,9 +113,9 @@ export class AutomationsPage extends BasePage {
     this.searchButton = page.locator("main").getByRole("button", { name: "Search", exact: true });
     this.analyticsButton = page.getByRole("button", { name: "Analytics", exact: true });
     this.createAutomationButton = page.getByRole("button", { name: "Create automation" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
-    this.startFromTemplateLink = page.getByRole("link", { name: /Start from template/ });
-    this.generateWithDevinButton = page.getByRole("button", { name: /Generate with Devin/ });
+    this.createManuallyLink = page.getByRole("menuitem", { name: "Manual", exact: true });
+    this.startFromTemplateLink = page.getByRole("menuitem", { name: "Template", exact: true });
+    this.generateWithDevinButton = page.getByRole("menuitem", { name: /Generate with Devin/ });
 
     this.nameInput = page.getByRole("textbox", { name: "Automation name" });
     this.triggersHeading = page.getByRole("heading", { name: "Triggers" });
@@ -122,7 +124,8 @@ export class AutomationsPage extends BasePage {
     this.agentTypeSelect = page.getByRole("combobox", { name: "Agent type" });
     this.instructionsEditor = page.locator('main [contenteditable="true"]').first();
     this.advancedToggle = page.getByRole("button", { name: "Advanced", exact: true });
-    this.agentModeSelect = page.locator("main").getByRole("combobox").nth(1);
+    this.agentModeSelect = page.getByRole("combobox", { name: "Select agent mode" });
+    this.runAsSelect = page.getByRole("combobox", { name: "Run as", exact: true });
     this.manageMcpsButton = page.getByRole("button", { name: "Manage MCPs" });
     this.mcpSearchInput = page.getByRole("textbox", { name: "Search MCPs..." });
     this.addDomainButton = page.getByRole("button", { name: "Add domain" });
@@ -154,7 +157,7 @@ export class AutomationsPage extends BasePage {
     this.applyScheduleButton = this.scheduleDialog.getByRole("button", { name: "Apply" });
 
     this.editButton = page.getByRole("button", { name: "Edit", exact: true });
-    this.runNowButton = page.getByRole("button", { name: "Run now" });
+    this.runNowButton = page.getByRole("button", { name: "Run automation" });
     this.moreActionsButton = page.getByRole("button", { name: "More actions" });
     this.saveButton = page.getByRole("button", { name: "Save", exact: true });
     this.eventsHeading = page.getByRole("heading", { name: "Events" });
@@ -177,6 +180,21 @@ export class AutomationsPage extends BasePage {
     await this.triggersHeading.waitFor({ state: "visible" });
   }
 
+  /**
+   * Trigger types currently offered by the Add trigger menu. Provider-backed
+   * types (Slack, Jira, …) are only listed when that integration is connected
+   * for the enterprise, so specs read the menu instead of assuming a fixed set.
+   */
+  async availableTriggerTypes(): Promise<string[]> {
+    await this.addTriggerButton.click();
+    const menu = this.page.getByRole("menu", { name: "Add trigger" });
+    await menu.waitFor({ state: "visible" });
+    const types = (await menu.getByRole("menuitem").allInnerTexts()).map((t) => t.trim());
+    await this.page.keyboard.press("Escape");
+    await menu.waitFor({ state: "hidden" });
+    return types;
+  }
+
   /** Open the Add trigger menu and pick a direct trigger type. */
   async addTrigger(type: DirectTrigger) {
     await this.addTriggerButton.click();
@@ -185,10 +203,73 @@ export class AutomationsPage extends BasePage {
 
   /** Open the Add trigger menu and pick an event kind from a trigger submenu. */
   async addSubmenuTrigger(type: SubmenuTrigger, event: string) {
+    const menu = await this.openAddTriggerMenu();
+    await this.selectSubmenuEvent(menu, type, event);
+  }
+
+  /**
+   * Same as {@link addSubmenuTrigger}, but for provider-backed types that the
+   * menu only offers while that integration is connected. Presence is checked
+   * inside the menu that is then used, because the menu drops unconnected
+   * providers once connection state resolves — reading the offering from an
+   * earlier menu and acting on a later one races that update.
+   *
+   * @returns whether the type was offered and therefore exercised.
+   */
+  async addSubmenuTriggerIfOffered(type: SubmenuTrigger, event: string): Promise<boolean> {
+    const menu = await this.openAddTriggerMenu();
+    if ((await menu.getByRole("menuitem", { name: type, exact: true }).count()) === 0) {
+      await this.page.keyboard.press("Escape");
+      await menu.waitFor({ state: "hidden" });
+      return false;
+    }
+    await this.selectSubmenuEvent(menu, type, event);
+    return true;
+  }
+
+  private async openAddTriggerMenu(): Promise<Locator> {
     await this.addTriggerButton.click();
-    await this.page.getByRole("menuitem", { name: type, exact: true }).hover();
+    const menu = this.page.getByRole("menu", { name: "Add trigger" });
+    await menu.waitFor({ state: "visible" });
+    return menu;
+  }
+
+  /**
+   * Move roving focus onto the menu item with the given label.
+   *
+   * Both the trigger menu and its submenus re-mount their items while they
+   * settle, so any element a pointer or element-scoped action has targeted can
+   * detach mid-action. Focus is therefore walked with ArrowDown and read from
+   * `document.activeElement` at page level, which never holds a stale handle.
+   */
+  private async focusMenuItem(label: string, steps: number) {
+    const focusedLabel = () =>
+      this.page.evaluate(() => {
+        const el = document.activeElement;
+        return el?.getAttribute("role") === "menuitem" ? (el.textContent ?? "").trim() : null;
+      });
+    for (let i = 0; i <= steps; i++) {
+      if ((await focusedLabel()) === label) return;
+      await this.page.keyboard.press("ArrowDown");
+    }
+    throw new Error(`menu item "${label}" never received focus (last: ${await focusedLabel()})`);
+  }
+
+  /**
+   * Pick an event kind from an open trigger type's submenu, entirely by
+   * keyboard: ArrowDown walks to the trigger type, ArrowRight opens its
+   * submenu, ArrowDown walks to the wanted event and Enter activates it.
+   */
+  private async selectSubmenuEvent(menu: Locator, type: SubmenuTrigger, event: string) {
+    await menu.getByRole("menuitem", { name: type, exact: true }).waitFor({ state: "visible" });
+    await this.focusMenuItem(type, await menu.getByRole("menuitem").count());
+    await this.page.keyboard.press("ArrowRight");
     const submenu = this.page.getByRole("menu", { name: type });
-    await submenu.getByRole("menuitem", { name: event, exact: true }).click();
+    await submenu.waitFor({ state: "visible" });
+    await submenu.getByRole("menuitem", { name: event, exact: true }).waitFor({ state: "visible" });
+    await this.focusMenuItem(event, await submenu.getByRole("menuitem").count());
+    await this.page.keyboard.press("Enter");
+    await submenu.waitFor({ state: "hidden" });
   }
 
   /** Remove every configured trigger row. */

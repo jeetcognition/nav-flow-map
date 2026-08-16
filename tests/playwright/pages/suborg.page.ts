@@ -21,10 +21,10 @@ export class SuborgPage extends BasePage {
   readonly wikiLink: Locator;
   /** Recent section heading. */
   readonly recentSection: Locator;
-  /** Recent section search button. */
-  readonly recentSearchButton: Locator;
-  /** Recent section overflow menu trigger. */
-  readonly recentOverflowButton: Locator;
+  /** Search button on the Sessions group header, which owns the session list. */
+  readonly sessionsSearchButton: Locator;
+  /** Overflow menu trigger on the Sessions group header. */
+  readonly sessionsOverflowButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -38,9 +38,14 @@ export class SuborgPage extends BasePage {
     this.reviewLink = page.getByRole("link", { name: "Review" });
     this.wikiLink = page.getByRole("link", { name: "Wiki" });
     this.recentSection = page.getByText("Recent").first();
-    const recentGroup = page.getByText("Recent").first().locator("..");
-    this.recentSearchButton = recentGroup.getByRole("button", { name: "Search" });
-    this.recentOverflowButton = recentGroup.getByRole("button", { name: "More" });
+    // Recent is now a collapsible sub-group of Sessions; the list controls
+    // (Search / Filter / More) live on the Sessions group header row.
+    const sessionsGroup = page
+      .locator('[data-slot="sidebar-label-row"]')
+      .filter({ hasText: "Sessions" })
+      .first();
+    this.sessionsSearchButton = sessionsGroup.getByRole("button", { name: "Search" });
+    this.sessionsOverflowButton = sessionsGroup.getByRole("button", { name: "More" });
   }
 
   /** The currently open top-left organization menu. */

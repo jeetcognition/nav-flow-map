@@ -37,21 +37,18 @@ test.describe("Knowledge Page", () => {
     await knowledge.heading.waitFor({ state: "visible" });
 
     await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
     const repoIndexes = knowledge.tableRows.filter({ hasText: "Repo indexes" }).first();
-    await expect(builtIn).toBeVisible();
     await expect(repoIndexes).toBeVisible();
 
-    await builtIn.click();
-    const workflow = knowledge.tableRows
-      .filter({ hasText: "Backend Development & Deployment Workflow" })
+    await repoIndexes.click();
+    const generatedIndex = knowledge.tableRows
+      .filter({ hasText: "Auto-generated (v3) index of" })
       .first();
-    await expect(workflow).toBeVisible();
-    await builtIn.click();
-    await expect(workflow).toBeHidden();
+    await expect(generatedIndex).toBeVisible();
+    await repoIndexes.click();
+    await expect(generatedIndex).toBeHidden();
 
     await knowledge.toggleFolder("System knowledge");
-    await expect(builtIn).toBeHidden();
     await expect(repoIndexes).toBeHidden();
 
     await knowledge.toggleFolder("Enterprise knowledge");
@@ -204,20 +201,21 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    const indexName = await knowledge.openFirstRepoIndexEntry();
 
     await expect(knowledge.backToKnowledge).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Backend Development & Deployment Workflow", exact: true }),
-    ).toBeVisible();
-    await expect(page.locator("main").getByText("Cognition", { exact: true })).toBeVisible();
-    await expect(page.locator("main").getByText("Dec 19, 2025", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: indexName, exact: true })).toBeVisible();
     await expect(knowledge.detailsTab).toHaveAttribute("aria-selected", "true");
     await expect(knowledge.usageTab).toBeVisible();
-    await expect(page.getByText("Cognition's built-in knowledge cannot be edited")).toBeVisible();
+    await expect(page.getByText("Automatically generated knowledge")).toBeVisible();
+    await expect(
+      page.getByText(
+        "This piece of knowledge is automatically generated and periodically updated based on your code.",
+      ),
+    ).toBeVisible();
+    // System knowledge stays read-only: no Save/Delete controls on the detail page.
+    await expect(page.locator("main").getByRole("button", { name: "Save" })).toHaveCount(0);
+    await expect(page.locator("main").getByRole("button", { name: "Delete" })).toHaveCount(0);
 
     await knowledge.backToKnowledge.click();
     await expect(page).toHaveURL(/\/settings\/knowledge$/);
@@ -250,10 +248,7 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openFirstRepoIndexEntry();
 
     await knowledge.usageTab.click();
     await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
@@ -305,10 +300,7 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openFirstRepoIndexEntry();
 
     await knowledge.usageTab.click();
     await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
@@ -791,24 +783,16 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.openEntryByName("hi");
-
-    const [sessionsResp] = await Promise.all([
-      page.waitForResponse((r) => r.url().endsWith("/analytics/sessions")),
-      knowledge.usageTab.click(),
-    ]);
-    const sessions = (await sessionsResp.json()) as {
-      data: { devin_id: string; session_title: string }[];
-    };
+    const sessionRecords = await knowledge.openEntryWithUsageSessions("hi");
 
     await expect(page.getByText("Session usage by day")).toBeVisible();
     const viewButtons = page.getByRole("button", { name: "View session" });
     const viewCount = await viewButtons.count();
-    expect(viewCount).toBeGreaterThan(0);
+    expect(viewCount).toBe(sessionRecords.length);
 
     const clicks = Math.min(viewCount, 3);
     for (let i = 0; i < clicks; i++) {
-      const expectedId = sessions.data[i].devin_id.replace("devin-", "");
+      const expectedId = sessionRecords[i].devin_id.replace("devin-", "");
 
       await viewButtons.nth(i).click();
       await page.waitForURL((url) => url.pathname.endsWith(`/sessions/${expectedId}`));
@@ -821,7 +805,7 @@ test.describe("Knowledge Page", () => {
       await knowledge.usageTab.click();
       await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
       await expect(page.getByText("Session usage by day")).toBeVisible();
-      await expect(knowledge.table.locator("tbody tr")).toHaveCount(sessions.data.length);
+      await expect(knowledge.table.locator("tbody tr")).toHaveCount(sessionRecords.length);
     }
 
     await knowledge.backToKnowledge.click();

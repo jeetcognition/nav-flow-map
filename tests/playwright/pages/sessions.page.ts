@@ -40,7 +40,8 @@ export class SessionsPage extends BasePage {
       .locator('button[data-dd-action-name="Edit filter"]')
       .filter({ hasText: /^[^A-Z ]+$/ });
     this.archivedFilter = page.getByRole("button", { name: "Not Archived" });
-    this.updatedDateFilter = page.getByRole("button", { name: /After Jul \d+/ });
+    // The default chip is a relative date, so the month must not be pinned.
+    this.updatedDateFilter = page.getByRole("button", { name: /^After [A-Z][a-z]{2} \d+$/ });
     this.clearFilters = page.getByRole("button", { name: "Clear filters" });
     this.inactiveSessionsText = page.getByText(/Inactive sessions/).first();
     this.noSessionsText = page.getByText("No sessions found");
@@ -71,6 +72,15 @@ export class SessionsPage extends BasePage {
     return this.sessionRowContainers.nth(nth);
   }
 
+  /** A search term taken from the first listed session, so it always matches. */
+  async firstRowSearchTerm(): Promise<string> {
+    await expect(this.sessionRowContainers.first()).toBeVisible({ timeout: 15_000 });
+    const text = (await this.sessionRowContainers.first().innerText()).trim();
+    const word = text.split(/\s+/).find((w) => /^[A-Za-z]{5,}$/.test(w));
+    expect(word, `no searchable word in first session row: ${text}`).toBeTruthy();
+    return word!;
+  }
+
   async search(term: string) {
     await this.searchInput.fill(term);
     await this.page.waitForLoadState("networkidle").catch(() => {});
@@ -91,9 +101,12 @@ export class SessionsPage extends BasePage {
   /** Open a Base UI filter menu and return the menu/portal locator. */
   async openFilterMenu(filter: Locator) {
     await filter.click();
-    const menu = this.page.getByRole("menu").or(this.page.locator("[data-open]"));
-    await expect(menu.first()).toBeVisible();
-    return menu.first();
+    // The popup itself carries role=menu (chips) or role=dialog (the date
+    // calendar); the sibling [data-open] nodes include an empty presentation
+    // backdrop that would win a `.first()` race.
+    const menu = this.page.locator('[role="menu"], [role="dialog"]').first();
+    await expect(menu).toBeVisible();
+    return menu;
   }
 
   async selectDisplayOption(option: string) {

@@ -2,6 +2,9 @@ import { Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
 
+/** A repository row inside the "Select repositories" dialog. */
+const ADD_REPO_ROW_SELECTOR = "div:has(> [role='checkbox'])";
+
 export class ReviewSettingsPage extends BasePage {
   protected readonly path = routes.reviewSettings();
 
@@ -55,7 +58,9 @@ export class ReviewSettingsPage extends BasePage {
     this.addRepoCancelButton = this.addRepoDialog.getByRole("button", { name: "Cancel" });
     this.addRepoSaveButton = this.addRepoDialog.getByRole("button", { name: /Save changes/ });
     this.addRepoCloseButton = this.addRepoDialog.locator("button").first();
-    this.addRepoListRow = this.addRepoDialog.locator("button[data-index]");
+    // Rows are no longer buttons with a data-index attribute; each row is the
+    // div that directly wraps the repository checkbox.
+    this.addRepoListRow = this.addRepoDialog.locator(ADD_REPO_ROW_SELECTOR);
   }
 
   async goto(params?: { tab?: "repositories" | "users" }) {
@@ -94,10 +99,13 @@ export class ReviewSettingsPage extends BasePage {
     // The list is virtualized and re-renders while the search settles; wait
     // until every rendered row matches the query so the toggle cannot land on
     // a recycled row for a different repository.
-    await this.page.waitForFunction((g) => {
-      const rows = Array.from(document.querySelectorAll("[role='dialog'] button[data-index]"));
-      return rows.length > 0 && rows.every((r) => (r.textContent ?? "").includes(g));
-    }, group);
+    await this.page.waitForFunction(
+      ({ g, sel }) => {
+        const rows = Array.from(document.querySelectorAll(`[role='dialog'] ${sel}`));
+        return rows.length > 0 && rows.every((r) => (r.textContent ?? "").includes(g));
+      },
+      { g: group, sel: ADD_REPO_ROW_SELECTOR },
+    );
     // Click the row's checkbox directly (a row click can land on the inline
     // visibility button) and confirm the toggle registered before saving.
     const row = this.addRepoListRow.filter({ hasText: group }).first();
