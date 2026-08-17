@@ -146,7 +146,7 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("heading", { name: "Agent mode" })).toBeVisible();
+    await expect(page.getByRole("combobox", { name: "Select agent mode" })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();

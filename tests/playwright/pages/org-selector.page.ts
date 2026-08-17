@@ -81,8 +81,21 @@ export class OrgSelectorPage extends BasePage {
     return this.page.locator('[role="menu"]').filter({ hasText: /Manage settings/ });
   }
 
+  /**
+   * Bring a named org into view. The landing grid renders only the first page of
+   * organizations, so anything further down the list is reachable only via search.
+   */
+  async revealOrg(name: string): Promise<Locator> {
+    const card = this.orgCard(name);
+    if (await card.isVisible().catch(() => false)) return card;
+    await this.searchFor(name);
+    await card.waitFor({ state: "visible", timeout: 15_000 });
+    return card;
+  }
+
   /** Open a named org row's overflow menu. */
   async openOverflowFor(name: string) {
+    await this.revealOrg(name);
     await this.overflowFor(name).click();
     await this.overflowMenu().waitFor({ state: "visible", timeout: 10_000 });
   }
@@ -112,10 +125,31 @@ export class OrgSelectorPage extends BasePage {
     await this.topLeftMenu().waitFor({ state: "visible", timeout: 10_000 });
   }
 
-  /** Select an organization from the open top-left menu by its slug. */
-  async selectOrgFromMenuBySlug(slug: string) {
-    const item = this.topLeftMenu().locator(`a[href="/org/${slug}/"]`).first();
+  /** An organization entry in the open top-left menu, matched by display name. */
+  topLeftMenuOrgItem(name: string): Locator {
+    return this.topLeftMenu()
+      .getByRole("menuitemradio", { name: new RegExp(name, "i") })
+      .first();
+  }
+
+  /**
+   * Bring an organization into view in the open top-left menu. The menu lists only the
+   * first page of organizations, so fall back to its "Search organizations" control.
+   */
+  async revealOrgInMenu(name: string): Promise<Locator> {
+    const item = this.topLeftMenuOrgItem(name);
+    if (await item.isVisible().catch(() => false)) return item;
+    await this.topLeftMenu().getByRole("button", { name: "Search organizations" }).click();
+    await this.topLeftMenu().getByRole("textbox").first().fill(name);
+    await item.waitFor({ state: "visible", timeout: 15_000 });
+    return item;
+  }
+
+  /** Select an organization from the open top-left menu by display name. */
+  async selectOrgFromMenu(name: string, slug: string = name) {
+    const item = await this.revealOrgInMenu(name);
     await item.click();
+    await this.page.waitForURL(new RegExp(`/org/${slug}`), { timeout: 15_000 });
   }
 
   /** Click the Create organization (+) control in the open top-left menu. */

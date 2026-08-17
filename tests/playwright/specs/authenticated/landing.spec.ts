@@ -57,6 +57,7 @@ test.describe("Landing Search Page", () => {
   test("ORGSEL-SAN03 — Inspect organization rows", async ({ page }) => {
     const org = new OrgSelectorPage(page);
     await org.goto();
+    await org.revealOrg("fri-5");
     const row = org.orgRow("fri-5");
     await expect(row).toContainText("fri-5");
     await expect(row).toContainText(/members?/i);
@@ -174,6 +175,7 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     const target = "fri-5";
+    await org.revealOrg(target);
     await org.orgCard(target).click();
     await page.waitForURL(new RegExp(`/org/${target}`), { timeout: 15_000 });
     await expect(page).toHaveURL(new RegExp(`/org/${target}`));
@@ -194,6 +196,7 @@ test.describe("Landing Search Page", () => {
     const org = new OrgSelectorPage(page);
     await org.goto();
     const target = "fri-5";
+    await org.revealOrg(target);
     await org.orgCard(target).click();
     await page.waitForURL(new RegExp(`/org/${target}`), { timeout: 15_000 });
 
@@ -349,8 +352,7 @@ test.describe("Landing Search Page", () => {
     await org.goto();
     await org.openAllOrganizationsMenu();
 
-    await page.getByRole("menuitem", { name: /fri-5/ }).first().click();
-    await page.waitForURL(new RegExp(`/org/fri-5`), { timeout: 15_000 });
+    await org.selectOrgFromMenu("fri-5");
     await expect(page).toHaveURL(new RegExp(`/org/fri-5`));
   });
 

@@ -40,7 +40,7 @@ test.describe("Connections", () => {
     await expect(conn.integrationsTab).toBeVisible();
     await expect(conn.mcpServersTab).toBeVisible();
     await expect(conn.integrationsTab).toHaveText(/Integrations\s+8/);
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBeGreaterThan(0);
     await expect(page.getByRole("heading", { name: "Git providers", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Communication", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Task management", exact: true })).toBeVisible();
@@ -72,7 +72,7 @@ test.describe("Connections", () => {
     await expect(conn.orgFilter).toBeVisible();
     await expect(conn.mcpTable).toBeVisible();
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBeGreaterThan(0);
 
     await conn.integrationsTab.click();
     await expect(page).toHaveURL(/\/settings\/connections(\?tab=integrations)?$/);
@@ -88,6 +88,10 @@ test.describe("Connections", () => {
     await conn.heading.waitFor({ state: "visible" });
     await conn.mcpServersTab.click();
     await expect(page).toHaveURL(/tab=mcps/);
+    // The badge shows the enterprise-wide total, so it must survive every filter below.
+    const mcpTotal = await conn.mcpServerCount();
+    expect(mcpTotal).toBeGreaterThan(0);
+    const mcpBadge = new RegExp(`MCP servers\\s+${mcpTotal}`);
 
     await conn.mcpSearchInput.fill("Jam");
     await expect(conn.mcpTableRows.first()).toBeVisible();
@@ -110,16 +114,16 @@ test.describe("Connections", () => {
 
     await conn.mcpSearchInput.fill("");
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(mcpBadge);
 
     await conn.orgFilter.click();
-    await page.getByRole("option", { name: "fri-5", exact: true }).first().click();
+    await page.getByRole("option", { name: /fri-5/i }).first().click();
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(mcpBadge);
 
     await conn.globalSearchInput.fill("zzzz-no-match");
     await expect(conn.integrationsTab).toHaveText(/Integrations\s+8/);
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    await expect(conn.mcpServersTab).toHaveText(mcpBadge);
 
     await conn.globalSearchInput.fill("");
     await expect(conn.mcpTableRows.first()).toBeVisible();

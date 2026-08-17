@@ -119,7 +119,7 @@ test.describe("Devin API", () => {
     await expect(api.tableRows.first()).toBeVisible();
 
     await api.orgFilter.click();
-    await page.getByRole("option", { name: "fri-5", exact: true }).first().click();
+    await page.getByRole("option", { name: /fri-5/i }).first().click();
     await page.waitForLoadState("networkidle");
     await expect(api.emptyState).toBeVisible();
 

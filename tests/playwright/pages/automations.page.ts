@@ -29,11 +29,11 @@ export class AutomationsPage extends BasePage {
   readonly analyticsButton: Locator;
   /** "Create automation" button on the list page (and create-page banner). */
   readonly createAutomationButton: Locator;
-  /** "Create manually" link (empty state and create dialog). */
+  /** "Manual" item in the Create automation menu. */
   readonly createManuallyLink: Locator;
-  /** "Start from template" link. */
+  /** "Template" item in the Create automation menu. */
   readonly startFromTemplateLink: Locator;
-  /** "Generate with Devin" option. */
+  /** "Generate with Devin" item in the Create automation menu. */
   readonly generateWithDevinButton: Locator;
 
   /** Automation name input on the create/edit form. */
@@ -111,9 +111,12 @@ export class AutomationsPage extends BasePage {
     this.searchButton = page.locator("main").getByRole("button", { name: "Search", exact: true });
     this.analyticsButton = page.getByRole("button", { name: "Analytics", exact: true });
     this.createAutomationButton = page.getByRole("button", { name: "Create automation" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
-    this.startFromTemplateLink = page.getByRole("link", { name: /Start from template/ });
-    this.generateWithDevinButton = page.getByRole("button", { name: /Generate with Devin/ });
+    this.createManuallyLink = page.getByRole("menuitem", { name: "Manual", exact: true });
+    this.startFromTemplateLink = page.getByRole("menuitem", { name: "Template", exact: true });
+    this.generateWithDevinButton = page.getByRole("menuitem", {
+      name: "Generate with Devin",
+      exact: true,
+    });
 
     this.nameInput = page.getByRole("textbox", { name: "Automation name" });
     this.triggersHeading = page.getByRole("heading", { name: "Triggers" });

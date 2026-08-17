@@ -58,6 +58,16 @@ export class ConnectionsPage extends BasePage {
     return this.page.getByRole("link", { name: new RegExp(`^${name}`) }).first();
   }
 
+  /** Badge count rendered on the "MCP servers" tab. */
+  async mcpServerCount(): Promise<number> {
+    // The badge is populated asynchronously after the tab itself renders.
+    await expect(this.mcpServersTab).toHaveText(/MCP servers\s+\d+/);
+    const label = await this.mcpServersTab.innerText();
+    const match = label.match(/MCP servers\s+(\d+)/);
+    expect(match, `MCP servers tab has no count badge: "${label}"`).not.toBeNull();
+    return Number(match![1]);
+  }
+
   /** From the MCP servers tab, search for a server and open its enterprise detail page. */
   async openMcpServer(name: string) {
     await this.mcpSearchInput.fill(name);

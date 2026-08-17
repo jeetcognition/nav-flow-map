@@ -40,7 +40,7 @@ export class SessionsPage extends BasePage {
       .locator('button[data-dd-action-name="Edit filter"]')
       .filter({ hasText: /^[^A-Z ]+$/ });
     this.archivedFilter = page.getByRole("button", { name: "Not Archived" });
-    this.updatedDateFilter = page.getByRole("button", { name: /After Jul \d+/ });
+    this.updatedDateFilter = page.getByRole("button", { name: /^After [A-Z][a-z]{2} \d{1,2}$/ });
     this.clearFilters = page.getByRole("button", { name: "Clear filters" });
     this.inactiveSessionsText = page.getByText(/Inactive sessions/).first();
     this.noSessionsText = page.getByText("No sessions found");
@@ -91,7 +91,11 @@ export class SessionsPage extends BasePage {
   /** Open a Base UI filter menu and return the menu/portal locator. */
   async openFilterMenu(filter: Locator) {
     await filter.click();
-    const menu = this.page.getByRole("menu").or(this.page.locator("[data-open]"));
+    // Base UI renders an inert full-screen backdrop that also carries [data-open];
+    // it must not be mistaken for the popup itself.
+    const menu = this.page
+      .getByRole("menu")
+      .or(this.page.locator('[data-open]:not([role="presentation"])'));
     await expect(menu.first()).toBeVisible();
     return menu.first();
   }
