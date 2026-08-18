@@ -19,12 +19,12 @@ export class SuborgPage extends BasePage {
   readonly reviewLink: Locator;
   /** Wiki sidebar link. */
   readonly wikiLink: Locator;
-  /** Recent section heading. */
+  /** Sidebar session-list section heading (formerly "Recent"). */
   readonly recentSection: Locator;
-  /** Search button on the Sessions group header, which owns the session list. */
-  readonly sessionsSearchButton: Locator;
-  /** Overflow menu trigger on the Sessions group header. */
-  readonly sessionsOverflowButton: Locator;
+  /** Session-list section search button. */
+  readonly recentSearchButton: Locator;
+  /** Session-list section overflow menu trigger. */
+  readonly recentOverflowButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -37,15 +37,11 @@ export class SuborgPage extends BasePage {
     this.securityLink = page.getByRole("link", { name: "Security" });
     this.reviewLink = page.getByRole("link", { name: "Review" });
     this.wikiLink = page.getByRole("link", { name: "Wiki" });
-    this.recentSection = page.getByText("Recent").first();
-    // Recent is now a collapsible sub-group of Sessions; the list controls
-    // (Search / Filter / More) live on the Sessions group header row.
-    const sessionsGroup = page
-      .locator('[data-slot="sidebar-label-row"]')
-      .filter({ hasText: "Sessions" })
-      .first();
-    this.sessionsSearchButton = sessionsGroup.getByRole("button", { name: "Search" });
-    this.sessionsOverflowButton = sessionsGroup.getByRole("button", { name: "More" });
+    const sidebar = page.locator("#sidebar");
+    this.recentSection = sidebar.getByText(/^(Sessions|Recent)$/).first();
+    const recentGroup = this.recentSection.locator("..");
+    this.recentSearchButton = recentGroup.getByRole("button", { name: "Search" });
+    this.recentOverflowButton = recentGroup.getByRole("button", { name: "More" });
   }
 
   /** The currently open top-left organization menu. */

@@ -40,8 +40,7 @@ export class SessionsPage extends BasePage {
       .locator('button[data-dd-action-name="Edit filter"]')
       .filter({ hasText: /^[^A-Z ]+$/ });
     this.archivedFilter = page.getByRole("button", { name: "Not Archived" });
-    // The default chip is a relative date, so the month must not be pinned.
-    this.updatedDateFilter = page.getByRole("button", { name: /^After [A-Z][a-z]{2} \d+$/ });
+    this.updatedDateFilter = page.getByRole("button", { name: /^After [A-Z][a-z]{2} \d{1,2}$/ });
     this.clearFilters = page.getByRole("button", { name: "Clear filters" });
     this.inactiveSessionsText = page.getByText(/Inactive sessions/).first();
     this.noSessionsText = page.getByText("No sessions found");
@@ -72,13 +71,17 @@ export class SessionsPage extends BasePage {
     return this.sessionRowContainers.nth(nth);
   }
 
-  /** A search term taken from the first listed session, so it always matches. */
-  async firstRowSearchTerm(): Promise<string> {
-    await expect(this.sessionRowContainers.first()).toBeVisible({ timeout: 15_000 });
-    const text = (await this.sessionRowContainers.first().innerText()).trim();
-    const word = text.split(/\s+/).find((w) => /^[A-Za-z]{5,}$/.test(w));
-    expect(word, `no searchable word in first session row: ${text}`).toBeTruthy();
-    return word!;
+  /**
+   * A search term that matches at least one session in the current tenant: a word taken
+   * from the first row's title. Session titles are live data, so a hardcoded term makes
+   * the search cases fail whenever the tenant's sessions change.
+   */
+  async liveSearchTerm(): Promise<string> {
+    await expect(this.sessionRows.first()).toBeVisible({ timeout: 15_000 });
+    const text = ((await this.rowContainer(0).innerText()) ?? "").trim();
+    const word = text.split(/\s+/).find((candidate) => /^[A-Za-z]{5,}$/.test(candidate));
+    expect(word, `no usable word in the first session row: ${text}`).toBeTruthy();
+    return word!.toLowerCase();
   }
 
   async search(term: string) {
@@ -101,10 +104,14 @@ export class SessionsPage extends BasePage {
   /** Open a Base UI filter menu and return the menu/portal locator. */
   async openFilterMenu(filter: Locator) {
     await filter.click();
-    // The popup itself carries role=menu (chips) or role=dialog (the date
-    // calendar); the sibling [data-open] nodes include an empty presentation
-    // backdrop that would win a `.first()` race.
-    const menu = this.page.locator('[role="menu"], [role="dialog"]').first();
+    // Base UI also renders a full-screen role="presentation" backdrop carrying [data-open];
+    // match the popup semantics so the backdrop can never win the union. The Updated-date
+    // filter opens a calendar popup exposed as a dialog rather than a menu/listbox.
+    const menu = this.page
+      .getByRole("menu")
+      .or(this.page.getByRole("listbox"))
+      .or(this.page.getByRole("dialog"))
+      .first();
     await expect(menu).toBeVisible();
     return menu;
   }

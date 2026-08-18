@@ -120,36 +120,26 @@ export class KnowledgePage extends BasePage {
     await this.page.waitForURL(/\/settings\/knowledge\/.+/);
   }
 
-  /**
-   * Expand System knowledge > Repo indexes and open the first auto-generated
-   * repository index entry. Returns the opened entry's name.
-   */
-  async openFirstRepoIndexEntry(): Promise<string> {
+  /** Expand System knowledge and one of its sub-folders, then open an entry inside it. */
+  async openSystemEntry(subfolder: string, entry: string) {
     await this.toggleFolder("System knowledge");
-    await this.tableRows.filter({ hasText: "Repo indexes" }).first().click();
-    const row = this.tableRows.filter({ hasText: "Auto-generated (v3) index of" }).first();
-    const link = row.getByRole("link").first();
-    await link.waitFor({ state: "visible" });
-    const name = (await link.innerText()).trim();
-    await link.click();
-    await this.page.waitForURL(/\/settings\/knowledge\/.+/);
-    return name;
+    const folderRow = this.tableRows.filter({ hasText: subfolder }).first();
+    await folderRow.click();
+    await this.openEntry(entry);
   }
 
   /**
-   * The entry-name link inside a knowledge row. The name cell also holds the
-   * row checkbox ("Select note <name>"), so the cell's accessible name is not
-   * the entry name — target the link instead.
+   * Find and open an entry by name. Search matches top-level rows only, so entries that
+   * live inside the Enterprise knowledge folder are reached by expanding that folder.
    */
-  entryLink(name: string): Locator {
-    return this.page.getByRole("link", { name, exact: true }).first();
-  }
-
-  /** Use the list search to find and open an entry. */
   async openEntryByName(name: string) {
     await this.searchInput.fill(name);
-    await this.entryLink(name).click();
-    await this.page.waitForURL(/\/settings\/knowledge\/.+/);
+    const row = this.tableRows.filter({ hasText: name }).first();
+    if (!(await row.isVisible().catch(() => false))) {
+      await this.searchInput.fill("");
+      await this.toggleFolder("Enterprise knowledge");
+    }
+    await this.openEntry(name);
   }
 
   /** Create a disposable knowledge entry through the two-step panel. */
@@ -300,39 +290,14 @@ export class KnowledgePage extends BasePage {
     return (sessions?.data ?? []).some((s) => s.devin_id.replace("devin-", "") === sessionId);
   }
 
-  /**
-   * Search for `name`, then open the first matching entry whose Usage tab has
-   * session records. Several entries share a name, and only some of them have
-   * been retrieved by a session, so the entry has to be picked by its data.
-   */
-  async openEntryWithUsageSessions(
-    name: string,
-  ): Promise<{ devin_id: string; session_title: string }[]> {
-    await this.searchFor(name);
-    const links = this.page.getByRole("link", { name, exact: true });
-    await expect(links.first()).toBeVisible();
-    const total = await links.count();
-    for (let i = 0; i < total; i++) {
-      await this.searchFor(name);
-      await links.nth(i).click();
-      await this.page.waitForURL(/\/settings\/knowledge\/.+/);
-      const sessions = await this.fetchUsageSessions(this.page.url());
-      const rows = sessions.data ?? [];
-      if (rows.length > 0) return rows;
-      await this.goto();
-      await this.heading.waitFor({ state: "visible" });
-    }
-    throw new Error(`No "${name}" knowledge entry has Usage session records (${total} checked)`);
-  }
-
   /** Replace the current search query with `name`. */
   async searchFor(name: string) {
     await this.searchInput.fill(name);
   }
 
-  /** Assert that the row for the exact entry name is visible. */
+  /** Assert that a table cell with the exact entry name is visible. */
   async expectEntryVisible(name: string) {
-    await expect(this.entryLink(name)).toBeVisible();
+    await expect(this.page.getByRole("cell", { name, exact: true }).first()).toBeVisible();
   }
 
   /** Reload the knowledge list and wait for the heading to reappear. */
@@ -356,9 +321,9 @@ export class KnowledgePage extends BasePage {
       await this.goto(slug);
       await this.heading.waitFor({ state: "visible" });
       await this.searchFor(name);
-      const link = this.entryLink(name);
-      if (await link.isVisible().catch(() => false)) {
-        await link.click();
+      const cell = this.page.getByRole("cell", { name, exact: true }).first();
+      if (await cell.isVisible().catch(() => false)) {
+        await cell.click();
         await this.page.waitForURL(/\/settings\/knowledge\/.+/);
         await this.deleteOpenEntry();
       }

@@ -18,8 +18,8 @@ test.describe("Landing Repo Page", () => {
     await suborg.newSessionLink.waitFor({ state: "visible" });
 
     await expect(suborg.recentSection).toBeVisible();
-    await expect(suborg.sessionsSearchButton).toBeVisible();
-    await expect(suborg.sessionsOverflowButton).toBeVisible();
+    await expect(suborg.recentSearchButton).toBeVisible();
+    await expect(suborg.recentOverflowButton).toBeVisible();
   });
 
   test("SUB-SAN03 — Inspect the left sidebar navigation", async ({ page }) => {

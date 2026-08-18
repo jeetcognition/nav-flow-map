@@ -80,6 +80,15 @@ export class PrefsPage extends BasePage {
     return value === "true" ? "true" : "false";
   }
 
+  /**
+   * Whether a row's switch is disabled. Some notification switches depend on
+   * live state (a linked Slack account, granted browser permission), so specs
+   * must read this instead of assuming every switch is operable.
+   */
+  async isSwitchDisabled(title: string): Promise<boolean> {
+    return this.switch(title).isDisabled();
+  }
+
   /** Toggle a switch and wait for its state to flip. */
   async toggleSwitch(title: string) {
     const control = this.switch(title);

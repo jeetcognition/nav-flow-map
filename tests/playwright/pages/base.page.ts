@@ -12,6 +12,14 @@ export abstract class BasePage {
     if (!this.path) {
       throw new Error(`${this.constructor.name} has no path to navigate to.`);
     }
-    await this.page.goto(this.path);
+    // The app issues its own client-side navigation right after some routes load (e.g. leaving
+    // enterprise settings), which aborts a pending "load" navigation. Waiting for
+    // domcontentloaded and retrying once on an aborted request keeps navigation deterministic.
+    try {
+      await this.page.goto(this.path, { waitUntil: "domcontentloaded" });
+    } catch (error) {
+      if (!/ERR_ABORTED/.test(String(error))) throw error;
+      await this.page.goto(this.path, { waitUntil: "domcontentloaded" });
+    }
   }
 }

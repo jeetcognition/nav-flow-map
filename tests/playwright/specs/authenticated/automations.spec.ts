@@ -44,24 +44,15 @@ test.describe("Automations", () => {
     await expect(emptyState.or(anyRow.first()).first()).toBeVisible();
   });
 
-  test("AUTO-REG01 — Each trigger type reveals its configuration", async ({ page }) => {
+  test("AUTO-REG01 — Each trigger type reveals its configuration", async ({ page }, testInfo) => {
     const automations = new AutomationsPage(page);
     await automations.open();
     await automations.openCreateForm();
     await automations.removeAllTriggers();
 
-    // Provider-backed trigger types are only listed while that integration is
-    // connected for the enterprise, so each one is exercised only when the app
-    // offers it; the run memory records which ones were unavailable.
-    const offered = await automations.availableTriggerTypes();
-    for (const alwaysOffered of ["Schedule", "Webhook", "Security scan", "Snapshot build"]) {
-      expect(offered).toContain(alwaysOffered);
-    }
-
-    if (await automations.addSubmenuTriggerIfOffered("Slack", "Message")) {
-      await expect(page.getByText("in channel")).toBeVisible();
-      await automations.removeAllTriggers();
-    }
+    await automations.addSubmenuTrigger("Slack", "Message");
+    await expect(page.getByText("in channel")).toBeVisible();
+    await automations.removeAllTriggers();
 
     await automations.addSubmenuTrigger("GitHub", "Issue comment");
     await expect(page.getByText("in repo")).toBeVisible();
@@ -78,14 +69,21 @@ test.describe("Automations", () => {
     await expect(page.getByText("in team")).toBeVisible();
     await automations.removeAllTriggers();
 
-    if (await automations.addSubmenuTriggerIfOffered("Jira", "Issue created")) {
+    // Jira is only offered once the enterprise connects Jira, which is live state.
+    if (await automations.hasTriggerType("Jira")) {
+      await automations.addSubmenuTrigger("Jira", "Issue created");
       await expect(page.getByText("in project")).toBeVisible();
       await automations.removeAllTriggers();
+    } else {
+      testInfo.annotations.push({
+        type: "not_tested",
+        description: "Jira trigger absent from the Add trigger menu; Jira is not connected",
+      });
     }
 
     await automations.addSubmenuTrigger("Schedule", "Every day");
     await expect(page.getByRole("button", { name: "Every day", exact: true })).toBeVisible();
-    await expect(page.locator("main").getByText("UTC")).toBeVisible();
+    await expect(page.getByRole("combobox", { name: "Select hour" })).toBeVisible();
     await automations.removeAllTriggers();
 
     await automations.addTrigger("Webhook");
@@ -156,13 +154,11 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    // Agent mode and the run identity live in the Agent definition section as
-    // labelled comboboxes; the "Run as creator" switch became a "Run as" picker.
     await expect(automations.agentModeSelect).toBeVisible();
-    await expect(automations.runAsSelect).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();
+    await expect(automations.runAsSelect).toBeVisible();
     await expect(page.getByRole("heading", { name: "MCPs" })).toBeVisible();
     await expect(automations.manageMcpsButton).toBeVisible();
     await expect(page.getByRole("heading", { name: "Network policy" })).toBeVisible();

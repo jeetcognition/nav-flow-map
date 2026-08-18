@@ -26,16 +26,21 @@ test.describe("Top Left Menu", () => {
     await expect(menu.getByRole("button", { name: "Enterprise settings" })).toBeVisible();
     await expect(menu.getByRole("button", { name: "Invite members" })).toBeVisible();
 
-    // Organization list. The entries are anchors to `/org/<slug>/`.
-    await expect(org.allOrganizationsEntry()).toBeVisible();
-    await expect(org.orgMenuEntry(ALT_SUBORG)).toBeVisible();
-    await expect(org.orgMenuEntry(TEST_SUBORG)).toBeVisible();
+    // Organization list.
+    await expect(org.menuOrgItem("All organizations")).toBeVisible();
+    await expect(org.menuOrgItem(TEST_SUBORG_DISPLAY).first()).toBeVisible();
 
     // Log out entry.
     await expect(menu.getByRole("menuitem", { name: "Log out" })).toBeVisible();
 
     await org.closeTopLeftMenuWithEscape();
     await expect(menu).toBeHidden();
+
+    // The list shows only its first page of organizations; later ones need the menu search,
+    // which is exercised after the Escape assertion because the search field swallows Escape.
+    await org.openAllOrganizationsMenu();
+    await org.searchOrgsInMenu(ALT_SUBORG_NAME);
+    await expect(org.menuOrgItem(ALT_SUBORG_NAME).first()).toBeVisible();
   });
 
   test("SUB-IM-SAN02 — Inspect the organization list and current selection", async ({ page }) => {
@@ -57,16 +62,15 @@ test.describe("Top Left Menu", () => {
     await expect(menu.getByRole("button", { name: "Search organizations" })).toBeVisible();
 
     // Current selection (All organizations) shows a checkmark.
-    const allOrganizations = org.allOrganizationsEntry();
+    const allOrganizations = org.menuOrgItem("All organizations");
     await expect(allOrganizations).toBeVisible();
-    await expect(allOrganizations.locator("svg").first()).toBeVisible();
+    await expect(allOrganizations.locator("svg")).toBeVisible();
 
     // Organization list contains known organizations.
-    await expect(org.orgMenuEntry(ALT_SUBORG)).toBeVisible();
-    await expect(org.orgMenuEntry(TEST_SUBORG)).toBeVisible();
+    await expect(org.menuOrgItem(TEST_SUBORG_DISPLAY).first()).toBeVisible();
 
     // None of the visible organization-name text is truncated.
-    const menuItems = await org.orgMenuEntries().all();
+    const menuItems = await menu.getByRole("menuitemradio").all();
     for (const item of menuItems) {
       const textSpan = item.locator("span").first();
       if ((await textSpan.count()) === 0) continue;
@@ -78,6 +82,12 @@ test.describe("Top Left Menu", () => {
 
     await org.closeTopLeftMenuWithEscape();
     await expect(menu).toBeHidden();
+
+    // Organizations past the first page are only reachable through the menu search; checked
+    // after the Escape assertion because the search field swallows Escape.
+    await org.openAllOrganizationsMenu();
+    await org.searchOrgsInMenu(ALT_SUBORG_NAME);
+    await expect(org.menuOrgItem(ALT_SUBORG_NAME).first()).toBeVisible();
   });
 
   test("SUB-IM-REG01 — Select another organization from the list", async ({ page }) => {

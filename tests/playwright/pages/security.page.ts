@@ -33,14 +33,8 @@ export class SecurityPage extends BasePage {
 
   // --- Profiles tab ---
   readonly createProfileButton: Locator;
-  /** Create-profile dialog. */
-  readonly createProfileDialog: Locator;
-  /** "Create manually" option inside the create-profile dialog. */
-  readonly createManuallyLink: Locator;
-  /** "Discover profile" scan-type card on the profile-type step. */
   readonly discoverProfileOption: Locator;
-  /** "Ingestion profile" scan-type card on the profile-type step. */
-  readonly ingestionProfileOption: Locator;
+  readonly createManuallyOption: Locator;
   readonly profileNameInput: Locator;
   readonly profileDescriptionInput: Locator;
   readonly submitCreateProfileButton: Locator;
@@ -71,30 +65,38 @@ export class SecurityPage extends BasePage {
     this.runScanButton = this.newScanDialog.getByRole("button", { name: "Run Scan" });
 
     this.createProfileButton = this.content.getByRole("button", { name: "Create profile" });
-    this.createProfileDialog = page.getByRole("dialog").filter({ hasText: "Create profile" });
-    this.createManuallyLink = this.createProfileDialog.getByRole("button", {
-      name: /Create manually/,
-    });
-    this.discoverProfileOption = this.createProfileDialog.getByText("Discover profile");
-    this.ingestionProfileOption = this.createProfileDialog.getByText("Ingestion profile");
+    this.discoverProfileOption = page
+      .locator('[role="dialog"]')
+      .filter({ hasText: "Create profile" })
+      .getByRole("link", { name: /Discover profile/ });
+    this.createManuallyOption = page
+      .locator('[role="dialog"]')
+      .filter({ hasText: "Create profile" })
+      .getByRole("button", { name: /Create manually/ });
     this.profileNameInput = page.getByPlaceholder("Profile name");
     this.profileDescriptionInput = page.getByPlaceholder(/Describe what this profile scans for/);
     this.submitCreateProfileButton = page.getByRole("button", { name: "Create profile" });
   }
 
   /**
-   * Open the manual profile form: Create profile → Create manually → scan-type
-   * step (Discover). The scan-type step is only shown when both scan types are
-   * offered, so it is selected when present.
+   * Walk the Create-profile dialog to the manual authoring form. The dialog is
+   * served in two shapes: one asks for the profile kind (Discover / Ingestion)
+   * before offering the authoring paths, the other offers them straight away.
    */
-  async startManualProfileCreation() {
+  async openManualProfileForm() {
     await this.createProfileButton.click();
-    await this.createManuallyLink.click();
-    const typeStepShown = await this.discoverProfileOption
-      .waitFor({ state: "visible", timeout: 5_000 })
-      .then(() => true)
-      .catch(() => false);
-    if (typeStepShown) await this.discoverProfileOption.click();
+    const dialog = this.page.locator('[role="dialog"]').filter({ hasText: "Create profile" });
+    await dialog.waitFor({ state: "visible" });
+    if ((await this.createManuallyOption.count()) === 0) {
+      await this.discoverProfileOption.click();
+      await this.createManuallyOption
+        .or(this.profileNameInput)
+        .first()
+        .waitFor({ state: "visible" });
+    }
+    if ((await this.profileNameInput.count()) === 0) {
+      await this.createManuallyOption.click();
+    }
     await this.profileNameInput.waitFor({ state: "visible" });
   }
 

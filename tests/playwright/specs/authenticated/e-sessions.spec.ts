@@ -81,8 +81,8 @@ test.describe("Enterprise Sessions", () => {
     const sessions = new SessionsPage(page);
     await sessions.goto();
 
-    // Matching title (taken from the live list so the fixture cannot go stale)
-    await sessions.search(await sessions.firstRowSearchTerm());
+    // Matching title
+    await sessions.search(await sessions.liveSearchTerm());
     expect(await sessions.sessionRows.count()).toBeGreaterThan(0);
     await sessions.clearSearch();
 
@@ -128,8 +128,7 @@ test.describe("Enterprise Sessions", () => {
     await sessions.goto();
 
     // Combine search + display grouping on top of the default creator/archived/date filters.
-    // The term comes from the live list so the fixture cannot go stale.
-    const term = await sessions.firstRowSearchTerm();
+    const term = await sessions.liveSearchTerm();
     await sessions.search(term);
     await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`));
     await sessions.selectDisplayOption("By status");
@@ -159,7 +158,7 @@ test.describe("Enterprise Sessions", () => {
     const sessions = new SessionsPage(page);
     await sessions.goto();
 
-    const term = await sessions.firstRowSearchTerm();
+    const term = await sessions.liveSearchTerm();
     await sessions.search(term);
     await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`));
 

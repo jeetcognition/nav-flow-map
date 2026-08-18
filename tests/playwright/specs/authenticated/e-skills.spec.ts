@@ -42,8 +42,14 @@ test.describe("Skills & Rules", () => {
     await expect(skills.table.locator("th").filter({ hasText: "Users" })).toBeVisible();
     await expect(skills.table.locator("th").filter({ hasText: "Last used" })).toBeVisible();
 
+    // Invocation data is live: with invocations each row drills down, otherwise the
+    // documented empty state is shown.
     const row = skills.tableRows.first();
-    await expect(row).toContainText("View sessions");
+    if (await skills.hasInvocations()) {
+      await expect(row).toContainText("View sessions");
+    } else {
+      await expect(row).toContainText("No invocations were observed in the last 30 days");
+    }
 
     expect(errors).toHaveLength(0);
   });
@@ -76,12 +82,16 @@ test.describe("Skills & Rules", () => {
     const skills = new SkillsPage(page);
     await skills.goto();
 
-    const knownSkill = "exploratory-webapp-qa";
     const empty = page.getByText("No skills match your search");
-    const knownRow = skills.skillRow(knownSkill);
+    const populated = await skills.hasInvocations();
+    // The skill names are live analytics data, so the matching query is taken from the table.
+    const knownSkill = populated ? await skills.firstSkillName() : "";
+    const knownRow = populated ? skills.skillRow(knownSkill) : skills.noInvocationsRow;
 
-    await skills.searchInput.fill(knownSkill);
-    await expect(knownRow).toBeVisible();
+    if (populated) {
+      await skills.searchInput.fill(knownSkill);
+      await expect(knownRow).toBeVisible();
+    }
 
     const noMatchQueries = [
       "no-such-skill-12345",
@@ -131,17 +141,25 @@ test.describe("Skills & Rules", () => {
     const skills = new SkillsPage(page);
     await skills.goto();
 
-    const link = skills.tableRows.first().getByText("View sessions");
-    const href = await link.getAttribute("href");
-    expect(href).toMatch(/\/settings\/enterprise-sessions\?skill=/);
+    if (await skills.hasInvocations()) {
+      const skillName = await skills.firstSkillName();
+      const link = skills.tableRows.first().getByText("View sessions");
+      const href = await link.getAttribute("href");
+      expect(href).toMatch(/\/settings\/enterprise-sessions\?skill=/);
 
-    await link.click();
-    // The SPA may intercept the anchor click; follow the href explicitly to verify the detail page.
-    await page.goto(href!);
-    await page.waitForLoadState("networkidle");
-    await expect(page).toHaveURL(/\/settings\/enterprise-sessions\?skill=/);
-    await expect(page.getByText("Skill", { exact: true })).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/exploratory-webapp-qa/)).toBeVisible();
+      await link.click();
+      // The SPA may intercept the anchor click; follow the href explicitly to verify the detail page.
+      await page.goto(href!);
+      await page.waitForLoadState("networkidle");
+      await expect(page).toHaveURL(/\/settings\/enterprise-sessions\?skill=/);
+      await expect(page.getByText("Skill", { exact: true })).toBeVisible({ timeout: 10000 });
+      await expect(page.getByText(new RegExp(skillName)).first()).toBeVisible();
+    } else {
+      // No invocations in the window: there is nothing to drill into, and the table must
+      // not render a dangling drill-down link.
+      await expect(skills.noInvocationsRow).toBeVisible();
+      await expect(skills.table.getByText("View sessions")).toHaveCount(0);
+    }
 
     // Return to the skills analytics page.
     await page.goto(routes.enterpriseSkills());

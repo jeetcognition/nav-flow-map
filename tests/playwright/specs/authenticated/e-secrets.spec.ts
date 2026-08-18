@@ -63,7 +63,7 @@ test.describe("Enterprise Secrets", () => {
 
     // Redact value defaults ON; toggling it is reflected immediately.
     await expect(secrets.dialogRedactSwitch).toHaveAttribute("aria-checked", "true");
-    await secrets.dialogRedactSwitch.click({ force: true });
+    await secrets.toggleRedact();
     await expect(secrets.dialogRedactSwitch).toHaveAttribute("aria-checked", "false");
 
     // Closing unmounts the panel and reopening resets the form to defaults —

@@ -115,16 +115,16 @@ test.describe("Secrets", () => {
     await expect(secrets.dialogCloseButton).toBeVisible();
 
     // The title reflects the selected scope.
-    await secrets.dialogPersonalScope.click({ force: true });
+    await secrets.selectDialogScope("Personal");
     await expect(
       secrets.dialog.getByRole("heading", { name: "New personal secret" }),
     ).toBeVisible();
-    await secrets.dialogOrganizationScope.click({ force: true });
+    await secrets.selectDialogScope("Organization");
     await expect(
       secrets.dialog.getByRole("heading", { name: "New organization secret" }),
     ).toBeVisible();
 
-    await secrets.dialogCloseButton.click({ force: true });
+    await secrets.closeDialog();
     await expect(secrets.dialog).not.toBeVisible();
     await expect.poll(() => secrets.scopeCount("Organization")).toBe(orgCount);
     await expect.poll(() => secrets.scopeCount("Personal")).toBe(personalCount);
@@ -156,7 +156,7 @@ test.describe("Secrets", () => {
     await expect(secrets.dialog.getByRole("button", { name: "Scan QR code" })).toBeVisible();
     await expect(secrets.dialogNameInput).toHaveAttribute("placeholder", "LOGIN_TOTP");
 
-    await secrets.dialogCloseButton.click({ force: true });
+    await secrets.closeDialog();
     await expect(secrets.dialog).not.toBeVisible();
 
     // Bulk import: upload-file area, pasted .env textarea, scope, gated Store.
@@ -184,10 +184,10 @@ test.describe("Secrets", () => {
     // Blank value: required validation blocks the save.
     await secrets.openAddDialog();
     await secrets.dialogNameInput.fill(`${RUN_PREFIX}_REG03_BLANK`, { force: true });
-    await secrets.dialogStoreButton.click({ force: true });
+    await secrets.submitDialog();
     await expect(secrets.dialog.getByText("Required")).toBeVisible();
     await expect(secrets.dialog).toBeVisible();
-    await secrets.dialogCloseButton.click({ force: true });
+    await secrets.closeDialog();
     await expect(secrets.dialog).not.toBeVisible();
 
     // Multiline + Unicode + special-character value with an HTML-like note.
@@ -229,7 +229,7 @@ test.describe("Secrets", () => {
     await expect(secrets.dialog.getByText(/Invalid JSON/)).toHaveCount(0);
     await expect(secrets.dialog.getByText("1 cookie parsed")).toBeVisible();
     await expect(secrets.dialog.getByText("session_id", { exact: true })).toBeVisible();
-    await secrets.dialogStoreButton.click({ force: true });
+    await secrets.submitDialog();
     await expect(secrets.dialog).not.toBeVisible();
 
     const row = secrets.rowByName(name);
@@ -255,11 +255,11 @@ test.describe("Secrets", () => {
     await secrets.dialogValueInput.fill("unsaved-value", { force: true });
 
     // Scope switching keeps the dialog title consistent with the selection.
-    await secrets.dialogPersonalScope.click({ force: true });
+    await secrets.selectDialogScope("Personal");
     await expect(
       secrets.dialog.getByRole("heading", { name: "New personal secret" }),
     ).toBeVisible();
-    await secrets.dialogOrganizationScope.click({ force: true });
+    await secrets.selectDialogScope("Organization");
     await expect(
       secrets.dialog.getByRole("heading", { name: "New organization secret" }),
     ).toBeVisible();

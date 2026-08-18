@@ -108,7 +108,24 @@ export class EnterpriseSettingsPage extends BasePage {
 
   /** Click an organization in the sidebar org list. */
   async selectOrganization(name: string) {
+    await this.revealOrganizationInSidebar(name);
     await this.organizationInSidebar(name).click();
+  }
+
+  /**
+   * The sidebar org list is paginated, so an organization further down the enterprise's
+   * list only exists in the DOM after enough "Load more" clicks.
+   */
+  async revealOrganizationInSidebar(name: string): Promise<Locator> {
+    const org = this.organizationInSidebar(name);
+    for (let i = 0; i < 20; i++) {
+      if (await org.isVisible().catch(() => false)) return org;
+      if (!(await this.loadMoreButton.isVisible().catch(() => false))) break;
+      await this.loadMore();
+      await this.page.waitForTimeout(500);
+    }
+    await org.waitFor({ state: "visible", timeout: 15_000 });
+    return org;
   }
 
   /** Click the sidebar "Load more" button, if visible. */
