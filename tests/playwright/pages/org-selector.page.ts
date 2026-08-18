@@ -118,7 +118,9 @@ export class OrgSelectorPage extends BasePage {
 
   /** The overflow button inside a named org row. */
   overflowFor(name: string): Locator {
-    return this.orgRow(name).getByRole("button", { name: "More options" });
+    // Same reason as firstOverflowButton: the row wrapper is itself role="button" and its
+    // accessible name contains the overflow control's label, so match the real <button>.
+    return this.orgRow(name).locator('button[aria-label="More options"]');
   }
 
   /** The currently open org row overflow menu. */

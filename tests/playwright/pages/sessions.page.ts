@@ -111,6 +111,7 @@ export class SessionsPage extends BasePage {
       .getByRole("menu")
       .or(this.page.getByRole("listbox"))
       .or(this.page.getByRole("dialog"))
+      .filter({ visible: true })
       .first();
     await expect(menu).toBeVisible();
     return menu;
