@@ -9,6 +9,14 @@ import { routes, ENTERPRISE_SLUG, TEST_SUBORG, TEST_SUBORG_DISPLAY } from "../su
 export const DISPOSABLE_REPO = process.env.REPO_DISPOSABLE ?? "R-ohit-B-isht/zod";
 export const DISPOSABLE_REPO_SEARCH = process.env.REPO_DISPOSABLE_SEARCH ?? "zod";
 
+// Repository the test sub-org always holds a baseline permission for. Keep in sync
+// with GITLAB_QA_PROJECT_PATH — it is the permission the QA tenant provisions.
+export const BASELINE_REPO =
+  process.env.GITLAB_QA_PROJECT_PATH ??
+  "software-quality-assurance-group/software-quality-assurance-project";
+export const BASELINE_REPO_SEARCH =
+  process.env.REPO_BASELINE_SEARCH ?? BASELINE_REPO.split("/").pop()!;
+
 export class ReposPage extends BasePage {
   protected readonly path = routes.repositories();
 

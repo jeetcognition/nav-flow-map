@@ -7,6 +7,7 @@ import {
   openDisposableMr,
   fetchMrComments,
   closeDisposableMr,
+  assertGitlabApiUsable,
   DisposableMr,
 } from "../../support/gitlab";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
@@ -185,6 +186,8 @@ test.describe("Review Settings", () => {
     test.skip(!GITLAB_QA_TOKEN, "GITLAB_QA_API_TOKEN is not configured");
     // Devin Review needs several minutes to analyze and comment on the MR.
     testInfo.setTimeout(720_000);
+    // Fail loudly on a dead credential instead of burning that budget in the poll.
+    await assertGitlabApiUsable();
 
     const hostPath = `${GITLAB_QA_HOST}/${GITLAB_QA_PROJECT_PATH}`;
     const review = new ReviewSettingsPage(page);

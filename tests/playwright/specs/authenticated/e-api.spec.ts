@@ -149,10 +149,8 @@ test.describe("Devin API", () => {
       await api.provisionButton.click();
       await page.getByRole("menuitem", { name: /Enterprise service user/ }).click();
       await api.nameInput.fill(name);
-      await api.roleSelector.click();
-      await page.getByRole("option").first().click();
-      await api.expiresSelector.click();
-      await page.getByRole("option").first().click();
+      await api.selectFirstRole();
+      await api.selectFirstExpiry();
 
       await Promise.all([
         page.waitForResponse(
@@ -203,10 +201,8 @@ test.describe("Devin API", () => {
       await api.provisionButton.click();
       await page.getByRole("menuitem", { name: /Enterprise service user/ }).click();
       await api.nameInput.fill(name);
-      await api.roleSelector.click();
-      await page.getByRole("option").first().click();
-      await api.expiresSelector.click();
-      await page.getByRole("option").first().click();
+      await api.selectFirstRole();
+      await api.selectFirstExpiry();
       await Promise.all([
         page.waitForResponse(
           (r) => r.url().includes("/service-users") && r.request().method() === "POST",

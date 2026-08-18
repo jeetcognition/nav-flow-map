@@ -63,6 +63,15 @@ export async function openDisposableMr(name: string): Promise<DisposableMr> {
   return { iid: mr.iid, webUrl: mr.web_url, sourceBranch };
 }
 
+/**
+ * Cheap credential probe. Call it before the long review round-trip: a revoked or
+ * unscoped token otherwise only surfaces as a test timeout, because the comment
+ * poll retries the failing request until the test budget runs out.
+ */
+export async function assertGitlabApiUsable(): Promise<void> {
+  await gitlabFetch("/merge_requests?per_page=1");
+}
+
 interface MrNote {
   system: boolean;
   body: string;

@@ -22,6 +22,10 @@ export class WikiPage extends BasePage {
   readonly wikiSearchButton: Locator;
   /** Left-hand table of contents navigation on a repo wiki page. */
   readonly tocBackLink: Locator;
+  /** Breadcrumb trailing item naming the repo whose wiki is open. */
+  readonly repoBreadcrumb: Locator;
+  /** Toolbar link out to the repo on its git provider. */
+  readonly openRepositoryLink: Locator;
   /** Mermaid diagrams rendered in the wiki body. */
   readonly diagrams: Locator;
 
@@ -45,6 +49,10 @@ export class WikiPage extends BasePage {
       .getByRole("button", { name: "Search", exact: true })
       .filter({ hasText: "Search" });
     this.tocBackLink = page.getByRole("link", { name: "Back", exact: true });
+    this.repoBreadcrumb = page
+      .getByRole("navigation", { name: "breadcrumb" })
+      .getByRole("listitem");
+    this.openRepositoryLink = page.getByRole("link", { name: "Open repository" });
     this.diagrams = page.locator("svg[aria-roledescription]");
 
     this.searchDialog = page.getByRole("dialog").filter({ hasText: /Wiki/ });
