@@ -27,7 +27,6 @@ export class DevinSettingsPage extends BasePage {
 
   readonly ultraSwitch: Locator;
   readonly fastModeSwitch: Locator;
-  readonly sweSwitch: Locator;
   readonly fusionSwitch: Locator;
   readonly nativeDeploymentsSwitch: Locator;
   readonly webSearchSwitch: Locator;
@@ -49,7 +48,6 @@ export class DevinSettingsPage extends BasePage {
 
     this.ultraSwitch = this.switchFor("ultra");
     this.fastModeSwitch = this.switchFor("fast-mode");
-    this.sweSwitch = this.switchFor("swe-1-7");
     this.fusionSwitch = this.switchFor("fusion");
     this.nativeDeploymentsSwitch = this.switchFor("enterprise-secure-mode");
     this.webSearchSwitch = this.switchFor("enterprise-web-search");

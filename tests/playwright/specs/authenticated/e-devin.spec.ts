@@ -3,8 +3,13 @@ import { DevinSettingsPage } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
 import { GeneralSettingsPage } from "../../pages";
-const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "swe-1-7", "fusion"] as const;
+const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "fusion"] as const;
 const TOOL_SWITCHES = ["enterprise-secure-mode", "enterprise-web-search"] as const;
+// Switches that must render on the page but are only inventory-checked, never toggled.
+const INVENTORY_ONLY_SWITCHES = [
+  "enterprise-session-groups-org-control",
+  "lock-user-commit-email",
+] as const;
 const PR_OPEN_AS_OPTIONS = [
   { label: /^Devin/, display: "Devin" },
   { label: /^User$/, display: "User" },
@@ -287,7 +292,7 @@ test.describe("Devin settings", () => {
     await expect(devin.sessionsHeading).toBeVisible();
 
     // Every documented model/mode and tool control renders with a definite state.
-    for (const id of [...MODEL_MODE_SWITCHES, ...TOOL_SWITCHES]) {
+    for (const id of [...MODEL_MODE_SWITCHES, ...TOOL_SWITCHES, ...INVENTORY_ONLY_SWITCHES]) {
       const control = devin.switchFor(id);
       await expect(control).toBeVisible();
       await expect(control).toHaveAttribute("aria-checked", /^(true|false)$/);

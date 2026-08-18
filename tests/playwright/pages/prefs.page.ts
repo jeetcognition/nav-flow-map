@@ -89,6 +89,15 @@ export class PrefsPage extends BasePage {
     return this.switch(title).isDisabled();
   }
 
+  /**
+   * Whether a row's combobox is disabled. Some dropdowns are conditionally
+   * locked (e.g. Review trigger when the enterprise manages review enrollment),
+   * so specs must read this instead of assuming every dropdown is operable.
+   */
+  async isComboboxDisabled(title: string): Promise<boolean> {
+    return this.combobox(title).isDisabled();
+  }
+
   /** Toggle a switch and wait for its state to flip. */
   async toggleSwitch(title: string) {
     const control = this.switch(title);

@@ -39,9 +39,14 @@ export class SuborgPage extends BasePage {
     this.wikiLink = page.getByRole("link", { name: "Wiki" });
     const sidebar = page.locator("#sidebar");
     this.recentSection = sidebar.getByText(/^(Sessions|Recent)$/).first();
-    const recentGroup = this.recentSection.locator("..");
-    this.recentSearchButton = recentGroup.getByRole("button", { name: "Search" });
-    this.recentOverflowButton = recentGroup.getByRole("button", { name: "More" });
+    // The section's controls are no longer siblings of the heading text, so
+    // anchor on the heading and take the first matching button after it.
+    this.recentSearchButton = this.recentSection.locator(
+      'xpath=following::button[@aria-label="Search"][1]',
+    );
+    this.recentOverflowButton = this.recentSection.locator(
+      'xpath=following::button[@aria-label="More"][1]',
+    );
   }
 
   /** The currently open top-left organization menu. */

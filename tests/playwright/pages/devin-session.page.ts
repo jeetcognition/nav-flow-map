@@ -54,7 +54,7 @@ export class DevinSessionPage extends BasePage {
   }
 
   /** The composer mode trigger button — its label changes with the selected capability/speed. */
-  modeTrigger(label: string | RegExp = /^(Fast|Normal|Ultra|Fusion|SWE-1\.7)$/): Locator {
+  modeTrigger(label: string | RegExp = /^(Fast|Normal|Ultra|Fusion)$/): Locator {
     return this.page.getByRole("button", { name: label, exact: typeof label === "string" });
   }
 
