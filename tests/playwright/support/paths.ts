@@ -6,7 +6,7 @@ export const ENTERPRISE_NAME = process.env.ENTERPRISE_NAME ?? "Cog Enterprise QA
 export const TEST_SUBORG = process.env.TEST_SUBORG ?? "jeet-devin-qa";
 export const TEST_SUBORG_DISPLAY = process.env.TEST_SUBORG_DISPLAY ?? "jeet-devin-qa";
 export const ALT_SUBORG = process.env.ALT_SUBORG ?? "fri-5";
-export const ALT_SUBORG_NAME = process.env.ALT_SUBORG_NAME ?? "fri-5";
+export const ALT_SUBORG_NAME = process.env.ALT_SUBORG_NAME ?? "xfri-5";
 export const WIKI_REPO_OWNER = process.env.WIKI_REPO_OWNER ?? "jeetcognition";
 export const WIKI_REPO_NAME = process.env.WIKI_REPO_NAME ?? "empty";
 

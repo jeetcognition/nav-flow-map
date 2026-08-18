@@ -44,11 +44,11 @@ export class OrganizationsPage extends BasePage {
   }
 
   get nameInput(): Locator {
-    return this.manageDialog.getByRole("textbox", { name: "Organization name" });
+    return this.page.locator('[role="dialog"] input[name="displayName"]');
   }
 
   get acuInput(): Locator {
-    return this.manageDialog.getByRole("spinbutton", { name: "Billing cycle ACU limit" });
+    return this.page.locator('[role="dialog"] input[name="maxAcuLimit"]');
   }
 
   get saveButton(): Locator {

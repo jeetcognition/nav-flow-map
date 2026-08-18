@@ -27,8 +27,8 @@ test.describe("Top Left Menu", () => {
     await expect(menu.getByRole("button", { name: "Invite members" })).toBeVisible();
 
     // Organization list.
-    await expect(menu.getByRole("menuitemradio", { name: "All organizations" })).toBeVisible();
-    await expect(org.topLeftMenuOrgItem(TEST_SUBORG_DISPLAY)).toBeVisible();
+    await expect(org.menuOrgItem("All organizations")).toBeVisible();
+    await expect(org.menuOrgItem(TEST_SUBORG_DISPLAY).first()).toBeVisible();
 
     // Log out entry.
     await expect(menu.getByRole("menuitem", { name: "Log out" })).toBeVisible();
@@ -36,9 +36,11 @@ test.describe("Top Left Menu", () => {
     await org.closeTopLeftMenuWithEscape();
     await expect(menu).toBeHidden();
 
-    // Organizations past the first page are reachable through the menu's search.
+    // The list shows only its first page of organizations; later ones need the menu search,
+    // which is exercised after the Escape assertion because the search field swallows Escape.
     await org.openAllOrganizationsMenu();
-    await expect(await org.revealOrgInMenu(ALT_SUBORG_NAME)).toBeVisible();
+    await org.searchOrgsInMenu(ALT_SUBORG_NAME);
+    await expect(org.menuOrgItem(ALT_SUBORG_NAME).first()).toBeVisible();
   });
 
   test("SUB-IM-SAN02 — Inspect the organization list and current selection", async ({ page }) => {
@@ -60,12 +62,12 @@ test.describe("Top Left Menu", () => {
     await expect(menu.getByRole("button", { name: "Search organizations" })).toBeVisible();
 
     // Current selection (All organizations) shows a checkmark.
-    const allOrganizations = menu.getByRole("menuitemradio", { name: "All organizations" });
+    const allOrganizations = org.menuOrgItem("All organizations");
     await expect(allOrganizations).toBeVisible();
     await expect(allOrganizations.locator("svg")).toBeVisible();
 
     // Organization list contains known organizations.
-    await expect(org.topLeftMenuOrgItem(TEST_SUBORG_DISPLAY)).toBeVisible();
+    await expect(org.menuOrgItem(TEST_SUBORG_DISPLAY).first()).toBeVisible();
 
     // None of the visible organization-name text is truncated.
     const menuItems = await menu.getByRole("menuitemradio").all();
@@ -81,9 +83,11 @@ test.describe("Top Left Menu", () => {
     await org.closeTopLeftMenuWithEscape();
     await expect(menu).toBeHidden();
 
-    // Organizations past the first page are reachable through the menu's search.
+    // Organizations past the first page are only reachable through the menu search; checked
+    // after the Escape assertion because the search field swallows Escape.
     await org.openAllOrganizationsMenu();
-    await expect(await org.revealOrgInMenu(ALT_SUBORG_NAME)).toBeVisible();
+    await org.searchOrgsInMenu(ALT_SUBORG_NAME);
+    await expect(org.menuOrgItem(ALT_SUBORG_NAME).first()).toBeVisible();
   });
 
   test("SUB-IM-REG01 — Select another organization from the list", async ({ page }) => {
@@ -91,7 +95,7 @@ test.describe("Top Left Menu", () => {
     await org.goto();
 
     await org.openAllOrganizationsMenu();
-    await org.selectOrgFromMenu(ALT_SUBORG_NAME, ALT_SUBORG);
+    await org.selectOrgFromMenuBySlug(ALT_SUBORG);
     await expect(page).toHaveURL(new RegExp(`/org/${ALT_SUBORG}`), { timeout: 15_000 });
     await page.getByRole("button", { name: new RegExp(ALT_SUBORG_NAME) }).waitFor();
     await expect(
@@ -101,7 +105,7 @@ test.describe("Top Left Menu", () => {
     // Restore the original organization context through the org selector.
     await org.goto();
     await org.openAllOrganizationsMenu();
-    await org.selectOrgFromMenu(TEST_SUBORG_DISPLAY, TEST_SUBORG);
+    await org.selectOrgFromMenuBySlug(TEST_SUBORG);
     await expect(page).toHaveURL(new RegExp(`/org/${TEST_SUBORG}`), { timeout: 15_000 });
     await page.getByRole("button", { name: new RegExp(TEST_SUBORG_DISPLAY) }).waitFor();
     await expect(
@@ -203,7 +207,7 @@ test.describe("Top Left Menu", () => {
     expect(await org.topLeftMenu().innerText()).not.toMatch(sensitivePattern);
 
     // Switch to another organization through the dropdown.
-    await org.selectOrgFromMenu(ALT_SUBORG_NAME, ALT_SUBORG);
+    await org.selectOrgFromMenuBySlug(ALT_SUBORG);
     await expect(page).toHaveURL(new RegExp(`/org/${ALT_SUBORG}`), { timeout: 15_000 });
     await expect(
       page.getByRole("button", { name: new RegExp(ALT_SUBORG_NAME) }).first(),
@@ -214,7 +218,7 @@ test.describe("Top Left Menu", () => {
     // Switch to the test sub-organization.
     await org.goto();
     await org.openAllOrganizationsMenu();
-    await org.selectOrgFromMenu(TEST_SUBORG_DISPLAY, TEST_SUBORG);
+    await org.selectOrgFromMenuBySlug(TEST_SUBORG);
     await expect(page).toHaveURL(new RegExp(`/org/${TEST_SUBORG}`), { timeout: 15_000 });
     await expect(
       page.getByRole("button", { name: new RegExp(TEST_SUBORG_DISPLAY) }).first(),

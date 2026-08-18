@@ -23,6 +23,8 @@ export class PersonalConnectionsPage extends BasePage {
   readonly githubRow: Locator;
   /** "No MCPs" empty state text. */
   readonly noMcpsText: Locator;
+  /** Link buttons of the MCP rows, when the team has MCPs to connect. */
+  readonly mcpLinkButtons: Locator;
   /** "Missing an integration?" button. */
   readonly missingIntegrationButton: Locator;
   /** "Missing an MCP?" button. */
@@ -42,6 +44,9 @@ export class PersonalConnectionsPage extends BasePage {
     this.linearRow = page.locator("#personal-linear-link");
     this.githubRow = page.locator("#personal-github-link");
     this.noMcpsText = page.getByText("No MCPs");
+    this.mcpLinkButtons = page
+      .getByRole("heading", { name: /MCP/ })
+      .locator("xpath=following::button[normalize-space(.)='Link']");
     this.missingIntegrationButton = page.getByRole("button", { name: "Missing an integration?" });
     this.missingMcpButton = page.getByRole("button", { name: "Missing an MCP?" });
   }
@@ -54,5 +59,22 @@ export class PersonalConnectionsPage extends BasePage {
   /** Provider account status text inside a row (e.g. "No account linked"). */
   accountStatus(row: Locator): Locator {
     return row.locator("span").last();
+  }
+
+  /**
+   * Whether a provider row currently holds a linked account. Link state is live
+   * tenant data, so specs must read it instead of assuming a fixture.
+   */
+  async isLinked(row: Locator): Promise<boolean> {
+    await row.waitFor({ state: "visible" });
+    return (await row.getByRole("button", { name: "Unlink user" }).count()) > 0;
+  }
+
+  /**
+   * The MCP section renders either its empty state or one row per team MCP,
+   * depending on what the enterprise and its organizations expose.
+   */
+  mcpSectionContent(): Locator {
+    return this.noMcpsText.or(this.mcpLinkButtons.first());
   }
 }

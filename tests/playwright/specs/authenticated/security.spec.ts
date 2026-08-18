@@ -75,9 +75,7 @@ test.describe("Security (Code scan)", () => {
     // across a reload, then archive it to restore the default state.
     const profileName = `QA Auto Profile ${Date.now()}`;
     await security.profilesTab.click();
-    await security.createProfileButton.click();
-    await security.createManuallyLink.click();
-    await security.profileNameInput.waitFor({ state: "visible" });
+    await security.openManualProfileForm();
     await security.profileNameInput.fill(profileName);
     await security.profileDescriptionInput.fill("Temporary profile created by SCAN-REG01");
     await security.submitCreateProfileButton.click();

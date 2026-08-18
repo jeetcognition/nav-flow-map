@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
 
@@ -35,7 +35,7 @@ export class ReviewSettingsPage extends BasePage {
     this.heading = page.getByRole("heading", { name: "Devin Review", exact: true });
     this.prDescriptionsSwitch = page.locator("#add-devin-review-link-pr");
     this.securityScanSwitch = page.locator("#enable-security-scan");
-    this.prCommentsSwitch = page.getByRole("heading", { name: "Post as PR comments" });
+    this.prCommentsSwitch = page.getByRole("heading", { name: "Share review findings" });
     this.findingsBugsSwitch = page.locator("#review-posting-bugs");
     this.findingsSecuritySwitch = page.locator("#review-posting-security");
     this.findingsInvestigateSwitch = page.locator("#review-posting-investigate");
@@ -50,12 +50,12 @@ export class ReviewSettingsPage extends BasePage {
     this.usersTab = page.getByRole("tab", { name: /Self-enrolled users/ });
     this.addRepoButton = page.getByRole("button", { name: "Add repo" });
     this.allModesFilter = page.getByRole("combobox").filter({ hasText: "All modes" });
-    this.addRepoDialog = page.getByRole("dialog", { name: "Select repositories" });
+    this.addRepoDialog = page.getByRole("dialog").filter({ hasText: "Select repositories" });
     this.addRepoSearchInput = page.getByPlaceholder("Search repositories…");
     this.addRepoCancelButton = this.addRepoDialog.getByRole("button", { name: "Cancel" });
     this.addRepoSaveButton = this.addRepoDialog.getByRole("button", { name: /Save changes/ });
     this.addRepoCloseButton = this.addRepoDialog.locator("button").first();
-    this.addRepoListRow = this.addRepoDialog.locator("button[data-index]");
+    this.addRepoListRow = this.addRepoDialog.locator('div[role="button"]');
   }
 
   async goto(params?: { tab?: "repositories" | "users" }) {
@@ -91,13 +91,17 @@ export class ReviewSettingsPage extends BasePage {
     const group = repoPath.split("/")[0];
     await this.openAddRepoDialog();
     await this.addRepoSearchInput.fill(group);
-    // The list is virtualized and re-renders while the search settles; wait
-    // until every rendered row matches the query so the toggle cannot land on
-    // a recycled row for a different repository.
-    await this.page.waitForFunction((g) => {
-      const rows = Array.from(document.querySelectorAll("[role='dialog'] button[data-index]"));
-      return rows.length > 0 && rows.every((r) => (r.textContent ?? "").includes(g));
-    }, group);
+    // The list re-renders while the search settles; wait until every rendered row
+    // matches the query so the toggle cannot land on a row for another repository.
+    await expect
+      .poll(
+        async () => {
+          const texts = await this.addRepoListRow.allInnerTexts();
+          return texts.length > 0 && texts.every((t) => t.includes(group));
+        },
+        { timeout: 20_000 },
+      )
+      .toBe(true);
     // Click the row's checkbox directly (a row click can land on the inline
     // visibility button) and confirm the toggle registered before saving.
     const row = this.addRepoListRow.filter({ hasText: group }).first();

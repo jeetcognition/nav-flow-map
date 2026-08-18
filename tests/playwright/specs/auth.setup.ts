@@ -1,8 +1,8 @@
 import { test as setup, expect } from "@playwright/test";
 import fs from "node:fs";
-import { LoginPage, OrgSelectorPage } from "../pages";
+import { LoginPage } from "../pages";
+import { adminCredentials, authenticateAdmin } from "../support/admin-auth";
 import { fetchLatestOtp } from "../support/gmail-otp";
-import { routes } from "../support/paths";
 
 // Captures an authenticated admin session once so other tests can reuse it.
 // Run with `npm run auth` or let it run automatically as the `setup` project dependency.
@@ -10,35 +10,17 @@ import { routes } from "../support/paths";
 fs.mkdirSync(".auth", { recursive: true });
 
 setup("authenticate as admin", async ({ page }) => {
-  const email = (process.env.DEVIN_ADMIN_EMAIL ?? "").trim();
-  const appPassword = (process.env.GMAIL_APP_PASSWORD ?? "").trim();
+  const credentials = adminCredentials();
 
-  if (!email || !appPassword) {
+  if (!credentials) {
     setup.skip(true, "Set DEVIN_ADMIN_EMAIL and GMAIL_APP_PASSWORD in .env to run this setup.");
     return;
   }
 
-  const login = new LoginPage(page);
-  const orgSelector = new OrgSelectorPage(page);
-
-  console.log(`[auth:ADMIN] Email-OTP mode — requesting a code for ${email}`);
-  await login.goto();
-  await login.loginWithEmailOtp(email, () =>
-    fetchLatestOtp({
-      user: process.env.GMAIL_IMAP_USER || email,
-      password: appPassword,
-      fromIncludes: process.env.OTP_FROM_INCLUDES,
-      subjectIncludes: process.env.OTP_SUBJECT_INCLUDES,
-    }),
-  );
-
-  // Confirm we landed on the post-login org-selector page. These assertions double
-  // as AUTH-SAN02 (valid OTP → successful login) so the spec does not need to spend
-  // a second OTP on the same flow.
-  await expect(orgSelector.heading).toBeVisible({ timeout: 30_000 });
-  await expect(page).toHaveURL(routes.orgSelector);
-
-  await page.context().storageState({ path: ".auth/admin.json" });
+  console.log(`[auth:ADMIN] Email-OTP mode — requesting a code for ${credentials.email}`);
+  // The landing assertions inside authenticateAdmin double as AUTH-SAN02 (valid OTP →
+  // successful login) so the spec does not need to spend a second OTP on the same flow.
+  await authenticateAdmin(page);
   console.log("[auth:ADMIN] session saved -> .auth/admin.json");
 });
 

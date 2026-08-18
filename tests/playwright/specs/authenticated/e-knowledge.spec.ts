@@ -3,6 +3,14 @@ import { KnowledgePage, DevinSessionPage } from "../../pages";
 import { routes } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
+
+/** Sub-folder of System knowledge and one of its read-only auto-generated entries. */
+const SYSTEM_SUBFOLDER = "Repo indexes";
+const SYSTEM_ENTRY = "Auto-generated (v3) index of cog-qa-org/zod";
+
+/** Enterprise entry that has session usage analytics, needed by the Usage-tab cases. */
+const USAGE_ENTRY = process.env.KNOWLEDGE_USAGE_ENTRY ?? "backend based code";
+
 test.describe("Knowledge Page", () => {
   test("KNOW-SMK01 — Load the page cold", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
@@ -37,21 +45,16 @@ test.describe("Knowledge Page", () => {
     await knowledge.heading.waitFor({ state: "visible" });
 
     await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    const repoIndexes = knowledge.tableRows.filter({ hasText: "Repo indexes" }).first();
-    await expect(builtIn).toBeVisible();
+    const repoIndexes = knowledge.tableRows.filter({ hasText: SYSTEM_SUBFOLDER }).first();
     await expect(repoIndexes).toBeVisible();
 
-    await builtIn.click();
-    const workflow = knowledge.tableRows
-      .filter({ hasText: "Backend Development & Deployment Workflow" })
-      .first();
-    await expect(workflow).toBeVisible();
-    await builtIn.click();
-    await expect(workflow).toBeHidden();
+    await repoIndexes.click();
+    const systemEntry = knowledge.tableRows.filter({ hasText: SYSTEM_ENTRY }).first();
+    await expect(systemEntry).toBeVisible();
+    await repoIndexes.click();
+    await expect(systemEntry).toBeHidden();
 
     await knowledge.toggleFolder("System knowledge");
-    await expect(builtIn).toBeHidden();
     await expect(repoIndexes).toBeHidden();
 
     await knowledge.toggleFolder("Enterprise knowledge");
@@ -204,20 +207,19 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openSystemEntry(SYSTEM_SUBFOLDER, SYSTEM_ENTRY);
 
     await expect(knowledge.backToKnowledge).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Backend Development & Deployment Workflow", exact: true }),
-    ).toBeVisible();
-    await expect(page.locator("main").getByText("Cognition", { exact: true })).toBeVisible();
-    await expect(page.locator("main").getByText("Dec 19, 2025", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: SYSTEM_ENTRY, exact: true })).toBeVisible();
+    await expect(page.locator("main").getByText("Feb 4, 2026", { exact: true })).toBeVisible();
     await expect(knowledge.detailsTab).toHaveAttribute("aria-selected", "true");
     await expect(knowledge.usageTab).toBeVisible();
-    await expect(page.getByText("Cognition's built-in knowledge cannot be edited")).toBeVisible();
+    await expect(page.getByText("Automatically generated knowledge")).toBeVisible();
+    await expect(
+      page.getByText(
+        "This piece of knowledge is automatically generated and periodically updated based on your code.",
+      ),
+    ).toBeVisible();
 
     await knowledge.backToKnowledge.click();
     await expect(page).toHaveURL(/\/settings\/knowledge$/);
@@ -250,10 +252,7 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openSystemEntry(SYSTEM_SUBFOLDER, SYSTEM_ENTRY);
 
     await knowledge.usageTab.click();
     await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
@@ -305,10 +304,7 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.toggleFolder("System knowledge");
-    const builtIn = knowledge.tableRows.filter({ hasText: "Built-in knowledge" }).first();
-    await builtIn.click();
-    await knowledge.openEntry("Backend Development & Deployment Workflow");
+    await knowledge.openSystemEntry(SYSTEM_SUBFOLDER, SYSTEM_ENTRY);
 
     await knowledge.usageTab.click();
     await expect(knowledge.usageTab).toHaveAttribute("aria-selected", "true");
@@ -746,7 +742,7 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.openEntryByName("hi");
+    await knowledge.openEntryByName(USAGE_ENTRY);
 
     const [usageResp, sessionsResp] = await Promise.all([
       page.waitForResponse((r) => r.url().endsWith("/analytics/usage")),
@@ -772,8 +768,11 @@ test.describe("Knowledge Page", () => {
     expect(usage.stats.length).toBeGreaterThan(0);
     const totalAccess = usage.stats.reduce((sum, s) => sum + s.access, 0);
     const totalAnalysis = usage.stats.reduce((sum, s) => sum + s.analysis, 0);
-    expect(totalAccess).toBeGreaterThanOrEqual(sessions.data.length);
+    // The chart covers the last 30 days while the session records are not date-scoped,
+    // so the two counts are only comparable in that both must be populated.
+    expect(totalAccess).toBeGreaterThan(0);
     expect(totalAnalysis).toBeGreaterThanOrEqual(0);
+    expect(sessions.data.length).toBeGreaterThan(0);
 
     const lastUpdated = new Date(usage.last_updated_at);
     for (const stat of usage.stats) {
@@ -791,7 +790,7 @@ test.describe("Knowledge Page", () => {
     await knowledge.goto();
     await knowledge.heading.waitFor({ state: "visible" });
 
-    await knowledge.openEntryByName("hi");
+    await knowledge.openEntryByName(USAGE_ENTRY);
 
     const [sessionsResp] = await Promise.all([
       page.waitForResponse((r) => r.url().endsWith("/analytics/sessions")),
