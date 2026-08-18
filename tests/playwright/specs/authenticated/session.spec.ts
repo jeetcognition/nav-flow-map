@@ -82,7 +82,7 @@ test.describe("New session composer", () => {
     for (const item of [
       "Upload attachment",
       "Repositories",
-      "Codebase files",
+      "Files",
       "Skills",
       "Devin sessions",
       "Playbooks",

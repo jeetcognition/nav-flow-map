@@ -30,11 +30,11 @@ export class AutomationsPage extends BasePage {
   /** "Create automation" button on the list page (and create-page banner). */
   readonly createAutomationButton: Locator;
   /** "Manual" item in the Create automation menu. */
-  readonly createManuallyMenuItem: Locator;
+  readonly createManuallyItem: Locator;
   /** "Template" item in the Create automation menu. */
-  readonly startFromTemplateMenuItem: Locator;
+  readonly startFromTemplateItem: Locator;
   /** "Generate with Devin" item in the Create automation menu. */
-  readonly generateWithDevinMenuItem: Locator;
+  readonly generateWithDevinItem: Locator;
 
   /** Automation name input on the create/edit form. */
   readonly nameInput: Locator;
@@ -50,8 +50,10 @@ export class AutomationsPage extends BasePage {
   readonly instructionsEditor: Locator;
   /** Advanced section toggle. */
   readonly advancedToggle: Locator;
-  /** Agent mode combobox inside Advanced. */
+  /** Agent mode combobox in the Agent definition section. */
   readonly agentModeSelect: Locator;
+  /** "Run as" identity combobox in the Agent definition section. */
+  readonly runAsSelect: Locator;
   /** Manage MCPs button inside Advanced. */
   readonly manageMcpsButton: Locator;
   /** MCP search input inside Advanced. */
@@ -90,7 +92,7 @@ export class AutomationsPage extends BasePage {
 
   /** Detail page Edit button. */
   readonly editButton: Locator;
-  /** Detail page "Run automation" button. */
+  /** Detail page Run now button. */
   readonly runNowButton: Locator;
   /** Detail page More actions menu button. */
   readonly moreActionsButton: Locator;
@@ -111,12 +113,9 @@ export class AutomationsPage extends BasePage {
     this.searchButton = page.locator("main").getByRole("button", { name: "Search", exact: true });
     this.analyticsButton = page.getByRole("button", { name: "Analytics", exact: true });
     this.createAutomationButton = page.getByRole("button", { name: "Create automation" });
-    this.createManuallyMenuItem = page.getByRole("menuitem", { name: "Manual", exact: true });
-    this.startFromTemplateMenuItem = page.getByRole("menuitem", { name: "Template", exact: true });
-    this.generateWithDevinMenuItem = page.getByRole("menuitem", {
-      name: "Generate with Devin",
-      exact: true,
-    });
+    this.createManuallyItem = page.getByRole("menuitem", { name: "Manual", exact: true });
+    this.startFromTemplateItem = page.getByRole("menuitem", { name: "Template", exact: true });
+    this.generateWithDevinItem = page.getByRole("menuitem", { name: "Generate with Devin" });
 
     this.nameInput = page.getByRole("textbox", { name: "Automation name" });
     this.triggersHeading = page.getByRole("heading", { name: "Triggers" });
@@ -125,7 +124,8 @@ export class AutomationsPage extends BasePage {
     this.agentTypeSelect = page.getByRole("combobox", { name: "Agent type" });
     this.instructionsEditor = page.locator('main [contenteditable="true"]').first();
     this.advancedToggle = page.getByRole("button", { name: "Advanced", exact: true });
-    this.agentModeSelect = page.locator("main").getByRole("combobox").nth(1);
+    this.agentModeSelect = page.getByRole("combobox", { name: "Select agent mode" });
+    this.runAsSelect = page.getByRole("combobox", { name: "Run as" });
     this.manageMcpsButton = page.getByRole("button", { name: "Manage MCPs" });
     this.mcpSearchInput = page.getByRole("textbox", { name: "Search MCPs..." });
     this.addDomainButton = page.getByRole("button", { name: "Add domain" });
@@ -175,9 +175,27 @@ export class AutomationsPage extends BasePage {
   /** Open the manual-create form from the list page. */
   async openCreateForm() {
     await this.createAutomationButton.first().click();
-    await this.createManuallyMenuItem.click();
+    await this.createManuallyItem.click();
     await this.page.waitForURL(/\/automations\/create$/);
     await this.triggersHeading.waitFor({ state: "visible" });
+  }
+
+  /**
+   * Whether the Add trigger menu offers a trigger type. The menu only lists
+   * integrations the enterprise has connected, so specs must read this instead
+   * of assuming every provider is available.
+   */
+  async hasTriggerType(type: DirectTrigger | SubmenuTrigger): Promise<boolean> {
+    await this.addTriggerButton.click();
+    const menu = this.page.getByRole("menu").first();
+    await menu.waitFor({ state: "visible" });
+    const item = menu.getByRole("menuitem", { name: type, exact: true });
+    const present = (await item.count()) > 0;
+    // The menu renders a full-viewport backdrop; leaving it mounted swallows
+    // every later click, so wait for it to unmount before returning.
+    await this.page.keyboard.press("Escape");
+    await menu.waitFor({ state: "hidden" });
+    return present;
   }
 
   /** Open the Add trigger menu and pick a direct trigger type. */
@@ -191,12 +209,7 @@ export class AutomationsPage extends BasePage {
     await this.addTriggerButton.click();
     await this.page.getByRole("menuitem", { name: type, exact: true }).hover();
     const submenu = this.page.getByRole("menu", { name: type });
-    await submenu.waitFor({ state: "visible" });
-    const item = submenu.getByRole("menuitem", { name: event, exact: true });
-    await item.waitFor({ state: "visible" });
-    // force: the submenu keeps remounting its items while the popup repositions,
-    // so Playwright's stability check never settles and detaches mid-click.
-    await item.click({ force: true });
+    await submenu.getByRole("menuitem", { name: event, exact: true }).click();
   }
 
   /** Remove every configured trigger row. */
@@ -233,7 +246,7 @@ export class AutomationsPage extends BasePage {
   /** Trigger a manual run from the detail page and confirm the dialog. */
   async runNow() {
     await this.runNowButton.click();
-    const dialog = this.page.locator('[role="dialog"]').filter({ hasText: "Run now" });
+    const dialog = this.page.locator('[role="dialog"]').filter({ hasText: /Run (now|automation)/ });
     await dialog.getByRole("button", { name: "Run", exact: true }).click();
     await dialog.waitFor({ state: "hidden" });
   }

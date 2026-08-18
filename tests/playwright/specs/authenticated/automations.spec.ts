@@ -44,7 +44,7 @@ test.describe("Automations", () => {
     await expect(emptyState.or(anyRow.first()).first()).toBeVisible();
   });
 
-  test("AUTO-REG01 — Each trigger type reveals its configuration", async ({ page }) => {
+  test("AUTO-REG01 — Each trigger type reveals its configuration", async ({ page }, testInfo) => {
     const automations = new AutomationsPage(page);
     await automations.open();
     await automations.openCreateForm();
@@ -69,13 +69,21 @@ test.describe("Automations", () => {
     await expect(page.getByText("in team")).toBeVisible();
     await automations.removeAllTriggers();
 
-    await automations.addSubmenuTrigger("Jira", "Issue created");
-    await expect(page.getByText("in project")).toBeVisible();
-    await automations.removeAllTriggers();
+    // Jira is only offered once the enterprise connects Jira, which is live state.
+    if (await automations.hasTriggerType("Jira")) {
+      await automations.addSubmenuTrigger("Jira", "Issue created");
+      await expect(page.getByText("in project")).toBeVisible();
+      await automations.removeAllTriggers();
+    } else {
+      testInfo.annotations.push({
+        type: "not_tested",
+        description: "Jira trigger absent from the Add trigger menu; Jira is not connected",
+      });
+    }
 
     await automations.addSubmenuTrigger("Schedule", "Every day");
     await expect(page.getByRole("button", { name: "Every day", exact: true })).toBeVisible();
-    await expect(page.locator("main").getByText("UTC")).toBeVisible();
+    await expect(page.getByRole("combobox", { name: "Select hour" })).toBeVisible();
     await automations.removeAllTriggers();
 
     await automations.addTrigger("Webhook");
@@ -146,15 +154,12 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
 
     await expect(automations.advancedToggle).toHaveAttribute("aria-expanded", "true");
-    // Agent mode / Run as / the MCP picker are labelled rows inside "Agent
-    // definition", not headings, so they are asserted by their visible label.
-    const main = page.locator("main");
-    await expect(main.getByText("Agent mode", { exact: true })).toBeVisible();
     await expect(automations.agentModeSelect).toBeVisible();
-    await expect(main.getByText("Run as", { exact: true })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Allow auto-start of child sessions" }),
     ).toBeVisible();
+    await expect(automations.runAsSelect).toBeVisible();
+    await expect(page.getByRole("heading", { name: "MCPs" })).toBeVisible();
     await expect(automations.manageMcpsButton).toBeVisible();
     await expect(page.getByRole("heading", { name: "Network policy" })).toBeVisible();
     await expect(automations.addDomainButton).toBeVisible();

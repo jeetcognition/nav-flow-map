@@ -59,9 +59,11 @@ test.describe("Wiki (DeepWiki)", () => {
 
     // The repo wiki TOC renders with a Back link and section entries.
     await expect(wiki.tocBackLink).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: `${WIKI_REPO_OWNER}/${WIKI_REPO_NAME}` }).first(),
-    ).toBeVisible();
+    await expect(wiki.repoBreadcrumb.last()).toHaveText(`${WIKI_REPO_OWNER}/${WIKI_REPO_NAME}`);
+    await expect(wiki.openRepositoryLink).toHaveAttribute(
+      "href",
+      new RegExp(`${WIKI_REPO_OWNER}/${WIKI_REPO_NAME}$`),
+    );
     expect(consoleErrors).toEqual([]);
   });
 

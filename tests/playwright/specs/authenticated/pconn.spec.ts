@@ -9,8 +9,6 @@ interface OAuthProvider {
   expectedStatus: string;
 }
 
-const LINKED_ACCOUNT = "jeet-qa";
-
 const unlinkedProviders: OAuthProvider[] = [
   {
     name: "GitLab",
@@ -70,7 +68,7 @@ test.describe("Personal Connections", () => {
     await expect(p.slackRow).toBeVisible();
     await expect(p.linearRow).toBeVisible();
     await expect(p.githubRow).toBeVisible();
-    await expect(p.noMcpsText).toBeVisible();
+    await expect(p.mcpSectionContent()).toBeVisible();
   });
 
   test("PCON-SAN01 — Inspect linked and unlinked provider rows", async ({ page }) => {
@@ -80,35 +78,37 @@ test.describe("Personal Connections", () => {
 
     await expect(p.integrationsHeading).toBeVisible();
 
-    await expect(p.gitlabRow).toContainText("GitLab");
-    await expect(p.gitlabRow).toContainText("No account linked");
-    await expect(p.gitlabRow.getByRole("button", { name: "Link" })).toBeVisible();
+    // Which accounts are linked is live tenant state, so each row is checked
+    // against the state it reports: linked rows name an account and offer
+    // Unlink, unlinked rows say so and offer Link.
+    const rows: Array<{ label: string; row: typeof p.gitlabRow; extra?: string }> = [
+      { label: "GitLab", row: p.gitlabRow },
+      { label: "Self-hosted GitLab", row: p.selfHostedGitLabRow, extra: "gitlab.sbx.itsdev.in" },
+      { label: "Slack", row: p.slackRow },
+      { label: "Linear", row: p.linearRow },
+      { label: "GitHub", row: p.githubRow },
+    ];
 
-    await expect(p.selfHostedGitLabRow).toContainText("Self-hosted GitLab");
-    await expect(p.selfHostedGitLabRow).toContainText("gitlab.sbx.itsdev.in");
-    await expect(p.selfHostedGitLabRow).toContainText("No account linked");
-    await expect(p.selfHostedGitLabRow.getByRole("button", { name: "Link" })).toBeVisible();
-
-    await expect(p.slackRow).toContainText("Slack");
-    await expect(p.slackRow).toContainText("No account linked");
-    await expect(p.slackRow.getByRole("button", { name: "Link" })).toBeVisible();
-
-    await expect(p.linearRow).toContainText("Linear");
-    await expect(p.linearRow).toContainText("No account linked");
-    await expect(p.linearRow.getByRole("button", { name: "Link" })).toBeVisible();
-
-    await expect(p.githubRow).toContainText("GitHub");
-    await expect(p.githubRow).toContainText(LINKED_ACCOUNT);
-    await expect(p.githubRow.getByRole("button", { name: "Unlink user" })).toBeVisible();
+    for (const { label, row, extra } of rows) {
+      await expect(row).toContainText(label);
+      if (extra) await expect(row).toContainText(extra);
+      if (await p.isLinked(row)) {
+        await expect(row).not.toContainText("No account linked");
+        await expect(row.getByRole("button", { name: "Unlink user" })).toBeVisible();
+      } else {
+        await expect(row).toContainText("No account linked");
+        await expect(row.getByRole("button", { name: "Link" })).toBeVisible();
+      }
+    }
 
     await expect(p.missingIntegrationButton).toBeVisible();
     await expect(p.missingMcpButton).toBeVisible();
-    await expect(p.noMcpsText).toBeVisible();
+    await expect(p.mcpSectionContent()).toBeVisible();
   });
 
   test("PCON-REG01 — Start OAuth/link flow for each unlinked provider and cancel before authorizing", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const p = new PersonalConnectionsPage(page);
 
     for (const provider of unlinkedProviders) {
@@ -116,6 +116,15 @@ test.describe("Personal Connections", () => {
       await p.heading.waitFor({ state: "visible" });
 
       const row = provider.row(p);
+      // Link state is live tenant data: an already-linked provider has no OAuth
+      // start flow to exercise, so it is reported instead of forced.
+      if (await p.isLinked(row)) {
+        testInfo.annotations.push({
+          type: "not_tested",
+          description: `${provider.name} already has a linked personal account; OAuth start flow not exercised`,
+        });
+        continue;
+      }
       const button = row.getByRole("button", { name: "Link" });
       await expect(button).toBeVisible();
 

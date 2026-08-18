@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { EnterpriseSettingsPage, ENTERPRISE_NAME, ALT_SUBORG_NAME } from "../../pages";
+import { EnterpriseSettingsPage, ENTERPRISE_NAME, ALT_SUBORG, ALT_SUBORG_NAME } from "../../pages";
 
 import { expectNoPageErrors } from "../../support/errors";
 test.describe("Enterprise Settings landing", () => {
@@ -29,7 +29,7 @@ test.describe("Enterprise Settings landing", () => {
     await expect(ent.enterpriseNavLink("General")).toBeVisible();
     await expect(ent.enterpriseNavLink("Connections")).toBeVisible();
     await expect(ent.enterpriseNavLink("Sessions")).toBeVisible();
-    await expect(ent.organizationInSidebar(ALT_SUBORG_NAME)).toBeVisible();
+    await expect(await ent.revealOrganizationInSidebar(ALT_SUBORG_NAME)).toBeVisible();
     await expect(ent.helpButton).toBeVisible();
   });
 
@@ -191,7 +191,7 @@ test.describe("Enterprise Settings landing", () => {
     await ent.selectOrganization(ALT_SUBORG_NAME);
     await page.waitForLoadState("networkidle");
 
-    await expect(page).toHaveURL(new RegExp(`/org/${ALT_SUBORG_NAME}/settings$`));
+    await expect(page).toHaveURL(new RegExp(`/org/${ALT_SUBORG}/settings$`));
     await expect(
       page.locator("main").getByRole("heading", { name: ALT_SUBORG_NAME, level: 2 }),
     ).toBeVisible();

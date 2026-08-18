@@ -120,11 +120,26 @@ export class KnowledgePage extends BasePage {
     await this.page.waitForURL(/\/settings\/knowledge\/.+/);
   }
 
-  /** Use the list search to find and open an entry. */
+  /** Expand System knowledge and one of its sub-folders, then open an entry inside it. */
+  async openSystemEntry(subfolder: string, entry: string) {
+    await this.toggleFolder("System knowledge");
+    const folderRow = this.tableRows.filter({ hasText: subfolder }).first();
+    await folderRow.click();
+    await this.openEntry(entry);
+  }
+
+  /**
+   * Find and open an entry by name. Search matches top-level rows only, so entries that
+   * live inside the Enterprise knowledge folder are reached by expanding that folder.
+   */
   async openEntryByName(name: string) {
     await this.searchInput.fill(name);
-    await this.page.getByRole("cell", { name, exact: true }).first().click();
-    await this.page.waitForURL(/\/settings\/knowledge\/.+/);
+    const row = this.tableRows.filter({ hasText: name }).first();
+    if (!(await row.isVisible().catch(() => false))) {
+      await this.searchInput.fill("");
+      await this.toggleFolder("Enterprise knowledge");
+    }
+    await this.openEntry(name);
   }
 
   /** Create a disposable knowledge entry through the two-step panel. */

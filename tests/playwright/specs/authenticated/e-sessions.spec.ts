@@ -82,7 +82,7 @@ test.describe("Enterprise Sessions", () => {
     await sessions.goto();
 
     // Matching title
-    await sessions.search(await sessions.searchTermFromNewestRow());
+    await sessions.search(await sessions.liveSearchTerm());
     expect(await sessions.sessionRows.count()).toBeGreaterThan(0);
     await sessions.clearSearch();
 
@@ -128,7 +128,7 @@ test.describe("Enterprise Sessions", () => {
     await sessions.goto();
 
     // Combine search + display grouping on top of the default creator/archived/date filters.
-    const term = await sessions.searchTermFromNewestRow();
+    const term = await sessions.liveSearchTerm();
     await sessions.search(term);
     await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`));
     await sessions.selectDisplayOption("By status");
@@ -158,7 +158,7 @@ test.describe("Enterprise Sessions", () => {
     const sessions = new SessionsPage(page);
     await sessions.goto();
 
-    const term = await sessions.searchTermFromNewestRow();
+    const term = await sessions.liveSearchTerm();
     await sessions.search(term);
     await expect(page).toHaveURL(new RegExp(`titleSearch=${term}`));
 

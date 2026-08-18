@@ -41,8 +41,12 @@ export class EnterpriseSecretsPage extends SecretsPage {
     await this.importTextarea.waitFor({ state: "visible" });
   }
 
-  /** Close the open dialog via its Close button. */
+  /**
+   * Close the open dialog via its Close button. The panel is taller than the viewport and
+   * scrolls internally, so the control is scrolled into view before the forced click.
+   */
   async closeDialog() {
+    await this.dialogCloseButton.first().scrollIntoViewIfNeeded();
     await this.dialogCloseButton.first().click({ force: true });
     await this.dialog.waitFor({ state: "hidden" });
   }

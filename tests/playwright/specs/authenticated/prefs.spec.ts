@@ -44,6 +44,7 @@ test.describe("Personal Preferences", () => {
     await expect(prefs.combobox("Pull request links open...")).toBeVisible();
     await expect(prefs.switch("Open pull requests as drafts")).toBeVisible();
     await expect(prefs.switch("Auto-approve child sessions")).toBeVisible();
+    await expect(prefs.switch("Auto-approve workflows")).toBeVisible();
 
     // Devin Review preferences.
     await expect(prefs.sectionHeading("Devin Review")).toBeVisible();
@@ -93,6 +94,7 @@ test.describe("Personal Preferences", () => {
       "Newsletter",
       "Open pull requests as drafts",
       "Auto-approve child sessions",
+      "Auto-approve workflows",
     ]) {
       await expect(prefs.switch(row)).toHaveAttribute("aria-checked", /true|false/);
     }
@@ -153,7 +155,7 @@ test.describe("Personal Preferences", () => {
 
   test("PREF-REG03 — Notification and child-session toggles persist independently and restore", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const prefs = new PrefsPage(page);
     await prefs.goto();
 
@@ -162,13 +164,28 @@ test.describe("Personal Preferences", () => {
     await expect(prefs.switch("Browser notifications")).toBeDisabled();
     await expect(page.getByRole("link", { name: "Google Chrome" })).toBeVisible();
 
-    const toggles = [
+    // Slack notifications require a linked personal Slack account, so the
+    // switch is disabled whenever the account is unlinked. Disabled switches are
+    // recorded as untested instead of being clicked into a timeout.
+    const candidates = [
       "Play sound with notifications",
       "In-app notifications",
       "Slack notifications",
       "Newsletter",
       "Auto-approve child sessions",
+      "Auto-approve workflows",
     ];
+    const toggles: string[] = [];
+    for (const row of candidates) {
+      if (await prefs.isSwitchDisabled(row)) {
+        testInfo.annotations.push({
+          type: "not_tested",
+          description: `${row} switch is disabled in this account's state; persistence not exercised`,
+        });
+        continue;
+      }
+      toggles.push(row);
+    }
     const initial: Record<string, "true" | "false"> = {};
     for (const row of toggles) {
       initial[row] = await prefs.switchState(row);

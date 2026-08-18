@@ -34,13 +34,15 @@ test.describe("Environment", () => {
     await expect(env.organizationsHeading).toBeVisible();
     await expect(env.rolloutOrgSearch).toBeVisible();
 
-    // Configuration, Blueprint, and Outposts surfaces render.
+    // Configuration and Blueprint surfaces render; Outposts only where exposed.
     await env.configurationTab.click();
     await expect(env.snapshotBuildsHeading).toBeVisible();
     await env.blueprintTab.click();
     await expect(env.blueprintHeading).toBeVisible();
-    await env.outpostsTab.click();
-    await expect(env.outpostsHeading).toBeVisible();
+    if (await env.hasOutpostsTab()) {
+      await env.outpostsTab.click();
+      await expect(env.outpostsHeading).toBeVisible();
+    }
 
     expect(errors).toHaveLength(0);
   });
@@ -53,7 +55,9 @@ test.describe("Environment", () => {
     const tabParams: Array<[typeof env.configurationTab, string]> = [
       [env.configurationTab, "configuration"],
       [env.blueprintTab, "blueprint"],
-      [env.outpostsTab, "outposts"],
+      ...((await env.hasOutpostsTab())
+        ? ([[env.outpostsTab, "outposts"]] as Array<[typeof env.configurationTab, string]>)
+        : []),
       [env.rolloutTab, "rollout"],
     ];
     for (const [tab, param] of tabParams) {

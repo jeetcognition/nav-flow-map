@@ -125,9 +125,40 @@ export class SecretsPage extends BasePage {
     await this.dialogNameInput.waitFor({ state: "visible" });
   }
 
+  /**
+   * Click a control inside the dialog. The dialog is taller than the viewport and scrolls
+   * internally, so a control has to be scrolled into view before the forced click.
+   */
+  async clickInDialog(control: Locator) {
+    await control.scrollIntoViewIfNeeded();
+    await control.click({ force: true });
+  }
+
+  /** Submit the add/edit dialog. */
+  async submitDialog() {
+    await this.clickInDialog(this.dialogStoreButton);
+  }
+
+  /** Close the add/edit dialog with its Close control. */
+  async closeDialog() {
+    await this.clickInDialog(this.dialogCloseButton.first());
+  }
+
+  /** Pick the dialog's scope toggle. */
+  async selectDialogScope(scope: "Organization" | "Personal") {
+    await this.clickInDialog(
+      scope === "Organization" ? this.dialogOrganizationScope : this.dialogPersonalScope,
+    );
+  }
+
+  /** Toggle the redact-value switch. */
+  async toggleRedact() {
+    await this.clickInDialog(this.dialogRedactSwitch);
+  }
+
   /** Pick a secret type in the add dialog. */
   async selectType(type: "Raw secret" | "Cookie" | "One-Time Password (TOTP)") {
-    await this.dialogTypeSelect.click({ force: true });
+    await this.clickInDialog(this.dialogTypeSelect);
     await this.page.getByRole("option", { name: type }).click({ force: true });
   }
 
@@ -139,7 +170,7 @@ export class SecretsPage extends BasePage {
     if (note !== undefined) {
       await this.dialogNoteInput.fill(note, { force: true });
     }
-    await this.dialogStoreButton.click({ force: true });
+    await this.submitDialog();
     await this.dialog.waitFor({ state: "hidden" });
     await expect(this.rowByName(name)).toBeVisible();
   }

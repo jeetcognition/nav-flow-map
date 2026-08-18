@@ -73,8 +73,8 @@ export class DevinApiPage extends BasePage {
 
     this.createForm = page.locator("main").locator("form").first();
     this.nameInput = page.locator('input[placeholder="Enter display name"]').first();
-    this.roleSelector = page.locator('[role="combobox"]').nth(2);
-    this.expiresSelector = page.locator('[role="combobox"]').nth(3);
+    this.roleSelector = page.getByRole("dialog").getByRole("combobox").nth(0);
+    this.expiresSelector = page.getByRole("dialog").getByRole("combobox").nth(1);
     this.cancelButton = page.getByRole("button", { name: "Cancel" });
     this.createSubmitButton = page.getByRole("button", { name: "Provision service user" });
 
@@ -94,25 +94,34 @@ export class DevinApiPage extends BasePage {
   }
 
   /**
-   * Open a combobox and pick its first option. Closed popups leave hidden
-   * `role=option` nodes in the DOM, so the choice is scoped to visible options.
+   * Options of the currently open combobox popover. The closed popovers keep their
+   * options mounted but hidden, so unscoped `getByRole("option")` resolves to a stale
+   * hidden option once a selector has already been used.
    */
-  private async chooseFirstOption(trigger: Locator) {
-    await trigger.click();
-    const option = this.page.locator('[role="option"]:visible').first();
-    await option.waitFor({ state: "visible" });
-    await option.click();
-    await expect(option).toBeHidden();
+  get visibleOptions(): Locator {
+    return this.page.getByRole("option").filter({ visible: true });
   }
 
-  /** Pick the first available role in the provision form. */
+  /**
+   * Pick the first option offered by a provision-form selector. The popover unmounts
+   * asynchronously after a pick, so wait for the previous one to detach — otherwise the
+   * next open resolves against an option that is already animating away.
+   */
+  private async pickFirstOption(selector: Locator) {
+    await expect(this.page.getByRole("option")).toHaveCount(0);
+    await selector.click();
+    await this.visibleOptions.first().click();
+    await expect(this.page.getByRole("option")).toHaveCount(0);
+  }
+
+  /** Pick the first offered role in the provision form. */
   async selectFirstRole() {
-    await this.chooseFirstOption(this.roleSelector);
+    await this.pickFirstOption(this.roleSelector);
   }
 
-  /** Pick the first available expiry in the provision form. */
+  /** Pick the first offered expiration in the provision form. */
   async selectFirstExpiry() {
-    await this.chooseFirstOption(this.expiresSelector);
+    await this.pickFirstOption(this.expiresSelector);
   }
 
   rowByName(name: string): Locator {
@@ -149,6 +158,7 @@ export class DevinApiPage extends BasePage {
   }
 
   async ensureDeleted(name: string) {
+    if (this.page.isClosed()) return;
     await this.goto();
     await this.searchInput.fill(name);
     await this.page.waitForLoadState("networkidle");

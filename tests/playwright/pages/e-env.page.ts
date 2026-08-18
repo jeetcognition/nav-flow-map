@@ -3,7 +3,8 @@ import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
 // Enterprise → Environment (…/settings/enterprise-environment).
-// Main tabs: Rollout | Configuration | Blueprint | Outposts. Rollout is the
+// Main tabs: Rollout | Configuration | Blueprint, plus Outposts and
+// Golden snapshot (legacy) where the tenant still exposes them. Rollout is the
 // default tab and shows build health plus a per-organization rollout table.
 export class EnvironmentPage extends BasePage {
   protected readonly path = routes.environment();
@@ -85,8 +86,13 @@ export class EnvironmentPage extends BasePage {
     await this.page.goto(routes.environment(ENTERPRISE_SLUG, tab));
   }
 
+  /** Tabs every tenant exposes; Outposts and Golden snapshot are conditional. */
   mainTabs(): Locator[] {
-    return [this.rolloutTab, this.configurationTab, this.blueprintTab, this.outpostsTab];
+    return [this.rolloutTab, this.configurationTab, this.blueprintTab];
+  }
+
+  async hasOutpostsTab(): Promise<boolean> {
+    return (await this.outpostsTab.count()) > 0;
   }
 
   /**
