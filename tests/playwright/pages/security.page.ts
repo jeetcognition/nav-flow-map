@@ -33,7 +33,8 @@ export class SecurityPage extends BasePage {
 
   // --- Profiles tab ---
   readonly createProfileButton: Locator;
-  readonly createManuallyLink: Locator;
+  readonly discoverProfileOption: Locator;
+  readonly createManuallyOption: Locator;
   readonly profileNameInput: Locator;
   readonly profileDescriptionInput: Locator;
   readonly submitCreateProfileButton: Locator;
@@ -64,10 +65,39 @@ export class SecurityPage extends BasePage {
     this.runScanButton = this.newScanDialog.getByRole("button", { name: "Run Scan" });
 
     this.createProfileButton = this.content.getByRole("button", { name: "Create profile" });
-    this.createManuallyLink = page.getByRole("link", { name: /Create manually/ });
+    this.discoverProfileOption = page
+      .locator('[role="dialog"]')
+      .filter({ hasText: "Create profile" })
+      .getByRole("link", { name: /Discover profile/ });
+    this.createManuallyOption = page
+      .locator('[role="dialog"]')
+      .filter({ hasText: "Create profile" })
+      .getByRole("button", { name: /Create manually/ });
     this.profileNameInput = page.getByPlaceholder("Profile name");
     this.profileDescriptionInput = page.getByPlaceholder(/Describe what this profile scans for/);
     this.submitCreateProfileButton = page.getByRole("button", { name: "Create profile" });
+  }
+
+  /**
+   * Walk the Create-profile dialog to the manual authoring form. The dialog is
+   * served in two shapes: one asks for the profile kind (Discover / Ingestion)
+   * before offering the authoring paths, the other offers them straight away.
+   */
+  async openManualProfileForm() {
+    await this.createProfileButton.click();
+    const dialog = this.page.locator('[role="dialog"]').filter({ hasText: "Create profile" });
+    await dialog.waitFor({ state: "visible" });
+    if ((await this.createManuallyOption.count()) === 0) {
+      await this.discoverProfileOption.click();
+      await this.createManuallyOption
+        .or(this.profileNameInput)
+        .first()
+        .waitFor({ state: "visible" });
+    }
+    if ((await this.profileNameInput.count()) === 0) {
+      await this.createManuallyOption.click();
+    }
+    await this.profileNameInput.waitFor({ state: "visible" });
   }
 
   /** Navigate: sub-org home → sidebar Security link → wait for the page heading. */

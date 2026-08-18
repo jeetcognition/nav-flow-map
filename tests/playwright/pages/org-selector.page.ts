@@ -35,7 +35,10 @@ export class OrgSelectorPage extends BasePage {
     this.heading = page.getByText("Choose an organization to continue");
     this.allOrganizationsButton = page.getByRole("button", { name: /All organizations/ }).first();
     this.searchInput = page.locator('input[placeholder*="Search for an organization"]').first();
-    this.firstOverflowButton = page.getByRole("button", { name: "More options" }).first();
+    // Scoped to the real <button>: the row wrapper is itself role="button" and its accessible
+    // name includes the overflow control, so a role query would resolve the whole row and
+    // clicking it would open the organization instead of its menu.
+    this.firstOverflowButton = page.locator('button[aria-label="More options"]').first();
     this.sidebarToggle = page
       .locator('[data-testid="sidebar"] button[data-slot="sidebar-trigger"]')
       .first();
@@ -48,17 +51,48 @@ export class OrgSelectorPage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto(this.path);
-    const onOrgSelector = await this.heading
+    if (await this.landOnOrgSelector()) return;
+    // The app occasionally restores the last visited organization right after hydration and
+    // navigates away from the selector; a second attempt lands on it.
+    if (await this.landOnOrgSelector()) return;
+    throw new Error(`could not settle on the organization selector, now at ${this.page.url()}`);
+  }
+
+  /** Navigate to the selector and report whether the page stayed there. */
+  private async landOnOrgSelector(): Promise<boolean> {
+    await this.navigate(this.path);
+    let visible = await this.heading
       .waitFor({ state: "visible", timeout: 15_000 })
       .then(() => true)
       .catch(() => false);
-    if (onOrgSelector) return;
 
-    // Fallback: the canonical org-selector deep link 404s in some environments.
-    // Start at the SPA root and let the app route to the landing page.
-    await this.page.goto("/");
-    await this.heading.waitFor({ state: "visible", timeout: 20_000 });
+    if (!visible) {
+      // Fallback: the canonical org-selector deep link 404s in some environments.
+      // Start at the SPA root and let the app route to the landing page.
+      await this.navigate("/");
+      visible = await this.heading
+        .waitFor({ state: "visible", timeout: 20_000 })
+        .then(() => true)
+        .catch(() => false);
+    }
+    if (!visible) return false;
+
+    // Give the app a moment to run any post-hydration redirect before trusting the page.
+    await this.page.waitForTimeout(1_500);
+    return this.heading.isVisible();
+  }
+
+  /**
+   * Navigate tolerating aborted requests: the app fires its own client-side navigation on some
+   * routes, which cancels a pending "load" navigation and surfaces as net::ERR_ABORTED.
+   */
+  private async navigate(url: string) {
+    try {
+      await this.page.goto(url, { waitUntil: "domcontentloaded" });
+    } catch (error) {
+      if (!/ERR_ABORTED/.test(String(error))) throw error;
+      await this.page.goto(url, { waitUntil: "domcontentloaded" });
+    }
   }
 
   /** An org/sub-org card on the landing grid, matched by name. */
@@ -69,6 +103,17 @@ export class OrgSelectorPage extends BasePage {
   /** The org row element containing the given name and member count. */
   orgRow(name: string): Locator {
     return this.page.getByText(new RegExp(name, "i")).first().locator("..");
+  }
+
+  /**
+   * Bring a named org row into view. The enterprise lists dozens of organizations and the
+   * landing grid renders only the first page, so a row is located by searching for it first.
+   */
+  async revealOrg(name: string): Promise<Locator> {
+    await this.searchFor(name);
+    const row = this.orgRow(name);
+    await row.waitFor({ state: "visible", timeout: 15_000 });
+    return row;
   }
 
   /** The overflow button inside a named org row. */
@@ -93,6 +138,18 @@ export class OrgSelectorPage extends BasePage {
     await this.commandPalette.waitFor({ state: "visible", timeout: 10_000 });
   }
 
+  /**
+   * Open the palette's "Go to…" page. The palette root lists actions only; navigation
+   * targets (New session, All sessions, Switch organization…) live one level in.
+   */
+  async openPaletteGoTo() {
+    await this.commandPalette.getByText("Go to…", { exact: true }).first().click();
+    await this.commandPalette
+      .getByText("Switch organization…")
+      .first()
+      .waitFor({ state: "visible", timeout: 10_000 });
+  }
+
   /** Current rendered width of the sidebar, in pixels. */
   async sidebarWidth(): Promise<number> {
     return this.sidebar.evaluate((el) => el.getBoundingClientRect().width);
@@ -112,9 +169,32 @@ export class OrgSelectorPage extends BasePage {
     await this.topLeftMenu().waitFor({ state: "visible", timeout: 10_000 });
   }
 
+  /** Organization rows in the open top-left menu are radio items, one per organization. */
+  menuOrgItem(name: string): Locator {
+    return this.topLeftMenu().getByRole("menuitemradio", { name, exact: true });
+  }
+
+  /**
+   * Filter the open top-left menu's organization list. The menu renders only the first
+   * page of organizations, so anything further down is reachable only through its search.
+   */
+  async searchOrgsInMenu(query: string) {
+    const menu = this.topLeftMenu();
+    const input = menu.locator('input[placeholder="Search organizations..."]');
+    if ((await input.count()) === 0) {
+      await menu.getByRole("button", { name: "Search organizations" }).click();
+    }
+    await input.first().fill(query);
+  }
+
   /** Select an organization from the open top-left menu by its slug. */
   async selectOrgFromMenuBySlug(slug: string) {
-    const item = this.topLeftMenu().locator(`a[href="/org/${slug}/"]`).first();
+    const menu = this.topLeftMenu();
+    const item = menu.locator(`a[href="/org/${slug}/"]`).first();
+    if ((await item.count()) === 0) {
+      await this.searchOrgsInMenu(slug);
+    }
+    await item.scrollIntoViewIfNeeded();
     await item.click();
   }
 

@@ -2,7 +2,7 @@ import { test, expect, request } from "@playwright/test";
 import { DevinApiPage } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
-import { routes } from "../../support/paths";
+import { routes, ALT_SUBORG_NAME } from "../../support/paths";
 test.describe("Devin API", () => {
   function trackConsoleErrors(page: import("@playwright/test").Page) {
     const errors: string[] = [];
@@ -119,7 +119,7 @@ test.describe("Devin API", () => {
     await expect(api.tableRows.first()).toBeVisible();
 
     await api.orgFilter.click();
-    await page.getByRole("option", { name: "fri-5", exact: true }).first().click();
+    await page.getByRole("option", { name: ALT_SUBORG_NAME, exact: true }).first().click();
     await page.waitForLoadState("networkidle");
     await expect(api.emptyState).toBeVisible();
 

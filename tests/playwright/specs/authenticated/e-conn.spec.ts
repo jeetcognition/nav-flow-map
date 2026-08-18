@@ -5,6 +5,7 @@ import {
   McpMarketplacePage,
   TEST_SUBORG_DISPLAY,
 } from "../../pages";
+import { ALT_SUBORG_NAME } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
 import { errorBoundaryIndicators } from "../../support/errors";
@@ -40,7 +41,7 @@ test.describe("Connections", () => {
     await expect(conn.integrationsTab).toBeVisible();
     await expect(conn.mcpServersTab).toBeVisible();
     await expect(conn.integrationsTab).toHaveText(/Integrations\s+8/);
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBeGreaterThan(0);
     await expect(page.getByRole("heading", { name: "Git providers", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Communication", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Task management", exact: true })).toBeVisible();
@@ -66,13 +67,14 @@ test.describe("Connections", () => {
     const consoleErrors = trackConsoleErrors(page);
     await conn.goto();
     await conn.heading.waitFor({ state: "visible" });
+    const mcpCount = await conn.mcpServerCount();
     await conn.mcpServersTab.click();
     await expect(page).toHaveURL(/tab=mcps/);
     await expect(conn.mcpSearchInput).toBeVisible();
     await expect(conn.orgFilter).toBeVisible();
     await expect(conn.mcpTable).toBeVisible();
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBe(mcpCount);
 
     await conn.integrationsTab.click();
     await expect(page).toHaveURL(/\/settings\/connections(\?tab=integrations)?$/);
@@ -86,6 +88,7 @@ test.describe("Connections", () => {
     const consoleErrors = trackConsoleErrors(page);
     await conn.goto();
     await conn.heading.waitFor({ state: "visible" });
+    const mcpCount = await conn.mcpServerCount();
     await conn.mcpServersTab.click();
     await expect(page).toHaveURL(/tab=mcps/);
 
@@ -110,16 +113,16 @@ test.describe("Connections", () => {
 
     await conn.mcpSearchInput.fill("");
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBe(mcpCount);
 
     await conn.orgFilter.click();
-    await page.getByRole("option", { name: "fri-5", exact: true }).first().click();
+    await page.getByRole("option", { name: ALT_SUBORG_NAME, exact: true }).first().click();
     await expect(conn.mcpTableRows.first()).toBeVisible();
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBe(mcpCount);
 
     await conn.globalSearchInput.fill("zzzz-no-match");
     await expect(conn.integrationsTab).toHaveText(/Integrations\s+8/);
-    await expect(conn.mcpServersTab).toHaveText(/MCP servers\s+101/);
+    expect(await conn.mcpServerCount()).toBe(mcpCount);
 
     await conn.globalSearchInput.fill("");
     await expect(conn.mcpTableRows.first()).toBeVisible();

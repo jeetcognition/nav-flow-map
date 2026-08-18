@@ -144,7 +144,8 @@ export class PlaybooksPage extends BasePage {
   /** Pick a Devin mode from the dropdown. */
   async selectMode(mode: "Default" | "Normal" | "Fast" | "Ultra" | "Fusion") {
     await this.modeSelect.click();
-    await this.page.getByRole("option", { name: mode, exact: true }).click();
+    // Option labels render as "<mode><description>", so anchor on the mode name only.
+    await this.page.getByRole("option", { name: new RegExp(`^${mode}`) }).click();
   }
 
   /** Save the create/edit form and wait for the list or detail view to settle. */

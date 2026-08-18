@@ -30,8 +30,44 @@ export class SkillsPage extends BasePage {
     await this.page.goto(routes.enterpriseSkills(slug));
   }
 
+  /** Empty-state row shown when no skill was invoked in the selected window. */
+  readonly noInvocationsRow = this.tableRows.filter({ hasText: "No skill invocations yet" });
+
   skillRow(name: string): Locator {
-    return this.table.locator("tr").filter({ hasText: name });
+    if (name.trim() === "") {
+      throw new Error("skillRow() requires a skill name; an empty name matches every row.");
+    }
+    return this.tableRows.filter({ hasText: name });
+  }
+
+  /**
+   * Whether the analytics table currently holds invocation rows (live, tenant-dependent).
+   * The table first renders placeholder rows with empty cells, so wait for real content.
+   */
+  async hasInvocations(): Promise<boolean> {
+    await this.waitForRows();
+    return !(await this.noInvocationsRow.isVisible().catch(() => false));
+  }
+
+  /** Wait until the analytics table has replaced its loading placeholders with data. */
+  async waitForRows() {
+    const firstRow = this.tableRows.first();
+    await firstRow.waitFor({ state: "visible" });
+    await this.page.waitForFunction(
+      () => {
+        const row = document.querySelector("table tbody tr");
+        return !!row && (row.textContent ?? "").trim().length > 0;
+      },
+      undefined,
+      { timeout: 30_000 },
+    );
+  }
+
+  /** Skill name of the first analytics row; only valid when invocations exist. */
+  async firstSkillName(): Promise<string> {
+    await this.waitForRows();
+    const cell = this.tableRows.first().locator("td").first();
+    return (await cell.innerText()).trim().split("\n")[0].trim();
   }
 
   async selectRuntime(label: string) {
