@@ -35,7 +35,7 @@ test("LOGIN-SAN01 — Load the Login page", async ({ page }) => {
   await expect(login.logo).toBeVisible();
   await expect(login.heading).toBeVisible();
   await expect(login.emailInput).toBeVisible();
-  await expect(login.continueButton).toBeVisible();
+  await expect(login.loginButton).toBeVisible();
 });
 
 test("LOGIN-SAN02 — Inspect the available login methods", async ({ page }) => {
@@ -61,7 +61,7 @@ test("LOGIN-REG01 — Click the Sign up link", async ({ page }) => {
 
   await login.signUpLink.click();
 
-  await expect(page).toHaveURL(/\/signup\//, { timeout: 15_000 });
+  await expect(page).toHaveURL(/\/auth\/signup/, { timeout: 15_000 });
   await expect(page.getByText(/already have an account\?/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /log in/i })).toBeVisible();
 });
@@ -74,8 +74,9 @@ for (const value of INVALID_EMAILS) {
 
     await login.submitEmail(value);
 
-    await expect(login.errorMessage).toBeVisible({ timeout: 10_000 });
-    await expect(page).toHaveURL(/\/login\//);
+    // Native HTML5 validation blocks submission and keeps the user on the login page.
+    expect(await login.emailValidationMessage()).not.toBe("");
+    await expect(page).toHaveURL(/\/auth\/login/);
   });
 }
 
@@ -97,7 +98,8 @@ test("LOGIN-REG03 — No sensitive data leaks in URL, UI, or console", async ({ 
 
   // After submitting an invalid email
   await login.submitEmail("not-an-email");
-  await expect(login.errorMessage).toBeVisible({ timeout: 10_000 });
+  expect(await login.emailValidationMessage()).not.toBe("");
+  await expect(page).toHaveURL(/\/auth\/login/);
 
   const postUrl = page.url();
   const postBody = await page.innerText("body");

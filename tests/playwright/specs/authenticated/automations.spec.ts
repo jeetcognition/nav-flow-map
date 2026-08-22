@@ -187,7 +187,9 @@ test.describe("Automations", () => {
       await expect(page.getByRole("button", { name: `Remove ${value}` })).toBeVisible();
     }
 
-    const removeButtons = page.getByRole("button", { name: /^Remove (?!trigger)/ });
+    const removeButtons = page.getByRole("button", {
+      name: /^Remove (?!trigger|from participated)/,
+    });
     while ((await automations.domainInputs.count()) > 0) {
       await removeButtons.first().click();
     }

@@ -79,24 +79,23 @@ export class SecurityPage extends BasePage {
   }
 
   /**
-   * Walk the Create-profile dialog to the manual authoring form. The dialog is
-   * served in two shapes: one asks for the profile kind (Discover / Ingestion)
-   * before offering the authoring paths, the other offers them straight away.
+   * Walk the Create-profile dialog to the manual authoring form: pick
+   * "Create manually" (vs Generate with Devin) when that step is offered,
+   * then the "Discover profile" type, which opens the authoring page.
    */
   async openManualProfileForm() {
     await this.createProfileButton.click();
     const dialog = this.page.locator('[role="dialog"]').filter({ hasText: "Create profile" });
     await dialog.waitFor({ state: "visible" });
-    if ((await this.createManuallyOption.count()) === 0) {
-      await this.discoverProfileOption.click();
-      await this.createManuallyOption
-        .or(this.profileNameInput)
-        .first()
-        .waitFor({ state: "visible" });
-    }
-    if ((await this.profileNameInput.count()) === 0) {
+    await this.createManuallyOption
+      .or(this.discoverProfileOption)
+      .first()
+      .waitFor({ state: "visible" });
+    if ((await this.createManuallyOption.count()) > 0) {
       await this.createManuallyOption.click();
     }
+    await this.discoverProfileOption.waitFor({ state: "visible" });
+    await this.discoverProfileOption.click();
     await this.profileNameInput.waitFor({ state: "visible" });
   }
 
@@ -108,9 +107,13 @@ export class SecurityPage extends BasePage {
     await this.heading.waitFor({ state: "visible" });
   }
 
-  /** Open the New Scan dialog from the Scans tab. */
+  /** Open the New Scan dialog from the Scans tab via the setup-method chooser. */
   async openStartScanDialog() {
     await this.startScanButton.click();
+    const chooser = this.page
+      .getByRole("dialog")
+      .filter({ hasText: "Choose how to set up your scan" });
+    await chooser.getByRole("button", { name: /Set up manually/ }).click();
     await this.newScanDialog.waitFor({ state: "visible" });
   }
 

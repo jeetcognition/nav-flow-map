@@ -57,7 +57,6 @@ test.describe("New session composer", () => {
     await expect(menu).toContainText("Normal");
     await expect(menu).toContainText("Ultra");
     await expect(menu).toContainText("Fusion");
-    await expect(menu).toContainText(/SWE[- ]1\.7/);
     await expect(menu).toContainText("Mode");
     await expect(menu).toContainText("Agent");
     await expect(menu).toContainText("Fast");

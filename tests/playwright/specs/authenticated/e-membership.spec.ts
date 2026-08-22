@@ -354,7 +354,7 @@ test.describe("Enterprise Membership", () => {
           "Before using Devin, contact your enterprise administrator",
         );
         for (let attempt = 0; attempt < 3; attempt++) {
-          if (attempt > 0) await login.resendButton.click();
+          if (attempt > 0) await login.requestNewCode(alias);
           const code = await fetchLatestOtp({
             user: inbox,
             password: appPassword,
@@ -467,7 +467,7 @@ test.describe("Enterprise Membership", () => {
     try {
       const unauthPage = await unauthCtx.newPage();
       await unauthPage.goto(routes.membership());
-      await unauthPage.waitForURL(/auth\.beta\.devin\.ai/, { timeout: 30_000 });
+      await unauthPage.waitForURL(/\/auth\/login/, { timeout: 30_000 });
       await expect(unauthPage.locator("body")).not.toContainText(adminEmail);
     } finally {
       await unauthCtx.close();

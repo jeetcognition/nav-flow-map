@@ -10,6 +10,8 @@ import { fetchLatestOtp } from "../support/gmail-otp";
 fs.mkdirSync(".auth", { recursive: true });
 
 setup("authenticate as admin", async ({ page }) => {
+  // Email delivery plus IMAP polling can take ~90s before the login even completes.
+  setup.setTimeout(240_000);
   const credentials = adminCredentials();
 
   if (!credentials) {

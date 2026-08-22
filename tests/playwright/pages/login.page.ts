@@ -18,47 +18,56 @@ export class LoginPage extends BasePage {
   readonly googleButton: Locator;
   readonly signUpLink: Locator;
   readonly signUpPrompt: Locator;
-  readonly errorMessage: Locator;
 
   // OTP step locators
   readonly otpHeading: Locator;
   readonly otpInput: Locator;
   readonly otpSentMessage: Locator;
-  readonly resendButton: Locator;
+  readonly backButton: Locator;
   readonly otpError: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.logo = page.locator("#prompt-logo-center");
+    this.logo = page.getByRole("img", { name: /devin logo/i }).first();
     this.heading = page.getByRole("heading", { name: "Welcome" });
     this.emailInput = page
-      .getByLabel(/work email/i)
-      .or(page.getByRole("textbox", { name: /work email/i }))
+      .getByLabel(/email address/i)
+      .or(page.getByRole("textbox", { name: /email address/i }))
       .first();
     this.continueButton = page.getByRole("button", { name: "Continue", exact: true });
-    this.loginButton = page.getByRole("button", { name: /log in|sign in/i }).first();
+    this.loginButton = page.getByRole("button", { name: "Log in", exact: true });
     this.githubButton = page.getByRole("button", { name: /continue with github/i });
     this.googleButton = page.getByRole("button", { name: /continue with google/i });
     this.signUpLink = page.getByRole("link", { name: /sign up/i }).first();
     this.signUpPrompt = page.getByText(/don't have an account\?/i);
-    this.errorMessage = page.getByText(/email is not valid/i);
 
     this.otpHeading = page.getByRole("heading", { name: /verify your identity/i });
     this.otpInput = page
       .getByLabel(/code/i)
       .or(page.getByRole("textbox", { name: /code/i }))
       .first();
-    this.otpSentMessage = page.getByText(/sent.*email|code was sent|verification code/i);
-    this.resendButton = page.getByRole("button", { name: /resend/i });
+    this.otpSentMessage = page.getByText(/sent an email with your code/i);
+    this.backButton = page.getByRole("button", { name: "Back", exact: true });
     this.otpError = page.getByText(/wrong|invalid|incorrect|expired/i).first();
   }
 
   /** Fill the email field and submit to request a code. */
   async submitEmail(email: string) {
-    // Some flows show a "Log in" landing button before the email field appears.
-    await this.loginButton.click({ timeout: 2000 }).catch(() => {});
     await this.emailInput.fill(email);
-    await this.continueButton.click();
+    await this.loginButton.click();
+  }
+
+  /** Request a fresh code from the OTP step: go Back and resubmit the email. */
+  async requestNewCode(email: string) {
+    await this.backButton.click();
+    await this.emailInput.waitFor({ state: "visible" });
+    await this.submitEmail(email);
+    await this.otpHeading.waitFor({ state: "visible", timeout: 15_000 });
+  }
+
+  /** Native HTML5 validation message on the email field (empty string when valid). */
+  async emailValidationMessage(): Promise<string> {
+    return this.emailInput.evaluate((el) => (el as HTMLInputElement).validationMessage);
   }
 
   /** Enter the OTP code and submit. Handles a single input or split single-digit inputs. */
@@ -77,8 +86,9 @@ export class LoginPage extends BasePage {
       await this.page.keyboard.type(code, { delay: 30 });
     }
 
-    // Auto-submit once all digits are entered; clicking is harmless if already submitted.
-    await this.continueButton.click().catch(() => {});
+    // The form auto-submits once all digits are entered and unmounts the button,
+    // so only attempt the click briefly for flows that still require it.
+    await this.continueButton.click({ timeout: 5_000 }).catch(() => {});
   }
 
   /** Full passwordless flow: email -> request code -> read code -> enter code. */

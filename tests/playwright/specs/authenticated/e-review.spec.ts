@@ -278,7 +278,7 @@ test.describe("Review Settings", () => {
       const anonReview = new ReviewSettingsPage(anonPage);
       await anonReview.goto();
       await anonPage.waitForLoadState("networkidle");
-      await expect(anonPage).toHaveURL(/auth\.beta\.devin\.ai\/u\/login/);
+      await expect(anonPage).toHaveURL(/\/auth\/login/);
     } finally {
       await anonContext.close();
     }

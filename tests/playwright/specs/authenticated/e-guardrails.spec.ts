@@ -332,7 +332,7 @@ test.describe("Guardrails enforcement and authorization", () => {
     try {
       const anonPage = await anonContext.newPage();
       await anonPage.goto(routes.guardrails());
-      await anonPage.waitForURL(/auth\.beta\.devin\.ai/, { timeout: 30_000 });
+      await anonPage.waitForURL(/\/auth\/login/, { timeout: 30_000 });
     } finally {
       await anonContext.close();
     }

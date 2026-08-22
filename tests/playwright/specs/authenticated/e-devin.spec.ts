@@ -3,7 +3,7 @@ import { DevinSettingsPage } from "../../pages";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
 import { GeneralSettingsPage } from "../../pages";
-const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "swe-1-7", "fusion"] as const;
+const MODEL_MODE_SWITCHES = ["ultra", "fast-mode", "fusion"] as const;
 const TOOL_SWITCHES = ["enterprise-secure-mode", "enterprise-web-search"] as const;
 const PR_OPEN_AS_OPTIONS = [
   { label: /^Devin/, display: "Devin" },

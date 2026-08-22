@@ -71,7 +71,7 @@ test.describe("Auth (Email + OTP)", () => {
     await expect(login.otpHeading).toBeVisible({ timeout: 15_000 });
     await expect(login.otpInput).toBeVisible();
     await expect(login.otpSentMessage).toContainText(email);
-    await expect(login.resendButton).toBeVisible();
+    await expect(login.backButton).toBeVisible();
     await page.close();
   });
 
@@ -95,15 +95,16 @@ test.describe("Auth (Email + OTP)", () => {
     await expect(page.locator("body")).not.toContainText(/verify your identity|enter the code/i);
   });
 
-  test("AUTH-SAN04 — Inspect the resend option on the OTP step", async ({ browser }) => {
+  test("AUTH-SAN04 — Request a fresh code from the OTP step", async ({ browser }) => {
+    // The OTP step offers Back instead of a Resend button; a new code is
+    // requested by returning to the email step and resubmitting.
     const page = await newAnonymousPage(browser);
     const login = new LoginPage(page);
     await login.goto();
     await login.submitEmail(email);
     await expect(login.otpHeading).toBeVisible({ timeout: 15_000 });
-    await expect(login.resendButton).toBeVisible();
-    await login.resendButton.click();
-    // The page should still show the OTP step and a confirmation message.
+    await expect(login.backButton).toBeVisible();
+    await login.requestNewCode(email);
     await expect(login.otpHeading).toBeVisible();
     await expect(login.otpSentMessage).toBeVisible();
     await page.close();
@@ -115,10 +116,9 @@ test.describe("Auth (Email + OTP)", () => {
     await login.goto();
     await login.submitEmail(email);
     await expect(login.otpInput).toBeVisible({ timeout: 15_000 });
-    await login.otpInput.fill("000000");
-    await login.continueButton.click();
+    await login.submitOtp("000000");
     await expect(login.otpError).toBeVisible({ timeout: 10_000 });
-    await expect(page).toHaveURL(/passwordless-email-challenge/);
+    await expect(page).toHaveURL(/\/auth\/login/);
     await page.close();
   });
 
@@ -137,25 +137,23 @@ test.describe("Auth (Email + OTP)", () => {
     await expect(login.otpInput).toBeVisible({ timeout: 15_000 });
 
     const staleCode = await fetchCode();
-    await login.resendButton.click();
+    await login.requestNewCode(email);
     let freshCode = await fetchDifferentCode(staleCode);
 
     // The stale code must be rejected with a clear error, staying on the OTP step.
-    await login.otpInput.fill(staleCode);
-    await login.continueButton.click();
+    await login.submitOtp(staleCode);
     await expect(login.otpError).toBeVisible({ timeout: 10_000 });
-    await expect(page).toHaveURL(/passwordless-email-challenge/);
+    await expect(page).toHaveURL(/\/auth\/login/);
 
     // Requesting a fresh code allows login. The shared OTP inbox can race with other
     // login flows, so re-request the code and retry if a fetched code is rejected.
     let loggedIn = false;
     for (let attempt = 0; attempt < 3 && !loggedIn; attempt++) {
       if (attempt > 0) {
-        await login.resendButton.click();
+        await login.requestNewCode(email);
         freshCode = await fetchDifferentCode(freshCode);
       }
-      await login.otpInput.fill(freshCode);
-      await login.continueButton.click();
+      await login.submitOtp(freshCode);
       loggedIn = await orgSelector.heading
         .waitFor({ state: "visible", timeout: 20_000 })
         .then(() => true)
@@ -221,8 +219,7 @@ test.describe("Auth (Email + OTP)", () => {
     expect(containsSensitive(otpBody)).toBeUndefined();
 
     const code = await fetchCode();
-    await login.otpInput.fill(code);
-    await login.continueButton.click();
+    await login.submitOtp(code);
     await expect(orgSelector.heading).toBeVisible({ timeout: 30_000 });
 
     const endUrl = page.url();
