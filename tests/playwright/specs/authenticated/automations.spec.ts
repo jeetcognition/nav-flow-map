@@ -230,7 +230,9 @@ test.describe("Automations", () => {
     await automations.rruleInput.fill("FREQ=DAILY;BYHOUR=9;BYMINUTE=30");
     await automations.applyScheduleButton.click();
     await expect(automations.scheduleDialog).toBeHidden();
-    await expect(page.getByRole("button", { name: "Every day at 9:30 AM" })).toBeVisible();
+    await expect(automations.scheduleFrequencyChip).toBeVisible();
+    await expect(automations.scheduleHourSelect).toHaveValue("09");
+    await expect(automations.scheduleMinuteSelect).toHaveValue("30");
   });
 
   test("SCHED-REG01 — Create one-time and recurring schedules, edit, delete", async ({ page }) => {
@@ -256,7 +258,9 @@ test.describe("Automations", () => {
       await automations.rruleTab.click();
       await automations.rruleInput.fill("FREQ=DAILY;BYHOUR=23;BYMINUTE=45");
       await automations.applyScheduleButton.click();
-      await expect(page.getByRole("button", { name: "Every day at 11:45 PM" })).toBeVisible();
+      await expect(automations.scheduleFrequencyChip).toBeVisible();
+      await expect(automations.scheduleHourSelect).toHaveValue("23");
+      await expect(automations.scheduleMinuteSelect).toHaveValue("45");
 
       await automations.nameInput.fill(name);
       await automations.fillInstructions(

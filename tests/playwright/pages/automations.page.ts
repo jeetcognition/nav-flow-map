@@ -89,6 +89,12 @@ export class AutomationsPage extends BasePage {
   readonly rruleInput: Locator;
   /** Apply button in the schedule dialog. */
   readonly applyScheduleButton: Locator;
+  /** Frequency chip of an applied schedule trigger (e.g. "Every day"). */
+  readonly scheduleFrequencyChip: Locator;
+  /** Hour select of an applied schedule trigger. */
+  readonly scheduleHourSelect: Locator;
+  /** Minute select of an applied schedule trigger. */
+  readonly scheduleMinuteSelect: Locator;
 
   /** Detail page Edit button. */
   readonly editButton: Locator;
@@ -155,6 +161,9 @@ export class AutomationsPage extends BasePage {
     this.visualTab = this.scheduleDialog.getByRole("button", { name: "Visual" });
     this.rruleInput = this.scheduleDialog.getByRole("textbox");
     this.applyScheduleButton = this.scheduleDialog.getByRole("button", { name: "Apply" });
+    this.scheduleFrequencyChip = page.locator("main").getByRole("button", { name: "Every day" });
+    this.scheduleHourSelect = page.getByRole("combobox", { name: "Select hour" });
+    this.scheduleMinuteSelect = page.getByRole("combobox", { name: "Minute within hour" });
 
     this.editButton = page.getByRole("button", { name: "Edit", exact: true });
     this.runNowButton = page.getByRole("button", { name: "Run automation" });
