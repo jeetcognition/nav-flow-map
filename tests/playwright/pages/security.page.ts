@@ -2,8 +2,8 @@ import { Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
 
-// Sub-org Security (Code scan) page: /org/<suborg>/security.
-// Direct deep links to /security redirect back to the sub-org home, so tests
+// Sub-org Security (Code scan) page: /org/<suborg>/code-scan.
+// Direct deep links to /code-scan redirect back to the sub-org home, so tests
 // must land on the sub-org first and click the "Security" sidebar link.
 export class SecurityPage extends BasePage {
   protected readonly path = routes.subOrg();
@@ -23,7 +23,7 @@ export class SecurityPage extends BasePage {
   /** "Start scan" button on the Scans tab. */
   readonly startScanButton: Locator;
 
-  // --- New Scan dialog ---
+  // --- New Scan dialogs ---
   readonly newScanDialog: Locator;
   readonly repoCombobox: Locator;
   readonly scanProfileCombobox: Locator;
@@ -49,7 +49,7 @@ export class SecurityPage extends BasePage {
     this.automationsTab = this.content.getByRole("link", { name: /^Automations/ });
     this.startScanButton = this.content.getByRole("button", { name: "Start scan" });
 
-    this.newScanDialog = page.getByRole("dialog").filter({ hasText: "New Scan" });
+    this.newScanDialog = page.getByRole("dialog", { name: "New Scan" });
     this.repoCombobox = this.newScanDialog
       .getByRole("combobox")
       .filter({ hasText: "Select repository" });
@@ -65,37 +65,30 @@ export class SecurityPage extends BasePage {
     this.runScanButton = this.newScanDialog.getByRole("button", { name: "Run Scan" });
 
     this.createProfileButton = this.content.getByRole("button", { name: "Create profile" });
-    this.discoverProfileOption = page
-      .locator('[role="dialog"]')
-      .filter({ hasText: "Create profile" })
-      .getByRole("link", { name: /Discover profile/ });
-    this.createManuallyOption = page
-      .locator('[role="dialog"]')
-      .filter({ hasText: "Create profile" })
-      .getByRole("button", { name: /Create manually/ });
+    const createProfileDialog = page.getByRole("dialog").filter({ hasText: "Create profile" });
+    this.discoverProfileOption = createProfileDialog.getByText("Discover profile", { exact: true });
+    this.createManuallyOption = createProfileDialog.getByRole("button", {
+      name: /Create manually/,
+    });
     this.profileNameInput = page.getByPlaceholder("Profile name");
     this.profileDescriptionInput = page.getByPlaceholder(/Describe what this profile scans for/);
-    this.submitCreateProfileButton = page.getByRole("button", { name: "Create profile" });
+    this.submitCreateProfileButton = this.content.getByRole("button", { name: "Create profile" });
   }
 
   /**
-   * Walk the Create-profile dialog to the manual authoring form: pick
-   * "Create manually" (vs Generate with Devin) when that step is offered,
-   * then the "Discover profile" type, which opens the authoring page.
+   * Walk the Create-profile dialog to the manual authoring form. The dialog
+   * asks for the authoring path (manual vs. Devin-generated) and the profile
+   * kind (Discover / Ingestion) in separate steps, and either step can already
+   * be settled, so each choice is only made when it is on screen.
    */
   async openManualProfileForm() {
     await this.createProfileButton.click();
-    const dialog = this.page.locator('[role="dialog"]').filter({ hasText: "Create profile" });
+    const dialog = this.page.getByRole("dialog").filter({ hasText: "Create profile" });
     await dialog.waitFor({ state: "visible" });
-    await this.createManuallyOption
-      .or(this.discoverProfileOption)
-      .first()
-      .waitFor({ state: "visible" });
-    if ((await this.createManuallyOption.count()) > 0) {
-      await this.createManuallyOption.click();
+    for (const choice of [this.createManuallyOption, this.discoverProfileOption]) {
+      await choice.or(this.profileNameInput).first().waitFor({ state: "visible" });
+      if (await choice.isVisible()) await choice.click();
     }
-    await this.discoverProfileOption.waitFor({ state: "visible" });
-    await this.discoverProfileOption.click();
     await this.profileNameInput.waitFor({ state: "visible" });
   }
 
@@ -107,13 +100,12 @@ export class SecurityPage extends BasePage {
     await this.heading.waitFor({ state: "visible" });
   }
 
-  /** Open the New Scan dialog from the Scans tab via the setup-method chooser. */
+  /** Open the manual New Scan configuration dialog from the Scans tab. */
   async openStartScanDialog() {
     await this.startScanButton.click();
-    const chooser = this.page
-      .getByRole("dialog")
-      .filter({ hasText: "Choose how to set up your scan" });
-    await chooser.getByRole("button", { name: /Set up manually/ }).click();
+    const setupChooser = this.page.getByRole("dialog", { name: "Start scan" });
+    await setupChooser.waitFor({ state: "visible" });
+    await setupChooser.getByRole("button", { name: /Set up manually/ }).click();
     await this.newScanDialog.waitFor({ state: "visible" });
   }
 

@@ -287,7 +287,9 @@ test.describe("Knowledge Page", () => {
     await knowledge.searchInput.fill("😃");
     await expect(knowledge.noResults).toBeHidden();
 
-    await knowledge.searchInput.fill("<script>alert(1)</script>");
+    // Search matches note contents too, so use a payload no fixture note can
+    // contain (other QA suites store literal `<script>alert(1)</script>` notes).
+    await knowledge.searchInput.fill(`<script>alert("KNOW-REG06-${Date.now()}")</script>`);
     await expect(knowledge.noResults).toBeVisible();
 
     await knowledge.searchInput.fill("a".repeat(300));

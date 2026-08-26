@@ -165,7 +165,7 @@ test.describe("Repositories", () => {
     page,
   }) => {
     const repos = new ReposPage(page);
-    const { token, orgId: legitOrgId } = await repos.captureApiAuth();
+    const { headers, orgId: legitOrgId } = await repos.captureApiAuth();
 
     const permissionsUrl = (orgId: string) => `/api/${orgId}/integrations/git-permissions`;
     // Well-formed-but-nonexistent and malformed org ids stand in for another
@@ -175,14 +175,14 @@ test.describe("Repositories", () => {
     // Sanity: the captured token authorizes the legitimate org, so the
     // denials below are authorization checks rather than broken auth.
     const legitRead = await page.request.get(permissionsUrl(legitOrgId), {
-      headers: { authorization: token },
+      headers,
     });
     expect(legitRead.status()).toBe(200);
 
     for (const orgId of tamperedOrgIds) {
       // Read attempts are denied and expose no permission/repo metadata.
       const read = await page.request.get(permissionsUrl(orgId), {
-        headers: { authorization: token },
+        headers,
       });
       expect(read.status()).toBe(403);
       const body = await read.text();
@@ -192,14 +192,14 @@ test.describe("Repositories", () => {
 
       // Mutation attempts are denied as well.
       const write = await page.request.post(permissionsUrl(orgId), {
-        headers: { authorization: token },
+        headers,
         data: { permissions: [] },
       });
       expect(write.status()).toBe(403);
 
       const del = await page.request.delete(
         `${permissionsUrl(orgId)}/git-permission-doesnotexist`,
-        { headers: { authorization: token } },
+        { headers },
       );
       expect(del.status()).toBe(403);
     }

@@ -54,7 +54,7 @@ export class DevinSessionPage extends BasePage {
   }
 
   /** The composer mode trigger button — its label changes with the selected capability/speed. */
-  modeTrigger(label: string | RegExp = /^(Fast|Normal|Ultra|Fusion|SWE-1\.7)$/): Locator {
+  modeTrigger(label: string | RegExp = /^(Fast|Normal|Ultra|Fusion)$/): Locator {
     return this.page.getByRole("button", { name: label, exact: typeof label === "string" });
   }
 
@@ -146,9 +146,15 @@ export class DevinSessionPage extends BasePage {
 
   private async archiveRecentRow(row: Locator) {
     await row.hover();
-    await row.getByRole("button", { name: "Archive" }).click();
+    // Rows in the "Recent" group expose Archive; under "Participated" the same session
+    // is removed with "Remove from participated" instead.
+    const archive = row.getByRole("button", { name: "Archive" });
+    const remove = row.getByRole("button", { name: "Remove from participated" });
+    await archive.or(remove).first().click();
     // Archiving an active session asks for confirmation first.
-    const confirm = this.page.getByRole("dialog").getByRole("button", { name: "Archive" });
+    const confirm = this.page
+      .getByRole("dialog")
+      .getByRole("button", { name: /^(Archive|Remove)/ });
     await confirm
       .waitFor({ state: "visible", timeout: 3_000 })
       .then(() => confirm.click())
@@ -156,9 +162,38 @@ export class DevinSessionPage extends BasePage {
     await expect(row).toBeHidden({ timeout: 15_000 });
   }
 
-  /** Tool-panel option labels shown on an open /sessions/{id} page. */
-  toolPanelOption(label: string): Locator {
-    return this.page.getByText(label, { exact: true }).first();
+  /** Tool tab already open in the panel of an /sessions/{id} page. */
+  toolTab(label: string): Locator {
+    return this.page
+      .getByRole("tablist")
+      .getByRole("button")
+      .filter({ hasText: new RegExp(`^${label}$`) });
+  }
+
+  /** Panel a tool tab renders once it is the active tab. */
+  toolPanel(label: string): Locator {
+    return this.page.getByRole("tabpanel", { name: new RegExp(label) });
+  }
+
+  /** Activate an open tool tab without hitting its nested "Close tab" control. */
+  async selectToolTab(label: string) {
+    await this.toolTab(label).getByText(label, { exact: true }).click();
+  }
+
+  /** Opens the "Add tab" menu that lists every tool the session panel can show. */
+  async openToolMenu() {
+    await this.page.getByRole("button", { name: "Add tab" }).click();
+    await this.page.getByRole("menuitem").first().waitFor({ state: "visible" });
+  }
+
+  /** A tool offered in the "Add tab" menu. */
+  toolMenuItem(label: string): Locator {
+    return this.page.getByRole("menuitem", { name: label, exact: true });
+  }
+
+  async closeToolMenu() {
+    await this.page.keyboard.press("Escape");
+    await expect(this.page.getByRole("menuitem").first()).toBeHidden();
   }
 
   /** Type a prompt in the home session prompt and submit it. Returns the new session id. */

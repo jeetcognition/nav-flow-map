@@ -9,6 +9,10 @@ import { fetchLatestOtp } from "../support/gmail-otp";
 
 fs.mkdirSync(".auth", { recursive: true });
 
+// The OTP round trip alone (initial IMAP delay + polling) can consume most of the
+// default 120 s budget, so the login setups get their own longer timeout.
+setup.setTimeout(240_000);
+
 setup("authenticate as admin", async ({ page }) => {
   // Email delivery plus IMAP polling can take ~90s before the login even completes.
   setup.setTimeout(240_000);

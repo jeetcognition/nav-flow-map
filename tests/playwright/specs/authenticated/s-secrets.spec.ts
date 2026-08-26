@@ -297,8 +297,8 @@ test.describe("Secrets", () => {
     await expect(row).toContainText("Raw secret");
     await expect(row).toContainText("original note");
 
-    // The detail dialog shows metadata but never the stored plaintext; stored
-    // values are write-only — editing can overwrite them but never read them back.
+    // The detail dialog shows metadata but never the stored plaintext; existing
+    // values stay hidden and a new value can overwrite the stored one.
     await secrets.openDetail(name);
     await expect(secrets.dialog.getByText(/Created .* by/)).toBeVisible();
     await expect(secrets.dialog.getByRole("textbox").first()).toHaveValue("encrypted");
