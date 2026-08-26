@@ -297,15 +297,14 @@ test.describe("Secrets", () => {
     await expect(row).toContainText("Raw secret");
     await expect(row).toContainText("original note");
 
-    // The detail dialog shows metadata but never the stored plaintext; the
-    // product only allows note editing ("Note-only editing mode") — value and
-    // sensitivity are read-only by design.
+    // The detail dialog shows metadata but never the stored plaintext; existing
+    // values stay hidden and a new value can overwrite the stored one.
     await secrets.openDetail(name);
     await expect(secrets.dialog.getByText(/Created .* by/)).toBeVisible();
     await expect(secrets.dialog.getByRole("textbox").first()).toHaveValue("encrypted");
     await expect(secrets.dialog).not.toContainText(value);
     await secrets.dialog.getByRole("button", { name: "Edit", exact: true }).click({ force: true });
-    await expect(secrets.dialog.getByText("Note-only editing mode")).toBeVisible();
+    await expect(secrets.dialog.getByText("Values are write-only")).toBeVisible();
     const noteBox = secrets.dialog.getByRole("textbox").last();
     await noteBox.fill("updated note", { force: true });
     await secrets.dialog.getByRole("button", { name: "Save" }).click({ force: true });

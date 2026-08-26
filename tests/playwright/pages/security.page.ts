@@ -23,7 +23,7 @@ export class SecurityPage extends BasePage {
   /** "Start scan" button on the Scans tab. */
   readonly startScanButton: Locator;
 
-  // --- New Scan dialog ---
+  // --- New Scan dialogs ---
   readonly newScanDialog: Locator;
   readonly repoCombobox: Locator;
   readonly scanProfileCombobox: Locator;
@@ -49,7 +49,7 @@ export class SecurityPage extends BasePage {
     this.automationsTab = this.content.getByRole("link", { name: /^Automations/ });
     this.startScanButton = this.content.getByRole("button", { name: "Start scan" });
 
-    this.newScanDialog = page.getByRole("dialog").filter({ hasText: "New Scan" });
+    this.newScanDialog = page.getByRole("dialog", { name: "New Scan" });
     this.repoCombobox = this.newScanDialog
       .getByRole("combobox")
       .filter({ hasText: "Select repository" });
@@ -108,9 +108,12 @@ export class SecurityPage extends BasePage {
     await this.heading.waitFor({ state: "visible" });
   }
 
-  /** Open the New Scan dialog from the Scans tab. */
+  /** Open the manual New Scan configuration dialog from the Scans tab. */
   async openStartScanDialog() {
     await this.startScanButton.click();
+    const setupChooser = this.page.getByRole("dialog", { name: "Start scan" });
+    await setupChooser.waitFor({ state: "visible" });
+    await setupChooser.getByRole("button", { name: /Set up manually/ }).click();
     await this.newScanDialog.waitFor({ state: "visible" });
   }
 
