@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ReviewSettingsPage, routes, ALT_SUBORG } from "../../pages";
+import { ReviewSettingsPage, routes, ALT_SUBORG, LOGIN_URL_PATTERN } from "../../pages";
 import {
   GITLAB_QA_TOKEN,
   GITLAB_QA_HOST,
@@ -278,7 +278,7 @@ test.describe("Review Settings", () => {
       const anonReview = new ReviewSettingsPage(anonPage);
       await anonReview.goto();
       await anonPage.waitForLoadState("networkidle");
-      await expect(anonPage).toHaveURL(/auth\.beta\.devin\.ai\/u\/login/);
+      await expect(anonPage).toHaveURL(LOGIN_URL_PATTERN);
     } finally {
       await anonContext.close();
     }

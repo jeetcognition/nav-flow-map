@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { KnowledgePage, DevinSessionPage } from "../../pages";
-import { routes } from "../../support/paths";
+import { routes, LOGIN_URL_PATTERN } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
 
@@ -852,7 +852,7 @@ test.describe("Knowledge Page", () => {
       waitUntil: "networkidle",
     });
     const unauthUrl = unauthPage.url();
-    if (unauthUrl.includes("auth.beta.devin.ai")) {
+    if (LOGIN_URL_PATTERN.test(unauthUrl)) {
       // Redirect to login is acceptable; nothing further to assert.
     } else {
       await expect(unauthPage.getByText("Not Found")).toBeVisible();

@@ -10,6 +10,12 @@ export const ALT_SUBORG_NAME = process.env.ALT_SUBORG_NAME ?? "xfri-5";
 export const WIKI_REPO_OWNER = process.env.WIKI_REPO_OWNER ?? "jeetcognition";
 export const WIKI_REPO_NAME = process.env.WIKI_REPO_NAME ?? "empty";
 
+/**
+ * The login page an unauthenticated request is redirected to. The enterprise app hosts
+ * its own Auth1 login at `/auth/login` (it no longer bounces to an external auth host).
+ */
+export const LOGIN_URL_PATTERN = /\/auth\/login/;
+
 /** Routes relative to BASE_URL (Playwright prepends baseURL automatically on page.goto). */
 export const routes = {
   /** Login page. */

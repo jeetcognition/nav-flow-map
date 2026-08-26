@@ -39,6 +39,7 @@ export { WikiPage } from "./wiki.page";
 
 export {
   routes,
+  LOGIN_URL_PATTERN,
   ENTERPRISE_SLUG,
   ENTERPRISE_NAME,
   TEST_SUBORG,
