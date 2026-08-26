@@ -1,5 +1,6 @@
 import { type Page, type Locator, type Response } from "@playwright/test";
 import { ENTERPRISE_SLUG, routes } from "../support/paths";
+import { apiAuthHeaders } from "../support/api-auth";
 import { BasePage } from "./base.page";
 
 export class OrganizationsPage extends BasePage {
@@ -77,12 +78,12 @@ export class OrganizationsPage extends BasePage {
     return response;
   }
 
-  /** Captures the app's bearer token by reloading and sniffing an API request. */
-  async captureAuthorizationHeader(): Promise<string> {
+  /** Captures the app's API auth headers by reloading and sniffing an API request. */
+  async captureApiHeaders(): Promise<Record<string, string>> {
     const requestPromise = this.page.waitForRequest(
       (r) => r.url().includes("/api/") && Boolean(r.headers()["authorization"]),
     );
     await this.page.reload();
-    return (await requestPromise).headers()["authorization"];
+    return apiAuthHeaders(await requestPromise);
   }
 }

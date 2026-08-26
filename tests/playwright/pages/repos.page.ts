@@ -1,6 +1,7 @@
 import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG, TEST_SUBORG, TEST_SUBORG_DISPLAY } from "../support/paths";
+import { apiAuthHeaders } from "../support/api-auth";
 
 // Disposable repository used by the mutating regression/e2e cases. It lives in the
 // shared QA tenant's connected providers but carries no baseline permission, so the
@@ -122,12 +123,12 @@ export class ReposPage extends BasePage {
   }
 
   /**
-   * Capture the Authorization header and the legitimate org id the SPA uses
-   * for git-permissions requests. The git-permissions API authenticates via a
-   * bearer token (not the session cookie), so cross-tenant/tamper probes must
-   * reuse a real token to prove denials are authorization decisions.
+   * Capture the auth headers and the legitimate org id the SPA uses for
+   * git-permissions requests. The git-permissions API authenticates via
+   * headers (not the session cookie), so cross-tenant/tamper probes must
+   * reuse them to prove denials are authorization decisions.
    */
-  async captureApiAuth(): Promise<{ token: string; orgId: string }> {
+  async captureApiAuth(): Promise<{ headers: Record<string, string>; orgId: string }> {
     const [req] = await Promise.all([
       this.page.waitForRequest((r) => r.url().includes("/integrations/git-permissions"), {
         timeout: 60_000,
@@ -136,10 +137,13 @@ export class ReposPage extends BasePage {
         waitUntil: "domcontentloaded",
       }),
     ]);
-    const token = (await req.allHeaders())["authorization"];
-    expect(token, "expected an Authorization header on the git-permissions request").toBeTruthy();
+    const headers = apiAuthHeaders(req);
+    expect(
+      headers.authorization,
+      "expected an Authorization header on the git-permissions request",
+    ).toBeTruthy();
     const orgId = req.url().match(/\/api\/([^/]+)\/integrations/)?.[1] ?? "";
     expect(orgId, "expected an org id in the git-permissions request URL").not.toBe("");
-    return { token, orgId };
+    return { headers, orgId };
   }
 }

@@ -1,6 +1,7 @@
 import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
+import { apiAuthHeaders } from "../support/api-auth";
 
 export class DevinApiPage extends BasePage {
   protected readonly path = routes.devinApi();
@@ -134,12 +135,12 @@ export class DevinApiPage extends BasePage {
 
   /**
    * Navigate to the page and capture the authenticated service-users API request the app
-   * issues on load, returning the bearer Authorization header, the enterprise id in use, and
+   * issues on load, returning the API auth headers, the enterprise id in use, and
    * the API origin. Used by authorization/IDOR tests to replay requests with tampered inputs.
    */
   async captureServiceUsersApi(): Promise<{
     enterpriseId: string;
-    authorization: string;
+    headers: Record<string, string>;
     baseUrl: string;
   }> {
     const [req] = await Promise.all([
@@ -153,8 +154,7 @@ export class DevinApiPage extends BasePage {
     await this.heading.waitFor({ state: "visible" });
     const url = new URL(req.url());
     const enterpriseId = url.pathname.match(/enterprise-[a-z0-9]+/)![0];
-    const authorization = req.headers()["authorization"] ?? "";
-    return { enterpriseId, authorization, baseUrl: url.origin };
+    return { enterpriseId, headers: apiAuthHeaders(req), baseUrl: url.origin };
   }
 
   async ensureDeleted(name: string) {

@@ -170,14 +170,19 @@ test.describe("Session tools panel", () => {
     await firstSession.click();
     await page.waitForURL(/\/sessions\/[^/]+/, { timeout: 20_000 });
 
-    // The tools panel offers Shell / Editor(IDE) / Desktop(Browser) / Progress
-    // (Planner) plus Changes and Agents in the current UI.
-    for (const label of ["Shell", "Editor", "Desktop", "Progress", "Changes", "Agents"]) {
-      await expect(session.toolPanelOption(label)).toBeVisible({ timeout: 20_000 });
+    // Progress and Changes open as tabs by default; the rest of the inventory —
+    // Shell, Editor (IDE), and Computer (Browser) — is offered by "Add tab".
+    await expect(session.toolTab("Progress")).toBeVisible({ timeout: 20_000 });
+    await expect(session.toolTab("Changes")).toBeVisible();
+
+    await session.openToolMenu();
+    for (const label of ["Computer", "Editor", "Shell", "Progress", "Agents", "Side chat"]) {
+      await expect(session.toolMenuItem(label)).toBeVisible();
     }
+    await session.closeToolMenu();
 
     // Selecting Progress opens it as the active tool tab.
-    await session.toolPanelOption("Progress").click();
-    await expect(page.getByRole("button", { name: "Progress" })).toBeVisible();
+    await session.selectToolTab("Progress");
+    await expect(session.toolPanel("Progress")).toBeVisible();
   });
 });
