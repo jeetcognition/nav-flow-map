@@ -2,8 +2,8 @@ import { Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes } from "../support/paths";
 
-// Sub-org Security (Code scan) page: /org/<suborg>/code-scan.
-// Direct deep links to /code-scan redirect back to the sub-org home, so tests
+// Sub-org Security (Code scan) page: /org/<suborg>/security.
+// Direct deep links to /security redirect back to the sub-org home, so tests
 // must land on the sub-org first and click the "Security" sidebar link.
 export class SecurityPage extends BasePage {
   protected readonly path = routes.subOrg();

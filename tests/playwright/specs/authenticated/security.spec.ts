@@ -9,16 +9,16 @@ test.describe("Security (Code scan)", () => {
     });
     page.on("pageerror", (err) => consoleErrors.push(err.message));
 
-    // Bare /code-scan (no org context) is rejected: the app shows its
+    // Bare /security (no org context) is rejected: the app shows its
     // "Access denied" error page instead of the scan dashboard.
-    await page.goto("/code-scan");
+    await page.goto("/security");
     await expect(page.getByRole("heading", { name: "Access denied" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Go to homepage" })).toBeVisible();
 
     const security = new SecurityPage(page);
     await security.gotoViaSidebar();
 
-    await expect(page).toHaveURL(`/org/${TEST_SUBORG}/code-scan`);
+    await expect(page).toHaveURL(`/org/${TEST_SUBORG}/security`);
     await expect(security.heading).toBeVisible();
     await expect(security.scansTab).toBeVisible();
     await expect(security.profilesTab).toBeVisible();
@@ -80,7 +80,7 @@ test.describe("Security (Code scan)", () => {
     await security.profileDescriptionInput.fill("Temporary profile created by SCAN-REG01");
     await security.submitCreateProfileButton.click();
 
-    await expect(page).toHaveURL(/\/code-scan\?tab=profiles$/);
+    await expect(page).toHaveURL(/\/security\?tab=profiles$/);
     await expect(security.profileRow(profileName)).toBeVisible();
 
     // Persistence: profile survives a full reload.
