@@ -71,7 +71,7 @@ test.describe("Auth (Email + OTP)", () => {
     await expect(login.otpHeading).toBeVisible({ timeout: 15_000 });
     await expect(login.otpInput).toBeVisible();
     await expect(login.otpSentMessage).toContainText(email);
-    await expect(login.resendButton).toBeVisible();
+    await expect(login.backButton).toBeVisible();
     await page.close();
   });
 
@@ -95,15 +95,16 @@ test.describe("Auth (Email + OTP)", () => {
     await expect(page.locator("body")).not.toContainText(/verify your identity|enter the code/i);
   });
 
-  test("AUTH-SAN04 — Inspect the resend option on the OTP step", async ({ browser }) => {
+  test("AUTH-SAN04 — Request a fresh code from the OTP step", async ({ browser }) => {
+    // The OTP step offers Back instead of a Resend button; a new code is
+    // requested by returning to the email step and resubmitting.
     const page = await newAnonymousPage(browser);
     const login = new LoginPage(page);
     await login.goto();
     await login.submitEmail(email);
     await expect(login.otpHeading).toBeVisible({ timeout: 15_000 });
-    await expect(login.resendButton).toBeVisible();
-    await login.resendButton.click();
-    // The page should still show the OTP step and a confirmation message.
+    await expect(login.backButton).toBeVisible();
+    await login.requestNewCode(email);
     await expect(login.otpHeading).toBeVisible();
     await expect(login.otpSentMessage).toBeVisible();
     await page.close();

@@ -25,7 +25,6 @@ export class LoginPage extends BasePage {
   readonly otpHeading: Locator;
   readonly otpInput: Locator;
   readonly otpSentMessage: Locator;
-  readonly resendButton: Locator;
   readonly otpError: Locator;
 
   constructor(page: Page) {
@@ -53,7 +52,6 @@ export class LoginPage extends BasePage {
       .or(page.getByRole("textbox", { name: /code/i }))
       .first();
     this.otpSentMessage = page.getByText(/sent an email with your code to/i);
-    this.resendButton = page.getByRole("button", { name: /resend/i });
     this.otpError = page.getByText(/wrong|invalid|incorrect|expired/i).first();
   }
 
