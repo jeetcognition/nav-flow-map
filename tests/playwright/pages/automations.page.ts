@@ -218,7 +218,12 @@ export class AutomationsPage extends BasePage {
     await this.addTriggerButton.click();
     await this.page.getByRole("menuitem", { name: type, exact: true }).hover();
     const submenu = this.page.getByRole("menu", { name: type });
-    await submenu.getByRole("menuitem", { name: event, exact: true }).click();
+    await submenu.waitFor({ state: "visible" });
+    const item = submenu.getByRole("menuitem", { name: event, exact: true });
+    await item.waitFor({ state: "visible" });
+    // force: the submenu keeps remounting its items while the popup repositions,
+    // so Playwright's stability check never settles and detaches mid-click.
+    await item.click({ force: true });
   }
 
   /** Remove every configured trigger row. */
