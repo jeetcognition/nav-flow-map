@@ -1,24 +1,26 @@
 import { test, expect } from "@playwright/test";
-import { SecurityPage, TEST_SUBORG } from "../../pages";
+import { SecurityPage, routes } from "../../pages";
 
 test.describe("Security (Code scan)", () => {
   test("SCAN-SMK01 — Load", async ({ page }) => {
+    // Bare /security (no org context) is rejected: the app shows its
+    // "Access denied" error page instead of the scan dashboard. Denying access
+    // fails an auth token request with a 403, so console errors are only
+    // collected from here on, for the Security page itself.
+    await page.goto("/security");
+    await expect(page.getByRole("heading", { name: "Access denied" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Go to homepage" })).toBeVisible();
+
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
       if (msg.type() === "error") consoleErrors.push(msg.text());
     });
     page.on("pageerror", (err) => consoleErrors.push(err.message));
 
-    // Bare /code-scan (no org context) is rejected: the app shows its
-    // "Access denied" error page instead of the scan dashboard.
-    await page.goto("/code-scan");
-    await expect(page.getByRole("heading", { name: "Access denied" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Go to homepage" })).toBeVisible();
-
     const security = new SecurityPage(page);
     await security.gotoViaSidebar();
 
-    await expect(page).toHaveURL(`/org/${TEST_SUBORG}/code-scan`);
+    await expect(page).toHaveURL(routes.security());
     await expect(security.heading).toBeVisible();
     await expect(security.scansTab).toBeVisible();
     await expect(security.profilesTab).toBeVisible();
@@ -80,7 +82,7 @@ test.describe("Security (Code scan)", () => {
     await security.profileDescriptionInput.fill("Temporary profile created by SCAN-REG01");
     await security.submitCreateProfileButton.click();
 
-    await expect(page).toHaveURL(/\/code-scan\?tab=profiles$/);
+    await expect(page).toHaveURL(routes.security(undefined, "profiles"));
     await expect(security.profileRow(profileName)).toBeVisible();
 
     // Persistence: profile survives a full reload.
