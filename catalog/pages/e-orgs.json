@@ -73,7 +73,7 @@
         }
       ],
       "assertions": [
-        "Selection, Name, Members, Repositories, and Billing cycle ACU limit columns are visible",
+        "Selection, Name, Members, Repositories, and Monthly ACU limit columns are visible",
         "each edit and delete action belongs to the correct row."
       ],
       "cleanup": {
@@ -120,7 +120,7 @@
         }
       ],
       "assertions": [
-        "**Manage organization** modal shows the selected organization name, Billing cycle ACU limit, helper text, and Save changes",
+        "**Manage organization** modal shows the selected organization name, Monthly ACU limit, helper text, and Save changes",
         "current values match the selected row."
       ],
       "cleanup": {

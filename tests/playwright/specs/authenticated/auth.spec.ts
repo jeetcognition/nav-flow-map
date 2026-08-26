@@ -118,6 +118,7 @@ test.describe("Auth (Email + OTP)", () => {
     await expect(login.otpInput).toBeVisible({ timeout: 15_000 });
     await login.submitOtp("000000");
     await expect(login.otpError).toBeVisible({ timeout: 10_000 });
+    await expect(login.otpHeading).toBeVisible();
     await expect(page).toHaveURL(/\/auth\/login/);
     await page.close();
   });
@@ -143,6 +144,7 @@ test.describe("Auth (Email + OTP)", () => {
     // The stale code must be rejected with a clear error, staying on the OTP step.
     await login.submitOtp(staleCode);
     await expect(login.otpError).toBeVisible({ timeout: 10_000 });
+    await expect(login.otpHeading).toBeVisible();
     await expect(page).toHaveURL(/\/auth\/login/);
 
     // Requesting a fresh code allows login. The shared OTP inbox can race with other

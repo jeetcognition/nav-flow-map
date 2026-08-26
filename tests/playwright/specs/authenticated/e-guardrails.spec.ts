@@ -1,6 +1,6 @@
 import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
 import { GuardrailsPage, DevinSessionPage, ENTERPRISE_SLUG, ALT_SUBORG } from "../../pages";
-import { routes, TEST_SUBORG_DISPLAY } from "../../support/paths";
+import { routes, TEST_SUBORG_DISPLAY, LOGIN_URL_PATTERN } from "../../support/paths";
 import {
   captureGuardrailsApi,
   getGuardrailAction,
@@ -332,7 +332,7 @@ test.describe("Guardrails enforcement and authorization", () => {
     try {
       const anonPage = await anonContext.newPage();
       await anonPage.goto(routes.guardrails());
-      await anonPage.waitForURL(/\/auth\/login/, { timeout: 30_000 });
+      await anonPage.waitForURL(LOGIN_URL_PATTERN, { timeout: 30_000 });
     } finally {
       await anonContext.close();
     }

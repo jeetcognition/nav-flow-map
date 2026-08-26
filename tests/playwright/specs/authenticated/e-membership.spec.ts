@@ -1,6 +1,6 @@
 import { test, expect, request as apiRequest, ConsoleMessage, Page } from "@playwright/test";
 import { LoginPage, MembershipPage, MEMBER_COLUMNS } from "../../pages";
-import { routes, ALT_SUBORG_NAME } from "../../support/paths";
+import { routes, ALT_SUBORG_NAME, LOGIN_URL_PATTERN } from "../../support/paths";
 import { fetchLatestOtp } from "../../support/gmail-otp";
 
 import { expectNoPageErrors } from "../../support/errors";
@@ -467,7 +467,7 @@ test.describe("Enterprise Membership", () => {
     try {
       const unauthPage = await unauthCtx.newPage();
       await unauthPage.goto(routes.membership());
-      await unauthPage.waitForURL(/\/auth\/login/, { timeout: 30_000 });
+      await unauthPage.waitForURL(LOGIN_URL_PATTERN, { timeout: 30_000 });
       await expect(unauthPage.locator("body")).not.toContainText(adminEmail);
     } finally {
       await unauthCtx.close();
