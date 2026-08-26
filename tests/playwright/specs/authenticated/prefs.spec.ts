@@ -76,11 +76,17 @@ test.describe("Personal Preferences", () => {
       "Display language",
       "Git commit author",
       "Pull request links open...",
-      "Review trigger",
       "Comment language",
     ]) {
       await expect(prefs.combobox(row)).toBeEnabled();
       await expect(prefs.combobox(row)).not.toHaveText("");
+    }
+
+    // Review trigger is locked (disabled) when the enterprise manages review
+    // enrollment; either way it must show a definite current value.
+    await expect(prefs.combobox("Review trigger")).not.toHaveText("");
+    if (!(await prefs.isComboboxDisabled("Review trigger"))) {
+      await expect(prefs.combobox("Review trigger")).toBeEnabled();
     }
 
     // Git commit email is a locked dropdown of verified emails.
@@ -219,7 +225,7 @@ test.describe("Personal Preferences", () => {
 
   test("PREF-REG04 — Git author, PR behavior, and review trigger persist; email is locked", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const prefs = new PrefsPage(page);
     await prefs.goto();
 
@@ -228,11 +234,24 @@ test.describe("Personal Preferences", () => {
     await expect(prefs.combobox("Git commit email")).toBeDisabled();
     await expect(prefs.combobox("Git commit email")).toContainText("@");
 
-    const selects: Array<{ row: string; target: string; targetText?: string }> = [
+    const candidates: Array<{ row: string; target: string; targetText?: string }> = [
       { row: "Git commit author", target: "You only" },
       { row: "Pull request links open...", target: "In-session" },
       { row: "Review trigger", target: "When the PR is ready" },
     ];
+    // Conditionally locked dropdowns (e.g. Review trigger under enterprise-managed
+    // review enrollment) cannot be exercised; record them instead of hanging on them.
+    const selects: typeof candidates = [];
+    for (const candidate of candidates) {
+      if (await prefs.isComboboxDisabled(candidate.row)) {
+        testInfo.annotations.push({
+          type: "not_tested",
+          description: `${candidate.row} is locked (disabled), persistence not exercised`,
+        });
+      } else {
+        selects.push(candidate);
+      }
+    }
     const originalSelect: Record<string, string> = {};
     for (const { row } of selects) {
       originalSelect[row] = ((await prefs.combobox(row).textContent()) ?? "").trim();

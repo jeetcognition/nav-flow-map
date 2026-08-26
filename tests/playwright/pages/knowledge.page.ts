@@ -295,9 +295,9 @@ export class KnowledgePage extends BasePage {
     await this.searchInput.fill(name);
   }
 
-  /** Assert that a table cell with the exact entry name is visible. */
+  /** Assert that a table row link with the exact entry name is visible. */
   async expectEntryVisible(name: string) {
-    await expect(this.page.getByRole("cell", { name, exact: true }).first()).toBeVisible();
+    await expect(this.page.getByRole("link", { name, exact: true }).first()).toBeVisible();
   }
 
   /** Reload the knowledge list and wait for the heading to reappear. */
@@ -321,9 +321,9 @@ export class KnowledgePage extends BasePage {
       await this.goto(slug);
       await this.heading.waitFor({ state: "visible" });
       await this.searchFor(name);
-      const cell = this.page.getByRole("cell", { name, exact: true }).first();
-      if (await cell.isVisible().catch(() => false)) {
-        await cell.click();
+      const entry = this.page.getByRole("link", { name, exact: true }).first();
+      if (await entry.isVisible().catch(() => false)) {
+        await entry.click();
         await this.page.waitForURL(/\/settings\/knowledge\/.+/);
         await this.deleteOpenEntry();
       }
