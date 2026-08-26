@@ -246,10 +246,8 @@ test.describe("Devin API", () => {
     const consoleErrors = trackConsoleErrors(page);
 
     // Capture a real authenticated request so we can replay it with tampered inputs.
-    const { enterpriseId, authorization, baseUrl } = await api.captureServiceUsersApi();
-    expect(authorization).toMatch(/^Bearer /);
-
-    const authed = { authorization };
+    const { enterpriseId, headers: authed, baseUrl } = await api.captureServiceUsersApi();
+    expect(authed.authorization).toMatch(/^Bearer /);
     const fakeEnterprise = "enterprise-00000000000000000000000000000000";
     const fakeServiceUser = "service-user-00000000000000000000000000000000";
     const listPath = (ent: string) => `${baseUrl}/api/enterprise/${ent}/service-users`;

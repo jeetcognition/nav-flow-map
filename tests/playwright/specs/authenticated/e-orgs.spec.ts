@@ -392,12 +392,12 @@ test.describe("Organizations", () => {
     const orgs = new OrganizationsPage(page);
     await orgs.goto();
     await expect(orgs.heading).toBeVisible();
-    const authorization = await orgs.captureAuthorizationHeader();
+    const apiHeaders = await orgs.captureApiHeaders();
     const tamperedId = "org-00000000000000000000000000000000";
     const orgApiPath = `/api/enterprise/organizations/${tamperedId}`;
 
     // A valid admin token cannot touch an organization outside its enterprise.
-    const authed = await request.newContext({ baseURL, extraHTTPHeaders: { authorization } });
+    const authed = await request.newContext({ baseURL, extraHTTPHeaders: apiHeaders });
     const anon = await request.newContext({ baseURL });
     try {
       expect((await authed.patch(orgApiPath, { data: { displayName: "x" } })).status()).toBe(403);

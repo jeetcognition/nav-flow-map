@@ -4,6 +4,8 @@ import { AnalyticsPage } from "../../pages";
 import { routes } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
+import { apiAuthHeaders } from "../../support/api-auth";
+
 interface ExportedSession {
   org_id: string;
   created_at: string;
@@ -22,20 +24,20 @@ async function readExport(download: Download): Promise<SessionsExport> {
 }
 
 /**
- * Capture the enterprise ID, bearer token, and a real metrics URL from the
- * metrics API traffic the page issues. The API authenticates via an
- * Authorization header (not cookies), so tampered-ID API checks must reuse it.
+ * Capture the enterprise ID, auth headers, and a real metrics URL from the
+ * metrics API traffic the page issues. The API authenticates via headers (not
+ * cookies), so tampered-ID API checks must reuse them.
  */
 async function captureMetricsAuth(
   page: Page,
-): Promise<{ enterpriseId: string; authorization: string; realMetricsUrl: string }> {
+): Promise<{ enterpriseId: string; headers: Record<string, string>; realMetricsUrl: string }> {
   const request = await page.waitForRequest(/\/api\/enterprises\/enterprise-[0-9a-f]+\/metrics\//);
   const match = request.url().match(/\/api\/enterprises\/(enterprise-[0-9a-f]+)\//);
-  const authorization = (await request.allHeaders())["authorization"];
-  if (!match || !authorization) {
+  const headers = apiAuthHeaders(request);
+  if (!match || !headers.authorization) {
     throw new Error("Could not capture enterprise ID and auth from metrics traffic");
   }
-  return { enterpriseId: match[1], authorization, realMetricsUrl: request.url() };
+  return { enterpriseId: match[1], headers, realMetricsUrl: request.url() };
 }
 
 async function expectNoCrash(page: any) {
@@ -260,7 +262,7 @@ test.describe("Enterprise Analytics", () => {
     const authPromise = captureMetricsAuth(page);
     await analytics.goto();
     await analytics.expectLoaded();
-    const { authorization } = await authPromise;
+    const { headers } = await authPromise;
 
     // Refresh updates the freshness timestamp.
     await analytics.refreshData();
@@ -277,9 +279,7 @@ test.describe("Enterprise Analytics", () => {
     }
 
     // The export only contains sessions from organizations inside this enterprise.
-    const orgsResponse = await page.request.get("/api/enterprise/organizations", {
-      headers: { authorization },
-    });
+    const orgsResponse = await page.request.get("/api/enterprise/organizations", { headers });
     expect(orgsResponse.ok()).toBe(true);
     const enterpriseOrgs = (await orgsResponse.json()) as Array<{ org_id: string }>;
     const allowedOrgIds = new Set(enterpriseOrgs.map((o) => o.org_id));
@@ -320,8 +320,7 @@ test.describe("Enterprise Analytics", () => {
     const analytics = new AnalyticsPage(page);
     const authPromise = captureMetricsAuth(page);
     await analytics.goto();
-    const { enterpriseId, authorization, realMetricsUrl } = await authPromise;
-    const headers = { authorization };
+    const { enterpriseId, headers, realMetricsUrl } = await authPromise;
 
     // Sanity check: the captured credentials do read our own enterprise's metrics.
     const ownResponse = await page.request.get(realMetricsUrl, { headers });
