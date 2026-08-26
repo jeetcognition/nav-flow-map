@@ -98,12 +98,13 @@ test.describe("Create organization", () => {
     await expect(create.acuValidationMessage("ACU limits must be a whole number")).toBeVisible();
     await expect(create.createButton).toBeDisabled();
 
-    // The number input rejects free text entirely; the field stays blank.
+    // Free text is kept in the field but flagged as invalid, and blocks submission.
     await create.acuInput.fill("");
     await create.acuInput.click();
     await page.keyboard.type("abc");
-    await expect(create.acuInput).toHaveValue("");
-    await expect(create.createButton).toBeEnabled();
+    await expect(create.acuInput).toHaveValue("abc");
+    await expect(create.acuValidationMessage("ACU limits must be a whole number")).toBeVisible();
+    await expect(create.createButton).toBeDisabled();
 
     // Never submitted: no organization is created by this test.
     await create.cancelButton.click();

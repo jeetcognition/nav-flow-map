@@ -250,9 +250,12 @@ test.describe("Automations", () => {
 
       // One-time schedule tomorrow at 09:00 UTC (never fires before cleanup).
       const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      const runOnceValue = `${tomorrow.toISOString().slice(0, 10)}T09:00`;
+      tomorrow.setUTCHours(9, 0, 0, 0);
       await automations.addSubmenuTrigger("Schedule", "Run once");
-      await automations.runOnceInput.fill(runOnceValue);
+      await automations.setRunOnceDateTime(tomorrow);
+      await expect(automations.runOnceDateTimeButton).toHaveText(
+        automations.runOnceLabel(tomorrow),
+      );
 
       // Recurring daily schedule via a custom RRULE.
       await automations.addSubmenuTrigger("Schedule", "Custom schedule");
@@ -397,9 +400,10 @@ test.describe("Automations", () => {
 
       // Schedule a one-time run two minutes from now (UTC, minute precision).
       const fireAt = new Date(Date.now() + 2 * 60 * 1000);
-      const value = fireAt.toISOString().slice(0, 16);
+      fireAt.setUTCSeconds(0, 0);
       await automations.addSubmenuTrigger("Schedule", "Run once");
-      await automations.runOnceInput.fill(value);
+      await automations.setRunOnceDateTime(fireAt);
+      await expect(automations.runOnceDateTimeButton).toHaveText(automations.runOnceLabel(fireAt));
       await automations.nameInput.fill(name);
       await automations.fillInstructions(
         "Reply with the word pong and immediately finish the session.",

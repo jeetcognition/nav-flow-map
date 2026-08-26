@@ -162,6 +162,20 @@ export class DevinSessionPage extends BasePage {
     await expect(row).toBeHidden({ timeout: 15_000 });
   }
 
+  /**
+   * Tool entry offered by the empty tool panel of an /sessions/{id} page, which
+   * lists every tool with its description until the first tab is opened.
+   */
+  toolLauncher(label: string): Locator {
+    return this.page.getByRole("button", { name: new RegExp(`^${label}\\b`) });
+  }
+
+  /** Open a tool from the empty tool panel's launcher list. */
+  async openToolFromLauncher(label: string) {
+    await this.toolLauncher(label).click();
+    await this.toolTab(label).waitFor({ state: "visible" });
+  }
+
   /** Tool tab already open in the panel of an /sessions/{id} page. */
   toolTab(label: string): Locator {
     return this.page
