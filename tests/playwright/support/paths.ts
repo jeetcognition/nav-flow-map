@@ -123,6 +123,10 @@ export const routes = {
   membership: (slug: string = ENTERPRISE_SLUG, tab?: "members" | "roles" | "groups") =>
     `/org/${slug}/settings/membership${tab ? `?tab=${tab}` : ""}`,
 
+  /** Sub-org Security (code scan) page, optionally targeting a tab. */
+  security: (slug: string = TEST_SUBORG, tab?: "scans" | "profiles" | "automations") =>
+    `/org/${slug}/security${tab ? `?tab=${tab}` : ""}`,
+
   /** Sub-org DeepWiki repository list. */
   wiki: (slug: string = TEST_SUBORG) => `/org/${slug}/wiki`,
 
