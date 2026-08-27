@@ -88,9 +88,11 @@ test.describe("Enterprise Settings landing", () => {
     await ent.goto();
     await ent.heading.waitFor({ state: "visible" });
 
+    // The sidebar organization list is fetched after the landing page renders,
+    // so wait for the first rows with a web-first assertion before paginating.
     const orgRows = ent.visibleOrgRows();
+    await expect(orgRows).not.toHaveCount(0);
     const initialCount = await orgRows.count();
-    expect(initialCount).toBeGreaterThan(0);
 
     await ent.loadMore();
     await expect(async () => {
@@ -126,7 +128,9 @@ test.describe("Enterprise Settings landing", () => {
 
     for (const [name, segment] of cards) {
       await ent.cardLink(name).click();
-      await page.waitForURL(new RegExp(`/settings/${segment}$`), { timeout: 20_000 });
+      // Some child pages (Sessions) rewrite the URL with their default filter
+      // query once mounted, so the segment can be followed by a query or hash.
+      await page.waitForURL(new RegExp(`/settings/${segment}(?:[?#]|$)`), { timeout: 20_000 });
       await page.waitForLoadState("networkidle");
 
       // Not every child page exposes a "Back to enterprise" control, so use
