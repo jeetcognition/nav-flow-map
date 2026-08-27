@@ -75,8 +75,10 @@ export class AutomationsPage extends BasePage {
   readonly secretOneTimeNotice: Locator;
   /** Inline `X-Webhook-Secret` header reference in the webhook help text. */
   readonly webhookSecretHeaderCode: Locator;
-  /** Run-once schedule datetime input. */
-  readonly runOnceInput: Locator;
+  /** Collapsed "at: MM/DD/YYYY, hh:mm AM" button of a Run once schedule trigger. */
+  readonly runOnceDateTimeButton: Locator;
+  /** Date/time picker popover opened from the Run once trigger. */
+  readonly runOncePicker: Locator;
   /** Custom schedule "Select schedule..." chip. */
   readonly selectScheduleButton: Locator;
   /** Schedule dialog (Visual / RRULE). */
@@ -152,7 +154,10 @@ export class AutomationsPage extends BasePage {
       .locator("main code")
       .filter({ hasText: "X-Webhook-Secret" })
       .first();
-    this.runOnceInput = page.locator('main input[type="datetime-local"]');
+    this.runOnceDateTimeButton = page.locator("main").getByRole("button", { name: /^at: / });
+    this.runOncePicker = page
+      .locator('[role="dialog"]')
+      .filter({ has: page.locator('[role="group"][aria-label="at"]') });
     this.selectScheduleButton = page.getByRole("button", { name: "Select schedule..." });
     this.scheduleDialog = page
       .locator('[role="dialog"]')
@@ -224,6 +229,49 @@ export class AutomationsPage extends BasePage {
     // force: the submenu keeps remounting its items while the popup repositions,
     // so Playwright's stability check never settles and detaches mid-click.
     await item.click({ force: true });
+  }
+
+  /**
+   * Set the fire date/time of a "Run once" schedule trigger.
+   *
+   * The trigger renders a collapsed `at: MM/DD/YYYY, hh:mm AM` button that opens
+   * a calendar popover whose Start date / Start time labels turn into text
+   * inputs on click; Apply commits the value back onto the trigger row.
+   *
+   * @param date fire moment, interpreted in the trigger's timezone (UTC by default).
+   */
+  async setRunOnceDateTime(date: Date) {
+    await this.runOnceDateTimeButton.click();
+    await this.runOncePicker.waitFor({ state: "visible" });
+
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const dateValue = `${pad(date.getUTCMonth() + 1)}/${pad(date.getUTCDate())}/${date.getUTCFullYear()}`;
+    const hours24 = date.getUTCHours();
+    const meridiem = hours24 < 12 ? "am" : "pm";
+    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+    const timeValue = `${pad(hours12)}:${pad(date.getUTCMinutes())}${meridiem}`;
+
+    await this.runOncePicker.getByRole("button", { name: "Start date" }).click();
+    const dateInput = this.runOncePicker.getByRole("textbox", { name: "Start date" });
+    await dateInput.fill(dateValue);
+    await dateInput.press("Enter");
+
+    await this.runOncePicker.getByRole("button", { name: "Start time" }).click();
+    const timeInput = this.runOncePicker.getByRole("textbox", { name: "Start time" });
+    await timeInput.fill(timeValue);
+    await timeInput.press("Enter");
+
+    await this.runOncePicker.getByRole("button", { name: "Apply", exact: true }).click();
+    await this.runOncePicker.waitFor({ state: "hidden" });
+  }
+
+  /** Collapsed label a Run once trigger shows for `date` (UTC), e.g. `08/29/2026, 09:00 AM`. */
+  runOnceLabel(date: Date): string {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const hours24 = date.getUTCHours();
+    const meridiem = hours24 < 12 ? "AM" : "PM";
+    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+    return `${pad(date.getUTCMonth() + 1)}/${pad(date.getUTCDate())}/${date.getUTCFullYear()}, ${pad(hours12)}:${pad(date.getUTCMinutes())} ${meridiem}`;
   }
 
   /** Remove every configured trigger row. */

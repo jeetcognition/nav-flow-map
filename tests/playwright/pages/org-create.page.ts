@@ -29,7 +29,7 @@ export class OrgCreatePage extends BasePage {
     this.heading = page.getByRole("heading", { name: "Create organization", exact: true });
     this.backButton = page.getByRole("button", { name: "Back to Organizations" });
     this.nameInput = page.getByRole("textbox", { name: "Organization name" });
-    this.acuInput = page.getByRole("spinbutton", { name: "Monthly ACU limit" });
+    this.acuInput = page.getByRole("textbox", { name: "Monthly ACU limit" });
     this.addMeCheckbox = page.getByRole("checkbox", { name: /Add me as a member/ });
     this.memberSearchInput = page.getByRole("textbox", { name: "Search members..." });
     this.memberTable = page.getByRole("table");

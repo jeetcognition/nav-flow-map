@@ -257,10 +257,11 @@ test.describe("Organizations", () => {
       await expect(orgs.saveButton).toBeDisabled();
     }
 
-    // Text is not accepted by the numeric input at all.
+    // Text is kept in the field but flagged invalid, and Save stays disabled.
     await orgs.acuInput.fill("");
     await orgs.acuInput.pressSequentially("abc");
-    await expect(orgs.acuInput).toHaveValue("");
+    await expect(orgs.acuInput).toHaveValue("abc");
+    await expect(orgs.acuInput).toHaveAttribute("aria-invalid", "true");
     await expect(orgs.saveButton).toBeDisabled();
 
     // Exponent notation is accepted by the numeric input as a valid integer.

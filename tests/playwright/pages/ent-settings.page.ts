@@ -21,6 +21,10 @@ export class EnterpriseSettingsPage extends BasePage {
   readonly helpButton: Locator;
   /** "Load more" orgs button in the sidebar, if present. */
   readonly loadMoreButton: Locator;
+  /** Filter input of the sidebar Organizations section, once revealed. */
+  readonly orgSearchInput: Locator;
+  /** Search toggle in the sidebar's Organizations section header. */
+  readonly orgSearchToggle: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -33,6 +37,11 @@ export class EnterpriseSettingsPage extends BasePage {
     this.enterpriseNameLink = this.sidebar.getByRole("link", { name: ENTERPRISE_NAME }).first();
     this.helpButton = this.sidebar.getByRole("button", { name: "Help" }).first();
     this.loadMoreButton = this.sidebar.getByRole("button", { name: "Load more" }).first();
+    this.orgSearchInput = page.getByPlaceholder("Search organizations");
+    this.orgSearchToggle = this.sidebar
+      .locator('[data-slot="sidebar-label-row"]')
+      .filter({ hasText: "Organizations" })
+      .getByRole("button", { name: "Search", exact: true });
   }
 
   /** Personal nav link in the sidebar (Preferences / Connections / My Analytics). */
@@ -113,19 +122,34 @@ export class EnterpriseSettingsPage extends BasePage {
   }
 
   /**
-   * The sidebar org list is paginated, so an organization further down the enterprise's
-   * list only exists in the DOM after enough "Load more" clicks.
+   * The sidebar org list is paginated and can be hundreds of rows long, so an
+   * organization further down it is reached through the section's filter input
+   * (revealed by the section's Search toggle), falling back to "Load more"
+   * pagination when no filter is offered.
    */
   async revealOrganizationInSidebar(name: string): Promise<Locator> {
     const org = this.organizationInSidebar(name);
-    for (let i = 0; i < 20; i++) {
-      if (await org.isVisible().catch(() => false)) return org;
-      if (!(await this.loadMoreButton.isVisible().catch(() => false))) break;
-      await this.loadMore();
-      await this.page.waitForTimeout(500);
+    if (await org.isVisible().catch(() => false)) return org;
+
+    if (await this.revealOrgSearchInput()) {
+      await this.orgSearchInput.fill(name);
+    } else {
+      for (let i = 0; i < 20; i++) {
+        if (await org.isVisible().catch(() => false)) return org;
+        if (!(await this.loadMoreButton.isVisible().catch(() => false))) break;
+        await this.loadMore();
+      }
     }
     await org.waitFor({ state: "visible", timeout: 15_000 });
     return org;
+  }
+
+  /** Reveal the Organizations filter input; resolves false when the sidebar offers none. */
+  private async revealOrgSearchInput(): Promise<boolean> {
+    if (await this.orgSearchInput.isVisible().catch(() => false)) return true;
+    if (!(await this.orgSearchToggle.isVisible().catch(() => false))) return false;
+    await this.orgSearchToggle.click();
+    return await this.orgSearchInput.isVisible().catch(() => false);
   }
 
   /** Click the sidebar "Load more" button, if visible. */

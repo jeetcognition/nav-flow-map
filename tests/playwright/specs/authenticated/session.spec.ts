@@ -170,10 +170,11 @@ test.describe("Session tools panel", () => {
     await firstSession.click();
     await page.waitForURL(/\/sessions\/[^/]+/, { timeout: 20_000 });
 
-    // Progress and Changes open as tabs by default; the rest of the inventory —
-    // Shell, Editor (IDE), and Computer (Browser) — is offered by "Add tab".
-    await expect(session.toolTab("Progress")).toBeVisible({ timeout: 20_000 });
-    await expect(session.toolTab("Changes")).toBeVisible();
+    // No tool tab opens by default: the empty panel lists the tools it can show,
+    // and the same inventory — Shell, Editor (IDE), Computer (Browser) — is
+    // offered by "Add tab".
+    await expect(session.toolLauncher("Progress")).toBeVisible({ timeout: 20_000 });
+    await expect(session.toolLauncher("Changes")).toBeVisible();
 
     await session.openToolMenu();
     for (const label of ["Computer", "Editor", "Shell", "Progress", "Agents", "Side chat"]) {
@@ -181,8 +182,9 @@ test.describe("Session tools panel", () => {
     }
     await session.closeToolMenu();
 
-    // Selecting Progress opens it as the active tool tab.
-    await session.selectToolTab("Progress");
+    // Opening Progress adds it as the active tool tab.
+    await session.openToolFromLauncher("Progress");
+    await expect(session.toolTab("Progress")).toBeVisible();
     await expect(session.toolPanel("Progress")).toBeVisible();
   });
 });
