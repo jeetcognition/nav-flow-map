@@ -23,6 +23,8 @@ export interface FetchOtpOptions {
   subjectIncludes?: string;
   /** Regex with a capture group for the code. Defaults to a 6-digit match. */
   codeRegex?: RegExp;
+  /** Ignore messages received before this OTP request started. */
+  notBefore?: Date;
   /** Delay before first poll to let email arrive (ms). Default 30s. */
   initialDelayMs?: number;
   /** Max time to wait for the email to arrive (ms). Default 90s. */
@@ -59,6 +61,7 @@ export async function fetchLatestOtp(options: FetchOtpOptions = {}): Promise<str
   const fromIncludes = options.fromIncludes?.toLowerCase();
   const toIncludes = options.toIncludes?.toLowerCase();
   const subjectIncludes = options.subjectIncludes?.toLowerCase();
+  const notBefore = options.notBefore;
 
   // Wait for the email to arrive before polling.
   await sleep(initialDelayMs);
@@ -82,6 +85,7 @@ export async function fetchLatestOtp(options: FetchOtpOptions = {}): Promise<str
         toIncludes,
         subjectIncludes,
         codeRegex,
+        notBefore,
       });
       if (code) return code;
       await sleep(pollIntervalMs);
@@ -103,6 +107,7 @@ async function findNewestCode(
     toIncludes?: string;
     subjectIncludes?: string;
     codeRegex: RegExp;
+    notBefore?: Date;
   },
 ): Promise<string | undefined> {
   const lock = await client.getMailboxLock("INBOX");
@@ -118,10 +123,18 @@ async function findNewestCode(
     for (const uid of newestFirst) {
       const msg = await client.fetchOne(
         String(uid),
-        { envelope: true, source: true },
+        { envelope: true, internalDate: true, source: true },
         { uid: true },
       );
       if (!msg || !msg.source) continue;
+
+      const receivedAt = msg.internalDate ?? msg.envelope?.date;
+      if (
+        filters.notBefore &&
+        (!receivedAt || new Date(receivedAt).getTime() < filters.notBefore.getTime() - 5_000)
+      ) {
+        continue;
+      }
 
       const from = (msg.envelope?.from?.map((a) => a.address ?? "").join(",") ?? "").toLowerCase();
       const to = (msg.envelope?.to?.map((a) => a.address ?? "").join(",") ?? "").toLowerCase();

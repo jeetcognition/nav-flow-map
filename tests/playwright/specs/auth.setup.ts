@@ -1,7 +1,11 @@
 import { test as setup, expect } from "@playwright/test";
 import fs from "node:fs";
 import { LoginPage } from "../pages";
-import { adminCredentials, authenticateAdmin } from "../support/admin-auth";
+import {
+  adminCredentials,
+  authenticateAdmin,
+  hasUsableAdminStorageState,
+} from "../support/admin-auth";
 import { fetchLatestOtp } from "../support/gmail-otp";
 
 // Captures an authenticated admin session once so other tests can reuse it.
@@ -13,11 +17,16 @@ fs.mkdirSync(".auth", { recursive: true });
 // default 120 s budget, so the login setups get their own longer timeout.
 setup.setTimeout(240_000);
 
-setup("authenticate as admin", async ({ page }) => {
+setup("authenticate as admin", async ({ browser, page }) => {
   const credentials = adminCredentials();
 
   if (!credentials) {
     setup.skip(true, "Set DEVIN_ADMIN_EMAIL and GMAIL_APP_PASSWORD in .env to run this setup.");
+    return;
+  }
+
+  if (await hasUsableAdminStorageState(browser)) {
+    console.log("[auth:ADMIN] reusing .auth/admin.json");
     return;
   }
 
@@ -44,13 +53,14 @@ setup("authenticate as member", async ({ page }) => {
 
   console.log(`[auth:MEMBER] Email-OTP mode — requesting a code for ${email}`);
   await login.goto();
-  await login.loginWithEmailOtp(email, () =>
+  await login.loginWithEmailOtp(email, (notBefore) =>
     fetchLatestOtp({
       user: process.env.GMAIL_IMAP_USER || process.env.DEVIN_ADMIN_EMAIL,
       password: appPassword,
       toIncludes: email,
       fromIncludes: process.env.OTP_FROM_INCLUDES,
       subjectIncludes: process.env.OTP_SUBJECT_INCLUDES,
+      notBefore,
     }),
   );
 

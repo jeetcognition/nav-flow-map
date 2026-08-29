@@ -77,10 +77,12 @@ export class LoginPage extends BasePage {
    * Ask for a new one-time code from the verification step. The step has no resend control,
    * so the flow is Back → re-submit the email, which invalidates the previous code.
    */
-  async requestNewCode(email: string) {
+  async requestNewCode(email: string): Promise<Date> {
     await this.backButton.click();
+    const requestedAt = new Date();
     await this.submitEmail(email);
-    await this.otpInput.waitFor({ state: "visible" });
+    await this.otpInput.waitFor({ state: "visible", timeout: 15_000 });
+    return requestedAt;
   }
 
   /** Enter the OTP code. The segmented code field submits itself on the last digit. */
@@ -93,9 +95,11 @@ export class LoginPage extends BasePage {
   }
 
   /** Full passwordless flow: email -> request code -> read code -> enter code. */
-  async loginWithEmailOtp(email: string, getCode: () => Promise<string>) {
+  async loginWithEmailOtp(email: string, getCode: (notBefore: Date) => Promise<string>) {
+    const requestedAt = new Date();
     await this.submitEmail(email);
-    const code = await getCode();
+    await this.otpInput.waitFor({ state: "visible", timeout: 15_000 });
+    const code = await getCode(requestedAt);
     await this.submitOtp(code);
   }
 }
