@@ -37,17 +37,18 @@ function newAnonymousPage(browser: Browser): Promise<Page> {
     .then((ctx) => ctx.newPage());
 }
 
-async function fetchCode(): Promise<string> {
+async function fetchCode(notBefore: Date): Promise<string> {
   return fetchLatestOtp({
     user: process.env.GMAIL_IMAP_USER || email,
     password: appPassword,
     initialDelayMs: 15_000,
     timeoutMs: 60_000,
+    notBefore,
   });
 }
 
 /** Poll the inbox until a code different from `previous` arrives (i.e. the resent email). */
-async function fetchDifferentCode(previous: string): Promise<string> {
+async function fetchDifferentCode(previous: string, notBefore: Date): Promise<string> {
   const deadline = Date.now() + 120_000;
   let code = previous;
   while (code === previous && Date.now() < deadline) {
@@ -56,6 +57,7 @@ async function fetchDifferentCode(previous: string): Promise<string> {
       password: appPassword,
       initialDelayMs: 10_000,
       timeoutMs: 60_000,
+      notBefore,
     });
   }
   expect(code).not.toBe(previous);
@@ -134,12 +136,13 @@ test.describe("Auth (Email + OTP)", () => {
     const orgSelector = new OrgSelectorPage(page);
 
     await login.goto();
+    const firstRequestedAt = new Date();
     await login.submitEmail(email);
     await expect(login.otpInput).toBeVisible({ timeout: 15_000 });
 
-    const staleCode = await fetchCode();
-    await login.requestNewCode(email);
-    let freshCode = await fetchDifferentCode(staleCode);
+    const staleCode = await fetchCode(firstRequestedAt);
+    let freshRequestedAt = await login.requestNewCode(email);
+    let freshCode = await fetchDifferentCode(staleCode, freshRequestedAt);
 
     // The stale code must be rejected with a clear error, staying on the OTP step.
     await login.submitOtp(staleCode);
@@ -152,8 +155,8 @@ test.describe("Auth (Email + OTP)", () => {
     let loggedIn = false;
     for (let attempt = 0; attempt < 3 && !loggedIn; attempt++) {
       if (attempt > 0) {
-        await login.requestNewCode(email);
-        freshCode = await fetchDifferentCode(freshCode);
+        freshRequestedAt = await login.requestNewCode(email);
+        freshCode = await fetchDifferentCode(freshCode, freshRequestedAt);
       }
       await login.submitOtp(freshCode);
       loggedIn = await orgSelector.heading

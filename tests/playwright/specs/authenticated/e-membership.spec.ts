@@ -346,6 +346,7 @@ test.describe("Enterprise Membership", () => {
       try {
         const login = new LoginPage(inviteePage);
         await login.goto();
+        let requestedAt = new Date();
         await login.submitEmail(alias);
 
         // The shared inbox also receives codes for other logins, so target the
@@ -354,7 +355,7 @@ test.describe("Enterprise Membership", () => {
           "Before using Devin, contact your enterprise administrator",
         );
         for (let attempt = 0; attempt < 3; attempt++) {
-          if (attempt > 0) await login.requestNewCode(alias);
+          if (attempt > 0) requestedAt = await login.requestNewCode(alias);
           const code = await fetchLatestOtp({
             user: inbox,
             password: appPassword,
@@ -362,6 +363,7 @@ test.describe("Enterprise Membership", () => {
             subjectIncludes: "verification code",
             initialDelayMs: 20_000,
             timeoutMs: 120_000,
+            notBefore: requestedAt,
           });
           await login.submitOtp(code);
           const loggedIn = await inviteeHome

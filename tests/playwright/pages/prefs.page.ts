@@ -124,6 +124,26 @@ export class PrefsPage extends BasePage {
     await expect(this.combobox(title)).toContainText(expectText);
   }
 
+  async selectDifferentOption(title: string, current: string): Promise<string> {
+    const control = this.combobox(title);
+    await control.click();
+    const options = this.page.getByRole("option");
+    await options.first().waitFor({ state: "visible" });
+
+    for (const option of await options.all()) {
+      const label = ((await option.textContent()) ?? "").trim();
+      if (label && !label.startsWith(current)) {
+        await option.click();
+        await expect(control).not.toHaveText(current);
+        const selected = ((await control.textContent()) ?? "").trim();
+        return selected;
+      }
+    }
+
+    await this.page.keyboard.press("Escape");
+    throw new Error(`No alternative option is available for ${title}`);
+  }
+
   /** Open the Change preferred name dialog from the Name row. */
   async openNameDialog() {
     await this.nameButton.click();

@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Browser, type Page } from "@playwright/test";
 import fs from "node:fs";
 import { LoginPage, OrgSelectorPage } from "../pages";
 import { fetchLatestOtp } from "./gmail-otp";
@@ -11,6 +11,25 @@ export function adminCredentials(): { email: string; appPassword: string } | nul
   const email = (process.env.DEVIN_ADMIN_EMAIL ?? "").trim();
   const appPassword = (process.env.GMAIL_APP_PASSWORD ?? "").trim();
   return email && appPassword ? { email, appPassword } : null;
+}
+
+export async function hasUsableAdminStorageState(browser: Browser): Promise<boolean> {
+  if (!fs.existsSync(ADMIN_STORAGE_STATE)) return false;
+
+  const context = await browser.newContext({
+    baseURL: process.env.BASE_URL,
+    storageState: ADMIN_STORAGE_STATE,
+  });
+  const page = await context.newPage();
+  try {
+    const orgSelector = new OrgSelectorPage(page);
+    await orgSelector.goto();
+    return await orgSelector.heading.isVisible();
+  } catch {
+    return false;
+  } finally {
+    await context.close();
+  }
 }
 
 /**
@@ -28,12 +47,13 @@ export async function authenticateAdmin(page: Page): Promise<void> {
   const orgSelector = new OrgSelectorPage(page);
 
   await login.goto();
-  await login.loginWithEmailOtp(email, () =>
+  await login.loginWithEmailOtp(email, (notBefore) =>
     fetchLatestOtp({
       user: process.env.GMAIL_IMAP_USER || email,
       password: appPassword,
       fromIncludes: process.env.OTP_FROM_INCLUDES,
       subjectIncludes: process.env.OTP_SUBJECT_INCLUDES,
+      notBefore,
     }),
   );
 

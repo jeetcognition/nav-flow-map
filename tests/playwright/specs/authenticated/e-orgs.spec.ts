@@ -248,44 +248,57 @@ test.describe("Organizations", () => {
     await orgs.goto();
     await orgs.searchFor(TEST_SUBORG_DISPLAY);
     await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+    const originalAcu = await orgs.acuInput.inputValue();
     await expect(orgs.acuInput).toHaveValue("");
     await expect(orgs.acuInput).toHaveAttribute("placeholder", "No limit");
 
-    // Negative and decimal values fail native min=0/integer validation; Save stays disabled.
-    for (const invalid of ["-5", "2.5"]) {
-      await orgs.acuInput.fill(invalid);
+    try {
+      // Negative and decimal values fail native min=0/integer validation; Save stays disabled.
+      for (const invalid of ["-5", "2.5"]) {
+        await orgs.acuInput.fill(invalid);
+        await expect(orgs.saveButton).toBeDisabled();
+      }
+
+      // Text is kept in the field but flagged invalid, and Save stays disabled.
+      await orgs.acuInput.fill("");
+      await orgs.acuInput.pressSequentially("abc");
+      await expect(orgs.acuInput).toHaveValue("abc");
+      await expect(orgs.acuInput).toHaveAttribute("aria-invalid", "true");
       await expect(orgs.saveButton).toBeDisabled();
+
+      // Exponent notation is accepted by the numeric input as a valid integer.
+      await orgs.acuInput.fill("");
+      await orgs.acuInput.pressSequentially("1e5");
+      await expect(orgs.acuInput).toHaveValue("1e5");
+      await expect(orgs.saveButton).toBeEnabled();
+
+      // Save zero, verify it persists, then a leading-zero value, then restore No limit.
+      await orgs.acuInput.fill("0");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
+      await expect(row.getByRole("cell").nth(4)).toHaveText("0");
+
+      await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+      await expect(orgs.acuInput).toHaveValue("0");
+      await orgs.acuInput.fill("007");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      await expect(row.getByRole("cell").nth(4)).toHaveText("7");
+
+      await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+      await orgs.acuInput.fill("");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+    } finally {
+      await orgs.goto();
+      await orgs.searchFor(TEST_SUBORG_DISPLAY);
+      await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+      if ((await orgs.acuInput.inputValue()) !== originalAcu) {
+        await orgs.acuInput.fill(originalAcu);
+        expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      } else {
+        await page.keyboard.press("Escape");
+      }
     }
-
-    // Text is kept in the field but flagged invalid, and Save stays disabled.
-    await orgs.acuInput.fill("");
-    await orgs.acuInput.pressSequentially("abc");
-    await expect(orgs.acuInput).toHaveValue("abc");
-    await expect(orgs.acuInput).toHaveAttribute("aria-invalid", "true");
-    await expect(orgs.saveButton).toBeDisabled();
-
-    // Exponent notation is accepted by the numeric input as a valid integer.
-    await orgs.acuInput.fill("");
-    await orgs.acuInput.pressSequentially("1e5");
-    await expect(orgs.acuInput).toHaveValue("1e5");
-    await expect(orgs.saveButton).toBeEnabled();
-
-    // Save zero, verify it persists, then a leading-zero value, then restore No limit.
-    await orgs.acuInput.fill("0");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("0");
-
-    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
-    await expect(orgs.acuInput).toHaveValue("0");
-    await orgs.acuInput.fill("007");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("7");
-
-    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
-    await orgs.acuInput.fill("");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
   });
 
   test("ORG-REG08 — Enter boundary and extremely large positive ACU values, then attempt to save", async ({
