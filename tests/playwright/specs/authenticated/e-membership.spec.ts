@@ -217,23 +217,21 @@ test.describe("Enterprise Membership", () => {
     await m.goto();
 
     // Zero organizations — no clickable org cell.
-    const zero = m.memberRow("Aayush Prabhu");
-    await expect(zero.locator("td").nth(3)).toContainText("0 organizations");
+    const zero = await m.findRowByOrgCount((count) => count === 0);
+    await expect(m.rowOrgCell(zero)).toContainText("0 organizations");
     await expect(m.rowOrgButton(zero)).toHaveCount(0);
 
     // One organization — popover opens and shows a member count.
-    await m.search("Albert Han");
-    const one = m.memberRow("Albert Han");
-    await expect(one.locator("td").nth(3)).toContainText("1 organization");
+    const one = await m.findRowByOrgCount((count) => count === 1);
+    await expect(m.rowOrgCell(one)).toContainText("1 organization");
     await m.openOrgCountPopover(one);
     await expect(m.orgCountPopover()).toBeVisible();
     await expect(m.orgCountPopover()).toContainText(/\d+\s*members?/);
     await m.closePopover();
 
     // Many organizations.
-    await m.search("Armaan Dodd");
-    const many = m.memberRow("Armaan Dodd");
-    await expect(many.locator("td").nth(3)).toContainText("3 organizations");
+    const many = await m.findRowByOrgCount((count) => count > 1);
+    await expect(m.rowOrgCell(many)).toContainText(/[2-9]\d*\s*organizations/);
     await m.openOrgCountPopover(many);
     await expect(m.orgCountPopover()).toBeVisible();
     await expect(m.orgCountPopover()).toContainText(/organizations?|members?/i);

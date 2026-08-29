@@ -98,6 +98,34 @@ export class PrefsPage extends BasePage {
     return this.combobox(title).isDisabled();
   }
 
+  /** Visible option labels of a row's dropdown (opens and closes it). */
+  async optionLabels(title: string): Promise<string[]> {
+    await this.combobox(title).click();
+    const options = this.page.getByRole("option");
+    await options.first().waitFor({ state: "visible", timeout: 10_000 });
+    const labels = (await options.allTextContents()).map((label) => label.trim()).filter(Boolean);
+    await this.page.keyboard.press("Escape");
+    await options.first().waitFor({ state: "hidden", timeout: 10_000 });
+    return labels;
+  }
+
+  /**
+   * An option of a row's dropdown other than the one currently selected. Live
+   * account state decides the current value, so specs must not hard-code the
+   * value they switch to.
+   */
+  async otherOption(title: string): Promise<string> {
+    const current = ((await this.combobox(title).textContent()) ?? "").trim();
+    const labels = await this.optionLabels(title);
+    const other = labels.find((label) => !current.startsWith(label) && !label.startsWith(current));
+    if (!other) {
+      throw new Error(
+        `No alternative option for "${title}" (current "${current}", options ${labels.join(" | ")})`,
+      );
+    }
+    return other;
+  }
+
   /** Toggle a switch and wait for its state to flip. */
   async toggleSwitch(title: string) {
     const control = this.switch(title);

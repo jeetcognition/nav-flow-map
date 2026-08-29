@@ -68,6 +68,33 @@ export class MembershipPage extends BasePage {
     return row.locator("td").nth(3).locator("button").first();
   }
 
+  /** The organizations-count cell of a member row. */
+  rowOrgCell(row: Locator): Locator {
+    return row.locator("td").nth(3);
+  }
+
+  /**
+   * First member row whose organizations count satisfies `matches`. Membership of
+   * the live enterprise changes between runs, so specs discover a row with the
+   * shape they need instead of naming a member.
+   */
+  async findRowByOrgCount(matches: (count: number) => boolean): Promise<Locator> {
+    await this.expectTablePopulated();
+    const orgCells = this.memberTable.locator("tr").locator("td:nth-child(4)");
+    // Counts are filled in after the rows paint.
+    await expect(orgCells.first()).toContainText(/organizations?/i, { timeout: 15_000 });
+    const cells = await orgCells.allTextContents();
+    for (const [index, text] of cells.entries()) {
+      const parsed = Number(/(\d+)\s*organizations?/i.exec(text)?.[1]);
+      if (Number.isInteger(parsed) && matches(parsed)) {
+        return this.memberTable.locator("tr").nth(index);
+      }
+    }
+    throw new Error(
+      `No member row with a matching organizations count. Cells: ${cells.join(" | ")}`,
+    );
+  }
+
   /** Visible table column headers (empty selection/action columns are trimmed). */
   async tableHeaders(): Promise<string[]> {
     return this.page
@@ -198,7 +225,7 @@ export class MembershipPage extends BasePage {
   orgCountPopover(): Locator {
     return this.page
       .locator('[role="dialog"]')
-      .filter({ hasText: /\d+\s*members/ })
+      .filter({ hasText: /\d+\s*members?/ })
       .last();
   }
 
