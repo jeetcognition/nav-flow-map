@@ -170,7 +170,11 @@ test.describe("Session tools panel", () => {
     await firstSession.click();
     await page.waitForURL(/\/sessions\/[^/]+/, { timeout: 20_000 });
 
-    // No tool tab opens by default: the empty panel lists the tools it can show,
+    // The most recent session may already have tool tabs open from earlier work;
+    // this case exercises the empty panel, so start from it.
+    await session.closeAllToolTabs();
+
+    // With no tool tab open, the empty panel lists the tools it can show,
     // and the same inventory — Shell, Editor (IDE), Computer (Browser) — is
     // offered by "Add tab".
     await expect(session.toolLauncher("Progress")).toBeVisible({ timeout: 20_000 });

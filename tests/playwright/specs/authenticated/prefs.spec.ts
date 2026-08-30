@@ -234,42 +234,40 @@ test.describe("Personal Preferences", () => {
     await expect(prefs.combobox("Git commit email")).toBeDisabled();
     await expect(prefs.combobox("Git commit email")).toContainText("@");
 
-    const candidates: Array<{ row: string; target: string; targetText?: string }> = [
-      { row: "Git commit author", target: "You only" },
-      { row: "Pull request links open...", target: "In-session" },
-      { row: "Review trigger", target: "When the PR is ready" },
-    ];
+    const candidates = ["Git commit author", "Pull request links open...", "Review trigger"];
     // Conditionally locked dropdowns (e.g. Review trigger under enterprise-managed
     // review enrollment) cannot be exercised; record them instead of hanging on them.
-    const selects: typeof candidates = [];
-    for (const candidate of candidates) {
-      if (await prefs.isComboboxDisabled(candidate.row)) {
+    // Each target is the first live option that differs from the current value, so
+    // the persistence check stays meaningful whatever the account starts on.
+    const selects: Array<{ row: string; target: string }> = [];
+    const originalSelect: Record<string, string> = {};
+    for (const row of candidates) {
+      if (await prefs.isComboboxDisabled(row)) {
         testInfo.annotations.push({
           type: "not_tested",
-          description: `${candidate.row} is locked (disabled), persistence not exercised`,
+          description: `${row} is locked (disabled), persistence not exercised`,
         });
-      } else {
-        selects.push(candidate);
+        continue;
       }
-    }
-    const originalSelect: Record<string, string> = {};
-    for (const { row } of selects) {
-      originalSelect[row] = ((await prefs.combobox(row).textContent()) ?? "").trim();
+      const current = await prefs.comboboxValue(row);
+      const target = (await prefs.optionLabels(row)).find((label) => label !== current);
+      expect(target, `${row} offers an option other than "${current}"`).toBeTruthy();
+      originalSelect[row] = current;
+      selects.push({ row, target: target! });
     }
     const draftsInitial = await prefs.switchState("Open pull requests as drafts");
 
     try {
-      for (const { row, target, targetText } of selects) {
-        expect(originalSelect[row]).not.toBe(target);
-        await prefs.selectOption(row, target, targetText ?? target);
+      for (const { row, target } of selects) {
+        await prefs.selectOption(row, target);
       }
       await prefs.toggleSwitch("Open pull requests as drafts");
 
       // All new values survive a reload.
       await page.reload();
       await prefs.heading.waitFor({ state: "visible" });
-      for (const { row, target, targetText } of selects) {
-        await expect(prefs.combobox(row)).toContainText(targetText ?? target);
+      for (const { row, target } of selects) {
+        await expect(prefs.combobox(row)).toContainText(target);
       }
       const draftsFlipped = draftsInitial === "true" ? "false" : "true";
       await expect(prefs.switch("Open pull requests as drafts")).toHaveAttribute(
@@ -280,8 +278,7 @@ test.describe("Personal Preferences", () => {
       // Cleanup: restore original selections and the drafts toggle.
       await prefs.goto();
       for (const { row } of selects) {
-        const current = ((await prefs.combobox(row).textContent()) ?? "").trim();
-        if (current !== originalSelect[row]) {
+        if ((await prefs.comboboxValue(row)) !== originalSelect[row]) {
           await prefs.selectOption(row, originalSelect[row]);
         }
       }

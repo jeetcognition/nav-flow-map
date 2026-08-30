@@ -89,6 +89,26 @@ export class PrefsPage extends BasePage {
     return this.switch(title).isDisabled();
   }
 
+  /** Trimmed label currently shown on a row's combobox trigger. */
+  async comboboxValue(title: string): Promise<string> {
+    return ((await this.combobox(title).textContent()) ?? "").trim();
+  }
+
+  /**
+   * Live option labels of a row's dropdown, read by opening and closing it.
+   * Which options exist depends on the account and enterprise, so specs pick
+   * their targets from this instead of hard-coding values.
+   */
+  async optionLabels(title: string): Promise<string[]> {
+    await this.combobox(title).click();
+    const options = this.page.getByRole("option");
+    await options.first().waitFor({ state: "visible", timeout: 10_000 });
+    const labels = (await options.allTextContents()).map((t) => t.trim()).filter(Boolean);
+    await this.page.keyboard.press("Escape");
+    await options.first().waitFor({ state: "hidden", timeout: 10_000 });
+    return labels;
+  }
+
   /**
    * Whether a row's combobox is disabled. Some dropdowns are conditionally
    * locked (e.g. Review trigger when the enterprise manages review enrollment),
