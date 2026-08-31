@@ -306,7 +306,7 @@ test.describe("Connections", () => {
         await market.deleteServer();
         await market.gotoAndSearch(serverName);
       }
-      await expect(market.notInstalledBadge).toBeVisible();
+      await market.expectNotInstalled(serverName);
     }
 
     try {
@@ -315,6 +315,8 @@ test.describe("Connections", () => {
 
       // Enable the disposable MCP for the sub-org, accepting the approval dialog.
       await market.openCard(serverName);
+      await expect(page).toHaveURL(/\/settings\/mcp-marketplace\/setup\//);
+      await expect(market.installAndEnableButton.first()).toBeVisible();
       await market.installAndEnable();
       await market.gotoAndSearch(serverName);
       await expect(market.enabledBadge).toBeVisible();
