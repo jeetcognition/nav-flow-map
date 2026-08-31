@@ -63,9 +63,36 @@ export class MembershipPage extends BasePage {
     return row.locator('button[role="combobox"][data-dd-action-name="Select role"]');
   }
 
+  /** The organizations count cell of a member row. */
+  rowOrgCountCell(row: Locator): Locator {
+    return row.locator("td").nth(3);
+  }
+
   /** The organizations count button inside a member row (zero if absent). */
   rowOrgButton(row: Locator): Locator {
     return row.locator("td").nth(3).locator("button").first();
+  }
+
+  /**
+   * Name and organization count of every member row currently listed. Which
+   * members belong to how many organizations is live tenant data, so specs pick
+   * their subjects from this instead of hard-coding names and counts.
+   */
+  async memberOrgCounts(): Promise<Array<{ name: string; count: number }>> {
+    // Rows render before their organization counts resolve.
+    await expect(this.rowOrgCountCell(this.page.locator("table tbody tr").first())).toContainText(
+      /\d+\s+organizations?/,
+      { timeout: 15_000 },
+    );
+    const rows = await this.page.locator("table tbody tr").all();
+    const entries: Array<{ name: string; count: number }> = [];
+    for (const row of rows) {
+      const name = ((await row.locator("td").nth(1).textContent()) ?? "").trim();
+      const countText = ((await this.rowOrgCountCell(row).textContent()) ?? "").trim();
+      const count = Number(countText.match(/\d+/)?.[0]);
+      if (name && Number.isFinite(count)) entries.push({ name, count });
+    }
+    return entries;
   }
 
   /** Visible table column headers (empty selection/action columns are trimmed). */
@@ -198,7 +225,7 @@ export class MembershipPage extends BasePage {
   orgCountPopover(): Locator {
     return this.page
       .locator('[role="dialog"]')
-      .filter({ hasText: /\d+\s*members/ })
+      .filter({ hasText: /\d+\s*members?/ })
       .last();
   }
 

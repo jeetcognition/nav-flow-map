@@ -215,25 +215,37 @@ test.describe("Enterprise Membership", () => {
   test("MEMB-REG05 — Expand members with zero, one, and many organizations.", async ({ page }) => {
     const m = new MembershipPage(page);
     await m.goto();
+    await expect(m.memberTable.locator("tr").first()).toBeVisible({ timeout: 15_000 });
+
+    // Subjects come from live membership data — counts drift as members join and
+    // leave organizations.
+    const counts = await m.memberOrgCounts();
+    const zeroMember = counts.find((c) => c.count === 0);
+    const oneMember = counts.find((c) => c.count === 1);
+    const manyMember = counts.find((c) => c.count > 1);
+    expect(zeroMember, "a listed member with no organizations").toBeTruthy();
+    expect(oneMember, "a listed member with exactly one organization").toBeTruthy();
+    expect(manyMember, "a listed member with several organizations").toBeTruthy();
 
     // Zero organizations — no clickable org cell.
-    const zero = m.memberRow("Aayush Prabhu");
-    await expect(zero.locator("td").nth(3)).toContainText("0 organizations");
+    await m.search(zeroMember!.name);
+    const zero = m.memberRow(zeroMember!.name);
+    await expect(m.rowOrgCountCell(zero)).toContainText("0 organizations");
     await expect(m.rowOrgButton(zero)).toHaveCount(0);
 
     // One organization — popover opens and shows a member count.
-    await m.search("Albert Han");
-    const one = m.memberRow("Albert Han");
-    await expect(one.locator("td").nth(3)).toContainText("1 organization");
+    await m.search(oneMember!.name);
+    const one = m.memberRow(oneMember!.name);
+    await expect(m.rowOrgCountCell(one)).toContainText("1 organization");
     await m.openOrgCountPopover(one);
     await expect(m.orgCountPopover()).toBeVisible();
     await expect(m.orgCountPopover()).toContainText(/\d+\s*members?/);
     await m.closePopover();
 
     // Many organizations.
-    await m.search("Armaan Dodd");
-    const many = m.memberRow("Armaan Dodd");
-    await expect(many.locator("td").nth(3)).toContainText("3 organizations");
+    await m.search(manyMember!.name);
+    const many = m.memberRow(manyMember!.name);
+    await expect(m.rowOrgCountCell(many)).toContainText(`${manyMember!.count} organizations`);
     await m.openOrgCountPopover(many);
     await expect(m.orgCountPopover()).toBeVisible();
     await expect(m.orgCountPopover()).toContainText(/organizations?|members?/i);

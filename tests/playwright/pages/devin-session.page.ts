@@ -8,12 +8,9 @@ import { routes, TEST_SUBORG } from "../support/paths";
 // `role="textbox"`, so we reach it with getByRole rather than a CSS selector.
 // The Send action is an icon button whose accessible name is "Send".
 //
-// Assistant responses render inside `message-history--item` wrappers, with the
-// rendered markdown in a `.prose-main` block. Those messages carry no ARIA role
-// and only auto-generated (unstable) test ids, so the product CSS classes are the
-// last-resort locator here — matching how the rest of this suite handles the
-// session views (see SessionsPage). Assertions target user-visible text, not the
-// class names themselves.
+// Assistant responses render as groups labelled "Devin message", each holding the
+// rendered markdown as paragraphs followed by a response toolbar, so they are
+// reached with getByRole. Assertions target user-visible text.
 export class DevinSessionPage extends BasePage {
   protected readonly path = routes.subOrg(TEST_SUBORG);
 
@@ -32,7 +29,7 @@ export class DevinSessionPage extends BasePage {
     super(page);
     this.promptInput = page.getByRole("textbox").first();
     this.sendButton = page.getByRole("button", { name: "Send", exact: true });
-    this.assistantMessages = page.locator('[class*="message-history--item"]');
+    this.assistantMessages = page.getByRole("group", { name: "Devin message" });
     this.guardrailBlockedBanner = page.getByText(
       "Your request has been denied due to violating our safe use policy",
     );
@@ -176,6 +173,15 @@ export class DevinSessionPage extends BasePage {
     await this.toolTab(label).waitFor({ state: "visible" });
   }
 
+  /** Close every open tool tab, leaving the panel in its empty launcher state. */
+  async closeAllToolTabs() {
+    const closers = this.page.getByRole("tablist").getByRole("button", { name: "Close tab" });
+    for (let open = await closers.count(); open > 0; open = await closers.count()) {
+      await closers.first().click();
+      await expect(closers).toHaveCount(open - 1);
+    }
+  }
+
   /** Tool tab already open in the panel of an /sessions/{id} page. */
   toolTab(label: string): Locator {
     return this.page
@@ -226,7 +232,7 @@ export class DevinSessionPage extends BasePage {
   }
 
   private get lastAssistantContent() {
-    return this.assistantMessages.last().locator('[class*="prose-main"]').first();
+    return this.assistantMessages.last().locator("p").last();
   }
 
   /**
