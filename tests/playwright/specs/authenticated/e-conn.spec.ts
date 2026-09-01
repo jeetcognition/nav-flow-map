@@ -256,13 +256,12 @@ test.describe("Connections", () => {
     try {
       // Pre-state: enabled (repair a previously aborted run if needed).
       if ((await mcpSwitch.getAttribute("aria-checked")) !== "true") {
-        await mcpSwitch.click();
+        await conn.setMcpMarketplaceVisibility(true);
       }
       await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
 
-      // Deny: disable the MCP for the enterprise.
-      await mcpSwitch.click();
-      await expect(mcpSwitch).toHaveAttribute("aria-checked", "false");
+      // Deny: hide the MCP from the enterprise marketplace (confirmation required).
+      await conn.setMcpMarketplaceVisibility(false);
 
       // The policy persists across a reload.
       await page.reload();
@@ -270,16 +269,14 @@ test.describe("Connections", () => {
       await expect(mcpSwitch).toHaveAttribute("aria-checked", "false");
 
       // Restore: re-enable and confirm persistence again.
-      await mcpSwitch.click();
-      await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
+      await conn.setMcpMarketplaceVisibility(true);
       await page.reload();
       await expect(mcpSwitch).toBeVisible();
       await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
     } finally {
-      // Safety net: never leave the server disabled.
+      // Safety net: never leave the server hidden.
       if ((await mcpSwitch.getAttribute("aria-checked").catch(() => null)) === "false") {
-        await mcpSwitch.click();
-        await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
+        await conn.setMcpMarketplaceVisibility(true);
       }
     }
   });

@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { SupportPage } from "../../pages";
+import { DOCS_URL_PATTERN } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
 test.describe("Support Page", () => {
@@ -57,7 +58,7 @@ test.describe("Support Page", () => {
       support.documentationButton.click(),
     ]);
 
-    await expect(popup).toHaveURL(/docs\.devin\.ai/);
+    await expect(popup).toHaveURL(DOCS_URL_PATTERN);
     await popup.close();
 
     // The original page should still be on the Support page.

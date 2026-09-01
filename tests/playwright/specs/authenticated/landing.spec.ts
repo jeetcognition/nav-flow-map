@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { OrgSelectorPage } from "../../pages";
-import { ALT_SUBORG, ALT_SUBORG_NAME } from "../../support/paths";
+import { ALT_SUBORG, ALT_SUBORG_NAME, DOCS_URL_PATTERN } from "../../support/paths";
 
 const SENSITIVE_PATTERNS = [
   /\bpassword\b/i,
@@ -290,7 +290,7 @@ test.describe("Landing Search Page", () => {
         ]);
         expect(newPage).toBeTruthy();
         await newPage.waitForLoadState("domcontentloaded");
-        expect(newPage.url()).toMatch(/^https:\/\/(docs\.devin\.ai|support\.|help\.)/);
+        expect(newPage.url()).toMatch(DOCS_URL_PATTERN);
         await newPage.close();
       } else if (item === "Contact support") {
         await page.getByText(item, { exact: true }).first().click();

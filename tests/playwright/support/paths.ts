@@ -16,6 +16,14 @@ export const WIKI_REPO_NAME = process.env.WIKI_REPO_NAME ?? "empty";
  */
 export const LOGIN_URL_PATTERN = /\/auth\/login/;
 
+/** Documentation site the enterprise deployment links out to. */
+export const DOCS_ORIGIN = process.env.DOCS_ORIGIN ?? "https://docs.devinenterprise.com";
+
+/** Matches any page served by the enterprise documentation site. */
+export const DOCS_URL_PATTERN = new RegExp(
+  `^${DOCS_ORIGIN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/`,
+);
+
 /** Routes relative to BASE_URL (Playwright prepends baseURL automatically on page.goto). */
 export const routes = {
   /** Login page. */

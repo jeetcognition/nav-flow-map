@@ -27,6 +27,7 @@ export class ConnectionsPage extends BasePage {
   readonly mcpTableRows: Locator;
   readonly mcpEmptyState: Locator;
   readonly mcpEnabledSwitch: Locator;
+  readonly hideFromMarketplaceDialog: Locator;
   readonly connectButton: Locator;
   readonly connectMenuItem: Locator;
 
@@ -46,6 +47,9 @@ export class ConnectionsPage extends BasePage {
     this.mcpTableRows = this.mcpTable.locator("tbody tr");
     this.mcpEmptyState = page.getByText("No MCPs found");
     this.mcpEnabledSwitch = page.getByRole("switch");
+    this.hideFromMarketplaceDialog = page
+      .getByRole("dialog")
+      .filter({ hasText: /from the marketplace\?/ });
     this.connectButton = page.getByRole("button", { name: "Connect", exact: true });
     this.connectMenuItem = page.getByRole("menuitem", { name: "Connect", exact: true });
   }
@@ -66,6 +70,21 @@ export class ConnectionsPage extends BasePage {
     const match = /MCP servers\s+(\d+)/.exec(label ?? "");
     expect(match, `MCP servers tab has no count badge: ${label}`).not.toBeNull();
     return Number(match![1]);
+  }
+
+  /**
+   * Flip the "Show in marketplace" switch on an MCP detail page. Hiding a server
+   * asks for confirmation first; showing it again applies immediately.
+   */
+  async setMcpMarketplaceVisibility(visible: boolean) {
+    await this.mcpEnabledSwitch.click();
+    if (!visible) {
+      await this.hideFromMarketplaceDialog
+        .getByRole("button", { name: "Hide from marketplace" })
+        .click();
+      await expect(this.hideFromMarketplaceDialog).toBeHidden();
+    }
+    await expect(this.mcpEnabledSwitch).toHaveAttribute("aria-checked", String(visible));
   }
 
   /** From the MCP servers tab, search for a server and open its enterprise detail page. */

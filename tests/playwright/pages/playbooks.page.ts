@@ -115,6 +115,25 @@ export class PlaybooksPage extends BasePage {
     return previous;
   }
 
+  /**
+   * Name and macro of an existing enterprise playbook that can be typed into a
+   * mention menu — the list is shared QA data, so specs must read a real entry
+   * instead of assuming a fixture. Rows whose name or macro carry characters the
+   * editor treats specially are skipped.
+   */
+  async mentionablePlaybook(): Promise<{ name: string; macro: string }> {
+    await this.waitForStableRowCount();
+    for (const row of await this.tableRows.all()) {
+      const cells = row.locator("td");
+      const name = (await cells.nth(0).innerText()).trim();
+      const macro = (await cells.nth(1).innerText()).trim();
+      if (/^![A-Za-z0-9_-]{3,}$/.test(macro) && /^[A-Za-z0-9][A-Za-z0-9 _-]{0,60}$/.test(name)) {
+        return { name, macro };
+      }
+    }
+    throw new Error("No enterprise playbook with a typeable name and macro was found");
+  }
+
   async gotoCreate(slug: string = ENTERPRISE_SLUG) {
     await this.page.goto(`${routes.playbooks(slug)}/create`);
     await this.nameInput.waitFor({ state: "visible" });
