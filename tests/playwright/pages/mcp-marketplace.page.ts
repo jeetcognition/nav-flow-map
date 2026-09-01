@@ -3,22 +3,32 @@ import { BasePage } from "./base.page";
 import { TEST_SUBORG } from "../support/paths";
 
 // Sub-org MCP marketplace (Settings → Connections → MCP servers for an organization).
-// Searching collapses the list to the matching cards only, so status badges like
-// "Enabled"/"Not installed" are asserted after filtering to a single card.
+// Searching collapses the list to the matching cards only, so the "Enabled" badge is
+// asserted after filtering to a single card. Servers that are not installed carry no
+// badge; their card links to the `setup/` page with an "Install and enable" action.
 export class McpMarketplacePage extends BasePage {
   protected readonly path = `/org/${TEST_SUBORG}/settings/connections?tab=mcps`;
 
   readonly heading: Locator;
   readonly searchInput: Locator;
   readonly enabledBadge: Locator;
-  readonly notInstalledBadge: Locator;
+  readonly installAndEnableButton: Locator;
 
   constructor(page: Page) {
     super(page);
     this.heading = page.getByRole("heading", { name: "Connections", exact: true });
     this.searchInput = page.locator('input[placeholder*="Search MCP"]').first();
     this.enabledBadge = page.locator("main").getByText("Enabled", { exact: true });
-    this.notInstalledBadge = page.locator("main").getByText("Not installed", { exact: true });
+    this.installAndEnableButton = page.getByRole("button", { name: "Install and enable" });
+  }
+
+  /**
+   * Assert the searched server is not installed in this organization: its card carries
+   * no "Enabled" badge and it links to the setup (not configure) route.
+   */
+  async expectNotInstalled(name: string) {
+    await expect(this.page.getByText(name, { exact: true }).first()).toBeVisible();
+    await expect(this.enabledBadge).toHaveCount(0);
   }
 
   async gotoAndSearch(name: string) {
@@ -37,9 +47,9 @@ export class McpMarketplacePage extends BasePage {
 
   /** On the setup page: install and enable the server, accepting the security confirmation. */
   async installAndEnable() {
-    await this.page.getByRole("button", { name: "Install and enable" }).first().click();
+    await this.installAndEnableButton.first().click();
     await this.page.getByText("I understand and want to proceed").click();
-    await this.page.getByRole("button", { name: "Install and enable" }).last().click();
+    await this.installAndEnableButton.last().click();
     await this.page.waitForURL(/\/settings\/mcp-marketplace\/configure\//);
   }
 

@@ -101,16 +101,18 @@ export class EnvironmentPage extends BasePage {
    * different order between renders; sorting makes the content comparable.
    */
   async blueprintText(): Promise<string> {
-    // Monaco renders asynchronously; wait until two consecutive reads agree so
-    // a partially rendered buffer is never captured.
-    let raw = await this.blueprintEditorContent.innerText();
+    // Monaco mounts with a placeholder buffer and streams the fetched blueprint in, so
+    // reads only count as settled once two of them, separated by a polling interval,
+    // agree on a non-empty buffer.
+    let previous: string | null = null;
+    let raw = "";
     await expect(async () => {
       const next = await this.blueprintEditorContent.innerText();
-      if (next !== raw) {
-        raw = next;
-        throw new Error("editor still rendering");
-      }
-    }).toPass({ timeout: 15_000 });
+      const settled = previous !== null && next === previous && next.trim().length > 0;
+      previous = next;
+      if (!settled) throw new Error("editor still rendering");
+      raw = next;
+    }).toPass({ timeout: 15_000, intervals: [500, 500, 500, 1_000] });
     return raw
       .split("\n")
       .map((line) => line.trim())

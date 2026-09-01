@@ -81,7 +81,7 @@ export class PlaybooksPage extends BasePage {
     this.modeSelect = page.getByRole("combobox").first();
     this.saveButton = page.getByRole("button", { name: "Save" });
     this.cancelButton = page.getByRole("button", { name: "Cancel" });
-    this.charCounter = page.getByText(/\d+ characters/);
+    this.charCounter = page.getByText(/\d+ chars\b/);
     this.editTab = page.getByRole("tab", { name: "Edit", exact: true });
     this.previewTab = page.getByRole("tab", { name: "Preview", exact: true });
     this.expandButton = page.getByRole("button", { name: "Expand" });
