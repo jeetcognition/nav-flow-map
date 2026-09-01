@@ -114,9 +114,11 @@ export class KnowledgePage extends BasePage {
     await row.click();
   }
 
-  /** Click a knowledge entry row that contains the given text and wait for navigation. */
+  /** Click the knowledge entry link inside a row that contains the given text and wait for navigation. */
   async openEntry(name: string) {
-    await this.tableRows.filter({ hasText: name }).first().click();
+    const row = this.tableRows.filter({ hasText: name }).first();
+    await row.getByRole("link").first().waitFor({ state: "visible" });
+    await row.getByRole("link").first().click();
     await this.page.waitForURL(/\/settings\/knowledge\/.+/);
   }
 
@@ -134,12 +136,15 @@ export class KnowledgePage extends BasePage {
    */
   async openEntryByName(name: string) {
     await this.searchInput.fill(name);
-    const row = this.tableRows.filter({ hasText: name }).first();
-    if (!(await row.isVisible().catch(() => false))) {
+    let link = this.tableRows.filter({ hasText: name }).getByRole("link").first();
+    if (!(await link.isVisible().catch(() => false))) {
       await this.searchInput.fill("");
       await this.toggleFolder("Enterprise knowledge");
+      link = this.tableRows.filter({ hasText: name }).getByRole("link").first();
+      await link.waitFor({ state: "visible" }).catch(() => {});
     }
-    await this.openEntry(name);
+    await link.click();
+    await this.page.waitForURL(/\/settings\/knowledge\/.+/);
   }
 
   /** Create a disposable knowledge entry through the two-step panel. */
@@ -320,13 +325,8 @@ export class KnowledgePage extends BasePage {
     try {
       await this.goto(slug);
       await this.heading.waitFor({ state: "visible" });
-      await this.searchFor(name);
-      const entry = this.page.getByRole("link", { name, exact: true }).first();
-      if (await entry.isVisible().catch(() => false)) {
-        await entry.click();
-        await this.page.waitForURL(/\/settings\/knowledge\/.+/);
-        await this.deleteOpenEntry();
-      }
+      await this.openEntryByName(name);
+      await this.deleteOpenEntry();
     } catch {
       // Entry was already deleted or not found.
     }
