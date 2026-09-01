@@ -73,7 +73,10 @@ test.describe("Knowledge Page", () => {
     await expect(knowledge.description).toContainText(
       "Devin recalls relevant knowledge automatically during sessions",
     );
-    await expect(knowledge.docsLink).toHaveAttribute("href", /docs\.devin\.ai/);
+    await expect(knowledge.docsLink).toHaveAttribute(
+      "href",
+      /docs\.devin(?:enterprise)?\.(?:ai|com)/,
+    );
     await expect(knowledge.createButton).toBeEnabled();
     await expect(knowledge.searchInput).toHaveAttribute("placeholder", "Search for knowledge...");
     await expect(page.getByRole("columnheader").filter({ hasText: /Name/ })).toBeVisible();
