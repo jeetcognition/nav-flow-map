@@ -62,7 +62,6 @@ test.describe("Enterprise Settings landing", () => {
     await expect(ent.cardLink("Knowledge")).toBeVisible();
     await expect(ent.cardLink("Environment")).toBeVisible();
     await expect(ent.cardLink("Playbooks")).toBeVisible();
-    await expect(ent.cardLink("Skills & Rules")).toBeVisible();
   });
 
   test("ENTSET-SAN06 — Scroll to and inspect Administration section", async ({ page }) => {
@@ -116,7 +115,6 @@ test.describe("Enterprise Settings landing", () => {
       ["Knowledge", "knowledge"],
       ["Environment", "enterprise-environment"],
       ["Playbooks", "playbooks"],
-      ["Skills & Rules", "enterprise-skills"],
       ["Repositories", "repositories"],
       ["Membership", "membership"],
       ["Organizations", "organizations"],

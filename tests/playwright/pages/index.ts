@@ -13,7 +13,6 @@ export { OrgCreatePage } from "./org-create.page";
 export { OrgSelectorPage } from "./org-selector.page";
 export { PlaybooksPage } from "./playbooks.page";
 export { ReposPage } from "./repos.page";
-export { SkillsPage } from "./skills.page";
 export { RolesPage } from "./roles.page";
 export { SecurityPage } from "./security.page";
 export { SecretsPage } from "./s-secrets.page";

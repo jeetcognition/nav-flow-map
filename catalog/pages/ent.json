@@ -209,7 +209,7 @@
         }
       ],
       "assertions": [
-        "**Knowledge**, **Environment**, **Playbooks**, and **Skills & Rules** cards are visible and readable."
+        "**Knowledge**, **Environment**, and **Playbooks** cards are visible and readable."
       ],
       "cleanup": {
         "required": false,
