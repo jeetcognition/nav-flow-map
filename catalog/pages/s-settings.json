@@ -73,7 +73,7 @@
         }
       ],
       "assertions": [
-        "General, Connections, Devin, Knowledge, Environment, Playbooks, Skills & Rules, Secrets, Repositories, Membership, Devin API, and Analytics are grouped under correct headings."
+        "General, Connections, Devin, Knowledge, Environment, Playbooks, Secrets, Repositories, Membership, Devin API, and Analytics are grouped under correct headings."
       ],
       "cleanup": {
         "required": false,
