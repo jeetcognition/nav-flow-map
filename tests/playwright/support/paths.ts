@@ -16,6 +16,12 @@ export const WIKI_REPO_NAME = process.env.WIKI_REPO_NAME ?? "empty";
  */
 export const LOGIN_URL_PATTERN = /\/auth\/login/;
 
+/**
+ * Public documentation hosts the enterprise app links out to. Enterprise builds link to
+ * `docs.devinenterprise.com`; older builds and the standard app use `docs.devin.ai`.
+ */
+export const DOCS_URL_PATTERN = /^https:\/\/docs\.(devin\.ai|devinenterprise\.com)(\/|$)/;
+
 /** Routes relative to BASE_URL (Playwright prepends baseURL automatically on page.goto). */
 export const routes = {
   /** Login page. */
