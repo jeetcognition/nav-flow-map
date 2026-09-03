@@ -241,13 +241,12 @@ test.describe("Connections", () => {
     page,
   }) => {
     const conn = new ConnectionsPage(page);
-    // Airtable has no orgs or users enabled in the QA enterprise, so flipping its
-    // enterprise availability is side-effect free.
-    const serverName = "Airtable";
 
     await conn.goto();
     await conn.heading.waitFor({ state: "visible" });
     await conn.mcpServersTab.click();
+    // Only a server no organization has enabled can be flipped without side effects.
+    const serverName = await conn.unusedMcpServerName();
     await conn.openMcpServer(serverName);
 
     const mcpSwitch = conn.mcpEnabledSwitch;

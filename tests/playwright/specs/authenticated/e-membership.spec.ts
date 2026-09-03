@@ -1,6 +1,6 @@
 import { test, expect, request as apiRequest, ConsoleMessage, Page } from "@playwright/test";
 import { LoginPage, MembershipPage, MEMBER_COLUMNS } from "../../pages";
-import { routes, ALT_SUBORG_NAME, LOGIN_URL_PATTERN } from "../../support/paths";
+import { routes, ALT_SUBORG_NAME, LOGIN_URL_PATTERN, DOCS_URL_PATTERN } from "../../support/paths";
 import { fetchLatestOtp } from "../../support/gmail-otp";
 
 import { expectNoPageErrors } from "../../support/errors";
@@ -68,7 +68,8 @@ test.describe("Enterprise Membership", () => {
 
     await expect(m.heading).toBeVisible();
     await expect(m.learnMoreLink).toBeVisible();
-    await expect(m.learnMoreLink).toHaveAttribute("href", "https://docs.devin.ai/enterprise");
+    await expect(m.learnMoreLink).toHaveAttribute("href", DOCS_URL_PATTERN);
+    await expect(m.learnMoreLink).toHaveAttribute("href", /\/enterprise$/);
     await expect(m.membersTab).toBeVisible();
     await expect(m.rolesTab).toBeVisible();
     await expect(m.groupsTab).toBeVisible();

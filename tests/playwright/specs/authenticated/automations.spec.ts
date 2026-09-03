@@ -140,9 +140,11 @@ test.describe("Automations", () => {
     await page.keyboard.press("Escape");
 
     await automations.instructionsEditor.click();
+    // The macro menu lists options by macro (`!roast`); the inserted chip carries the
+    // playbook title.
     await automations.instructionsEditor.pressSequentially(" run !roast", { delay: 50 });
-    await expect(page.getByRole("option", { name: /Roast Commits/ })).toBeVisible();
-    await page.getByRole("option", { name: /Roast Commits/ }).click();
+    await expect(page.getByRole("option", { name: "!roast", exact: true })).toBeVisible();
+    await page.getByRole("option", { name: "!roast", exact: true }).click();
     await expect(
       automations.instructionsEditor.getByRole("link", { name: "Roast Commits" }),
     ).toBeVisible();

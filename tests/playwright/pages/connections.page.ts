@@ -68,6 +68,26 @@ export class ConnectionsPage extends BasePage {
     return Number(match![1]);
   }
 
+  /**
+   * Name of the first MCP server no organization has enabled. Flipping such a server's
+   * enterprise availability is side-effect free: hiding a server with existing
+   * installations prompts a confirmation and affects those organizations.
+   */
+  async unusedMcpServerName(): Promise<string> {
+    await expect(
+      this.mcpTable.getByRole("columnheader", { name: "Organizations enabled" }),
+    ).toBeVisible();
+    await expect(this.mcpTableRows.first().getByRole("cell").first()).not.toBeEmpty();
+    for (const row of await this.mcpTableRows.all()) {
+      const cells = (await row.getByRole("cell").allTextContents()).map((c) => c.trim());
+      const counts = cells.slice(1).filter((c) => /^\d+$/.test(c));
+      if (counts.length < 3 || counts.some((c) => c !== "0")) continue;
+      const name = (await row.getByRole("link").first().textContent())?.trim();
+      if (name) return name;
+    }
+    throw new Error("Every MCP server is enabled by at least one organization");
+  }
+
   /** From the MCP servers tab, search for a server and open its enterprise detail page. */
   async openMcpServer(name: string) {
     await this.mcpSearchInput.fill(name);

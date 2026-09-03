@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { KnowledgePage, DevinSessionPage } from "../../pages";
-import { routes, LOGIN_URL_PATTERN } from "../../support/paths";
+import { routes, LOGIN_URL_PATTERN, DOCS_URL_PATTERN } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
 import { expectNoPageErrors } from "../../support/errors";
 
@@ -73,7 +73,7 @@ test.describe("Knowledge Page", () => {
     await expect(knowledge.description).toContainText(
       "Devin recalls relevant knowledge automatically during sessions",
     );
-    await expect(knowledge.docsLink).toHaveAttribute("href", /docs\.devin\.ai/);
+    await expect(knowledge.docsLink).toHaveAttribute("href", DOCS_URL_PATTERN);
     await expect(knowledge.createButton).toBeEnabled();
     await expect(knowledge.searchInput).toHaveAttribute("placeholder", "Search for knowledge...");
     await expect(page.getByRole("columnheader").filter({ hasText: /Name/ })).toBeVisible();
