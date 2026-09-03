@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { AutomationsPage, PlaybooksPage } from "../../pages";
+import { AutomationsPage } from "../../pages";
 
 // Automations node — sub-org Automations list, create form, and webhook/schedule
 // end-to-end flows. E2E cases spawn real (short) Devin sessions in the QA sub-org
@@ -119,11 +119,6 @@ test.describe("Automations", () => {
 
   test("AUTO-REG04 — Playbook macros and repository mentions in Instructions", async ({ page }) => {
     const automations = new AutomationsPage(page);
-    const playbooks = new PlaybooksPage(page);
-
-    await playbooks.goto();
-    const playbook = await playbooks.mentionablePlaybook();
-
     await automations.open();
     await automations.openCreateForm();
 
@@ -145,12 +140,13 @@ test.describe("Automations", () => {
     await page.keyboard.press("Escape");
 
     await automations.instructionsEditor.click();
-    await automations.instructionsEditor.pressSequentially(` run ${playbook.macro}`, { delay: 50 });
-    const macroOption = page.getByRole("option", { name: playbook.macro, exact: true });
-    await expect(macroOption).toBeVisible();
-    await macroOption.click();
+    // The macro menu lists options by macro (`!roast`); the inserted chip carries the
+    // playbook title.
+    await automations.instructionsEditor.pressSequentially(" run !roast", { delay: 50 });
+    await expect(page.getByRole("option", { name: "!roast", exact: true })).toBeVisible();
+    await page.getByRole("option", { name: "!roast", exact: true }).click();
     await expect(
-      automations.instructionsEditor.getByRole("link", { name: playbook.name }),
+      automations.instructionsEditor.getByRole("link", { name: "Roast Commits" }),
     ).toBeVisible();
   });
 

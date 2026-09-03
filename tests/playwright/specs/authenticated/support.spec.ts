@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { SupportPage } from "../../pages";
-import { DOCS_URL_PATTERN } from "../../support/paths";
 import { expectEnterpriseBreadcrumbs } from "../../support/breadcrumbs";
+import { DOCS_URL_PATTERN } from "../../support/paths";
 import { expectNoPageErrors } from "../../support/errors";
 test.describe("Support Page", () => {
   test("SUP-SAN02 — Locate the Documentation card heading", async ({ page }) => {

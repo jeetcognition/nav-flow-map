@@ -241,13 +241,12 @@ test.describe("Connections", () => {
     page,
   }) => {
     const conn = new ConnectionsPage(page);
-    // Airtable has no orgs or users enabled in the QA enterprise, so flipping its
-    // enterprise availability is side-effect free.
-    const serverName = "Airtable";
 
     await conn.goto();
     await conn.heading.waitFor({ state: "visible" });
     await conn.mcpServersTab.click();
+    // Only a server no organization has enabled can be flipped without side effects.
+    const serverName = await conn.unusedMcpServerName();
     await conn.openMcpServer(serverName);
 
     const mcpSwitch = conn.mcpEnabledSwitch;
@@ -256,12 +255,13 @@ test.describe("Connections", () => {
     try {
       // Pre-state: enabled (repair a previously aborted run if needed).
       if ((await mcpSwitch.getAttribute("aria-checked")) !== "true") {
-        await conn.setMcpMarketplaceVisibility(true);
+        await mcpSwitch.click();
       }
       await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
 
-      // Deny: hide the MCP from the enterprise marketplace (confirmation required).
-      await conn.setMcpMarketplaceVisibility(false);
+      // Deny: disable the MCP for the enterprise.
+      await mcpSwitch.click();
+      await expect(mcpSwitch).toHaveAttribute("aria-checked", "false");
 
       // The policy persists across a reload.
       await page.reload();
@@ -269,14 +269,16 @@ test.describe("Connections", () => {
       await expect(mcpSwitch).toHaveAttribute("aria-checked", "false");
 
       // Restore: re-enable and confirm persistence again.
-      await conn.setMcpMarketplaceVisibility(true);
+      await mcpSwitch.click();
+      await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
       await page.reload();
       await expect(mcpSwitch).toBeVisible();
       await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
     } finally {
-      // Safety net: never leave the server hidden.
+      // Safety net: never leave the server disabled.
       if ((await mcpSwitch.getAttribute("aria-checked").catch(() => null)) === "false") {
-        await conn.setMcpMarketplaceVisibility(true);
+        await mcpSwitch.click();
+        await expect(mcpSwitch).toHaveAttribute("aria-checked", "true");
       }
     }
   });
