@@ -333,12 +333,16 @@ export class AutomationsPage extends BasePage {
 
   /** Best-effort deletion of an automation by name, for cleanup safety. */
   async deleteAutomationByName(name: string, slug: string = TEST_SUBORG) {
+    const timeout = 15_000;
     try {
-      await this.open(slug);
+      await this.page.goto(routes.subOrg(slug));
+      await this.sidebarLink.click();
+      await this.page.waitForURL(/\/automations$/, { timeout });
+      await this.heading.waitFor({ state: "visible", timeout });
       const row = this.page.getByRole("link", { name: new RegExp(name) }).first();
       if (await row.isVisible().catch(() => false)) {
         await row.click();
-        await this.page.waitForURL(/\/automations\/[0-9a-f]+$/);
+        await this.page.waitForURL(/\/automations\/[0-9a-f]+$/, { timeout });
         await this.deleteOpenAutomation();
       }
     } catch {
