@@ -938,7 +938,7 @@ test.describe("Knowledge Page", () => {
   test("KNOW-REG19 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const knowledge = new KnowledgePage(page);
     await expectEnterpriseBreadcrumbs(page, () => knowledge.goto(), {
-      crumbs: ["Settings", "Enterprise", "Knowledge"],
+      crumbs: ["Settings", "Knowledge"],
     });
   });
 

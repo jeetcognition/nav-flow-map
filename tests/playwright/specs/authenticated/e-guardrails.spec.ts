@@ -394,7 +394,7 @@ test.describe("Guardrails enforcement and authorization", () => {
   test("GUARD-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const guardrails = new GuardrailsPage(page);
     await expectEnterpriseBreadcrumbs(page, () => guardrails.goto(), {
-      crumbs: ["Settings", "Enterprise", "Guardrails"],
+      crumbs: ["Settings", "Guardrails"],
     });
   });
 

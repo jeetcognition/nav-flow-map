@@ -38,7 +38,7 @@ test.describe("Organizations", () => {
     await expect(orgs.headerRow).toContainText("Name");
     await expect(orgs.headerRow).toContainText("Members");
     await expect(orgs.headerRow).toContainText("Repositories");
-    await expect(orgs.headerRow).toContainText("Monthly ACU limit");
+    await expect(orgs.headerRow).toContainText("Monthly cloud ACU limit");
     await expect(orgs.nextButton).toBeVisible();
   });
 
@@ -217,7 +217,7 @@ test.describe("Organizations", () => {
       await orgs.searchFor(tempName);
       const row = orgs.rowByName(tempName);
       await expect(row).toBeVisible();
-      await expect(row.getByRole("cell").nth(4)).toHaveText("7");
+      await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("7"));
 
       await orgs.openManageDialog(tempName);
       await expect(orgs.nameInput).toHaveValue(tempName);
@@ -238,7 +238,9 @@ test.describe("Organizations", () => {
     await orgs.searchFor(originalName);
     const restoredRow = orgs.rowByName(originalName);
     await expect(restoredRow).toBeVisible();
-    await expect(restoredRow.getByRole("cell").nth(4)).toHaveText("No limit");
+    await expect(orgs.acuLimitCell(restoredRow)).toHaveText(
+      OrganizationsPage.acuLimitText("No limit"),
+    );
   });
 
   test("ORG-REG07 — Enter No limit, zero, negative, decimal, text, exponent, and leading-zero ACU values", async ({
@@ -271,21 +273,31 @@ test.describe("Organizations", () => {
     await expect(orgs.saveButton).toBeEnabled();
 
     // Save zero, verify it persists, then a leading-zero value, then restore No limit.
-    await orgs.acuInput.fill("0");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
     const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("0");
+    try {
+      await orgs.acuInput.fill("0");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("0"));
 
-    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
-    await expect(orgs.acuInput).toHaveValue("0");
-    await orgs.acuInput.fill("007");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("7");
-
-    await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
-    await orgs.acuInput.fill("");
-    expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+      await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+      await expect(orgs.acuInput).toHaveValue("0");
+      await orgs.acuInput.fill("007");
+      expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("7"));
+    } finally {
+      // Restore No limit whether or not assertions passed: a leftover limit of 0 blocks every
+      // session launched in the sub-org by later specs.
+      if (await orgs.manageDialog.isVisible()) await page.keyboard.press("Escape");
+      await expect(orgs.manageDialog).toHaveCount(0);
+      await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
+      if ((await orgs.acuInput.inputValue()) !== "") {
+        await orgs.acuInput.fill("");
+        expect((await orgs.saveAndWaitForPatch()).ok()).toBe(true);
+      } else {
+        await page.keyboard.press("Escape");
+      }
+    }
+    await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("No limit"));
   });
 
   test("ORG-REG08 — Enter boundary and extremely large positive ACU values, then attempt to save", async ({
@@ -295,7 +307,7 @@ test.describe("Organizations", () => {
     await orgs.goto();
     await orgs.searchFor(TEST_SUBORG_DISPLAY);
     const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+    await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("No limit"));
 
     await orgs.openManageDialog(TEST_SUBORG_DISPLAY);
     await orgs.acuInput.fill("99999999999999999999");
@@ -309,7 +321,7 @@ test.describe("Organizations", () => {
 
     await page.reload();
     await orgs.searchFor(TEST_SUBORG_DISPLAY);
-    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+    await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("No limit"));
 
     // The rejected PATCH logs a resource error on the console; it is expected here.
     errors = errors.filter(
@@ -417,7 +429,7 @@ test.describe("Organizations", () => {
     await orgs.searchFor(TEST_SUBORG_DISPLAY);
     const row = orgs.rowByName(TEST_SUBORG_DISPLAY);
     await expect(row).toBeVisible();
-    await expect(row.getByRole("cell").nth(4)).toHaveText("No limit");
+    await expect(orgs.acuLimitCell(row)).toHaveText(OrganizationsPage.acuLimitText("No limit"));
   });
 
   test("ORG-REG12 — Inspect URL, UI, console, and requests during search, edit, and delete", async ({
@@ -448,7 +460,7 @@ test.describe("Organizations", () => {
   test("ORG-REG13 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const orgs = new OrganizationsPage(page);
     await expectEnterpriseBreadcrumbs(page, () => orgs.goto(), {
-      crumbs: ["Settings", "Enterprise", "Organizations"],
+      crumbs: ["Settings", "Organizations"],
     });
   });
 

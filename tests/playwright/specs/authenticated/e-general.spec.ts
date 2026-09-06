@@ -225,17 +225,10 @@ test.describe("Enterprise General settings", () => {
 
     await general.goto();
     await expect(general.breadcrumbNav).toBeVisible();
-    await expect
-      .poll(() => general.breadcrumbLabels())
-      .toEqual(["Settings", "Enterprise", "General"]);
+    await expect.poll(() => general.breadcrumbLabels()).toEqual(["Settings", "General"]);
     await expect(general.lastBreadcrumbLink).toHaveCount(0);
 
     await general.breadcrumbCrumb("Settings").click();
-    await expect(page).toHaveURL(routes.entSettings);
-    await expect(enterpriseSettingsHeading).toBeVisible();
-
-    await general.goto();
-    await general.breadcrumbCrumb("Enterprise").click();
     await expect(page).toHaveURL(routes.entSettings);
     await expect(enterpriseSettingsHeading).toBeVisible();
 

@@ -229,7 +229,7 @@ test.describe("Devin settings", () => {
   test("DEVIN-REG07 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const devin = new DevinSettingsPage(page);
     await expectEnterpriseBreadcrumbs(page, () => devin.goto(), {
-      crumbs: ["Settings", "Enterprise", "Devin"],
+      crumbs: ["Settings", "Devin"],
     });
   });
 

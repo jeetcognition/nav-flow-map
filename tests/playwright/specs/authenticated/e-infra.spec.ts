@@ -103,7 +103,7 @@ test.describe("Infrastructure", () => {
   test("INFRA-REG04 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const infra = new InfraPage(page);
     await expectEnterpriseBreadcrumbs(page, () => infra.goto(), {
-      crumbs: ["Settings", "Enterprise", "Infrastructure"],
+      crumbs: ["Settings", "Infrastructure"],
     });
   });
 

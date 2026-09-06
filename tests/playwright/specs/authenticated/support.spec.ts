@@ -68,7 +68,7 @@ test.describe("Support Page", () => {
   test("SUP-REG02 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const support = new SupportPage(page);
     await expectEnterpriseBreadcrumbs(page, () => support.goto(), {
-      crumbs: ["Settings", "Enterprise", "Support"],
+      crumbs: ["Settings", "Support"],
     });
   });
 

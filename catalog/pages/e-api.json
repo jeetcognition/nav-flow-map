@@ -448,9 +448,9 @@
         }
       ],
       "assertions": [
-        "Settings, Enterprise, and Devin API appear in order",
+        "Settings and Devin API appear in order",
         "the last crumb is plain text",
-        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+        "Settings and Back to enterprise navigate to the Enterprise Settings landing page."
       ],
       "cleanup": {
         "required": false,
