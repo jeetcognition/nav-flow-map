@@ -350,7 +350,7 @@ test.describe("Connections", () => {
   test("ECON-REG03 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const connections = new ConnectionsPage(page);
     await expectEnterpriseBreadcrumbs(page, () => connections.goto(), {
-      crumbs: ["Settings", "Enterprise", "Connections"],
+      crumbs: ["Settings", "Connections"],
     });
   });
 

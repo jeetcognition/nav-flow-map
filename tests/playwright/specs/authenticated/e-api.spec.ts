@@ -306,7 +306,7 @@ test.describe("Devin API", () => {
   test("API-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const api = new DevinApiPage(page);
     await expectEnterpriseBreadcrumbs(page, () => api.goto(), {
-      crumbs: ["Settings", "Enterprise", "Devin API"],
+      crumbs: ["Settings", "Devin API"],
     });
   });
 

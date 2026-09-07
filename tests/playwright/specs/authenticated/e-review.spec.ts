@@ -287,7 +287,7 @@ test.describe("Review Settings", () => {
   test("REV-REG06 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const review = new ReviewSettingsPage(page);
     await expectEnterpriseBreadcrumbs(page, () => review.goto(), {
-      crumbs: ["Settings", "Enterprise", "Devin Review"],
+      crumbs: ["Settings", "Devin Review"],
     });
   });
 

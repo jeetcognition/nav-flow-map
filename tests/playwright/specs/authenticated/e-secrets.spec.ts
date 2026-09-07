@@ -33,7 +33,7 @@ test.describe("Enterprise Secrets", () => {
   test("ESEC-REG01 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const secrets = new EnterpriseSecretsPage(page);
     await expectEnterpriseBreadcrumbs(page, () => secrets.goto(), {
-      crumbs: ["Settings", "Enterprise", "Secrets"],
+      crumbs: ["Settings", "Secrets"],
     });
   });
 

@@ -10,7 +10,7 @@ export function breadcrumbNav(page: Page) {
 }
 
 export interface BreadcrumbExpectation {
-  /** Expected crumb labels in order, e.g. ["Settings", "Enterprise", "Devin"]. */
+  /** Expected crumb labels in order, e.g. ["Settings", "Devin"]. */
   crumbs: string[];
   /** Crumb labels rendered as links; each is clicked and must land on the enterprise settings landing page. Defaults to all but the last crumb. */
   linkCrumbs?: string[];

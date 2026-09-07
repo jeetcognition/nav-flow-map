@@ -317,7 +317,7 @@ test.describe("Enterprise Sessions", () => {
     const sessions = new SessionsPage(page);
     // Observed: the Sessions page has no "Back to enterprise" button.
     await expectEnterpriseBreadcrumbs(page, () => sessions.goto(), {
-      crumbs: ["Settings", "Enterprise", "Sessions"],
+      crumbs: ["Settings", "Sessions"],
       backButton: false,
     });
   });

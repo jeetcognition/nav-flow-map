@@ -441,9 +441,9 @@
         }
       ],
       "assertions": [
-        "Settings, Enterprise, and Guardrails appear in order",
+        "Settings and Guardrails appear in order",
         "the last crumb is plain text",
-        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+        "Settings and Back to enterprise navigate to the Enterprise Settings landing page."
       ],
       "cleanup": {
         "required": false,

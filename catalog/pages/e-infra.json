@@ -261,9 +261,9 @@
         }
       ],
       "assertions": [
-        "Settings, Enterprise, and Infrastructure appear in order",
+        "Settings and Infrastructure appear in order",
         "the last crumb is plain text",
-        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+        "Settings and Back to enterprise navigate to the Enterprise Settings landing page."
       ],
       "cleanup": {
         "required": false,

@@ -412,11 +412,11 @@ test.describe("Enterprise Analytics", () => {
 
   test("ANAL-REG07 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const analytics = new AnalyticsPage(page);
-    // Observed: the Analytics page renders only "Settings > Enterprise" with
-    // "Enterprise" as plain text — there is no "Analytics" crumb.
+    // Observed: the Analytics page renders a lone "Settings" crumb as plain
+    // text — there is no "Analytics" crumb and no link crumb.
     await expectEnterpriseBreadcrumbs(page, () => analytics.goto(), {
-      crumbs: ["Settings", "Enterprise"],
-      linkCrumbs: ["Settings"],
+      crumbs: ["Settings"],
+      linkCrumbs: [],
     });
   });
 

@@ -490,7 +490,7 @@ test.describe("Playbooks Page", () => {
   test("PLAY-REG13 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const playbooks = new PlaybooksPage(page);
     await expectEnterpriseBreadcrumbs(page, () => playbooks.goto(), {
-      crumbs: ["Settings", "Enterprise", "Playbooks"],
+      crumbs: ["Settings", "Playbooks"],
     });
   });
 

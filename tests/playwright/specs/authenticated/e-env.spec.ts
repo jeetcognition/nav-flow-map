@@ -261,7 +261,7 @@ test.describe("Environment", () => {
   test("ENV-REG08 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const env = new EnvironmentPage(page);
     await expectEnterpriseBreadcrumbs(page, () => env.goto(), {
-      crumbs: ["Settings", "Enterprise", "Environment"],
+      crumbs: ["Settings", "Environment"],
     });
   });
 

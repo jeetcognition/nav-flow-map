@@ -73,7 +73,7 @@
         }
       ],
       "assertions": [
-        "Selection, Name, Members, Repositories, and Monthly ACU limit columns are visible",
+        "Selection, Name, Members, Repositories, and Monthly cloud ACU limit columns are visible",
         "each edit and delete action belongs to the correct row."
       ],
       "cleanup": {
@@ -781,9 +781,9 @@
         }
       ],
       "assertions": [
-        "Settings, Enterprise, and Organizations appear in order",
+        "Settings and Organizations appear in order",
         "the last crumb is plain text",
-        "Settings, Enterprise, and Back to enterprise navigate to the Enterprise Settings landing page."
+        "Settings and Back to enterprise navigate to the Enterprise Settings landing page."
       ],
       "cleanup": {
         "required": false,

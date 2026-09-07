@@ -39,6 +39,16 @@ export class OrganizationsPage extends BasePage {
     return this.content.getByRole("row").filter({ hasText: new RegExp(name, "i") });
   }
 
+  /** "Monthly cloud ACU limit" cell of a row: the value followed by an optional "Cloud only" badge. */
+  acuLimitCell(row: Locator): Locator {
+    return row.getByRole("cell").nth(4);
+  }
+
+  /** Matches the ACU limit cell text for `value` regardless of the trailing "Cloud only" badge. */
+  static acuLimitText(value: string): RegExp {
+    return new RegExp(`^${value}(Cloud only)?$`);
+  }
+
   /** "Manage <org>" dialog opened from a row's edit control. */
   get manageDialog(): Locator {
     return this.page.getByRole("dialog");

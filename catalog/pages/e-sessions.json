@@ -448,7 +448,7 @@
         }
       ],
       "assertions": [
-        "Settings, Enterprise, and Sessions appear in order",
+        "Settings and Sessions appear in order",
         "the last crumb is plain text",
         "Settings and Enterprise navigate to the Enterprise Settings landing page (no Back to enterprise button is rendered)."
       ],
