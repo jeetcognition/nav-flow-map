@@ -833,3 +833,16 @@ Observed authorization behavior (new `e-authz` catalog page, MBR-REG01…07):
 
 Still blocked: CSRF (needs request forging outside a browser context) and
 cross-tenant IDOR _mutations_ (needs a second disposable tenant).
+
+## 2026-08-31 — Retire Skills & Rules coverage
+
+The Skills & Rules surface was removed from the product:
+`…/settings/enterprise-skills` returns 404 and the entry is gone from the
+enterprise settings hub and the sub-org settings root. Confirmed intentional by
+the product owner after the 2026-08-31 full-suite run
+(`tests/playwright/memory/2026-08-31-2130-full-suite.md`, APP-15), so the
+coverage is retired rather than left red: `e-skills` catalog page (SKILL-SMK01,
+SKILL-SAN01/02, SKILL-REG01…06), `specs/authenticated/e-skills.spec.ts`,
+`pages/skills.page.ts`, and the `routes.enterpriseSkills` helper are deleted,
+and the `Skills & Rules` link expectations are dropped from ENTSET-SAN05,
+ENTSET-REG01, SUB-OS-SAN01, and SUB-OS-REG01.

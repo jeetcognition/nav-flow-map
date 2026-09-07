@@ -121,12 +121,6 @@
       "durationSec": 105
     },
     {
-      "caseId": "SKILL-SAN02",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 145
-    },
-    {
       "caseId": "SUB-SAN02",
       "nodeId": "suborg",
       "status": "passed",
@@ -375,18 +369,6 @@
       "durationSec": 115
     },
     {
-      "caseId": "SKILL-REG02",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 199
-    },
-    {
-      "caseId": "SKILL-REG04",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 22
-    },
-    {
       "caseId": "SUB-AU-REG01",
       "nodeId": "automations",
       "status": "skipped",
@@ -501,12 +483,6 @@
       "nodeId": "e-api",
       "status": "passed",
       "durationSec": 44
-    },
-    {
-      "caseId": "SKILL-SMK01",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 225
     },
     {
       "caseId": "SUB-SAN02",
@@ -931,12 +907,6 @@
       "nodeId": "e-guardrails",
       "status": "passed",
       "durationSec": 101
-    },
-    {
-      "caseId": "SKILL-SMK01",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 129
     },
     {
       "caseId": "SUB-RV-SMK01",
@@ -1373,18 +1343,6 @@
       "nodeId": "e-api",
       "status": "failed",
       "durationSec": 182
-    },
-    {
-      "caseId": "SKILL-SMK01",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 29
-    },
-    {
-      "caseId": "SKILL-SAN02",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 133
     },
     {
       "caseId": "SUB-SAN02",
@@ -2207,18 +2165,6 @@
       "nodeId": "e-api",
       "status": "failed",
       "durationSec": 181
-    },
-    {
-      "caseId": "SKILL-REG02",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 48
-    },
-    {
-      "caseId": "SKILL-REG04",
-      "nodeId": "e-skills",
-      "status": "passed",
-      "durationSec": 49
     },
     {
       "caseId": "SUB-AU-E2E01",

@@ -220,16 +220,6 @@
     "prefixes": ["PLAY"]
   },
   {
-    "id": "e-skills",
-    "label": "Skills & Rules",
-    "group": "enterprise",
-    "route": "…/settings/enterprise-skills",
-    "desc": "Enterprise skill usage, sources, task types, and session drill-downs.",
-    "parent": "ent",
-    "via": "Left nav → Skills & Rules",
-    "prefixes": ["SKILL"]
-  },
-  {
     "id": "e-repos",
     "label": "Repositories",
     "group": "enterprise",
