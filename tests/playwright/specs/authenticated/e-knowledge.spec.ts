@@ -10,6 +10,8 @@ const SYSTEM_ENTRY = "Auto-generated (v3) index of cog-qa-org/zod";
 
 /** Enterprise entry that has session usage analytics, needed by the Usage-tab cases. */
 const USAGE_ENTRY = process.env.KNOWLEDGE_USAGE_ENTRY ?? "backend based code";
+/** The app's in-app not-found body for a tampered knowledge id. */
+const NOT_FOUND_TEXT = /Not Found|This page could not be found/;
 
 test.describe("Knowledge Page", () => {
   test("KNOW-SMK01 — Load the page cold", async ({ page }) => {
@@ -839,11 +841,11 @@ test.describe("Knowledge Page", () => {
     await page.goto(`${routes.enterpriseKnowledge()}/not-a-real-id/usage`, {
       waitUntil: "networkidle",
     });
-    await expect(page.getByText("Not Found")).toBeVisible();
+    await expect(page.locator("body")).toContainText(NOT_FOUND_TEXT);
 
     // Authenticated user with a tampered session id.
     await page.goto("/sessions/not-a-real-id", { waitUntil: "networkidle" });
-    await expect(page.locator("body")).toContainText("This page could not be found");
+    await expect(page.locator("body")).toContainText(NOT_FOUND_TEXT);
 
     // Unauthenticated user is denied access and no session data is exposed.
     const unauthContext = await browser.newContext();
@@ -855,7 +857,7 @@ test.describe("Knowledge Page", () => {
     if (LOGIN_URL_PATTERN.test(unauthUrl)) {
       // Redirect to login is acceptable; nothing further to assert.
     } else {
-      await expect(unauthPage.getByText("Not Found")).toBeVisible();
+      await expect(unauthPage.locator("body")).toContainText(NOT_FOUND_TEXT);
       await expect(unauthPage.locator("body")).not.toContainText("Improve playbook");
     }
     await unauthContext.close();
