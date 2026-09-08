@@ -19,7 +19,7 @@ export class AutomationsPage extends BasePage {
   readonly heading: Locator;
   /** "All N" filter tab. */
   readonly allTab: Locator;
-  /** "Created by you N" filter tab. */
+  /** "Mine N" filter tab (automations created by the current user). */
   readonly createdByYouTab: Locator;
   /** Toolbar Filter button. */
   readonly filterButton: Locator;
@@ -36,6 +36,11 @@ export class AutomationsPage extends BasePage {
   /** "Generate with Devin" item in the Create automation menu. */
   readonly generateWithDevinItem: Locator;
 
+  /**
+   * Root of the create/edit form. Create renders as a "Create automation"
+   * sheet dialog over the list; edit renders as a page inside `main`.
+   */
+  readonly form: Locator;
   /** Automation name input on the create/edit form. */
   readonly nameInput: Locator;
   /** Triggers section heading. */
@@ -116,7 +121,7 @@ export class AutomationsPage extends BasePage {
     this.sidebarLink = page.getByRole("link", { name: "Automations", exact: true }).first();
     this.heading = page.getByRole("heading", { name: "Automations", exact: true });
     this.allTab = page.getByRole("button", { name: /^All \d+$/ });
-    this.createdByYouTab = page.getByRole("button", { name: /^Created by you \d+$/ });
+    this.createdByYouTab = page.getByRole("button", { name: /^Mine \d+$/ });
     this.filterButton = page.getByRole("button", { name: "Filter", exact: true });
     this.searchButton = page.locator("main").getByRole("button", { name: "Search", exact: true });
     this.analyticsButton = page.getByRole("button", { name: "Analytics", exact: true });
@@ -125,12 +130,13 @@ export class AutomationsPage extends BasePage {
     this.startFromTemplateItem = page.getByRole("menuitem", { name: "Template", exact: true });
     this.generateWithDevinItem = page.getByRole("menuitem", { name: "Generate with Devin" });
 
+    this.form = page.getByRole("dialog", { name: "Create automation" }).or(page.locator("main"));
     this.nameInput = page.getByRole("textbox", { name: "Automation name" });
     this.triggersHeading = page.getByRole("heading", { name: "Triggers" });
     this.addTriggerButton = page.getByRole("button", { name: "Add trigger", exact: true });
     this.removeTriggerButtons = page.getByRole("button", { name: "Remove trigger" });
     this.agentTypeSelect = page.getByRole("combobox", { name: "Agent type" });
-    this.instructionsEditor = page.locator('main [contenteditable="true"]').first();
+    this.instructionsEditor = this.form.getByRole("textbox", { name: "Prompt" });
     this.advancedToggle = page.getByRole("button", { name: "Advanced", exact: true });
     this.agentModeSelect = page.getByRole("combobox", { name: "Select agent mode" });
     this.runAsSelect = page.getByRole("combobox", { name: "Run as" });
@@ -141,20 +147,20 @@ export class AutomationsPage extends BasePage {
     this.addMetadataButton = page.getByRole("button", { name: "Add metadata" });
     this.addNotificationButton = page.getByRole("button", { name: "Add notification" });
 
-    this.webhookUrlCode = page
-      .locator("main code")
+    this.webhookUrlCode = this.form
+      .locator("code")
       .filter({ hasText: /^https:\/\/.*\/api\/webhooks\/automations\// })
       .first();
-    this.webhookSecretCode = page
-      .locator("main code")
+    this.webhookSecretCode = this.form
+      .locator("code")
       .filter({ hasText: /^[A-Za-z0-9_-]{30,}$/ })
       .first();
     this.secretOneTimeNotice = page.getByText(/Copy this secret now/);
-    this.webhookSecretHeaderCode = page
-      .locator("main code")
+    this.webhookSecretHeaderCode = this.form
+      .locator("code")
       .filter({ hasText: "X-Webhook-Secret" })
       .first();
-    this.runOnceDateTimeButton = page.locator("main").getByRole("button", { name: /^at: / });
+    this.runOnceDateTimeButton = this.form.getByRole("button", { name: /^at: / });
     this.runOncePicker = page
       .locator('[role="dialog"]')
       .filter({ has: page.locator('[role="group"][aria-label="at"]') });
@@ -166,7 +172,7 @@ export class AutomationsPage extends BasePage {
     this.visualTab = this.scheduleDialog.getByRole("button", { name: "Visual" });
     this.rruleInput = this.scheduleDialog.getByRole("textbox");
     this.applyScheduleButton = this.scheduleDialog.getByRole("button", { name: "Apply" });
-    this.scheduleFrequencyChip = page.locator("main").getByRole("button", { name: "Every day" });
+    this.scheduleFrequencyChip = this.form.getByRole("button", { name: "Every day" });
     this.scheduleHourSelect = page.getByRole("combobox", { name: "Select hour" });
     this.scheduleMinuteSelect = page.getByRole("combobox", { name: "Minute within hour" });
 
@@ -184,6 +190,21 @@ export class AutomationsPage extends BasePage {
     await this.sidebarLink.click();
     await this.page.waitForURL(/\/automations$/);
     await this.heading.waitFor({ state: "visible" });
+  }
+
+  /**
+   * Choose an option in the Instructions editor's `@`/`!` mention menu with the
+   * keyboard. The menu is portaled next to the Slate editor, which sits above it
+   * for pointer events, so clicking an option is not actionable; ArrowDown moves
+   * the `aria-selected` highlight and Enter commits it, as a user would.
+   */
+  async pickMentionOption(option: Locator) {
+    await option.waitFor({ state: "visible" });
+    for (let i = 0; i < 10; i++) {
+      if ((await option.getAttribute("aria-selected")) === "true") break;
+      await this.page.keyboard.press("ArrowDown");
+    }
+    await this.page.keyboard.press("Enter");
   }
 
   /** Open the manual-create form from the list page. */
@@ -334,7 +355,13 @@ export class AutomationsPage extends BasePage {
   /** Best-effort deletion of an automation by name, for cleanup safety. */
   async deleteAutomationByName(name: string, slug: string = TEST_SUBORG) {
     try {
-      await this.open(slug);
+      // Reuse the list when the test already ended on it: re-entering via the
+      // sidebar sometimes renders the session composer under the /automations
+      // URL (APP-17) and the unbounded heading wait would eat the test timeout.
+      const onList =
+        /\/automations$/.test(this.page.url()) &&
+        (await this.heading.isVisible().catch(() => false));
+      if (!onList) await this.open(slug);
       const row = this.page.getByRole("link", { name: new RegExp(name) }).first();
       if (await row.isVisible().catch(() => false)) {
         await row.click();
