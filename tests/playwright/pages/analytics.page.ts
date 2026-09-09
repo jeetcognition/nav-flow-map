@@ -73,10 +73,21 @@ export class AnalyticsPage extends BasePage {
     await this.page.waitForLoadState("networkidle").catch(() => {});
   }
 
+  /** Date-range popup (menuitemradio options). */
   protected menu(): Locator {
-    // Base UI renders an outer positioning wrapper and an inner elevated popup.
-    // The inner popup has the visible options and `class*="bg-bg-elevated-wax"`.
-    return this.page.locator('[data-open][class*="bg-bg-elevated-wax"]');
+    return this.page.getByRole("menu");
+  }
+
+  /** View/grouping combobox popup. */
+  protected listbox(): Locator {
+    return this.page.getByRole("listbox");
+  }
+
+  /** Organization popup: dialog with search box, pinned "All organizations" option and multiselect listbox. */
+  protected orgPopup(): Locator {
+    return this.page
+      .getByRole("dialog")
+      .filter({ has: this.page.getByPlaceholder("Search organizations...") });
   }
 
   async openDateRange() {
@@ -101,7 +112,7 @@ export class AnalyticsPage extends BasePage {
 
   async openOrgFilter() {
     await this.orgFilter.click();
-    const menu = this.menu();
+    const menu = this.orgPopup();
     await expect(menu.first()).toBeVisible();
     return menu.first();
   }
@@ -131,7 +142,7 @@ export class AnalyticsPage extends BasePage {
 
   async openViewFilter() {
     await this.viewFilter.click();
-    const menu = this.menu();
+    const menu = this.listbox();
     await expect(menu.first()).toBeVisible();
     return menu.first();
   }
@@ -146,7 +157,7 @@ export class AnalyticsPage extends BasePage {
 
   async openGroupingFilter() {
     await this.groupingFilter.click();
-    const menu = this.menu();
+    const menu = this.listbox();
     await expect(menu.first()).toBeVisible();
     return menu.first();
   }
