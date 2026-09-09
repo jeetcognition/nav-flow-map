@@ -50,9 +50,17 @@ test.describe("Automations", () => {
     await automations.openCreateForm();
     await automations.removeAllTriggers();
 
-    await automations.addSubmenuTrigger("Slack", "Message");
-    await expect(page.getByText("in channel")).toBeVisible();
-    await automations.removeAllTriggers();
+    // Slack, like Jira, is only offered while the enterprise has Slack connected.
+    if (await automations.hasTriggerType("Slack")) {
+      await automations.addSubmenuTrigger("Slack", "Message");
+      await expect(page.getByText("in channel")).toBeVisible();
+      await automations.removeAllTriggers();
+    } else {
+      testInfo.annotations.push({
+        type: "not_tested",
+        description: "Slack trigger absent from the Add trigger menu; Slack is not connected",
+      });
+    }
 
     await automations.addSubmenuTrigger("GitHub", "Issue comment");
     await expect(page.getByText("in repo")).toBeVisible();
@@ -126,9 +134,10 @@ test.describe("Automations", () => {
     await automations.instructionsEditor.pressSequentially("@", { delay: 50 });
     const mentionMenu = page.getByRole("listbox");
     await expect(mentionMenu).toBeVisible();
-    await expect(page.getByRole("option", { name: /^Repositories/ })).toBeVisible();
+    const repositoriesOption = page.getByRole("option", { name: /^Repositories/ });
+    await expect(repositoriesOption).toBeVisible();
     await expect(page.getByRole("option", { name: /^Playbooks/ })).toBeVisible();
-    await page.getByRole("option", { name: /^Repositories/ }).click();
+    await automations.pickMentionOption(repositoriesOption);
     // With no repos connected the submenu prompts to search; with repos
     // connected it lists them immediately.
     await expect(
@@ -137,14 +146,17 @@ test.describe("Automations", () => {
         .or(mentionMenu.getByRole("option"))
         .first(),
     ).toBeVisible();
-    await page.keyboard.press("Escape");
+    // Escape would close the create sheet itself (Discard dialog); clearing the
+    // "@repos:" query dismisses the mention menu and leaves the editor mounted.
+    await automations.instructionsEditor.selectText();
+    await page.keyboard.press("Backspace");
+    await expect(mentionMenu).toBeHidden();
 
     await automations.instructionsEditor.click();
     // The macro menu lists options by macro (`!roast`); the inserted chip carries the
     // playbook title.
     await automations.instructionsEditor.pressSequentially(" run !roast", { delay: 50 });
-    await expect(page.getByRole("option", { name: "!roast", exact: true })).toBeVisible();
-    await page.getByRole("option", { name: "!roast", exact: true }).click();
+    await automations.pickMentionOption(page.getByRole("option", { name: "!roast", exact: true }));
     await expect(
       automations.instructionsEditor.getByRole("link", { name: "Roast Commits" }),
     ).toBeVisible();
