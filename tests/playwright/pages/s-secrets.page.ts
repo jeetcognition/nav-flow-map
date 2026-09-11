@@ -134,9 +134,23 @@ export class SecretsPage extends BasePage {
     await control.click({ force: true });
   }
 
-  /** Submit the add/edit dialog. */
+  /**
+   * Submit the add/edit dialog. Storing an organization-scoped secret opens a
+   * "Create organization secret?" confirmation; accept it when it appears
+   * (validation failures keep the sheet open without a confirmation).
+   */
   async submitDialog() {
     await this.clickInDialog(this.dialogStoreButton);
+    const confirm = this.page.getByRole("dialog", { name: /Create organization secret/ });
+    if (
+      await confirm.waitFor({ state: "visible", timeout: 5_000 }).then(
+        () => true,
+        () => false,
+      )
+    ) {
+      await confirm.getByRole("button", { name: "Store organization secret" }).click();
+      await confirm.waitFor({ state: "hidden" });
+    }
   }
 
   /** Close the add/edit dialog with its Close control. */
