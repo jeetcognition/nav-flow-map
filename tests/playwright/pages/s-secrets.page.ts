@@ -19,7 +19,7 @@ export class SecretsPage extends BasePage {
   readonly backToOrganization: Locator;
   /** Help text under the heading. */
   readonly helpText: Locator;
-  /** "Learn more" documentation link. */
+  /** Secrets-specific "Learn more about secrets" documentation link. */
   readonly learnMoreLink: Locator;
   /** Organization scope tab (label includes the count). */
   readonly organizationTab: Locator;
@@ -65,7 +65,7 @@ export class SecretsPage extends BasePage {
     this.heading = page.getByRole("heading", { name: "Secrets", exact: true });
     this.backToOrganization = page.getByText("Back to organization").first();
     this.helpText = page.getByText("Reference a secret with a dollar sign");
-    this.learnMoreLink = page.getByRole("link", { name: "Learn more" });
+    this.learnMoreLink = page.getByRole("link", { name: "Learn more about secrets" });
     this.organizationTab = page.getByRole("tab", { name: /^Organization \d+$/ });
     this.personalTab = page.getByRole("tab", { name: /^Personal \d+$/ });
     this.searchInput = page.locator('input[placeholder="Search secrets"]');

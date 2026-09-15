@@ -38,7 +38,7 @@ test.describe("Organizations", () => {
     await expect(orgs.headerRow).toContainText("Name");
     await expect(orgs.headerRow).toContainText("Members");
     await expect(orgs.headerRow).toContainText("Repositories");
-    await expect(orgs.headerRow).toContainText("Monthly cloud ACU limit");
+    await expect(orgs.headerRow).toContainText("Monthly ACU limit");
     await expect(orgs.nextButton).toBeVisible();
   });
 

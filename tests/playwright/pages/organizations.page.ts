@@ -39,13 +39,13 @@ export class OrganizationsPage extends BasePage {
     return this.content.getByRole("row").filter({ hasText: new RegExp(name, "i") });
   }
 
-  /** "Monthly cloud ACU limit" cell: "No limit", or the number followed by a "Cloud only" badge. */
+  /** "Monthly ACU limit" cell: "No limit" or the number. */
   acuLimitCell(row: Locator): Locator {
     return row.getByRole("cell").nth(4);
   }
 
   acuLimitText(value: string): string | RegExp {
-    return value === "No limit" ? value : new RegExp(`^${value}\\s*Cloud only$`);
+    return value === "No limit" ? value : new RegExp(`^${value}$`);
   }
 
   /** "Manage <org>" dialog opened from a row's edit control. */
