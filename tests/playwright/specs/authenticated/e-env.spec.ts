@@ -251,7 +251,7 @@ test.describe("Environment", () => {
         const body = await anonPage.locator("body").innerText();
         expect(deniedUrl || /could not be found|log in/i.test(body)).toBe(true);
       }).toPass({ timeout: 30_000 });
-      await expect(anonPage.getByRole("heading", { name: "Environment" })).not.toBeVisible();
+      await expect(anonPage.getByRole("heading", { name: "Environments" })).not.toBeVisible();
       await expect(anonPage.getByText("Machine snapshot")).not.toBeVisible();
     } finally {
       await anonContext.close();
@@ -261,7 +261,7 @@ test.describe("Environment", () => {
   test("ENV-REG08 — Verify breadcrumb and Back to enterprise navigation", async ({ page }) => {
     const env = new EnvironmentPage(page);
     await expectEnterpriseBreadcrumbs(page, () => env.goto(), {
-      crumbs: ["Settings", "Enterprise", "Environment"],
+      crumbs: ["Settings", "Enterprise", "Environments"],
     });
   });
 
