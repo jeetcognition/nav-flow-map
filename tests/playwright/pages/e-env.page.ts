@@ -2,16 +2,16 @@ import { expect, Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { routes, ENTERPRISE_SLUG } from "../support/paths";
 
-// Enterprise → Environment (…/settings/enterprise-environment).
+// Enterprise → Environments (…/settings/enterprise-environment).
 // Main tabs: Rollout | Configuration | Blueprint, plus Outposts and
 // Golden snapshot (legacy) where the tenant still exposes them. Rollout is the
 // default tab and shows build health plus a per-organization rollout table.
 export class EnvironmentPage extends BasePage {
   protected readonly path = routes.environment();
 
-  readonly heading = this.page.getByRole("heading", { name: "Environment", exact: true });
+  readonly heading = this.page.getByRole("heading", { name: "Environments", exact: true });
   readonly subheading = this.page.getByText(
-    "Configure how Devin's environment is set up across your enterprise.",
+    "Configure how Devin's environments are set up across your enterprise.",
   );
 
   // Main tabs
